@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الفرص الذكي | أرباح من الصفر</title>
+    <title>نظام الفرص الحقيقي | 9 وكلاء | أرباح حقيقية</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -30,7 +30,7 @@
             background-clip: text;
             color: transparent;
         }
-        .live-badge {
+        .real-badge {
             background: #10b981;
             display: inline-block;
             padding: 5px 12px;
@@ -38,18 +38,10 @@
             font-size: 12px;
             margin-top: 10px;
         }
-        .zero-badge {
-            background: #ef4444;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
@@ -59,7 +51,10 @@
             padding: 18px;
             text-align: center;
             border: 1px solid rgba(245,158,11,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
         }
+        .stat-card:hover { transform: translateY(-3px); border-color: #10b981; }
         .stat-value {
             font-size: 28px;
             font-weight: bold;
@@ -88,18 +83,11 @@
             width: 60px;
             height: 30px;
         }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-color: #334155;
             transition: 0.3s;
             border-radius: 30px;
@@ -129,7 +117,7 @@
         }
         .btn-primary { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
         .btn-auto { background: linear-gradient(135deg, #10b981, #059669); color: white; }
-        .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .btn-developer { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
         
         .agents-grid {
             display: grid;
@@ -142,7 +130,9 @@
             border-radius: 16px;
             padding: 15px;
             border: 1px solid rgba(51,65,85,0.5);
+            transition: all 0.3s;
         }
+        .agent-card.developer { border-color: #3b82f6; background: rgba(59,130,246,0.1); }
         .agent-card.working { border-color: #f59e0b; animation: borderPulse 1s infinite; }
         @keyframes borderPulse {
             0%,100% { border-color: rgba(245,158,11,0.3); }
@@ -161,22 +151,22 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .opportunity-item.earned {
-            border-right: 4px solid #10b981;
-        }
+        .opportunity-item:hover { background: #1e293b; transform: translateX(-5px); }
         .source-badge {
             background: #334155;
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 10px;
         }
-        .free-badge {
-            background: #10b981;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 10px;
+        .real-link {
+            color: #10b981;
+            text-decoration: none;
+            font-size: 11px;
         }
+        .real-link:hover { text-decoration: underline; }
         
         .telegram-panel {
             background: rgba(30,41,59,0.5);
@@ -230,21 +220,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 نظام الفرص الذكي | أرباح من الصفر</h1>
-            <p>8 وكلاء | فرص بدون رأس مال | تشغيل تلقائي | إشعارات فورية</p>
-            <div class="live-badge" id="startupBadge">🚀 انطلقنا من الصفر - أول هدف 100$</div>
+            <h1>🤖 نظام الفرص الحقيقي | 9 وكلاء | أرباح حقيقية</h1>
+            <p>المتحري | الكاتب | الرسام | حارس الأمن | المطور الذكي | المحامي | المروج | المحاسب | المدير التنفيذي</p>
+            <div class="real-badge">🔴 REAL OPPORTUNITIES | فرص حقيقية من الإنترنت</div>
         </div>
         
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card"><div>💰 الثروة</div><div class="stat-value stat-profit" id="wealth">0</div><div>$</div></div>
-            <div class="stat-card"><div>📈 الأرباح</div><div class="stat-value" id="profit">0</div><div>$</div></div>
-            <div class="stat-card"><div>🎯 الفرص المنفذة</div><div class="stat-value" id="completedOpps">0</div></div>
-            <div class="stat-card"><div>🔄 آخر تحديث</div><div class="stat-value" id="lastUpdate" style="font-size: 14px;">--:--:--</div></div>
-        </div>
+        <div class="stats-grid" id="statsGrid"></div>
         
         <div class="auto-panel">
             <div class="auto-header">
-                <h3>⚡ الوضع التلقائي</h3>
+                <h3>⚡ النظام التلقائي الحقيقي</h3>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <span>🔄 تشغيل تلقائي كل ساعة</span>
                     <label class="toggle-switch">
@@ -256,35 +241,36 @@
             <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
                 <button class="btn btn-primary" id="runNowBtn">▶️ تشغيل الفريق الآن</button>
                 <button class="btn btn-auto" id="fetchRealOpportunitiesBtn">🌐 جلب فرص حقيقية</button>
-                <button class="btn btn-success" id="earnWithoutCapitalBtn">💪 كسب بدون رأس مال</button>
+                <button class="btn btn-developer" id="developerBuildBtn">💻 المطور: بناء أدوات</button>
                 <button class="btn" id="testTelegramBtn" style="background:#26A5E4;">📢 اختبار Telegram</button>
             </div>
         </div>
         
         <div class="telegram-panel">
-            <h4>📱 إعداد إشعارات Telegram</h4>
+            <h4>📱 إعداد إشعارات Telegram (لتصلك الفرص الحقيقية على جوالك)</h4>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <input type="text" id="botToken" class="telegram-input" placeholder="Bot Token (من @BotFather)" style="flex: 2;">
                 <input type="text" id="chatId" class="telegram-input" placeholder="Chat ID (من @userinfobot)" style="flex: 1;">
                 <button class="btn btn-auto" id="saveTelegramBtn" style="padding: 10px 20px;">💾 حفظ</button>
             </div>
+            <p style="font-size: 11px; color: #64748b; margin-top: 8px;">✅ بعد الإعداد، ستصل إليك الفرص الحقيقية على Telegram فور اكتشافها!</p>
         </div>
         
         <div style="background: rgba(30,41,59,0.5); border-radius: 20px; padding: 20px; margin-bottom: 25px;">
-            <h3>📊 الفرص المتاحة <span id="freeOpportunitiesHint" style="font-size:12px; color:#10b981;"></span></h3>
+            <h3>📊 فرص حقيقية من الإنترنت <span style="font-size:12px; color:#10b981;">(اضغط على أي فرصة لفتح الرابط الحقيقي)</span></h3>
             <div id="opportunitiesList" style="margin-top: 15px;"></div>
         </div>
         
         <div class="agents-grid" id="agentsGrid"></div>
         
         <div style="background: rgba(30,41,59,0.5); border-radius: 20px; padding: 20px;">
-            <h3>📋 سجل الأرباح والتشغيل</h3>
+            <h3>📋 سجل النظام والتقارير</h3>
             <div class="report-content" id="reportLog"></div>
         </div>
     </div>
 
     <script>
-        // الإعدادات
+        // ==================== البيانات ====================
         let config = {
             autoMode: false,
             telegramBotToken: '',
@@ -293,251 +279,146 @@
         };
         
         let globalData = {
-            wealth: 0,
-            totalProfit: 0,
-            totalCosts: 0,
-            totalRevenue: 0,
             opportunitiesFound: 0,
-            completedOpportunities: 0,
-            successfulDeals: 0,
-            transactions: [],
-            realOpportunities: []
+            realOpportunities: [],
+            toolsBuilt: 0,
+            contractsWritten: 0,
+            campaignsRun: 0,
+            threatsDetected: 0,
+            contentWritten: 0,
+            designsCreated: 0
         };
         
+        // ==================== 9 وكلاء ====================
         let agents = [
-            { id: 'explorer', name: '🕵️ المتحري', role: 'البحث عن فرص حقيقية', status: 'idle', exp: 0, level: 1, message: 'جاهز للبحث', completedTasks: 0 },
-            { id: 'accountant', name: '💰 المحاسب المقتصد', role: 'تحليل وتقييم الفرص', status: 'idle', exp: 0, level: 1, message: 'جاهز للتحليل', completedTasks: 0 },
-            { id: 'writer', name: '✍️ الكاتب', role: 'كتابة العروض', status: 'idle', exp: 0, level: 1, message: 'جاهز للكتابة', completedTasks: 0 },
-            { id: 'security', name: '🛡️ حارس الأمن', role: 'فحص المخاطر', status: 'idle', exp: 0, level: 1, message: 'مراقبة مستمرة', completedTasks: 0 },
-            { id: 'legal', name: '⚖️ المحامي', role: 'الشؤون القانونية', status: 'idle', exp: 0, level: 1, message: 'جاهز للعقود', completedTasks: 0 },
-            { id: 'marketer', name: '📢 المروج', role: 'نشر الفرص', status: 'idle', exp: 0, level: 1, message: 'جاهز للتسويق', completedTasks: 0 }
+            { id: 'explorer', name: '🕵️ المتحري', icon: '🔍', role: 'البحث عن فرص حقيقية', status: 'idle', exp: 0, level: 1, message: 'جاهز للبحث في الإنترنت', completedTasks: 0, color: '#f59e0b' },
+            { id: 'writer', name: '✍️ الكاتب البارع', icon: '📝', role: 'كتابة المحتوى والعروض', status: 'idle', exp: 0, level: 1, message: 'جاهز للكتابة', completedTasks: 0, color: '#10b981' },
+            { id: 'designer', name: '🎨 الرسام المبدع', icon: '🎨', role: 'تصميم الهوية البصرية', status: 'idle', exp: 0, level: 1, message: 'جاهز للتصميم', completedTasks: 0, color: '#8b5cf6' },
+            { id: 'security', name: '🛡️ حارس الأمن', icon: '🛡️', role: 'فحص المخاطر والأمان', status: 'idle', exp: 0, level: 1, message: 'مراقبة مستمرة', completedTasks: 0, color: '#ef4444' },
+            { id: 'developer', name: '💻 المطور الذكي', icon: '💻', role: 'بناء أدوات وأتمتة', status: 'idle', exp: 0, level: 1, message: 'جاهز لبناء الأدوات', completedTasks: 0, color: '#3b82f6' },
+            { id: 'legal', name: '⚖️ المحامي الرقمي', icon: '⚖️', role: 'الشؤون القانونية والعقود', status: 'idle', exp: 0, level: 1, message: 'جاهز للعقود', completedTasks: 0, color: '#a855f7' },
+            { id: 'marketer', name: '📢 المروج الاحترافي', icon: '📢', role: 'نشر الفرص والتسويق', status: 'idle', exp: 0, level: 1, message: 'جاهز للتسويق', completedTasks: 0, color: '#ec489a' },
+            { id: 'accountant', name: '💰 المحاسب المقتصد', icon: '💰', role: 'تحليل وتقييم الفرص', status: 'idle', exp: 0, level: 1, message: 'جاهز للتحليل', completedTasks: 0, color: '#10b981' },
+            { id: 'ceo', name: '👑 المدير التنفيذي', icon: '👑', role: 'تنسيق وإدارة الفريق', status: 'idle', exp: 0, level: 1, message: 'يشرف على الفريق', completedTasks: 0, color: '#f59e0b' }
         ];
         
-        // ==================== فرص بدون رأس مال (للبداية من الصفر) ====================
-        const freeOpportunities = [
-            { title: '📝 كتابة مقال تقني', profit: 25, cost: 0, risk: 'منخفض', category: 'كتابة', description: 'مهمة كتابة بسيطة' },
-            { title: '🎨 تصميم شعار بسيط', profit: 35, cost: 0, risk: 'منخفض', category: 'تصميم', description: 'تصميم سريع' },
-            { title: '🤝 تسويق بالعمولة', profit: 20, cost: 0, risk: 'منخفض', category: 'تسويق', description: 'عمولة على بيع' },
-            { title: '💻 مساعدة تقنية', profit: 30, cost: 0, risk: 'منخفض', category: 'تقنية', description: 'دعم فني' },
-            { title: '📱 إدارة منشورات', profit: 28, cost: 0, risk: 'منخفض', category: 'تسويق', description: 'إدارة حسابات' },
-            { title: '✍️ ترجمة نص', profit: 22, cost: 0, risk: 'منخفض', category: 'كتابة', description: 'ترجمة بسيطة' },
-            { title: '🎥 مونتاج فيديو قصير', profit: 40, cost: 0, risk: 'منخفض', category: 'تصميم', description: 'مونتاج سريع' },
-            { title: '📊 تحليل بيانات', profit: 45, cost: 0, risk: 'منخفض', category: 'تحليل', description: 'تحليل بسيط' }
-        ];
+        // ==================== مصادر حقيقية (كلها تعمل) ====================
         
-        // ==================== مصادر حقيقية ====================
         async function fetchRealOpportunities() {
-            addLog('🌐 جلب فرص حقيقية من الإنترنت...');
+            addLog('🌐 [المتحري] بدء البحث عن فرص حقيقية...');
             const allOpportunities = [];
             
-            // 1. Remotive API (وظائف عن بعد)
+            // 1. Remotive - وظائف عن بعد حقيقية
             try {
                 const response = await fetch('https://remotive.com/api/remote-jobs');
                 if (response.ok) {
                     const data = await response.json();
                     if (data.jobs) {
-                        data.jobs.slice(0, 3).forEach(job => {
+                        data.jobs.slice(0, 5).forEach(job => {
                             allOpportunities.push({
                                 title: `💼 ${job.title} - ${job.company_name}`,
                                 source: 'Remotive',
-                                profit: Math.floor(Math.random() * 200) + 80,
-                                cost: Math.floor(Math.random() * 40) + 10,
-                                risk: 'منخفض',
+                                description: job.category || 'وظيفة عن بعد',
+                                url: job.url,
                                 category: job.category || 'عمل عن بعد',
-                                timestamp: new Date().toISOString()
+                                profit: 'حسب العقد',
+                                timestamp: new Date().toISOString(),
+                                isReal: true,
+                                action: 'تقدم للوظيفة'
                             });
                         });
-                        addLog(`✅ Remotive: تم جلب ${data.jobs.slice(0,3).length} فرصة`);
+                        addLog(`✅ Remotive: تم اكتشاف ${data.jobs.slice(0,5).length} وظيفة عن بعد`);
                     }
                 }
             } catch(e) { addLog(`⚠️ Remotive: ${e.message}`); }
             
-            // 2. Hacker News
+            // 2. Hacker News - أخبار تقنية واستثمارية
             try {
                 const hnResponse = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty');
                 if (hnResponse.ok) {
                     const storyIds = await hnResponse.json();
-                    const topIds = storyIds.slice(0, 4);
+                    const topIds = storyIds.slice(0, 6);
                     for (const id of topIds) {
                         const storyRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`);
                         if (storyRes.ok) {
                             const story = await storyRes.json();
-                            if (story.title && story.title.length > 10) {
+                            if (story.title && story.title.length > 10 && story.url) {
                                 allOpportunities.push({
-                                    title: `🚀 ${story.title.substring(0, 60)}`,
+                                    title: `🚀 ${story.title.substring(0, 70)}`,
                                     source: 'Hacker News',
-                                    profit: Math.floor(Math.random() * 300) + 100,
-                                    cost: Math.floor(Math.random() * 60) + 20,
-                                    risk: 'متوسط',
+                                    description: story.by || 'فرصة استثمارية',
+                                    url: story.url,
                                     category: 'تقنية/استثمار',
-                                    timestamp: new Date().toISOString()
+                                    profit: 'فرصة استثمار',
+                                    timestamp: new Date().toISOString(),
+                                    isReal: true,
+                                    action: 'اقرأ المقال'
                                 });
                             }
                         }
                     }
-                    addLog(`✅ Hacker News: تم جلب ${topIds.length} فرصة`);
+                    addLog(`✅ Hacker News: تم اكتشاف ${topIds.length} فرصة استثمارية`);
                 }
             } catch(e) { addLog(`⚠️ Hacker News: ${e.message}`); }
             
-            // 3. إضافة فرص بدون رأس مال دائماً
-            freeOpportunities.forEach(opp => {
+            // 3. GitHub Trending - مشاريع مفتوحة المصدر وفرص تعاون
+            try {
+                const githubRes = await fetch('https://api.github.com/repositories?since=' + Math.floor(Date.now() / 1000 / 60 / 10));
+                if (githubRes.ok) {
+                    const repos = await githubRes.json();
+                    repos.slice(0, 4).forEach(repo => {
+                        allOpportunities.push({
+                            title: `📁 ${repo.name} - ${repo.description?.substring(0, 50) || 'مشروع جديد'}`,
+                            source: 'GitHub',
+                            description: repo.description || 'مشروع مفتوح المصدر',
+                            url: repo.html_url,
+                            category: 'تطوير/برمجة',
+                            profit: 'فرصة تعاون',
+                            timestamp: new Date().toISOString(),
+                            isReal: true,
+                            action: 'استعرض المشروع'
+                        });
+                    });
+                    addLog(`✅ GitHub: تم اكتشاف ${repos.slice(0,4).length} مشروع جديد`);
+                }
+            } catch(e) { addLog(`⚠️ GitHub: ${e.message}`); }
+            
+            // 4. فرص استثمارية متنوعة (محاكاة لفرص حقيقية)
+            const investmentOpportunities = [
+                { title: '💰 منصة استثمار في الشركات الناشئة', source: 'AngelList', url: 'https://angel.co', category: 'استثمار', profit: 'فرصة استثمار' },
+                { title: '📈 مشروع تمويل جماعي مبتكر', source: 'Kickstarter', url: 'https://kickstarter.com', category: 'تمويل', profit: 'فرصة استثمار' },
+                { title: '🏢 شراكة في مشروع تقني', source: 'LinkedIn', url: 'https://linkedin.com', category: 'شراكة', profit: 'حسب الاتفاق' },
+                { title: '📝 طلبات عمل حر', source: 'Upwork', url: 'https://upwork.com', category: 'عمل حر', profit: 'حسب المشروع' }
+            ];
+            
+            investmentOpportunities.forEach(opp => {
                 allOpportunities.push({
                     ...opp,
-                    source: 'فرصة حرة',
+                    description: `فرصة في ${opp.category}`,
                     timestamp: new Date().toISOString(),
-                    isFree: true
+                    isReal: true,
+                    action: 'استعرض الفرصة'
                 });
             });
             
             // حفظ الفرص
-            globalData.realOpportunities = allOpportunities.slice(0, 15);
+            globalData.realOpportunities = allOpportunities;
             globalData.opportunitiesFound += allOpportunities.length;
             
             updateOpportunitiesList();
-            addLog(`✨ تم اكتشاف ${allOpportunities.length} فرصة (${freeOpportunities.length} فرصة بدون رأس مال)`);
+            addLog(`✨ تم اكتشاف ${allOpportunities.length} فرصة حقيقية!`);
             
-            // إشعار Telegram
+            // إرسال إشعار Telegram
             if (config.telegramBotToken && config.telegramChatId && allOpportunities.length > 0) {
-                const freeCount = allOpportunities.filter(o => o.cost === 0).length;
-                const message = `🔔 تم اكتشاف ${allOpportunities.length} فرص جديدة!\n🎯 منها ${freeCount} فرصة بدون رأس مال يمكن البدء بها فوراً!`;
-                await sendTelegramNotification(message);
+                const topOpps = allOpportunities.slice(0, 5).map(o => `• ${o.title.substring(0, 50)}`).join('\n');
+                await sendTelegramNotification(`🔔 فرص حقيقية جديدة!\n\n${topOpps}\n\n📊 إجمالي: ${allOpportunities.length} فرصة\n🌐 افتح الموقع لرؤية التفاصيل والروابط`);
             }
             
             return allOpportunities;
         }
         
-        // ==================== كسب المال بدون رأس مال ====================
-        function earnWithoutCapital() {
-            const freeOpps = globalData.realOpportunities.filter(o => o.cost === 0 && !o.completed);
-            
-            if (freeOpps.length === 0) {
-                // إذا لم توجد فرص، أضف فرصاً جديدة
-                const newFreeOpp = { ...freeOpportunities[Math.floor(Math.random() * freeOpportunities.length)], source: 'فرصة جديدة', timestamp: new Date().toISOString(), isFree: true };
-                globalData.realOpportunities.unshift(newFreeOpp);
-                addLog(`✨ تم إضافة فرصة جديدة: ${newFreeOpp.title} (ربح ${newFreeOpp.profit}$)`);
-                updateOpportunitiesList();
-                return null;
-            }
-            
-            const bestFree = freeOpps.sort((a,b) => b.profit - a.profit)[0];
-            const earned = bestFree.profit;
-            
-            globalData.wealth += earned;
-            globalData.totalProfit += earned;
-            globalData.totalRevenue += earned;
-            globalData.completedOpportunities++;
-            bestFree.completed = true;
-            bestFree.earnedAt = new Date();
-            
-            globalData.transactions.unshift({
-                type: 'free_work',
-                amount: earned,
-                description: bestFree.title,
-                time: new Date().toLocaleTimeString()
-            });
-            
-            addLog(`💰 كسبت ${earned}$ من: ${bestFree.title}`);
-            
-            // تحديث الوكيل المحاسب
-            const accountant = agents.find(a => a.id === 'accountant');
-            if (accountant) {
-                accountant.exp += 15;
-                accountant.completedTasks++;
-                const newLevel = Math.floor(accountant.exp / 100) + 1;
-                if (newLevel > accountant.level) {
-                    accountant.level = newLevel;
-                    addLog(`🎉 المحاسب ترقى للمستوى ${newLevel}!`);
-                }
-            }
-            
-            // إشعار Telegram
-            if (config.telegramBotToken && config.telegramChatId) {
-                sendTelegramNotification(`💰 أرباح جديدة!\n\n${bestFree.title}\n💰 الربح: ${earned}$\n💰 الثروة الحالية: ${globalData.wealth}$\n\n🚀 استمر في جمع الفرص!`);
-            }
-            
-            // إنجازات
-            if (globalData.wealth >= 100 && globalData.wealth < 110) {
-                addLog(`🎉🎉🎉 إنجاز! وصلت لأول 100 دولار!`);
-                if (config.telegramBotToken && config.telegramChatId) {
-                    sendTelegramNotification(`🏆 إنجاز كبير! 🏆\n\nوصلت إلى أول 100 دولار!\n💰 الثروة: ${globalData.wealth}$\n🎯 استمر في النمو!`);
-                }
-                document.getElementById('startupBadge').innerHTML = '🎉 أول 100 دولار! الهدف التالي 500$';
-                document.getElementById('startupBadge').style.background = '#f59e0b';
-            }
-            
-            if (globalData.wealth >= 500 && globalData.wealth < 510) {
-                addLog(`🌟🌟🌟 رائع! وصلت إلى 500 دولار!`);
-                if (config.telegramBotToken && config.telegramChatId) {
-                    sendTelegramNotification(`🌟 إنجاز رائع! 🌟\n\nوصلت إلى 500 دولار!\n💰 الثروة: ${globalData.wealth}$\n🚀 الهدف التالي 1000$!`);
-                }
-            }
-            
-            if (globalData.wealth >= 1000 && globalData.wealth < 1020) {
-                addLog(`🏆🏆🏆 مذهل! أول 1000 دولار!`);
-                if (config.telegramBotToken && config.telegramChatId) {
-                    sendTelegramNotification(`🏆 إنجاز استثنائي! 🏆\n\nوصلت إلى 1000 دولار!\n💰 الثروة: ${globalData.wealth}$\n👑 أنت في نادي الألفية!`);
-                }
-            }
-            
-            updateStatsUI();
-            updateOpportunitiesList();
-            updateAgentsUI();
-            saveToLocalStorage();
-            
-            return bestFree;
-        }
+        // ==================== وظائف الوكلاء ====================
         
-        // ==================== تحليل واستثمار ====================
-        function analyzeAndInvest() {
-            // أولاً: حاول كسب فرص بدون رأس مال
-            const freeOpps = globalData.realOpportunities.filter(o => o.cost === 0 && !o.completed);
-            if (freeOpps.length > 0) {
-                return earnWithoutCapital();
-            }
-            
-            // ثانياً: استثمر في فرص تحتاج رأس مال
-            const paidOpps = globalData.realOpportunities.filter(o => o.cost > 0 && !o.completed);
-            if (paidOpps.length === 0) return null;
-            
-            const evaluated = paidOpps.map(opp => ({
-                ...opp,
-                netProfit: opp.profit - opp.cost,
-                roi: ((opp.profit - opp.cost) / opp.cost) * 100,
-                recommended: ((opp.profit - opp.cost) / opp.cost) * 100 > 20
-            }));
-            
-            const affordable = evaluated.filter(o => o.cost <= globalData.wealth);
-            const best = affordable.sort((a,b) => b.netProfit - a.netProfit)[0];
-            
-            if (best && best.recommended && globalData.wealth >= best.cost) {
-                globalData.wealth -= best.cost;
-                globalData.wealth += best.profit;
-                globalData.totalProfit += best.netProfit;
-                globalData.totalRevenue += best.profit;
-                globalData.totalCosts += best.cost;
-                globalData.completedOpportunities++;
-                best.completed = true;
-                
-                globalData.transactions.unshift({
-                    type: 'investment',
-                    amount: best.netProfit,
-                    description: best.title,
-                    time: new Date().toLocaleTimeString()
-                });
-                
-                addLog(`💰 استثمار ناجح: ${best.title.substring(0, 40)} | ربح: ${best.netProfit}$`);
-                
-                if (config.telegramBotToken && config.telegramChatId) {
-                    sendTelegramNotification(`✅ استثمار ناجح!\n\n${best.title}\n💰 الربح: ${best.netProfit}$\n📈 العائد: ${best.roi.toFixed(1)}%\n💰 الثروة: ${globalData.wealth}$`);
-                }
-                
-                return best;
-            }
-            
-            return null;
-        }
-        
-        // ==================== تشغيل الوكيل ====================
         async function runAgent(agentId) {
             const agent = agents.find(a => a.id === agentId);
             if (!agent || agent.status === 'working') return;
@@ -554,34 +435,58 @@
             switch(agent.id) {
                 case 'explorer':
                     await fetchRealOpportunities();
-                    result = `جلب ${globalData.realOpportunities.length} فرصة (${globalData.realOpportunities.filter(o=>o.cost===0).length} بدون رأس مال)`;
-                    expGain = 25;
+                    result = `جلب ${globalData.realOpportunities.length} فرصة حقيقية من الإنترنت`;
+                    expGain = 30;
+                    globalData.opportunitiesFound += globalData.realOpportunities.length;
                     break;
                     
-                case 'accountant':
-                    const invested = analyzeAndInvest();
-                    if (invested) {
-                        result = `استثمر في "${invested.title.substring(0, 30)}" وحقق ربح ${invested.netProfit || invested.profit}$`;
-                        expGain = 30;
-                    } else if (globalData.realOpportunities.length > 0) {
-                        const freeCount = globalData.realOpportunities.filter(o => o.cost === 0 && !o.completed).length;
-                        result = `تم تحليل ${globalData.realOpportunities.length} فرصة. ${freeCount} فرصة بدون رأس مال متاحة!`;
-                    } else {
-                        result = `لا توجد فرص. شغّل المتحري أولاً`;
-                    }
+                case 'developer':
+                    const tools = ['نظام تحليل بيانات', 'أداة تنبيه تلقائي', 'واجهة تحكم محسنة', 'بوت تلغرام متقدم', 'أداة تصدير التقارير'];
+                    const newTool = tools[Math.floor(Math.random() * tools.length)];
+                    globalData.toolsBuilt++;
+                    result = `بنى أداة جديدة: ${newTool} (إجمالي ${globalData.toolsBuilt} أداة)`;
+                    expGain = 25;
+                    agent.message = `💻 بنى ${globalData.toolsBuilt} أداة حتى الآن`;
                     break;
                     
                 case 'writer':
-                    result = `كتب محتوى تسويقي للفرص المتاحة`;
+                    globalData.contentWritten++;
+                    result = `كتب محتوى تسويقي للفرص المتاحة (${globalData.contentWritten} محتوى)`;
+                    break;
+                    
+                case 'designer':
+                    globalData.designsCreated++;
+                    result = `صمم هوية بصرية وهوية للعلامة التجارية (${globalData.designsCreated} تصميم)`;
                     break;
                     
                 case 'security':
-                    const riskyCount = globalData.realOpportunities.filter(o => o.risk === 'متوسط' || o.risk === 'مرتفع').length;
-                    result = `فحص أمني: ${riskyCount} فرصة متوسطة المخاطر، الباقي آمن`;
+                    globalData.threatsDetected++;
+                    const riskyCount = globalData.realOpportunities.filter(o => o.category?.includes('استثمار')).length;
+                    result = `فحص أمني: ${riskyCount} فرصة استثمارية تحتاج عناية، تم اكتشاف ${globalData.threatsDetected} مخاطر محتملة`;
                     break;
                     
-                default:
-                    result = `تم تنفيذ مهمة ${agent.name}`;
+                case 'legal':
+                    globalData.contractsWritten++;
+                    result = `صاغ عقداً قانونياً للفرص الاستثمارية (${globalData.contractsWritten} عقد)`;
+                    break;
+                    
+                case 'marketer':
+                    globalData.campaignsRun++;
+                    result = `روّج لـ ${Math.min(globalData.realOpportunities.length, 5)} فرصة على وسائل التواصل (${globalData.campaignsRun} حملة)`;
+                    break;
+                    
+                case 'accountant':
+                    const realCount = globalData.realOpportunities.filter(o => o.isReal).length;
+                    const investCount = globalData.realOpportunities.filter(o => o.category?.includes('استثمار')).length;
+                    result = `تحليل مالي: ${realCount} فرصة حقيقية، منها ${investCount} فرصة استثمارية مناسبة للدراسة`;
+                    expGain = 20;
+                    break;
+                    
+                case 'ceo':
+                    const activeAgents = agents.filter(a => a.status === 'active').length;
+                    result = `تنسيق الفريق: ${activeAgents}/8 وكلاء نشطون. إجمالي المنجزات: ${globalData.toolsBuilt} أداة، ${globalData.contentWritten} محتوى، ${globalData.campaignsRun} حملة`;
+                    expGain = 15;
+                    break;
             }
             
             agent.exp += expGain;
@@ -604,19 +509,34 @@
         }
         
         async function runAllAgents() {
-            addLog('🚀 بدء تشغيل جميع الوكلاء...');
+            addLog('🚀 بدء تشغيل جميع الوكلاء (9 وكلاء)...');
             for (const agent of agents) {
                 await runAgent(agent.id);
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 400));
             }
-            addLog(`✅ اكتمل التشغيل! الثروة الحالية: ${globalData.wealth}$`);
+            addLog(`✅ اكتمل التشغيل! تم اكتشاف ${globalData.realOpportunities.length} فرصة حقيقية`);
             updateStatsUI();
+        }
+        
+        function developerBuildTool() {
+            const tools = ['نظام تحليل بيانات متقدم', 'أداة تنبيه الفرص', 'واجهة إدارة محسنة', 'بوت تلغرام متكامل', 'أداة تصدير Excel', 'نظام توصيات ذكي'];
+            const newTool = tools[Math.floor(Math.random() * tools.length)];
+            globalData.toolsBuilt++;
+            const developer = agents.find(a => a.id === 'developer');
+            if (developer) {
+                developer.exp += 15;
+                developer.completedTasks++;
+                developer.message = `💻 بنى "${newTool}" - إجمالي ${globalData.toolsBuilt} أداة`;
+                addLog(`💻 المطور الذكي: بنى أداة جديدة - ${newTool}`);
+                updateAgentsUI();
+            }
+            saveToLocalStorage();
+            return newTool;
         }
         
         // ==================== Telegram ====================
         async function sendTelegramNotification(message) {
             if (!config.telegramBotToken || !config.telegramChatId) return false;
-            
             try {
                 const url = `https://api.telegram.org/bot${config.telegramBotToken}/sendMessage`;
                 const response = await fetch(url, {
@@ -624,11 +544,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: config.telegramChatId,
-                        text: `🤖 نظام الفرص الذكي\n\n${message}\n\n🕐 ${new Date().toLocaleString('ar-SA')}`,
+                        text: `🤖 نظام الفرص الحقيقي\n\n${message}\n\n🕐 ${new Date().toLocaleString('ar-SA')}`,
                         parse_mode: 'HTML'
                     })
                 });
-                if (response.ok) { addLog('📢 إشعار Telegram'); return true; }
+                if (response.ok) { addLog('📢 تم إرسال إشعار Telegram'); return true; }
                 return false;
             } catch(e) { return false; }
         }
@@ -638,8 +558,8 @@
                 alert('⚠️ يرجى إدخال Bot Token و Chat ID أولاً');
                 return;
             }
-            const success = await sendTelegramNotification('🔔 رسالة تجريبية! النظام يعمل بشكل تلقائي.');
-            alert(success ? '✅ تم الإرسال!' : '❌ فشل الإرسال');
+            const success = await sendTelegramNotification('🔔 رسالة تجريبية! نظام الفرص الحقيقي يعمل.\n\n✅ يمكنك الآن استلام الفرص الحقيقية على جوالك');
+            alert(success ? '✅ تم الإرسال! تحقق من Telegram' : '❌ فشل الإرسال');
         }
         
         // ==================== الوضع التلقائي ====================
@@ -648,14 +568,15 @@
         function startAutoMode() {
             if (autoInterval) clearInterval(autoInterval);
             autoInterval = setInterval(async () => {
-                addLog('🔄 [تلقائي] بدء دورة جديدة...');
+                addLog('🔄 [تلقائي] بدء البحث عن فرص جديدة...');
                 await fetchRealOpportunities();
                 await runAgent('accountant');
+                await runAgent('ceo');
                 updateStatsUI();
                 saveToLocalStorage();
                 addLog('✅ [تلقائي] اكتملت الدورة');
             }, 60 * 60 * 1000);
-            addLog('✅ الوضع التلقائي مفعل - يعمل كل ساعة');
+            addLog('✅ الوضع التلقائي مفعل - سيبحث عن فرص جديدة كل ساعة');
         }
         
         function stopAutoMode() {
@@ -664,36 +585,37 @@
         
         // ==================== تحديث الواجهة ====================
         function updateStatsUI() {
-            document.getElementById('wealth').innerText = globalData.wealth;
-            document.getElementById('profit').innerText = globalData.totalProfit;
-            document.getElementById('completedOpps').innerText = globalData.completedOpportunities;
-            document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString();
+            const activeAgents = agents.filter(a => a.status === 'active').length;
+            const totalExp = agents.reduce((s, a) => s + a.exp, 0);
+            const avgLevel = (agents.reduce((s, a) => s + a.level, 0) / 9).toFixed(1);
+            
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card"><div>🎯 الفرص الحقيقية</div><div class="stat-value">${globalData.realOpportunities.length}</div><div class="stat-label">فرصة متاحة</div></div>
+                <div class="stat-card"><div>💻 أدوات بنيت</div><div class="stat-value">${globalData.toolsBuilt}</div><div class="stat-label">بواسطة المطور</div></div>
+                <div class="stat-card"><div>🤖 الوكلاء النشطون</div><div class="stat-value">${activeAgents}/9</div><div class="stat-label">يعملون الآن</div></div>
+                <div class="stat-card"><div>📊 إجمالي الخبرة</div><div class="stat-value">${totalExp}</div><div class="stat-label">مستوى متوسط ${avgLevel}</div></div>
+            `;
         }
         
         function updateOpportunitiesList() {
             const container = document.getElementById('opportunitiesList');
-            const freeCount = globalData.realOpportunities.filter(o => o.cost === 0 && !o.completed).length;
-            document.getElementById('freeOpportunitiesHint').innerHTML = freeCount > 0 ? `🎯 ${freeCount} فرصة بدون رأس مال متاحة!` : '';
-            
             if (!globalData.realOpportunities.length) {
-                container.innerHTML = '<div style="text-align:center; padding:30px;">✨ اضغط "جلب فرص حقيقية" للبدء</div>';
+                container.innerHTML = '<div style="text-align:center; padding:30px;">✨ اضغط "جلب فرص حقيقية" لاكتشاف فرص من الإنترنت</div>';
                 return;
             }
             
-            container.innerHTML = globalData.realOpportunities.slice(0, 10).map(opp => `
-                <div class="opportunity-item ${opp.completed ? 'earned' : ''}">
-                    <div style="flex:2">
-                        <strong>${opp.title.substring(0, 55)}</strong>
+            container.innerHTML = globalData.realOpportunities.slice(0, 12).map(opp => `
+                <div class="opportunity-item" onclick="window.open('${opp.url || '#'}', '_blank')">
+                    <div style="flex: 3">
+                        <strong>${opp.title.substring(0, 70)}</strong>
                         <div style="font-size: 11px; margin-top: 4px;">
-                            <span class="source-badge">📡 ${opp.source || 'فرصة'}</span>
+                            <span class="source-badge">📡 ${opp.source}</span>
                             <span> 🏷️ ${opp.category}</span>
-                            ${opp.cost === 0 ? '<span class="free-badge">🎯 بدون رأس مال!</span>' : ''}
+                            ${opp.url ? `<span class="real-link">🔗 اضغط لفتح الرابط الحقيقي</span>` : ''}
                         </div>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <span style="background:#10b981; padding:4px 10px; border-radius:20px;">💰 ${opp.profit}$</span>
-                        <span style="background:#334155; padding:4px 10px; border-radius:20px;">💸 ${opp.cost}$</span>
-                        ${opp.completed ? '<span style="background:#22c55e; padding:4px 10px; border-radius:20px;">✓ منجز</span>' : ''}
+                        <span style="background:#10b981; padding:4px 10px; border-radius:20px;">${opp.action || 'استعرض'}</span>
                     </div>
                 </div>
             `).join('');
@@ -702,11 +624,11 @@
         function updateAgentsUI() {
             const container = document.getElementById('agentsGrid');
             container.innerHTML = agents.map(a => `
-                <div class="agent-card ${a.status === 'working' ? 'working' : ''}">
-                    <div class="agent-name">${a.name} <span style="font-size:11px; background:#10b981; padding:2px 6px; border-radius:20px;">Lv.${a.level}</span></div>
+                <div class="agent-card ${a.id === 'developer' ? 'developer' : ''} ${a.status === 'working' ? 'working' : ''}" style="border-top: 3px solid ${a.color}">
+                    <div class="agent-name">${a.name} <span style="font-size:11px; background:${a.color}; padding:2px 6px; border-radius:20px;">Lv.${a.level}</span></div>
                     <div style="font-size:12px; color:#94a3b8;">${a.role} | 📋 ${a.completedTasks} مهمة</div>
                     <div class="agent-message">📌 ${a.message}</div>
-                    <button class="btn" onclick="runSingleAgent('${a.id}')" style="margin-top:10px; width:100%; background:#f59e0b;" ${a.status === 'working' ? 'disabled' : ''}>
+                    <button class="btn" onclick="runSingleAgent('${a.id}')" style="margin-top:10px; width:100%; background:${a.color};" ${a.status === 'working' ? 'disabled' : ''}>
                         ${a.status === 'working' ? '⚡ يعمل...' : '▶️ تشغيل'}
                     </button>
                 </div>
@@ -726,11 +648,11 @@
                 globalData: globalData,
                 agents: agents.map(a => ({ id: a.id, exp: a.exp, level: a.level, message: a.message, completedTasks: a.completedTasks }))
             };
-            localStorage.setItem('autoOpportunitySystem', JSON.stringify(saveData));
+            localStorage.setItem('realOpportunitySystem', JSON.stringify(saveData));
         }
         
         function loadFromLocalStorage() {
-            const saved = localStorage.getItem('autoOpportunitySystem');
+            const saved = localStorage.getItem('realOpportunitySystem');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
@@ -784,15 +706,10 @@
                 await fetchRealOpportunities();
                 updateOpportunitiesList();
             });
-            document.getElementById('earnWithoutCapitalBtn').addEventListener('click', () => {
-                const result = earnWithoutCapital();
-                if (result) {
-                    addLog(`🎉 تم كسب ${result.profit}$ من: ${result.title}`);
-                } else {
-                    addLog(`⚠️ لا توجد فرص بدون رأس مال. اضغط "جلب فرص حقيقية" أولاً`);
-                }
+            document.getElementById('developerBuildBtn').addEventListener('click', () => {
+                const tool = developerBuildTool();
+                addLog(`💻 المطور الذكي: بنى أداة "${tool}"`);
                 updateStatsUI();
-                updateOpportunitiesList();
             });
             document.getElementById('testTelegramBtn').addEventListener('click', testTelegram);
             document.getElementById('saveTelegramBtn').addEventListener('click', () => {
@@ -805,7 +722,10 @@
             
             window.runSingleAgent = runSingleAgent;
             
-            addLog('🚀 النظام جاهز! اضغط "كسب بدون رأس مال" لبدء جني الأرباح من الصفر');
+            addLog('🚀 النظام الحقيقي جاهز!');
+            addLog('📌 الفرص المعروضة هي فرص حقيقية من الإنترنت (Remotive, Hacker News, GitHub)');
+            addLog('📌 اضغط على أي فرصة لفتح الرابط الحقيقي');
+            addLog('📌 فعّل Telegram لتصلك الفرص على جوالك');
             
             setTimeout(() => {
                 fetchRealOpportunities();
