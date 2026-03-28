@@ -804,6 +804,16 @@
                 addLog('🔄 بدء أول دورة تلقائية...');
                 runAllAgents();
             }, 5000);
+
+            <!-- استبدال قسم Stripe بـ PayPal فقط -->
+<div class="gateway-section">
+    <div class="gateway-card">
+        <h3>📱 PayPal</h3>
+        <input type="text" class="gateway-input" id="paypalClientId" placeholder="PayPal Client ID">
+        <input type="text" class="gateway-input" id="paypalSecret" placeholder="PayPal Secret Key">
+        <button class="btn btn-primary" id="connectPaypalBtn" style="width:100%; margin-top:10px;">🔌 ربط PayPal</button>
+    </div>
+</div>
         }
         
         init();
