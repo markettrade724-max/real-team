@@ -16,6 +16,13 @@ jobs:
       - run: npm install
       - run: node server.js
         env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          # المنصات
+          URPAY_API_KEY: ${{ secrets.URPAY_API_KEY }}
+          AMAZON_API_KEY: ${{ secrets.AMAZON_API_KEY }}
+          # ... باقي المفاتيح
+          # Telegram
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       - uses: actions/upload-artifact@v4
