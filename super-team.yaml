@@ -1,0 +1,44 @@
+name: SUPER TEAM - التشغيل التلقائي
+
+on:
+  schedule:
+    # يعمل كل ساعة
+    - cron: '0 * * * *'
+  workflow_dispatch:  # يسمح بتشغيل يدوي
+
+jobs:
+  run-team:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 سحب الكود
+        uses: actions/checkout@v4
+      
+      - name: 🔧 إعداد Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 📦 تثبيت المتطلبات
+        run: npm install
+      
+      - name: 🚀 تشغيل الفريق
+        run: node server.js
+        env:
+          # متغيرات البيئة - سيتم إضافة APIs لاحقاً
+          AMAZON_API_KEY: ${{ secrets.AMAZON_API_KEY }}
+          AMAZON_SECRET: ${{ secrets.AMAZON_SECRET }}
+          BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
+          BINANCE_SECRET: ${{ secrets.BINANCE_SECRET }}
+          UPWORK_API_KEY: ${{ secrets.UPWORK_API_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
+          PAYPAL_SECRET: ${{ secrets.PAYPAL_SECRET }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      
+      - name: 💾 حفظ التقرير
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: reports/
