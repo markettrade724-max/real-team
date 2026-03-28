@@ -1,1 +1,12 @@
-{ "name": "super-team-automation", "version": "1.0.0", "description": "SUPER TEAM - نظام جمع الأرباح التلقائي", "main": "server.js", "scripts": { "start": "node server.js" }, "dependencies": {}, "engines": { "node": ">=18" } }
+{
+  "name": "super-team",
+  "version": "1.0.0",
+  "description": "SUPER TEAM with Supabase",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
