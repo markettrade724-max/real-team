@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المشرف | SUPER TEAM</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0a0c15 0%, #0f172a 100%);
+            min-height: 100vh;
+            color: #f1f5f9;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        .header {
+            background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(10,12,21,0.95));
+            border-radius: 28px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 1px solid rgba(245,158,11,0.4);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: rgba(30,41,59,0.7);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .requests-table {
+            background: rgba(30,41,59,0.5);
+            border-radius: 20px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+        }
+        
+        th {
+            color: #f59e0b;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-approve { background: #10b981; color: white; }
+        .btn-reject { background: #ef4444; color: white; }
+        .btn-view { background: #3b82f6; color: white; }
+        
+        .status-pending { color: #f59e0b; }
+        .status-approved { color: #10b981; }
+        .status-rejected { color: #ef4444; }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #1e293b;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            background: #f59e0b;
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👑 لوحة تحكم المشرف</h1>
+            <p>SUPER TEAM | إدارة الطلبات | مراقبة الأرباح</p>
+        </div>
+        
+        <div class="stats-grid" id="statsGrid"></div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="pending">⏳ قيد الانتظار</div>
+            <div class="tab" data-tab="approved">✅ الم approvedة</div>
+            <div class="tab" data-tab="rejected">❌ المرفوضة</div>
+        </div>
+        
+        <div class="requests-table">
+            <h3 style="margin-bottom: 15px;">📋 طلبات الخدمات التقنية</h3>
+            <div id="requestsList"></div>
+        </div>
+        
+        <div class="requests-table" style="margin-top: 25px;">
+            <h3 style="margin-bottom: 15px;">💰 سجل الأرباح</h3>
+            <div id="profitsList"></div>
+        </div>
+    </div>
+    
+    <script>
+        let requests = [];
+        let profits = [];
+        
+        function loadData() {
+            const saved = localStorage.getItem('superTeamRequests');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    requests = data.requests || [];
+                    profits = data.profits || [];
+                } catch(e) {}
+            }
+            updateUI();
+        }
+        
+        function saveData() {
+            localStorage.setItem('superTeamRequests', JSON.stringify({ requests, profits }));
+        }
+        
+        function updateStats() {
+            const pending = requests.filter(r => r.status === 'pending').length;
+            const approved = requests.filter(r => r.status === 'approved').length;
+            const totalProfit = profits.reduce((sum, p) => sum + p.amount, 0);
+            
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card"><div>⏳ طلبات قيد الانتظار</div><div style="font-size:28px; font-weight:bold;">${pending}</div></div>
+                <div class="stat-card"><div>✅ طلبات موافقة</div><div style="font-size:28px; font-weight:bold;">${approved}</div></div>
+                <div class="stat-card"><div>💰 إجمالي الأرباح</div><div style="font-size:28px; font-weight:bold; color:#10b981;">${totalProfit.toFixed(2)} $</div></div>
+                <div class="stat-card"><div>👥 إجمالي الطلبات</div><div style="font-size:28px; font-weight:bold;">${requests.length}</div></div>
+            `;
+        }
+        
+        function getRequestsByStatus(status) {
+            if (status === 'all') return requests;
+            return requests.filter(r => r.status === status);
+        }
+        
+        function renderRequests(status = 'pending') {
+            const filtered = getRequestsByStatus(status);
+            
+            if (filtered.length === 0) {
+                document.getElementById('requestsList').innerHTML = '<div style="text-align:center; padding:40px;">لا توجد طلبات</div>';
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>العميل</th><th>المشكلة</th><th>المدة</th><th>السعر</th><th>التاريخ</th><th>التراخيص</th><th>الحالة</th><th>إجراء</th></tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            filtered.forEach((req, idx) => {
+                html += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${req.clientName}</td>
+                        <td>${req.problem}</td>
+                        <td>${req.duration} ساعة</td>
+                        <td>${req.price} $</td>
+                        <td>${req.date}</td>
+                        <td><button class="btn btn-view" onclick="viewPermissions('${req.id}')">عرض</button></td>
+                        <td class="status-${req.status}">${req.status === 'pending' ? '⏳ قيد الانتظار' : (req.status === 'approved' ? '✅ مقبول' : '❌ مرفوض')}</td>
+                        <td>
+                            ${req.status === 'pending' ? `
+                                <button class="btn btn-approve" onclick="approveRequest('${req.id}')">موافقة</button>
+                                <button class="btn btn-reject" onclick="rejectRequest('${req.id}')">رفض</button>
+                            ` : '-'}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table>`;
+            document.getElementById('requestsList').innerHTML = html;
+        }
+        
+        function renderProfits() {
+            if (profits.length === 0) {
+                document.getElementById('profitsList').innerHTML = '<div style="text-align:center; padding:40px;">لا توجد أرباح بعد</div>';
+                return;
+            }
+            
+            let html = `<table><thead><tr><th>التاريخ</th><th>العميل</th><th>المشكلة</th><th>المبلغ</th></tr></thead><tbody>`;
+            profits.forEach(p => {
+                html += `<tr><td>${p.date}</td><td>${p.clientName}</td><td>${p.problem}</td><td style="color:#10b981;">+${p.amount} $</td></tr>`;
+            });
+            html += `</tbody></table>`;
+            document.getElementById('profitsList').innerHTML = html;
+        }
+        
+        function approveRequest(id) {
+            const req = requests.find(r => r.id === id);
+            if (req) {
+                req.status = 'approved';
+                
+                // تسجيل الربح
+                profits.unshift({
+                    id: Date.now(),
+                    clientName: req.clientName,
+                    problem: req.problem,
+                    amount: req.price,
+                    date: new Date().toLocaleString('ar-SA')
+                });
+                
+                saveData();
+                updateUI();
+                
+                // إرسال إشعار (محاكاة)
+                alert(`✅ تمت الموافقة على طلب ${req.clientName}\n💰 الربح: ${req.price}$`);
+            }
+        }
+        
+        function rejectRequest(id) {
+            const req = requests.find(r => r.id === id);
+            if (req) {
+                req.status = 'rejected';
+                saveData();
+                updateUI();
+                alert(`❌ تم رفض طلب ${req.clientName}`);
+            }
+        }
+        
+        function viewPermissions(id) {
+            const req = requests.find(r => r.id === id);
+            if (req) {
+                alert(`🔐 التراخيص المطلوبة:\n\n${req.permissions.join('\n')}\n\nمدة الخدمة: ${req.duration} ساعة\nالسعر: ${req.price}$`);
+            }
+        }
+        
+        let currentTab = 'pending';
+        
+        function updateUI() {
+            updateStats();
+            renderRequests(currentTab);
+            renderProfits();
+        }
+        
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentTab = tab.dataset.tab;
+                renderRequests(currentTab);
+            });
+        });
+        
+        loadData();
+    </script>
+</body>
+</html>

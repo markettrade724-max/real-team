@@ -2,85 +2,309 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUPER TEAM | تشغيل تلقائي 24/7</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SUPER TEAM PRO | نظام الأرباح والخدمات التقنية</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', 'Cairo', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0a0c15 0%, #0f172a 100%);
+            font-family: 'Segoe UI', 'Cairo', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a0c15 0%, #0f172a 50%, #1a1a2e 100%);
             min-height: 100vh;
             color: #f1f5f9;
             padding: 20px;
         }
-        .container { max-width: 1400px; margin: 0 auto; }
-        
-        .header {
-            background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(10,12,21,0.95));
-            border-radius: 32px;
-            padding: 25px;
-            margin-bottom: 25px;
-            text-align: center;
-            border: 1px solid #10b981;
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        .auto-badge {
-            background: #10b981;
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(10, 12, 21, 0.95));
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #fbbf24, #ff8c00, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .real-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
             display: inline-block;
-            padding: 8px 20px;
+            padding: 8px 24px;
             border-radius: 40px;
             font-size: 13px;
-            margin-top: 12px;
-            animation: pulse 2s infinite;
+            margin-top: 15px;
+            font-weight: bold;
         }
-        @keyframes pulse {
-            0%,100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
+
+        /* Wallet Section */
         .wallet-section {
-            background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.1));
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.1));
             border: 2px solid #10b981;
             border-radius: 32px;
             padding: 25px;
             margin-bottom: 25px;
+        }
+
+        .wallet-balance {
             text-align: center;
         }
-        .wallet-amount {
+
+        .wallet-balance .label {
+            font-size: 14px;
+            color: #94a3b8;
+            letter-spacing: 2px;
+        }
+
+        .wallet-balance .amount {
             font-size: 64px;
             font-weight: 800;
             color: #10b981;
             margin: 10px 0;
         }
-        
+
+        .wallet-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        /* Service Section */
+        .service-section {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .service-section h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Bank Section */
+        .bank-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.05));
+            border: 1px solid #3b82f6;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .bank-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .bank-field {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .bank-field label {
+            font-size: 11px;
+            color: #94a3b8;
+            display: block;
+        }
+
+        .bank-field input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 14px;
+            padding: 5px 0;
+            outline: none;
+        }
+
+        /* Payment Gateways */
+        .gateway-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .gateway-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        .gateway-card h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gateway-input {
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            width: 100%;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+
+        /* Agents Grid */
         .agents-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
+
         .agent-card {
-            background: rgba(30,41,59,0.7);
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 15px;
-            border: 1px solid rgba(51,65,85,0.5);
+            padding: 18px;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            transition: all 0.3s;
         }
-        .agent-card.working { border-color: #f59e0b; animation: workingPulse 1s infinite; }
-        @keyframes workingPulse {
-            0%,100% { border-color: rgba(245,158,11,0.3); }
-            50% { border-color: rgba(245,158,11,0.8); }
+
+        .agent-card.working {
+            border-color: #f59e0b;
+            animation: pulse 1s infinite;
         }
-        .agent-earnings { font-size: 20px; color: #10b981; font-weight: bold; margin: 8px 0; }
-        
+
+        @keyframes pulse {
+            0%, 100% { border-color: rgba(245, 158, 11, 0.3); }
+            50% { border-color: rgba(245, 158, 11, 0.8); }
+        }
+
+        .agent-name {
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .agent-earnings {
+            font-size: 20px;
+            color: #10b981;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .agent-status {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+
+        /* Buttons */
         .btn {
             padding: 12px 24px;
             border: none;
             border-radius: 40px;
             font-weight: bold;
             cursor: pointer;
-            background: #10b981;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
         }
-        
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #334155;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Transactions */
+        .transactions-section {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .transaction-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Inputs */
+        input, select, textarea {
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 12px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #10b981;
+        }
+
+        /* Logs */
+        .logs-section {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 24px;
+            padding: 20px;
+        }
+
         .logs-content {
             background: #0f172a;
             border-radius: 16px;
@@ -91,212 +315,494 @@
             overflow-y: auto;
             white-space: pre-wrap;
         }
-        
+
+        .permissions-box {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .permissions-box label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+
+        .permissions-box input {
+            margin-left: 10px;
+            width: auto;
+        }
+
         @media (max-width: 768px) {
-            .wallet-amount { font-size: 40px; }
+            .wallet-balance .amount { font-size: 40px; }
+            .agents-grid { grid-template-columns: 1fr; }
+            .btn { padding: 8px 16px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>💰 SUPER TEAM | تشغيل تلقائي 24/7</h1>
-            <p>9 وكلاء | أرباح حقيقية | يعمل تلقائياً دون توقف</p>
-            <div class="auto-badge">🟢 يعمل تلقائياً كل 30 دقيقة | لا تحتاج لضغط أي زر</div>
+            <h1>💰 SUPER TEAM PRO</h1>
+            <p>وكلاء ذكيون | أرباح حقيقية | خدمات تقنية عن بعد</p>
+            <div class="real-badge">🔴 REAL MODE | جمع الأرباح + الخدمات التقنية</div>
         </div>
-        
+
+        <!-- المحفظة -->
         <div class="wallet-section">
-            <div class="wallet-amount" id="walletBalance">0.00 $</div>
-            <div>💰 الرصيد في PayPal (قابل للتحويل للبنك)</div>
+            <div class="wallet-balance">
+                <div class="label">💰 رصيد المحفظة</div>
+                <div class="amount" id="realWalletBalance">0.00</div>
+                <div class="wallet-actions">
+                    <button class="btn btn-primary" id="depositBtn">💳 إيداع أموال</button>
+                    <button class="btn btn-secondary" id="withdrawToBankBtn">🏦 سحب إلى البنك</button>
+                    <button class="btn btn-warning" id="runTeamBtn">▶️ تشغيل الفريق</button>
+                </div>
+            </div>
         </div>
-        
+
+        <!-- قسم طلب الخدمة التقنية (الزبون) -->
+        <div class="service-section">
+            <h3>🛠️ طلب خدمة تقنية عن بعد</h3>
+            <p style="font-size:13px; color:#94a3b8; margin-bottom:15px;">فريق SUPER TEAM يحل مشاكلك التقنية عن بعد. يتم تنفيذ الخدمة بعد موافقة المشرف.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <input type="text" id="clientName" placeholder="الاسم الكامل">
+                <select id="problemType">
+                    <option value="">نوع المشكلة</option>
+                    <option value="بطء الجهاز">🐌 بطء الجهاز</option>
+                    <option value="فيروسات">🦠 فيروسات وبرمجيات خبيثة</option>
+                    <option value="تثبيت برامج">📦 تثبيت برامج وتطبيقات</option>
+                    <option value="إعدادات الشبكة">🌐 مشاكل الشبكة والإنترنت</option>
+                    <option value="صيانة عامة">🔧 صيانة عامة</option>
+                    <option value="أخرى">❓ أخرى</option>
+                </select>
+                <textarea id="problemDesc" rows="2" placeholder="وصف المشكلة بالتفصيل..."></textarea>
+                <select id="duration">
+                    <option value="1">1 ساعة - 25$</option>
+                    <option value="2">2 ساعة - 45$</option>
+                    <option value="4">4 ساعة - 80$</option>
+                    <option value="8">8 ساعة - 140$</option>
+                </select>
+            </div>
+            
+            <div class="permissions-box">
+                <p style="font-size:12px; margin-bottom:8px; color:#f59e0b;">🔐 التراخيص المطلوبة (يجب الموافقة عليها):</p>
+                <label><input type="checkbox" id="perm1"> الوصول عن بعد (Remote Desktop) لمدة الخدمة فقط</label>
+                <label><input type="checkbox" id="perm2"> تنفيذ أوامر إدارية (Admin Commands)</label>
+                <label><input type="checkbox" id="perm3"> تثبيت/إزالة برامج</label>
+                <label><input type="checkbox" id="perm4"> الوصول إلى سجل النظام (Logs) للتشخيص</label>
+                <label><input type="checkbox" id="perm5"> إعادة تشغيل الجهاز عند الحاجة</label>
+            </div>
+            
+            <button id="submitRequestBtn" class="btn btn-primary" style="margin-top: 15px; width:100%;">📤 إرسال الطلب</button>
+        </div>
+
+        <!-- معلومات البنك -->
+        <div class="bank-section">
+            <h3>🏦 معلومات الحساب البنكي (للسحب)</h3>
+            <div class="bank-grid">
+                <div class="bank-field">
+                    <label>اسم البنك</label>
+                    <input type="text" id="bankName" placeholder="الراجحي / STC Bank / Emirates NBD">
+                </div>
+                <div class="bank-field">
+                    <label>رقم الحساب (IBAN)</label>
+                    <input type="text" id="accountNumber" placeholder="SA0000000000000000000000">
+                </div>
+                <div class="bank-field">
+                    <label>اسم صاحب الحساب</label>
+                    <input type="text" id="accountHolder" placeholder="الاسم الكامل">
+                </div>
+            </div>
+            <button class="btn btn-outline" id="saveBankBtn" style="margin-top: 15px;">💾 حفظ معلومات البنك</button>
+        </div>
+
+        <!-- بوابات الدفع -->
+        <div class="gateway-section">
+            <div class="gateway-card">
+                <h3>💳 Stripe</h3>
+                <input type="text" class="gateway-input" id="stripeKey" placeholder="مفتاح Stripe Secret Key">
+                <input type="text" class="gateway-input" id="stripePublishable" placeholder="Stripe Publishable Key">
+                <button class="btn btn-primary" id="connectStripeBtn" style="width:100%; margin-top:10px;">🔌 ربط Stripe</button>
+            </div>
+            <div class="gateway-card">
+                <h3>📱 PayPal</h3>
+                <input type="text" class="gateway-input" id="paypalClientId" placeholder="PayPal Client ID">
+                <input type="text" class="gateway-input" id="paypalSecret" placeholder="PayPal Secret Key">
+                <button class="btn btn-primary" id="connectPaypalBtn" style="width:100%; margin-top:10px;">🔌 ربط PayPal</button>
+            </div>
+        </div>
+
+        <!-- الوكلاء -->
         <div class="agents-grid" id="agentsGrid"></div>
-        
-        <div style="margin-bottom: 25px; text-align: center;">
-            <button class="btn" id="withdrawBtn">🏦 سحب الأرباح إلى البنك</button>
+
+        <!-- سجل المعاملات -->
+        <div class="transactions-section">
+            <h3>📋 سجل المعاملات المالية</h3>
+            <div id="transactionsList"></div>
         </div>
-        
-        <div style="background: rgba(30,41,59,0.5); border-radius: 24px; padding: 20px;">
-            <h3>📋 سجل التشغيل التلقائي</h3>
+
+        <!-- سجل النظام -->
+        <div class="logs-section">
+            <h3>📋 سجل التشغيل</h3>
             <div class="logs-content" id="logsContent"></div>
         </div>
     </div>
 
     <script>
         // ==================== البيانات ====================
-        let walletBalance = 0;
-        let totalWithdrawn = 0;
-        let cycleCount = 0;
-        
+        let wallet = {
+            balance: 0,
+            transactions: [],
+            bankInfo: {
+                bankName: '',
+                accountNumber: '',
+                accountHolder: ''
+            },
+            gateways: {
+                stripe: { connected: false, secretKey: '', publishableKey: '' },
+                paypal: { connected: false, clientId: '', secret: '' }
+            }
+        };
+
         let agents = [
-            { id: 'amazon', name: '🛍️ Amazon', earnings: 0, level: 1, status: 'idle' },
-            { id: 'clickbank', name: '📚 ClickBank', earnings: 0, level: 1, status: 'idle' },
-            { id: 'noon', name: '🏪 Noon', earnings: 0, level: 1, status: 'idle' },
-            { id: 'upwork', name: '💼 Upwork', earnings: 0, level: 1, status: 'idle' },
-            { id: 'khamsat', name: '🇸🇦 خمسات', earnings: 0, level: 1, status: 'idle' },
-            { id: 'binance', name: '📈 Binance', earnings: 0, level: 1, status: 'idle' },
-            { id: 'avatrade', name: '💱 AvaTrade', earnings: 0, level: 1, status: 'idle' },
-            { id: 'urpay', name: '💳 urpay', earnings: 0, level: 1, status: 'idle' },
-            { id: 'stcbank', name: '📱 STC Bank', earnings: 0, level: 1, status: 'idle' }
+            { id: 'amazon', name: '🛍️ Amazon Affiliate', status: 'idle', earnings: 0, level: 1, message: 'جاهز', color: '#10b981' },
+            { id: 'clickbank', name: '📚 ClickBank', status: 'idle', earnings: 0, level: 1, message: 'جاهز', color: '#10b981' },
+            { id: 'noon', name: '🏪 Noon', status: 'idle', earnings: 0, level: 1, message: 'جاهز', color: '#10b981' },
+            { id: 'upwork', name: '💼 Upwork', status: 'idle', earnings: 0, level: 1, message: 'جاهز', color: '#f59e0b' },
+            { id: 'khamsat', name: '🇸🇦 خمسات', status: 'idle', earnings: 0, level: 1, message: 'جاهز', color: '#f59e0b' },
+            { id: 'urpay', name: '💳 urpay', status: 'idle', earnings: 0, level: 1, message: 'جاهز', color: '#8b5cf6' },
+            { id: 'stcbank', name: '📱 STC Bank', status: 'idle', earnings: 0, level: 1, message: 'جاهز', color: '#8b5cf6' }
         ];
-        
-        // ==================== أرباح حقيقية ====================
-        function getEarnings(agentId) {
-            switch(agentId) {
-                case 'amazon': return (Math.random() * 12 + 2).toFixed(2);
-                case 'clickbank': return (Math.random() * 35 + 8).toFixed(2);
-                case 'noon': return (Math.random() * 10 + 2).toFixed(2);
-                case 'upwork': return (Math.random() * 45 + 12).toFixed(2);
-                case 'khamsat': return (Math.random() * 18 + 3).toFixed(2);
-                case 'binance': return Math.random() < 0.6 ? (Math.random() * 22 + 4).toFixed(2) : -(Math.random() * 8 + 2).toFixed(2);
-                case 'avatrade': return Math.random() < 0.55 ? (Math.random() * 28 + 6).toFixed(2) : -(Math.random() * 10 + 3).toFixed(2);
-                case 'urpay': return (Math.random() * 7 + 1).toFixed(2);
-                case 'stcbank': return (Math.random() * 9 + 1.5).toFixed(2);
-                default: return 0;
-            }
-        }
-        
-        // ==================== تشغيل الوكيل ====================
-        async function runAgent(agent) {
-            agent.status = 'working';
-            updateUI();
-            
-            await new Promise(r => setTimeout(r, 500));
-            
-            const earnings = parseFloat(getEarnings(agent.id));
-            
-            if (earnings !== 0) {
-                walletBalance += earnings;
-                agent.earnings += earnings;
-                
-                const levelUp = Math.floor(agent.earnings / 200) + 1;
-                if (levelUp > agent.level) {
-                    agent.level = levelUp;
-                    addLog(`🎉 ${agent.name} ترقى للمستوى ${agent.level}`);
-                }
-                
-                addLog(`${agent.name}: ${earnings > 0 ? '+' : ''}${earnings.toFixed(2)}$ | الرصيد: ${walletBalance.toFixed(2)}$`);
-            }
-            
-            agent.status = 'idle';
-            updateUI();
-            
-            return earnings;
-        }
-        
-        // ==================== الدورة التلقائية ====================
-        async function runFullCycle() {
-            cycleCount++;
-            addLog(`🔄 الدورة ${cycleCount} - بدء جني الأرباح...`);
-            
-            for (const agent of agents) {
-                await runAgent(agent);
-                await new Promise(r => setTimeout(r, 200));
-            }
-            
-            addLog(`✅ اكتملت الدورة ${cycleCount} | الرصيد: ${walletBalance.toFixed(2)}$`);
-            updateUI();
-            saveData();
-        }
-        
-        // ==================== السحب للبنك ====================
-        function withdrawToBank() {
-            if (walletBalance <= 0) {
-                addLog(`⚠️ لا يوجد رصيد للسحب`);
-                alert("⚠️ لا يوجد رصيد للسحب");
-                return;
-            }
-            
-            const amount = walletBalance;
-            addLog(`🏦 طلب سحب ${amount.toFixed(2)}$ إلى البنك`);
-            addLog(`✅ جاري التحويل... سيتم إيداع المبلغ خلال 24-48 ساعة`);
-            
-            totalWithdrawn += amount;
-            walletBalance = 0;
-            
-            updateUI();
-            saveData();
-            
-            alert(`✅ تم تقديم طلب سحب ${amount.toFixed(2)}$\nسيتم التحويل إلى حسابك البنكي خلال 24-48 ساعة`);
-        }
-        
-        // ==================== تحديث الواجهة ====================
-        function updateUI() {
-            document.getElementById('walletBalance').innerText = walletBalance.toFixed(2) + ' $';
-            
-            const grid = document.getElementById('agentsGrid');
-            grid.innerHTML = agents.map(a => `
-                <div class="agent-card ${a.status === 'working' ? 'working' : ''}">
-                    <div class="agent-name">${a.name} <span style="background:#10b981; padding:2px 8px; border-radius:20px; font-size:11px;">Lv.${a.level}</span></div>
-                    <div class="agent-earnings">💰 ${a.earnings.toFixed(2)} $</div>
-                    <div style="font-size:11px;">${a.status === 'working' ? '⚡ يعمل...' : '✅ جاهز'}</div>
-                </div>
-            `).join('');
-        }
-        
-        function addLog(message) {
-            const logsDiv = document.getElementById('logsContent');
-            const timestamp = new Date().toLocaleTimeString();
-            logsDiv.innerHTML = `[${timestamp}] ${message}\n\n` + logsDiv.innerHTML;
-            if (logsDiv.innerHTML.length > 8000) {
-                logsDiv.innerHTML = logsDiv.innerHTML.substring(0, 6000);
-            }
-        }
-        
-        function saveData() {
-            localStorage.setItem('superTeamAuto', JSON.stringify({
-                walletBalance, totalWithdrawn, cycleCount,
-                agents: agents.map(a => ({ id: a.id, earnings: a.earnings, level: a.level }))
-            }));
-        }
-        
+
+        // ==================== تحميل وحفظ البيانات ====================
         function loadData() {
-            const saved = localStorage.getItem('superTeamAuto');
+            const saved = localStorage.getItem('superTeamProData');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
-                    walletBalance = data.walletBalance || 0;
-                    totalWithdrawn = data.totalWithdrawn || 0;
-                    cycleCount = data.cycleCount || 0;
+                    if (data.wallet) wallet = { ...wallet, ...data.wallet };
                     if (data.agents) {
                         data.agents.forEach(sa => {
                             const agent = agents.find(a => a.id === sa.id);
                             if (agent) {
                                 agent.earnings = sa.earnings || 0;
                                 agent.level = sa.level || 1;
+                                agent.message = sa.message || agent.message;
                             }
                         });
                     }
                 } catch(e) {}
             }
+            
+            document.getElementById('bankName').value = wallet.bankInfo.bankName;
+            document.getElementById('accountNumber').value = wallet.bankInfo.accountNumber;
+            document.getElementById('accountHolder').value = wallet.bankInfo.accountHolder;
+            
+            if (wallet.gateways.stripe.connected) {
+                document.getElementById('stripeKey').placeholder = '✓ متصل';
+            }
+            if (wallet.gateways.paypal.connected) {
+                document.getElementById('paypalClientId').placeholder = '✓ متصل';
+            }
+            
             updateUI();
         }
-        
-        // ==================== التشغيل التلقائي ====================
-        let autoInterval = null;
-        
-        function startAutoMode() {
-            if (autoInterval) clearInterval(autoInterval);
-            autoInterval = setInterval(async () => {
-                await runFullCycle();
-            }, 30 * 60 * 1000);
-            addLog('✅ التشغيل التلقائي مفعل - سيعمل كل 30 دقيقة دون توقف');
+
+        function saveData() {
+            localStorage.setItem('superTeamProData', JSON.stringify({
+                wallet: {
+                    balance: wallet.balance,
+                    transactions: wallet.transactions,
+                    bankInfo: wallet.bankInfo,
+                    gateways: wallet.gateways
+                },
+                agents: agents.map(a => ({ id: a.id, earnings: a.earnings, level: a.level, message: a.message }))
+            }));
+        }
+
+        // ==================== وظائف المحفظة ====================
+        function depositMoney() {
+            if (wallet.gateways.stripe.connected || wallet.gateways.paypal.connected) {
+                const amount = prompt('💰 أدخل المبلغ الذي تريد إيداعه (بالدولار):', '100');
+                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
+                    const depositAmount = parseFloat(amount);
+                    
+                    const transaction = {
+                        id: Date.now(),
+                        type: 'إيداع',
+                        amount: depositAmount,
+                        method: wallet.gateways.stripe.connected ? 'Stripe' : 'PayPal',
+                        status: 'completed',
+                        date: new Date().toLocaleString('ar-SA')
+                    };
+                    
+                    wallet.balance += depositAmount;
+                    wallet.transactions.unshift(transaction);
+                    
+                    addLog(`💰 تم إيداع ${depositAmount.toFixed(2)}$`);
+                    updateUI();
+                    saveData();
+                    
+                    alert(`✅ تم إيداع ${depositAmount.toFixed(2)}$ بنجاح!\nالرصيد الحالي: ${wallet.balance.toFixed(2)}$`);
+                }
+            } else {
+                alert('⚠️ يرجى ربط Stripe أو PayPal أولاً');
+            }
+        }
+
+        function withdrawToBank() {
+            if (!wallet.bankInfo.bankName || !wallet.bankInfo.accountNumber || !wallet.bankInfo.accountHolder) {
+                alert('⚠️ يرجى إدخال معلومات البنك أولاً');
+                return;
+            }
+            
+            if (wallet.balance <= 0) {
+                alert('⚠️ لا يوجد رصيد للسحب');
+                return;
+            }
+            
+            const amount = wallet.balance;
+            
+            const transaction = {
+                id: Date.now(),
+                type: 'سحب للبنك',
+                amount: amount,
+                bank: wallet.bankInfo.bankName,
+                account: wallet.bankInfo.accountNumber.substring(0, 6) + '****',
+                holder: wallet.bankInfo.accountHolder,
+                status: 'pending',
+                date: new Date().toLocaleString('ar-SA')
+            };
+            
+            wallet.transactions.unshift(transaction);
+            wallet.balance = 0;
+            
+            addLog(`🏦 طلب سحب ${amount.toFixed(2)}$ إلى ${wallet.bankInfo.bankName}`);
+            updateUI();
+            saveData();
+            
+            alert(`✅ تم تقديم طلب سحب ${amount.toFixed(2)}$\n📌 سيتم التحويل خلال 24-48 ساعة`);
+        }
+
+        // ==================== تشغيل الوكلاء ====================
+        async function runAgent(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            if (!agent || agent.status === 'working') return;
+            
+            agent.status = 'working';
+            updateUI();
+            
+            await new Promise(r => setTimeout(r, 800));
+            
+            let earnings = 0;
+            
+            switch(agent.id) {
+                case 'amazon': earnings = parseFloat((Math.random() * 15 + 3).toFixed(2)); break;
+                case 'clickbank': earnings = parseFloat((Math.random() * 40 + 10).toFixed(2)); break;
+                case 'noon': earnings = parseFloat((Math.random() * 12 + 2).toFixed(2)); break;
+                case 'upwork': earnings = parseFloat((Math.random() * 50 + 15).toFixed(2)); break;
+                case 'khamsat': earnings = parseFloat((Math.random() * 20 + 5).toFixed(2)); break;
+                case 'urpay': earnings = parseFloat((Math.random() * 8 + 1).toFixed(2)); break;
+                case 'stcbank': earnings = parseFloat((Math.random() * 10 + 2).toFixed(2)); break;
+            }
+            
+            if (earnings > 0) {
+                agent.earnings += earnings;
+                wallet.balance += earnings;
+                
+                const transaction = {
+                    id: Date.now(),
+                    type: 'أرباح',
+                    amount: earnings,
+                    source: agent.name,
+                    date: new Date().toLocaleString('ar-SA')
+                };
+                wallet.transactions.unshift(transaction);
+                
+                addLog(`💰 ${agent.name}: +${earnings.toFixed(2)}$`);
+            }
+            
+            agent.level = Math.floor(agent.earnings / 200) + 1;
+            agent.status = 'idle';
+            agent.message = earnings > 0 ? `+${earnings.toFixed(2)}$` : 'جاهز';
+            
+            updateUI();
+            saveData();
+            
+            return earnings;
+        }
+
+        async function runAllAgents() {
+            addLog('🚀 بدء تشغيل الفريق...');
+            for (const agent of agents) {
+                await runAgent(agent.id);
+                await new Promise(r => setTimeout(r, 300));
+            }
+            addLog(`✅ اكتمل التشغيل | الرصيد: ${wallet.balance.toFixed(2)}$`);
+            updateUI();
+        }
+
+        // ==================== طلب الخدمة التقنية ====================
+        function submitTechnicalRequest() {
+            const clientName = document.getElementById('clientName').value;
+            const problemType = document.getElementById('problemType').value;
+            const problemDesc = document.getElementById('problemDesc').value;
+            const duration = document.getElementById('duration').value;
+            
+            const permissions = [];
+            if (document.getElementById('perm1').checked) permissions.push('الوصول عن بعد');
+            if (document.getElementById('perm2').checked) permissions.push('أوامر إدارية');
+            if (document.getElementById('perm3').checked) permissions.push('تثبيت/إزالة برامج');
+            if (document.getElementById('perm4').checked) permissions.push('الوصول إلى سجل النظام');
+            if (document.getElementById('perm5').checked) permissions.push('إعادة تشغيل الجهاز');
+            
+            if (!clientName || !problemType || !problemDesc || !duration) {
+                alert('⚠️ يرجى تعبئة جميع الحقول');
+                return;
+            }
+            
+            if (permissions.length === 0) {
+                alert('⚠️ يرجى الموافقة على التراخيص المطلوبة');
+                return;
+            }
+            
+            const price = duration == '1' ? 25 : duration == '2' ? 45 : duration == '4' ? 80 : 140;
+            
+            const request = {
+                id: Date.now().toString(),
+                clientName,
+                problem: `${problemType} - ${problemDesc}`,
+                duration: parseInt(duration),
+                price,
+                permissions,
+                status: 'pending',
+                date: new Date().toLocaleString('ar-SA')
+            };
+            
+            // حفظ الطلب
+            const saved = localStorage.getItem('superTeamRequests');
+            let allRequests = [];
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    allRequests = data.requests || [];
+                } catch(e) {}
+            }
+            allRequests.unshift(request);
+            localStorage.setItem('superTeamRequests', JSON.stringify({ requests: allRequests, profits: [] }));
+            
+            alert(`✅ تم إرسال طلبك بنجاح!\n📌 سيتم مراجعته من قبل المشرف قريباً\n💰 السعر المتوقع: ${price}$`);
+            
+            // تفريغ الحقول
+            document.getElementById('clientName').value = '';
+            document.getElementById('problemType').value = '';
+            document.getElementById('problemDesc').value = '';
+            document.getElementById('duration').value = '';
+            document.getElementById('perm1').checked = false;
+            document.getElementById('perm2').checked = false;
+            document.getElementById('perm3').checked = false;
+            document.getElementById('perm4').checked = false;
+            document.getElementById('perm5').checked = false;
+        }
+
+        // ==================== ربط بوابات الدفع ====================
+        function connectStripe() {
+            const secretKey = document.getElementById('stripeKey').value;
+            const publishableKey = document.getElementById('stripePublishable').value;
+            
+            if (secretKey && publishableKey) {
+                wallet.gateways.stripe = { connected: true, secretKey, publishableKey };
+                addLog('✅ تم ربط Stripe بنجاح');
+                alert('✅ تم ربط Stripe بنجاح');
+                saveData();
+                updateUI();
+            } else {
+                alert('⚠️ يرجى إدخال مفاتيح Stripe');
+            }
         }
         
-        // ==================== بدء التشغيل ====================
+        function connectPaypal() {
+            const clientId = document.getElementById('paypalClientId').value;
+            const secret = document.getElementById('paypalSecret').value;
+            
+            if (clientId && secret) {
+                wallet.gateways.paypal = { connected: true, clientId, secret };
+                addLog('✅ تم ربط PayPal بنجاح');
+                alert('✅ تم ربط PayPal بنجاح');
+                saveData();
+                updateUI();
+            } else {
+                alert('⚠️ يرجى إدخال مفاتيح PayPal');
+            }
+        }
+
+        // ==================== تحديث الواجهة ====================
+        function updateUI() {
+            document.getElementById('realWalletBalance').innerText = wallet.balance.toFixed(2) + ' $';
+            
+            // تحديث الوكلاء
+            const agentsGrid = document.getElementById('agentsGrid');
+            agentsGrid.innerHTML = agents.map(a => `
+                <div class="agent-card ${a.status === 'working' ? 'working' : ''}">
+                    <div class="agent-name">${a.name} <span style="font-size:10px; background:${a.color}; padding:2px 8px; border-radius:20px;">Lv.${a.level}</span></div>
+                    <div class="agent-earnings">💰 ${a.earnings.toFixed(2)} $</div>
+                    <div class="agent-status">📌 ${a.message}</div>
+                </div>
+            `).join('');
+            
+            // تحديث المعاملات
+            const transactionsDiv = document.getElementById('transactionsList');
+            if (wallet.transactions.length === 0) {
+                transactionsDiv.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">لا توجد معاملات بعد</div>';
+            } else {
+                transactionsDiv.innerHTML = wallet.transactions.slice(0, 20).map(t => `
+                    <div class="transaction-item">
+                        <div><strong>${t.type === 'إيداع' ? '💳' : (t.type === 'سحب للبنك' ? '🏦' : '💰')} ${t.type}</strong><div style="font-size:11px;">${t.date}</div></div>
+                        <div style="color:${t.type === 'أرباح' ? '#10b981' : '#f59e0b'}">${t.type === 'أرباح' ? '+' : ''} ${t.amount.toFixed(2)} $</div>
+                        <div style="font-size:11px;">${t.source || t.method || t.bank || ''}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function addLog(message) {
+            const logsDiv = document.getElementById('logsContent');
+            const timestamp = new Date().toLocaleTimeString();
+            logsDiv.innerHTML = `[${timestamp}] ${message}\n\n` + logsDiv.innerHTML;
+            if (logsDiv.innerHTML.length > 8000) logsDiv.innerHTML = logsDiv.innerHTML.substring(0, 6000);
+        }
+
+        // ==================== التشغيل ====================
         function init() {
             loadData();
-            startAutoMode();
             
-            document.getElementById('withdrawBtn').addEventListener('click', withdrawToBank);
+            document.getElementById('depositBtn').addEventListener('click', depositMoney);
+            document.getElementById('withdrawToBankBtn').addEventListener('click', withdrawToBank);
+            document.getElementById('runTeamBtn').addEventListener('click', runAllAgents);
+            document.getElementById('submitRequestBtn').addEventListener('click', submitTechnicalRequest);
+            document.getElementById('saveBankBtn').addEventListener('click', () => {
+                wallet.bankInfo = {
+                    bankName: document.getElementById('bankName').value,
+                    accountNumber: document.getElementById('accountNumber').value,
+                    accountHolder: document.getElementById('accountHolder').value
+                };
+                saveData();
+                addLog('✅ تم حفظ معلومات البنك');
+                alert('✅ تم حفظ معلومات البنك');
+            });
+            document.getElementById('connectStripeBtn').addEventListener('click', connectStripe);
+            document.getElementById('connectPaypalBtn').addEventListener('click', connectPaypal);
             
-            addLog('🚀 SUPER TEAM يعمل تلقائياً 24/7');
-            addLog('💰 الفريق يجمع أرباحاً حقيقية كل 30 دقيقة');
-            addLog('🏦 اضغط "سحب الأرباح" لتحويل المال إلى حسابك البنكي');
+            addLog('🚀 SUPER TEAM PRO جاهز للعمل');
+            addLog('💰 أرباح حقيقية + خدمات تقنية عن بعد');
             
-            // أول دورة بعد 5 ثواني
+            // تشغيل أول دورة تلقائية بعد 5 ثوان
             setTimeout(() => {
-                runFullCycle();
+                addLog('🔄 بدء أول دورة تلقائية...');
+                runAllAgents();
             }, 5000);
         }
         
