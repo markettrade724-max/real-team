@@ -23,7 +23,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             text-align: center;
             color: white;
@@ -50,7 +49,6 @@
             font-size: 0.9rem;
         }
 
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -65,6 +63,7 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             transition: transform 0.3s;
+            cursor: pointer;
         }
 
         .stat-card:hover {
@@ -88,7 +87,6 @@
             color: #999;
         }
 
-        /* Agents Grid */
         .agents-section {
             background: white;
             border-radius: 20px;
@@ -154,7 +152,6 @@
             color: #856404;
         }
 
-        /* Earnings Table */
         .earnings-section {
             background: white;
             border-radius: 20px;
@@ -167,6 +164,45 @@
             margin-bottom: 20px;
             border-right: 4px solid #667eea;
             padding-right: 15px;
+        }
+
+        .add-earnings {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .add-earnings h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: inline-block;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-group input, .form-group select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
         }
 
         .table-container {
@@ -213,14 +249,6 @@
             color: #666;
         }
 
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
         .refresh-btn {
             background: #667eea;
             color: white;
@@ -232,16 +260,13 @@
             font-size: 0.9rem;
         }
 
-        .refresh-btn:hover {
-            background: #5a67d8;
-        }
-
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 1.8rem;
             }
-            .stat-card .value {
-                font-size: 1.8rem;
+            .form-group {
+                display: block;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -280,7 +305,24 @@
         </div>
 
         <div class="earnings-section">
-            <button class="refresh-btn" onclick="loadData()">🔄 تحديث البيانات</button>
+            <div class="add-earnings">
+                <h3>➕ إضافة ربح جديد (للمشرف العام)</h3>
+                <div class="form-group">
+                    <input type="text" id="platform" placeholder="المنصة" value="urpay">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="amount" placeholder="المبلغ" value="50">
+                </div>
+                <div class="form-group">
+                    <select id="status">
+                        <option value="pending">قيد الانتظار</option>
+                        <option value="completed">مكتمل</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="addEarning()">➕ إضافة ربح</button>
+                <button class="btn" onclick="loadData()" style="background:#28a745;">🔄 تحديث</button>
+            </div>
+            
             <h2>📋 سجل الأرباح</h2>
             <div class="table-container">
                 <table id="earningsTable">
@@ -296,6 +338,13 @@
     </div>
 
     <script>
+        // بيانات تجريبية محلية (لحين ربط API)
+        let localEarnings = [
+            { id: 1, platform: "urpay", amount: 150, source: "cashback", status: "completed", date: new Date().toISOString() },
+            { id: 2, platform: "Amazon", amount: 75, source: "commission", status: "completed", date: new Date(Date.now() - 86400000).toISOString() },
+            { id: 3, platform: "Upwork", amount: 200, source: "freelance", status: "pending", date: new Date().toISOString() }
+        ];
+
         // قائمة الوكلاء
         const agents = [
             { name: "المدير التنفيذي", role: "إدارة الفريق واتخاذ القرارات", status: "active" },
@@ -323,33 +372,6 @@
             `).join('');
         }
 
-        // جلب البيانات من API
-        async function loadData() {
-            try {
-                // جلب الأرباح
-                const earningsRes = await fetch('/api/earnings');
-                const earningsData = await earningsRes.json();
-                
-                if (earningsData.success) {
-                    displayEarnings(earningsData.data);
-                    updateStats(earningsData.data);
-                } else {
-                    showError('فشل في تحميل الأرباح');
-                }
-                
-                // جلب الإجمالي
-                const totalRes = await fetch('/api/earnings/total');
-                const totalData = await totalRes.json();
-                if (totalData.success) {
-                    document.getElementById('totalEarnings').innerText = totalData.total.toFixed(2);
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                showError('لا يمكن الاتصال بالسيرفر. تأكد من تشغيل السيرفر.');
-            }
-        }
-
         // عرض الأرباح في الجدول
         function displayEarnings(earnings) {
             const tbody = document.getElementById('earningsBody');
@@ -363,7 +385,7 @@
                 <tr>
                     <td>${item.platform || '-'}</td>
                     <td><strong>${parseFloat(item.amount).toFixed(2)}</strong> درهم</td>
-                    <td>${item.source || '-'}</td>
+                    <td>${item.source || 'manual'}</td>
                     <td><span class="status-badge status-${item.status}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
                     <td>${new Date(item.date).toLocaleString('ar-MA')}</td>
                 </tr>
@@ -382,10 +404,41 @@
             document.getElementById('pendingCount').innerText = pending;
         }
 
-        // عرض خطأ
-        function showError(message) {
-            const tbody = document.getElementById('earningsBody');
-            tbody.innerHTML = `<tr><td colspan="5" class="error">⚠️ ${message}</td></tr>`;
+        // إضافة ربح جديد
+        function addEarning() {
+            const platform = document.getElementById('platform').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const status = document.getElementById('status').value;
+            
+            if (!amount || amount <= 0) {
+                alert('الرجاء إدخال مبلغ صحيح');
+                return;
+            }
+            
+            const newEarning = {
+                id: Date.now(),
+                platform: platform,
+                amount: amount,
+                source: 'manual',
+                status: status,
+                date: new Date().toISOString()
+            };
+            
+            localEarnings.unshift(newEarning);
+            displayEarnings(localEarnings);
+            updateStats(localEarnings);
+            
+            // مسح الحقول
+            document.getElementById('amount').value = '';
+            
+            // رسالة نجاح
+            alert(`✅ تم إضافة ربح بقيمة ${amount} درهم من ${platform}`);
+        }
+
+        // جلب البيانات (محلياً)
+        async function loadData() {
+            displayEarnings(localEarnings);
+            updateStats(localEarnings);
         }
 
         // تحميل البيانات عند فتح الصفحة
