@@ -1,4 +1,49 @@
+# الاعتماديات
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ملفات البيئة
 .env
+.env.local
+.env.*.local
+
+# ملفات النظام
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ملفات التحرير
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ملفات السجلات
+logs/
 *.log
+log.txt
+
+# ملفات البناء
+dist/
+build/
+out/
+
+# ملفات مؤقتة
+.cache/
+.temp/
+.tmp/
+
+# ملفات GitHub Actions محلياً
+.github/workflows/*.local
+
+# ملفات المستخدم
+*.pem
+*.key
+*.cert
