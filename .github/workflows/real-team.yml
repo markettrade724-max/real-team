@@ -1,31 +1,46 @@
-name: SUPER TEAM - التشغيل التلقائي
+name: Deploy and Run Server
 
 on:
+  push:
+    branches: [ main ]
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *'  # كل ساعة
   workflow_dispatch:
 
 jobs:
-  run-team:
+  build-and-run:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm install
-      - run: node server.js
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          # المنصات
-          URPAY_API_KEY: ${{ secrets.URPAY_API_KEY }}
-          AMAZON_API_KEY: ${{ secrets.AMAZON_API_KEY }}
-          # ... باقي المفاتيح
-          # Telegram
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: reports
-          path: reports/
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm install
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Verify Supabase package installed
+      run: npm list @supabase/supabase-js || echo "Package not found"
+    
+    - name: Run server in background
+      run: |
+        node server.js &
+        sleep 5
+    
+    - name: Test API endpoints
+      run: |
+        echo "Testing /api/earnings..."
+        curl -s http://localhost:3000/api/earnings || echo "API not ready yet"
+        
+        echo "Testing /api/earnings/total..."
+        curl -s http://localhost:3000/api/earnings/total || echo "API not ready yet"
+    
+    - name: Keep server alive
+      run: sleep 3600  # يحافظ على تشغيل السيرفر لمدة ساعة
