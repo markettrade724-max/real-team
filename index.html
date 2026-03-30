@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فريق AI Agents - نظام الأرباح الذكي</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -63,7 +64,6 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             transition: transform 0.3s;
-            cursor: pointer;
         }
 
         .stat-card:hover {
@@ -80,11 +80,6 @@
             font-size: 2.5rem;
             font-weight: bold;
             color: #667eea;
-        }
-
-        .stat-card .currency {
-            font-size: 1rem;
-            color: #999;
         }
 
         .agents-section {
@@ -113,12 +108,6 @@
             border-radius: 15px;
             padding: 20px;
             border: 1px solid #e0e0e0;
-            transition: all 0.3s;
-        }
-
-        .agent-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 15px rgba(102,126,234,0.2);
         }
 
         .agent-name {
@@ -131,7 +120,6 @@
         .agent-role {
             color: #667eea;
             font-size: 0.85rem;
-            margin-bottom: 10px;
         }
 
         .agent-status {
@@ -140,16 +128,8 @@
             border-radius: 15px;
             font-size: 0.75rem;
             margin-top: 10px;
-        }
-
-        .status-active {
             background: #d4edda;
             color: #155724;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
         }
 
         .earnings-section {
@@ -159,23 +139,11 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        .earnings-section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            border-right: 4px solid #667eea;
-            padding-right: 15px;
-        }
-
         .add-earnings {
             background: #f0f4ff;
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
-        }
-
-        .add-earnings h3 {
-            color: #667eea;
-            margin-bottom: 15px;
         }
 
         .form-group {
@@ -188,7 +156,6 @@
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 0.9rem;
         }
 
         .btn {
@@ -198,15 +165,10 @@
             padding: 8px 20px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
         }
 
         .btn:hover {
             background: #5a67d8;
-        }
-
-        .table-container {
-            overflow-x: auto;
         }
 
         table {
@@ -222,25 +184,20 @@
 
         th {
             background: #f8f9fa;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.75rem;
         }
 
         .status-completed {
             background: #d4edda;
             color: #155724;
+            padding: 3px 10px;
+            border-radius: 15px;
         }
 
         .status-pending {
             background: #fff3cd;
             color: #856404;
+            padding: 3px 10px;
+            border-radius: 15px;
         }
 
         .loading {
@@ -249,21 +206,13 @@
             color: #666;
         }
 
-        .refresh-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
+        .error {
+            color: red;
+            text-align: center;
+            padding: 20px;
         }
 
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
             .form-group {
                 display: block;
                 margin-bottom: 10px;
@@ -275,11 +224,11 @@
     <div class="container">
         <div class="header">
             <h1>🤖 فريق AI Agents</h1>
-            <p>9 وكلاء اصطناعيين يعملون بشكل تلقائي لجني الأرباح</p>
-            <div class="badge">🟢 النظام يعمل 24/7</div>
+            <p>9 وكلاء اصطناعيين يعملون بشكل تلقائي</p>
+            <div class="badge" id="connectionStatus">🔄 جاري الاتصال بقاعدة البيانات...</div>
         </div>
 
-        <div class="stats-grid" id="statsGrid">
+        <div class="stats-grid">
             <div class="stat-card">
                 <h3>💰 إجمالي الأرباح</h3>
                 <div class="value" id="totalEarnings">0</div>
@@ -290,7 +239,7 @@
                 <div class="value" id="transactionCount">0</div>
             </div>
             <div class="stat-card">
-                <h3>✅ العمليات المكتملة</h3>
+                <h3>✅ المكتملة</h3>
                 <div class="value" id="completedCount">0</div>
             </div>
             <div class="stat-card">
@@ -311,7 +260,10 @@
                     <input type="text" id="platform" placeholder="المنصة" value="urpay">
                 </div>
                 <div class="form-group">
-                    <input type="number" id="amount" placeholder="المبلغ" value="50">
+                    <input type="number" id="amount" placeholder="المبلغ" step="0.01">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="source" placeholder="المصدر" value="cashback">
                 </div>
                 <div class="form-group">
                     <select id="status">
@@ -319,18 +271,18 @@
                         <option value="completed">مكتمل</option>
                     </select>
                 </div>
-                <button class="btn" onclick="addEarning()">➕ إضافة ربح</button>
-                <button class="btn" onclick="loadData()" style="background:#28a745;">🔄 تحديث</button>
+                <button class="btn" onclick="addEarning()">➕ إضافة</button>
+                <button class="btn" onclick="loadEarnings()" style="background:#28a745;">🔄 تحديث</button>
             </div>
             
-            <h2>📋 سجل الأرباح</h2>
+            <h2>📋 سجل الأرباح الحقيقي</h2>
             <div class="table-container">
-                <table id="earningsTable">
+                <table>
                     <thead>
-                        <tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr>
+                        <tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th>th
                     </thead>
-                    <tbody id="earningsBody">
-                        <tr><td colspan="5" class="loading">جاري التحميل...</td></tr>
+                    <tbody id="earningsTable">
+                        <tr><td colspan="5" class="loading">جاري تحميل البيانات من Supabase...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -338,43 +290,51 @@
     </div>
 
     <script>
-        // بيانات تجريبية محلية (لحين ربط API)
-        let localEarnings = [
-            { id: 1, platform: "urpay", amount: 150, source: "cashback", status: "completed", date: new Date().toISOString() },
-            { id: 2, platform: "Amazon", amount: 75, source: "commission", status: "completed", date: new Date(Date.now() - 86400000).toISOString() },
-            { id: 3, platform: "Upwork", amount: 200, source: "freelance", status: "pending", date: new Date().toISOString() }
-        ];
-
-        // قائمة الوكلاء
-        const agents = [
-            { name: "المدير التنفيذي", role: "إدارة الفريق واتخاذ القرارات", status: "active" },
-            { name: "محلل البيانات", role: "تحليل الأداء وتقديم التقارير", status: "active" },
-            { name: "مدير المنصات", role: "إدارة حسابات المنصات", status: "active" },
-            { name: "مدير الخدمات", role: "تنفيذ الخدمات التقنية", status: "active" },
-            { name: "المسوق الرقمي", role: "التسويق وجلب العملاء", status: "active" },
-            { name: "مدير المحتوى", role: "إنشاء المحتوى للتسويق", status: "active" },
-            { name: "المحاسب", role: "تتبع الأرباح والمصروفات", status: "active" },
-            { name: "مطور الويب", role: "تطوير وصيانة الواجهات", status: "active" },
-            { name: "مطور الألعاب", role: "تطوير الألعاب (قريباً)", status: "pending" }
-        ];
-
-        // عرض الوكلاء
-        function displayAgents() {
-            const container = document.getElementById('agentsGrid');
-            container.innerHTML = agents.map(agent => `
-                <div class="agent-card">
-                    <div class="agent-name">${agent.name}</div>
-                    <div class="agent-role">${agent.role}</div>
-                    <span class="agent-status ${agent.status === 'active' ? 'status-active' : 'status-pending'}">
-                        ${agent.status === 'active' ? '🟢 يعمل' : '⏳ قيد الإعداد'}
-                    </span>
-                </div>
-            `).join('');
+        // تكوين Supabase (استخدم بياناتك الحقيقية)
+        const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';  // 👈 غير هذا
+        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';              // 👈 غير هذا
+        
+        let supabase = null;
+        
+        // تهيئة Supabase
+        function initSupabase() {
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                document.getElementById('connectionStatus').innerHTML = '✅ متصل بقاعدة البيانات';
+                document.getElementById('connectionStatus').style.background = 'rgba(40,167,69,0.3)';
+                return true;
+            } catch (e) {
+                document.getElementById('connectionStatus').innerHTML = '❌ فشل الاتصال بقاعدة البيانات';
+                console.error(e);
+                return false;
+            }
         }
-
+        
+        // جلب الأرباح من Supabase
+        async function loadEarnings() {
+            if (!supabase) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('earnings')
+                    .select('*')
+                    .order('date', { ascending: false });
+                
+                if (error) throw error;
+                
+                displayEarnings(data);
+                updateStats(data);
+                
+            } catch (error) {
+                console.error('Error loading earnings:', error);
+                document.getElementById('earningsTable').innerHTML = 
+                    '<tr><td colspan="5" class="error">❌ خطأ في تحميل البيانات: ' + error.message + '</td></tr>';
+            }
+        }
+        
         // عرض الأرباح في الجدول
         function displayEarnings(earnings) {
-            const tbody = document.getElementById('earningsBody');
+            const tbody = document.getElementById('earningsTable');
             
             if (!earnings || earnings.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="loading">لا توجد أرباح مسجلة بعد</td></tr>';
@@ -385,13 +345,13 @@
                 <tr>
                     <td>${item.platform || '-'}</td>
                     <td><strong>${parseFloat(item.amount).toFixed(2)}</strong> درهم</td>
-                    <td>${item.source || 'manual'}</td>
-                    <td><span class="status-badge status-${item.status}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
+                    <td>${item.source || '-'}</td>
+                    <td><span class="status-${item.status}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
                     <td>${new Date(item.date).toLocaleString('ar-MA')}</td>
                 </tr>
             `).join('');
         }
-
+        
         // تحديث الإحصائيات
         function updateStats(earnings) {
             const total = earnings.reduce((sum, item) => sum + parseFloat(item.amount), 0);
@@ -403,11 +363,17 @@
             document.getElementById('completedCount').innerText = completed;
             document.getElementById('pendingCount').innerText = pending;
         }
-
+        
         // إضافة ربح جديد
-        function addEarning() {
+        async function addEarning() {
+            if (!supabase) {
+                alert('قاعدة البيانات غير متصلة');
+                return;
+            }
+            
             const platform = document.getElementById('platform').value;
             const amount = parseFloat(document.getElementById('amount').value);
+            const source = document.getElementById('source').value;
             const status = document.getElementById('status').value;
             
             if (!amount || amount <= 0) {
@@ -415,38 +381,61 @@
                 return;
             }
             
-            const newEarning = {
-                id: Date.now(),
-                platform: platform,
-                amount: amount,
-                source: 'manual',
-                status: status,
-                date: new Date().toISOString()
-            };
-            
-            localEarnings.unshift(newEarning);
-            displayEarnings(localEarnings);
-            updateStats(localEarnings);
-            
-            // مسح الحقول
-            document.getElementById('amount').value = '';
-            
-            // رسالة نجاح
-            alert(`✅ تم إضافة ربح بقيمة ${amount} درهم من ${platform}`);
+            try {
+                const { data, error } = await supabase
+                    .from('earnings')
+                    .insert([{
+                        platform: platform,
+                        amount: amount,
+                        source: source,
+                        status: status,
+                        type: 'income',
+                        date: new Date().toISOString()
+                    }])
+                    .select();
+                
+                if (error) throw error;
+                
+                alert(`✅ تم إضافة ربح بقيمة ${amount} درهم`);
+                document.getElementById('amount').value = '';
+                loadEarnings();
+                
+            } catch (error) {
+                alert('❌ خطأ: ' + error.message);
+            }
         }
-
-        // جلب البيانات (محلياً)
-        async function loadData() {
-            displayEarnings(localEarnings);
-            updateStats(localEarnings);
+        
+        // عرض الوكلاء
+        const agents = [
+            { name: "المدير التنفيذي", role: "إدارة الفريق واتخاذ القرارات" },
+            { name: "محلل البيانات", role: "تحليل الأداء وتقديم التقارير" },
+            { name: "مدير المنصات", role: "إدارة حسابات المنصات" },
+            { name: "مدير الخدمات", role: "تنفيذ الخدمات التقنية" },
+            { name: "المسوق الرقمي", role: "التسويق وجلب العملاء" },
+            { name: "مدير المحتوى", role: "إنشاء المحتوى للتسويق" },
+            { name: "المحاسب", role: "تتبع الأرباح والمصروفات" },
+            { name: "مطور الويب", role: "تطوير وصيانة الواجهات" },
+            { name: "مطور الألعاب", role: "تطوير الألعاب (قريباً)" }
+        ];
+        
+        function displayAgents() {
+            const container = document.getElementById('agentsGrid');
+            container.innerHTML = agents.map(agent => `
+                <div class="agent-card">
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-role">${agent.role}</div>
+                    <div class="agent-status">🟢 يعمل</div>
+                </div>
+            `).join('');
         }
-
-        // تحميل البيانات عند فتح الصفحة
+        
+        // تهيئة الصفحة
         displayAgents();
-        loadData();
+        initSupabase();
+        loadEarnings();
         
         // تحديث تلقائي كل 30 ثانية
-        setInterval(loadData, 30000);
+        setInterval(loadEarnings, 30000);
     </script>
 </body>
 </html>
