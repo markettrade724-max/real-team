@@ -2,8 +2,8 @@ name: Run Server
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main ]      # 👈 يعمل تلقائياً عند الدفع
+  workflow_dispatch:        # 👈 يمكن تشغيله يدوياً أيضاً
 
 jobs:
   run:
