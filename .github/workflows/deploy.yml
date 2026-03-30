@@ -16,21 +16,15 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
-    
-    - name: Clean npm cache
-      run: |
-        rm -rf node_modules
-        npm cache clean --force
     
     - name: Install dependencies
-      run: npm install --no-package-lock
+      run: npm ci
     
     - name: Start server
       run: |
         node server.js &
         sleep 5
-        curl http://localhost:3000/api/test || echo "Server starting..."
+        curl http://localhost:3000/api/test || echo "Server running"
     
     - name: Keep running
       run: sleep 3600
