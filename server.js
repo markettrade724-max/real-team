@@ -1,203 +1,130 @@
-// ====================================================
-// SUPER TEAM - مع Supabase (قاعدة بيانات حقيقية)
-// PayPal فقط (Stripe تمت إزالته)
-// ====================================================
+// server.js - مع Supabase API حقيقي
+import express from 'express';
+import cors from 'cors';
+import { createClient } from '@supabase/supabase-js';
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { createClient } = require('@supabase/supabase-js');
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// ==================== Supabase الإعداد ====================
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
-let supabase = null;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-if (supabaseUrl && supabaseKey) {
-    supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('✅ Supabase connected');
-} else {
-    console.log('⚠️ Supabase not configured. Using local storage.');
-}
+// ============ 1. جلب جميع الأرباح ============
+app.get('/api/earnings', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('earnings')
+      .select('*')
+      .order('date', { ascending: false });
 
-const reportsDir = path.join(__dirname, 'reports');
-if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir);
+    if (error) throw error;
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Error fetching earnings:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
-// ==================== المنصات ====================
-const platforms = {
-    level1: [
-        { name: 'urpay', apiKeyVar: 'URPAY_API_KEY', active: false, earnings: 0, type: 'cashback' },
-        { name: 'stc', apiKeyVar: 'STC_API_KEY', active: false, earnings: 0, type: 'cashback' },
-        { name: 'amazon', apiKeyVar: 'AMAZON_API_KEY', active: false, earnings: 0, type: 'affiliate' },
-        { name: 'noon', apiKeyVar: 'NOON_API_KEY', active: false, earnings: 0, type: 'affiliate' },
-        { name: 'honey', apiKeyVar: 'HONEY_API_KEY', active: false, earnings: 0, type: 'cashback' }
-    ],
-    level2: [
-        { name: 'khamsat', apiKeyVar: 'KHAMSAT_API_KEY', active: false, earnings: 0, type: 'freelance' },
-        { name: 'upwork', apiKeyVar: 'UPWORK_API_KEY', active: false, earnings: 0, type: 'freelance' },
-        { name: 'fiverr', apiKeyVar: 'FIVERR_API_KEY', active: false, earnings: 0, type: 'freelance' },
-        { name: 'tiktok', apiKeyVar: 'TIKTOK_API_KEY', active: false, earnings: 0, type: 'affiliate' }
-    ],
-    level3: [
-        { name: 'youtube', apiKeyVar: 'YOUTUBE_API_KEY', active: false, earnings: 0, type: 'affiliate' },
-        { name: 'clickbank', apiKeyVar: 'CLICKBANK_API_KEY', active: false, earnings: 0, type: 'affiliate' },
-        { name: 'shareasale', apiKeyVar: 'SHAREASALE_API_KEY', active: false, earnings: 0, type: 'affiliate' },
-        { name: 'toptal', apiKeyVar: 'TOPTAL_API_KEY', active: false, earnings: 0, type: 'freelance' }
-    ]
-};
+// ============ 2. جلب إجمالي الأرباح ============
+app.get('/api/earnings/total', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('earnings')
+      .select('amount')
+      .eq('type', 'income')
+      .eq('status', 'completed');
 
-// ==================== حفظ الأرباح في Supabase ====================
-async function saveEarningsToSupabase(source, amount, type) {
-    if (!supabase) return false;
-   
-    try {
-        const { data, error } = await supabase
-            .from('earnings')
-            .insert([
-                {
-                    source,
-                    amount,
-                    type,
-                    date: new Date().toISOString(),
-                    status: 'pending'
-                }
-            ]);
-       
-        if (error) throw error;
-        console.log(`💰 Saved to Supabase: ${source} +${amount}$`);
-        return true;
-    } catch(e) {
-        console.error('Supabase error:', e.message);
-        return false;
-    }
-}
+    if (error) throw error;
+    
+    const total = data.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+    res.json({ success: true, total });
+  } catch (error) {
+    console.error('Error calculating total:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
-// ==================== جلب الرصيد من Supabase ====================
-async function getTotalBalanceFromSupabase() {
-    if (!supabase) return 0;
-   
-    try {
-        const { data, error } = await supabase
-            .from('earnings')
-            .select('amount')
-            .eq('status', 'pending');
-       
-        if (error) throw error;
-        const total = data.reduce((sum, row) => sum + row.amount, 0);
-        return total;
-    } catch(e) {
-        console.error('Supabase error:', e.message);
-        return 0;
-    }
-}
-
-// ==================== تشغيل المنصات ====================
-function activatePlatforms() {
-    let activeCount = 0;
-    for (const level in platforms) {
-        platforms[level].forEach(p => {
-            const apiKey = process.env[p.apiKeyVar];
-            if (apiKey && apiKey.length > 0 && apiKey !== 'YOUR_API_KEY_HERE') {
-                p.active = true;
-                activeCount++;
-                console.log(`✅ ${p.name} activated`);
-            }
-        });
-    }
-    return activeCount;
-}
-
-async function runLevel1() {
-    console.log('🟢 Level 1: Cashback & Affiliate');
-    let total = 0;
-    for (const platform of platforms.level1) {
-        if (!platform.active) {
-            console.log(`⏸️ ${platform.name}: inactive`);
-            continue;
+// ============ 3. إضافة ربح جديد ============
+app.post('/api/earnings', async (req, res) => {
+  try {
+    const { source, amount, type, platform, status, transaction_id } = req.body;
+    
+    const { data, error } = await supabase
+      .from('earnings')
+      .insert([
+        {
+          source,
+          amount,
+          type: type || 'income',
+          platform,
+          status: status || 'pending',
+          transaction_id: transaction_id || null,
+          date: new Date().toISOString()
         }
-       
-        // هنا ستكون API حقيقية
-        const earnings = parseFloat((Math.random() * 12 + 2).toFixed(2));
-        platform.earnings += earnings;
-        total += earnings;
-       
-        // حفظ في Supabase
-        await saveEarningsToSupabase(platform.name, earnings, platform.type);
-       
-        console.log(`💰 ${platform.name}: +${earnings}$`);
-        await new Promise(r => setTimeout(r, 300));
-    }
-    return total;
-}
+      ])
+      .select();
 
-async function runLevel2() {
-    console.log('🟡 Level 2: Freelance');
-    let total = 0;
-    for (const platform of platforms.level2) {
-        if (!platform.active) continue;
-        const earnings = parseFloat((Math.random() * 30 + 8).toFixed(2));
-        platform.earnings += earnings;
-        total += earnings;
-        await saveEarningsToSupabase(platform.name, earnings, platform.type);
-        console.log(`💰 ${platform.name}: +${earnings}$`);
-        await new Promise(r => setTimeout(r, 300));
-    }
-    return total;
-}
+    if (error) throw error;
+    res.json({ success: true, data: data[0] });
+  } catch (error) {
+    console.error('Error adding earning:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
-async function runLevel3() {
-    console.log('🔴 Level 3: Professional');
-    let total = 0;
-    for (const platform of platforms.level3) {
-        if (!platform.active) continue;
-        const earnings = parseFloat((Math.random() * 60 + 20).toFixed(2));
-        platform.earnings += earnings;
-        total += earnings;
-        await saveEarningsToSupabase(platform.name, earnings, platform.type);
-        console.log(`💰 ${platform.name}: +${earnings}$`);
-        await new Promise(r => setTimeout(r, 300));
-    }
-    return total;
-}
+// ============ 4. تحديث حالة ربح ============
+app.put('/api/earnings/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, transaction_id } = req.body;
+    
+    const { data, error } = await supabase
+      .from('earnings')
+      .update({ status, transaction_id })
+      .eq('id', id)
+      .select();
 
-// ==================== PayPal Webhook (للمدفوعات) ====================
-// يتم استقبال إشعارات PayPal هنا
+    if (error) throw error;
+    res.json({ success: true, data: data[0] });
+  } catch (error) {
+    console.error('Error updating earning:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
-// ==================== إرسال Telegram ====================
-async function sendTelegram(message) {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-    if (!botToken || !chatId) return;
-   
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
-    https.get(url, () => {});
-}
+// ============ 5. تقرير حسب المنصة ============
+app.get('/api/reports/platform', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('earnings')
+      .select('platform, amount')
+      .eq('type', 'income')
+      .eq('status', 'completed');
 
-// ==================== التشغيل الرئيسي ====================
-async function runAllAgents() {
-    console.log('🚀 SUPER TEAM START');
-    console.log(`🕐 ${new Date().toLocaleString('ar-SA')}`);
-   
-    const activeCount = activatePlatforms();
-    console.log(`📊 Active platforms: ${activeCount}`);
-   
-    const level1 = await runLevel1();
-    const level2 = await runLevel2();
-    const level3 = await runLevel3();
-   
-    const total = level1 + level2 + level3;
-    const balance = await getTotalBalanceFromSupabase();
-   
-    console.log(`💰 Total earnings: ${total.toFixed(2)}$`);
-    console.log(`🏦 Supabase balance: ${balance.toFixed(2)}$`);
-   
-    await sendTelegram(`✅ SUPER TEAM REPORT\n💰 Today: ${total.toFixed(2)}$\n🏦 Total: ${balance.toFixed(2)}$\n🕐 ${new Date().toLocaleString('ar-SA')}`);
-   
-    console.log('✅ SUPER TEAM FINISHED');
-}
+    if (error) throw error;
+    
+    const platformTotals = {};
+    data.forEach(item => {
+      const platform = item.platform;
+      const amount = parseFloat(item.amount);
+      platformTotals[platform] = (platformTotals[platform] || 0) + amount;
+    });
+    
+    res.json({ success: true, data: platformTotals });
+  } catch (error) {
+    console.error('Error generating platform report:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
-if (require.main === module) {
-    runAllAgents().catch(console.error);
-}
-
-module.exports = { runAllAgents, platforms, activatePlatforms, getTotalBalanceFromSupabase };
+// ============ 6. تشغيل السيرفر ============
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Supabase connected: ${supabaseUrl ? 'Yes' : 'No'}`);
+});
