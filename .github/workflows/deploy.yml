@@ -20,24 +20,13 @@ jobs:
     - name: Install dependencies
       run: npm install
     
-    - name: Start server
+    - name: Start server with secrets
       run: |
-        node server.js 2>&1 | tee server.log &
-        SERVER_PID=$!
-        sleep 10
-        
-        # تحقق إذا كان السيرفر لا يزال يعمل
-        if kill -0 $SERVER_PID 2>/dev/null; then
-          echo "✅ Server is running (PID: $SERVER_PID)"
-          curl http://localhost:3000/api/test
-        else
-          echo "❌ Server failed to start"
-          cat server.log
-          exit 1
-        fi
-        
-        # ابق السيرفر يعمل
-        wait $SERVER_PID
+        export SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+        export SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+        node server.js &
+        sleep 5
+        curl http://localhost:3000/api/test
     
     - name: Keep running
       run: sleep 3600
