@@ -1,0 +1,44 @@
+name: Deploy and Run Server
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Install dependencies
+      run: npm install
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Create .env file
+      run: |
+        echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+        echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+    
+    - name: Run server
+      run: |
+        node server.js &
+        sleep 10
+    
+    - name: Test API
+      run: |
+        curl -f http://localhost:3000/api/earnings || exit 1
+        echo "✅ API is working!"
+    
+    - name: Keep server alive
+      run: sleep 3600
