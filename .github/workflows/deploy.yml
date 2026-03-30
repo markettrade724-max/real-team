@@ -2,8 +2,8 @@ name: Run Server
 
 on:
   push:
-    branches: [ main ]      # 👈 يعمل تلقائياً عند الدفع
-  workflow_dispatch:        # 👈 يمكن تشغيله يدوياً أيضاً
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   run:
@@ -22,9 +22,22 @@ jobs:
     
     - name: Start server
       run: |
-        node server.js &
-        sleep 5
-        curl http://localhost:3000/api/test
+        node server.js 2>&1 | tee server.log &
+        SERVER_PID=$!
+        sleep 10
+        
+        # تحقق إذا كان السيرفر لا يزال يعمل
+        if kill -0 $SERVER_PID 2>/dev/null; then
+          echo "✅ Server is running (PID: $SERVER_PID)"
+          curl http://localhost:3000/api/test
+        else
+          echo "❌ Server failed to start"
+          cat server.log
+          exit 1
+        fi
+        
+        # ابق السيرفر يعمل
+        wait $SERVER_PID
     
     - name: Keep running
       run: sleep 3600
