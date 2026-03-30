@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # 👈 أضف هذا السطر
+
 jobs:
   run:
     runs-on: ubuntu-latest
