@@ -138,31 +138,32 @@
     <div class="card">
         <h2>📋 سجل الأرباح</h2>
         <div style="overflow-x: auto;">
-            <table>
-                <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr></thead>
-                <tbody id="earningsBody"><tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr></tbody>
+            <table id="earningsTable">
+                <thead>
+                    <tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th>th
+                </thead>
+                <tbody id="earningsBody">
+                    <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
+                </tbody>
             </table>
         </div>
     </div>
 </div>
 
 <script>
-    // ====================== بيانات Supabase (استبدل هذه ببياناتك الحقيقية) ======================
-    const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';    // ضع رابط مشروعك
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';                // ضع المفتاح العام
-    
-    // تهيئة Supabase
+    // ⚠️ قم باستبدال هذين السطرين ببيانات Supabase الحقيقية ⚠️
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';      // ضع رابط مشروعك
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';                  // ضع المفتاح العام
+
+    // تهيئة Supabase (مرة واحدة فقط)
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
+
     // الوكلاء
-    const agents = [
-        "المدير التنفيذي", "محلل البيانات", "مدير المنصات",
-        "مدير الخدمات", "المسوق الرقمي", "مدير المحتوى",
-        "المحاسب", "مطور الويب", "مطور الألعاب"
-    ];
-    
+    const agents = ["المدير التنفيذي", "محلل البيانات", "مدير المنصات", "مدير الخدمات", "المسوق الرقمي", "مدير المحتوى", "المحاسب", "مطور الويب", "مطور الألعاب"];
+
     function displayAgents() {
         const grid = document.getElementById('agentsGrid');
+        if (!grid) return;
         grid.innerHTML = agents.map(agent => `
             <div class="agent-card">
                 <div style="font-weight:bold;">🤖 ${agent}</div>
@@ -170,33 +171,30 @@
             </div>
         `).join('');
     }
-    
-    // تحميل البيانات
+
     async function loadData() {
         const statusDiv = document.getElementById('status');
         try {
-            // جلب الأرباح
             const { data, error } = await supabase
                 .from('earnings')
                 .select('*')
                 .order('date', { ascending: false });
-            
+
             if (error) throw error;
-            
+
             statusDiv.innerHTML = '✅ متصل بقاعدة البيانات (Supabase)';
             statusDiv.className = 'status status-success';
-            
+
             displayEarnings(data || []);
             updateStats(data || []);
-            
         } catch (err) {
             console.error(err);
-            statusDiv.innerHTML = `❌ فشل الاتصال بقاعدة البيانات: ${err.message}`;
+            statusDiv.innerHTML = `❌ فشل الاتصال: ${err.message}`;
             statusDiv.className = 'status status-error';
-            document.getElementById('earningsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;">⚠️ لا يمكن الاتصال بقاعدة البيانات. تأكد من إعدادات Supabase و CORS.</td></tr>`;
+            document.getElementById('earningsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;">⚠️ خطأ: ${err.message}</td></tr>`;
         }
     }
-    
+
     function displayEarnings(earnings) {
         const tbody = document.getElementById('earningsBody');
         if (!earnings.length) {
@@ -213,7 +211,7 @@
             </tr>
         `).join('');
     }
-    
+
     function updateStats(earnings) {
         const total = earnings.reduce((s, e) => s + Number(e.amount), 0);
         const completed = earnings.filter(e => e.status === 'completed').length;
@@ -223,13 +221,13 @@
         document.getElementById('completed').innerText = completed;
         document.getElementById('pending').innerText = pending;
     }
-    
+
     async function addEarning() {
         const platform = document.getElementById('platform').value.trim();
         const amount = parseFloat(document.getElementById('amount').value);
         const source = document.getElementById('source').value.trim();
         const status = document.getElementById('statusSelect').value;
-        
+
         if (isNaN(amount) || amount <= 0) {
             alert('الرجاء إدخال مبلغ صحيح');
             return;
@@ -238,7 +236,7 @@
             alert('الرجاء إدخال اسم المنصة');
             return;
         }
-        
+
         try {
             const { error } = await supabase
                 .from('earnings')
@@ -250,9 +248,9 @@
                     type: 'income',
                     date: new Date().toISOString()
                 }]);
-            
+
             if (error) throw error;
-            
+
             alert(`✅ تم إضافة ${amount.toFixed(2)} درهم من ${platform}`);
             document.getElementById('amount').value = '';
             loadData();
@@ -260,7 +258,7 @@
             alert('❌ فشل الإضافة: ' + err.message);
         }
     }
-    
+
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -270,12 +268,13 @@
             return m;
         });
     }
-    
+
     // بدء التشغيل
     displayAgents();
     loadData();
     setInterval(loadData, 30000);
-    
+
+    // جعل الدوال متاحة للـ onclick
     window.addEarning = addEarning;
     window.loadData = loadData;
 </script>
