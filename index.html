@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Agents | نظام الأرباح</title>
+    <title>AI Agents | أرباح حقيقية عبر Supabase</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -28,9 +29,9 @@
             text-align: center;
             font-weight: bold;
         }
-        .status-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .status-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .status-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .status-success { background: #d4edda; color: #155724; }
+        .status-error { background: #f8d7da; color: #721c24; }
+        .status-warning { background: #fff3cd; color: #856404; }
         .form-group {
             display: flex;
             flex-wrap: wrap;
@@ -43,7 +44,6 @@
             border-radius: 8px;
             flex: 1;
             min-width: 150px;
-            font-size: 14px;
         }
         button {
             background: #667eea;
@@ -53,11 +53,8 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s;
         }
-        button:hover { background: #5a67d8; transform: translateY(-2px); }
-        .btn-success { background: #10b981; }
-        .btn-success:hover { background: #059669; }
+        button:hover { background: #5a67d8; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -67,7 +64,7 @@
             text-align: right;
             border-bottom: 1px solid #eee;
         }
-        th { background: #f8f9fa; font-weight: bold; }
+        th { background: #f8f9fa; }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -82,8 +79,14 @@
             text-align: center;
         }
         .stat-value { font-size: 2rem; font-weight: bold; margin: 10px 0; }
-        .status-completed { background: #d4edda; color: #155724; padding: 4px 12px; border-radius: 20px; display: inline-block; font-size: 12px; }
-        .status-pending { background: #fff3cd; color: #856404; padding: 4px 12px; border-radius: 20px; display: inline-block; font-size: 12px; }
+        .status-completed { background: #d4edda; color: #155724; padding: 4px 12px; border-radius: 20px; display: inline-block; }
+        .status-pending { background: #fff3cd; color: #856404; padding: 4px 12px; border-radius: 20px; display: inline-block; }
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
         .agent-card {
             background: #f8fafc;
             padding: 12px;
@@ -91,13 +94,7 @@
             text-align: center;
             border: 1px solid #e2e8f0;
         }
-        .agents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-top: 16px;
-        }
-        @media (max-width: 768px) {
+        @media (max-width: 640px) {
             .form-group { flex-direction: column; }
             button { width: 100%; }
         }
@@ -108,7 +105,7 @@
     <div class="card">
         <h1>🤖 فريق AI Agents</h1>
         <p>9 وكلاء اصطناعيون يعملون بشكل تلقائي | أرباح حقيقية عبر Supabase</p>
-        <div id="status" class="status status-warning">🔄 جاري الاتصال بالسيرفر...</div>
+        <div id="status" class="status status-warning">🔄 جاري الاتصال بقاعدة البيانات...</div>
     </div>
 
     <div class="stats-grid" id="stats">
@@ -134,37 +131,36 @@
                 <option value="completed">✅ مكتمل</option>
             </select>
             <button onclick="addEarning()">➕ إضافة ربح</button>
-            <button class="btn-success" onclick="loadData()">🔄 تحديث الكل</button>
+            <button onclick="loadData()">🔄 تحديث</button>
         </div>
     </div>
 
     <div class="card">
-        <h2>📋 سجل الأرباح الحقيقي</h2>
+        <h2>📋 سجل الأرباح</h2>
         <div style="overflow-x: auto;">
-            <table id="earningsTable">
-                <thead>
-                    <tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr>
-                </thead>
-                <tbody id="earningsBody">
-                    <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
-                </tbody>
+            <table>
+                <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+                <tbody id="earningsBody"><tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr></tbody>
             </table>
         </div>
     </div>
 </div>
 
 <script>
-    // ====================== رابط السيرفر ======================
-    const API_URL = 'https://real-team.up.railway.app';
+    // ====================== بيانات Supabase (استبدل هذه ببياناتك الحقيقية) ======================
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';    // ضع رابط مشروعك
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';                // ضع المفتاح العام
     
-    // ====================== الوكلاء ======================
+    // تهيئة Supabase
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    // الوكلاء
     const agents = [
-        "المدير التنفيذي", "محلل البيانات", "مدير المنصات", 
-        "مدير الخدمات", "المسوق الرقمي", "مدير المحتوى", 
+        "المدير التنفيذي", "محلل البيانات", "مدير المنصات",
+        "مدير الخدمات", "المسوق الرقمي", "مدير المحتوى",
         "المحاسب", "مطور الويب", "مطور الألعاب"
     ];
     
-    // عرض الوكلاء
     function displayAgents() {
         const grid = document.getElementById('agentsGrid');
         grid.innerHTML = agents.map(agent => `
@@ -175,85 +171,38 @@
         `).join('');
     }
     
-    // ====================== جلب البيانات مع تجاوز CORS ======================
-    async function fetchWithCors(url, options = {}) {
-        // محاولة مباشرة أولاً
-        try {
-            const response = await fetch(url, options);
-            return response;
-        } catch (error) {
-            console.log('Direct fetch failed, trying with mode cors...', error);
-            // محاولة مع إعدادات مختلفة
-            const response = await fetch(url, {
-                ...options,
-                mode: 'cors',
-                credentials: 'omit'
-            });
-            return response;
-        }
-    }
-    
-    // ====================== تحميل البيانات ======================
+    // تحميل البيانات
     async function loadData() {
         const statusDiv = document.getElementById('status');
-        
         try {
-            // 1. اختبار الاتصال بالسيرفر
-            console.log('Testing connection to:', `${API_URL}/api/test`);
-            const testResponse = await fetchWithCors(`${API_URL}/api/test`);
+            // جلب الأرباح
+            const { data, error } = await supabase
+                .from('earnings')
+                .select('*')
+                .order('date', { ascending: false });
             
-            if (!testResponse.ok) {
-                throw new Error(`HTTP ${testResponse.status}: ${testResponse.statusText}`);
-            }
+            if (error) throw error;
             
-            const testData = await testResponse.json();
-            console.log('Test response:', testData);
+            statusDiv.innerHTML = '✅ متصل بقاعدة البيانات (Supabase)';
+            statusDiv.className = 'status status-success';
             
-            if (testData.success || testData.message) {
-                statusDiv.innerHTML = '✅ متصل بالسيرفر | ' + (testData.message || 'يعمل');
-                statusDiv.className = 'status status-success';
-            } else {
-                throw new Error('استجابة غير متوقعة');
-            }
+            displayEarnings(data || []);
+            updateStats(data || []);
             
-            // 2. جلب الأرباح
-            const earningsResponse = await fetchWithCors(`${API_URL}/api/earnings`);
-            const earningsData = await earningsResponse.json();
-            console.log('Earnings data:', earningsData);
-            
-            if (earningsData.success) {
-                displayEarnings(earningsData.data || []);
-                updateStats(earningsData.data || []);
-            } else {
-                throw new Error(earningsData.error || 'فشل في جلب البيانات');
-            }
-            
-        } catch (error) {
-            console.error('Load error:', error);
-            statusDiv.innerHTML = `❌ خطأ: ${error.message}<br>⚠️ تأكد من أن السيرفر يعمل على: ${API_URL}`;
+        } catch (err) {
+            console.error(err);
+            statusDiv.innerHTML = `❌ فشل الاتصال بقاعدة البيانات: ${err.message}`;
             statusDiv.className = 'status status-error';
-            
-            // عرض بيانات تجريبية في حالة الفشل
-            document.getElementById('earningsBody').innerHTML = `
-                <tr><td colspan="5" style="text-align:center; color:#666;">
-                    ⚠️ لا يمكن الاتصال بالسيرفر. تأكد من:<br>
-                    1. السيرفر يعمل على ${API_URL}<br>
-                    2. Railway يظهر "Online"<br>
-                    3. اختبر الرابط في متصفح جديد: ${API_URL}/api/test
-                </td></tr>
-            `;
+            document.getElementById('earningsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;">⚠️ لا يمكن الاتصال بقاعدة البيانات. تأكد من إعدادات Supabase و CORS.</td></tr>`;
         }
     }
     
-    // ====================== عرض الأرباح ======================
     function displayEarnings(earnings) {
         const tbody = document.getElementById('earningsBody');
-        
-        if (!earnings || earnings.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد. أضف ربحك الأول!</td></tr>';
+        if (!earnings.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td></tr>';
             return;
         }
-        
         tbody.innerHTML = earnings.map(item => `
             <tr>
                 <td>${escapeHtml(item.platform || '-')}</td>
@@ -265,19 +214,16 @@
         `).join('');
     }
     
-    // ====================== تحديث الإحصائيات ======================
     function updateStats(earnings) {
-        const total = earnings.reduce((sum, e) => sum + Number(e.amount), 0);
+        const total = earnings.reduce((s, e) => s + Number(e.amount), 0);
         const completed = earnings.filter(e => e.status === 'completed').length;
         const pending = earnings.filter(e => e.status === 'pending').length;
-        
         document.getElementById('total').innerText = total.toFixed(2);
         document.getElementById('count').innerText = earnings.length;
         document.getElementById('completed').innerText = completed;
         document.getElementById('pending').innerText = pending;
     }
     
-    // ====================== إضافة ربح ======================
     async function addEarning() {
         const platform = document.getElementById('platform').value.trim();
         const amount = parseFloat(document.getElementById('amount').value);
@@ -285,38 +231,36 @@
         const status = document.getElementById('statusSelect').value;
         
         if (isNaN(amount) || amount <= 0) {
-            alert('⚠️ الرجاء إدخال مبلغ صحيح (أكبر من 0)');
+            alert('الرجاء إدخال مبلغ صحيح');
             return;
         }
-        
         if (!platform) {
-            alert('⚠️ الرجاء إدخال اسم المنصة');
+            alert('الرجاء إدخال اسم المنصة');
             return;
         }
         
         try {
-            const response = await fetchWithCors(`${API_URL}/api/earnings`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ platform, amount, source, status })
-            });
+            const { error } = await supabase
+                .from('earnings')
+                .insert([{
+                    platform,
+                    amount,
+                    source: source || 'manual',
+                    status,
+                    type: 'income',
+                    date: new Date().toISOString()
+                }]);
             
-            const result = await response.json();
+            if (error) throw error;
             
-            if (result.success) {
-                alert(`✅ تم إضافة ${amount.toFixed(2)} درهم من ${platform}`);
-                document.getElementById('amount').value = '';
-                loadData();
-            } else {
-                throw new Error(result.error || 'فشل في الإضافة');
-            }
-        } catch (error) {
-            console.error('Add error:', error);
-            alert('❌ فشل إضافة الربح: ' + error.message);
+            alert(`✅ تم إضافة ${amount.toFixed(2)} درهم من ${platform}`);
+            document.getElementById('amount').value = '';
+            loadData();
+        } catch (err) {
+            alert('❌ فشل الإضافة: ' + err.message);
         }
     }
     
-    // ====================== دوال مساعدة ======================
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -327,12 +271,11 @@
         });
     }
     
-    // ====================== بدء التشغيل ======================
+    // بدء التشغيل
     displayAgents();
     loadData();
     setInterval(loadData, 30000);
     
-    // جعل الدوال متاحة عالمياً
     window.addEarning = addEarning;
     window.loadData = loadData;
 </script>
