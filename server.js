@@ -44,11 +44,13 @@ if (supabaseUrl && supabaseKey) {
 // نقطة الاختبار
 app.get('/api/test', (req, res) => {
     res.json({
-        message: '✅ Server is working!',
-        cors: 'Enabled for GitHub Pages',
-        supabase: supabase ? 'Configured' : 'Not configured',
-        port: PORT,
-        time: new Date().toISOString()
+
+  "message": "✅ Server is working!",
+  "cors": "Enabled for GitHub Pages",
+  "supabase": "Configured",
+  "port": 8080,
+  "time": "..."
+
     });
 });
 
