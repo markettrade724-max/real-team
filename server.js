@@ -3,10 +3,9 @@ import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;  // ← مهم: يستخدم PORT من Railway
 
-// ====================== إعدادات CORS المتقدمة ======================
-// السماح لـ GitHub Pages بالاتصال
+// إعدادات CORS - السماح لـ GitHub Pages
 const allowedOrigins = [
     'https://markettrade724-max.github.io',
     'http://localhost:3000',
@@ -15,13 +14,12 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function(origin, callback) {
-        // السماح بالطلبات بدون origin (مثل التطبيقات المحلية)
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
             console.log('Blocked origin:', origin);
-            callback(null, true); // نسمح مؤقتاً للاختبار
+            callback(null, true); // نسمح للاختبار
         }
     },
     credentials: true,
@@ -31,61 +29,57 @@ app.use(cors({
 
 app.use(express.json());
 
-// ====================== Supabase Client ======================
+// Supabase Client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
 let supabase = null;
+
 if (supabaseUrl && supabaseKey) {
     supabase = createClient(supabaseUrl, supabaseKey);
     console.log('✅ Supabase configured');
 } else {
-    console.log('⚠️ Supabase not configured - missing environment variables');
+    console.log('⚠️ Supabase not configured');
 }
 
-// ====================== نقطة الاختبار ======================
+// نقطة الاختبار
 app.get('/api/test', (req, res) => {
     res.json({
         message: '✅ Server is working!',
-        cors: 'Enabled',
+        cors: 'Enabled for GitHub Pages',
         supabase: supabase ? 'Configured' : 'Not configured',
+        port: PORT,
         time: new Date().toISOString()
     });
 });
 
-// ====================== جلب جميع الأرباح ======================
+// جلب الأرباح
 app.get('/api/earnings', async (req, res) => {
     try {
         if (!supabase) {
-            return res.json({ success: true, data: [], message: 'Supabase not configured' });
+            return res.json({ success: true, data: [] });
         }
-        
         const { data, error } = await supabase
             .from('earnings')
             .select('*')
             .order('date', { ascending: false });
-        
         if (error) throw error;
         res.json({ success: true, data: data || [] });
     } catch (error) {
-        console.error('Error fetching earnings:', error);
+        console.error('Error:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// ====================== إضافة ربح جديد ======================
+// إضافة ربح
 app.post('/api/earnings', async (req, res) => {
     try {
         if (!supabase) {
             return res.status(500).json({ success: false, error: 'Supabase not configured' });
         }
-        
-        const { platform, amount, source, status, type } = req.body;
-        
+        const { platform, amount, source, status } = req.body;
         if (!amount || amount <= 0) {
             return res.status(400).json({ success: false, error: 'Invalid amount' });
         }
-        
         const { data, error } = await supabase
             .from('earnings')
             .insert([{
@@ -93,34 +87,30 @@ app.post('/api/earnings', async (req, res) => {
                 amount: amount,
                 source: source || 'manual',
                 status: status || 'pending',
-                type: type || 'income',
+                type: 'income',
                 date: new Date().toISOString()
             }])
             .select();
-        
         if (error) throw error;
         res.json({ success: true, data: data[0] });
     } catch (error) {
-        console.error('Error adding earning:', error);
+        console.error('Error:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// ====================== إجمالي الأرباح ======================
+// إجمالي الأرباح
 app.get('/api/earnings/total', async (req, res) => {
     try {
         if (!supabase) {
             return res.json({ success: true, total: 0 });
         }
-        
         const { data, error } = await supabase
             .from('earnings')
             .select('amount')
             .eq('type', 'income')
             .eq('status', 'completed');
-        
         if (error) throw error;
-        
         const total = data.reduce((sum, item) => sum + parseFloat(item.amount), 0);
         res.json({ success: true, total });
     } catch (error) {
@@ -128,18 +118,17 @@ app.get('/api/earnings/total', async (req, res) => {
     }
 });
 
-// ====================== نقطة رئيسية ======================
+// الصفحة الرئيسية
 app.get('/', (req, res) => {
     res.json({
         name: 'AI Agents API',
         version: '1.0.0',
-        endpoints: ['/api/test', '/api/earnings', '/api/earnings/total'],
         status: 'running',
-        cors: 'enabled for GitHub Pages'
+        endpoints: ['/api/test', '/api/earnings', '/api/earnings/total']
     });
 });
 
-// ====================== تشغيل السيرفر ======================
+// تشغيل السيرفر
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
     console.log(`✅ CORS enabled for: ${allowedOrigins.join(', ')}`);
