@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents | نظام الأرباح</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1, h2 { color: #333; margin-bottom: 16px; }
+        .status {
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .status-success { background: #d4edda; color: #155724; }
+        .status-error { background: #f8d7da; color: #721c24; }
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        input, select {
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 150px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover { background: #5a67d8; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        th { background: #f8f9fa; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .stat-value { font-size: 2rem; font-weight: bold; }
+        .status-completed { background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 20px; display: inline-block; }
+        .status-pending { background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 20px; display: inline-block; }
+        @media (max-width: 768px) {
+            .form-group { flex-direction: column; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1>🤖 فريق AI Agents</h1>
+        <p>9 وكلاء اصطناعيون يعملون بشكل تلقائي | أرباح حقيقية</p>
+        <div id="status" class="status status-success">🔄 جاري الاتصال بالسيرفر...</div>
+    </div>
+
+    <div class="stats-grid" id="stats">
+        <div class="stat-card"><div>💰 إجمالي الأرباح</div><div class="stat-value" id="total">0</div><div>درهم</div></div>
+        <div class="stat-card"><div>📊 عدد العمليات</div><div class="stat-value" id="count">0</div></div>
+        <div class="stat-card"><div>✅ مكتملة</div><div class="stat-value" id="completed">0</div></div>
+        <div class="stat-card"><div>⏳ قيد الانتظار</div><div class="stat-value" id="pending">0</div></div>
+    </div>
+
+    <div class="card">
+        <h2>➕ إضافة ربح جديد</h2>
+        <div class="form-group">
+            <input type="text" id="platform" placeholder="المنصة" value="urpay">
+            <input type="number" id="amount" placeholder="المبلغ" step="0.01">
+            <input type="text" id="source" placeholder="المصدر" value="cashback">
+            <select id="statusSelect">
+                <option value="pending">⏳ قيد الانتظار</option>
+                <option value="completed">✅ مكتمل</option>
+            </select>
+            <button onclick="addEarning()">➕ إضافة</button>
+            <button onclick="loadData()">🔄 تحديث</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📋 سجل الأرباح</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+                <tbody id="earningsBody"><tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'https://real-team.up.railway.app';
+    
+    async function loadData() {
+        const statusDiv = document.getElementById('status');
+        try {
+            // اختبار الاتصال
+            const testRes = await fetch(`${API_BASE}/api/test`);
+            const testData = await testRes.json();
+            
+            if (testData.success) {
+                statusDiv.innerHTML = '✅ متصل بالسيرفر | ' + testData.message;
+                statusDiv.className = 'status status-success';
+            } else {
+                throw new Error('فشل الاتصال');
+            }
+            
+            // جلب الأرباح
+            const res = await fetch(`${API_BASE}/api/earnings`);
+            const data = await res.json();
+            
+            if (data.success) {
+                displayEarnings(data.data);
+                updateStats(data.data);
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            statusDiv.innerHTML = `❌ خطأ: ${error.message} | تأكد من السيرفر على ${API_BASE}`;
+            statusDiv.className = 'status status-error';
+        }
+    }
+    
+    function displayEarnings(earnings) {
+        const tbody = document.getElementById('earningsBody');
+        if (!earnings || earnings.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5">لا توجد أرباح مسجلة بعد</td></tr>';
+            return;
+        }
+        tbody.innerHTML = earnings.map(item => `
+            <tr>
+                <td>${item.platform || '-'}</td>
+                <td><strong>${Number(item.amount).toFixed(2)}</strong> درهم</td>
+                <td>${item.source || '-'}</td>
+                <td><span class="status-${item.status}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
+                <td>${item.date ? new Date(item.date).toLocaleString('ar-MA') : '-'}</td>
+            </tr>
+        `).join('');
+    }
+    
+    function updateStats(earnings) {
+        const total = earnings.reduce((sum, e) => sum + Number(e.amount), 0);
+        const completed = earnings.filter(e => e.status === 'completed').length;
+        const pending = earnings.filter(e => e.status === 'pending').length;
+        document.getElementById('total').innerText = total.toFixed(2);
+        document.getElementById('count').innerText = earnings.length;
+        document.getElementById('completed').innerText = completed;
+        document.getElementById('pending').innerText = pending;
+    }
+    
+    async function addEarning() {
+        const platform = document.getElementById('platform').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const source = document.getElementById('source').value;
+        const status = document.getElementById('statusSelect').value;
+        
+        if (!amount || amount <= 0) {
+            alert('الرجاء إدخال مبلغ صحيح');
+            return;
+        }
+        
+        try {
+            const res = await fetch(`${API_BASE}/api/earnings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ platform, amount, source, status })
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert(`✅ تم إضافة ${amount} درهم`);
+                document.getElementById('amount').value = '';
+                loadData();
+            } else {
+                alert('❌ فشل الإضافة: ' + result.error);
+            }
+        } catch (error) {
+            alert('❌ خطأ: ' + error.message);
+        }
+    }
+    
+    // عرض الوكلاء
+    const agents = ['المدير التنفيذي', 'محلل البيانات', 'مدير المنصات', 'مدير الخدمات', 'المسوق الرقمي', 'مدير المحتوى', 'المحاسب', 'مطور الويب', 'مطور الألعاب'];
+    const agentsHtml = '<div class="stats-grid" style="margin-top:16px;">' + agents.map(a => `<div class="stat-card" style="background:#f0f4fa;color:#333;"><div>🤖 ${a}</div><div style="font-size:12px;">🟢 يعمل</div></div>`).join('') + '</div>';
+    document.querySelector('.stats-grid').insertAdjacentHTML('afterend', agentsHtml);
+    
+    loadData();
+    setInterval(loadData, 30000);
+</script>
+</body>
+</html>
