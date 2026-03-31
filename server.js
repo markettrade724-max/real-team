@@ -5,11 +5,11 @@ import { createClient } from '@supabase/supabase-js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// إعدادات CORS - السماح لـ GitHub Pages
+// CORS - السماح للجميع (لحل مشكلة GitHub Pages)
 app.use(cors({
-    origin: ['https://markettrade724-max.github.io', 'http://localhost:3000'],
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'apikey']
 }));
 
 app.use(express.json());
@@ -24,12 +24,13 @@ app.get('/api/test', (req, res) => {
     res.json({
         success: true,
         message: '✅ Server is working!',
+        cors: 'Enabled for all',
         supabase: supabaseUrl ? 'Connected' : 'No',
         time: new Date().toISOString()
     });
 });
 
-// جلب جميع الأرباح
+// جلب الأرباح
 app.get('/api/earnings', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -44,7 +45,7 @@ app.get('/api/earnings', async (req, res) => {
     }
 });
 
-// إضافة ربح جديد
+// إضافة ربح
 app.post('/api/earnings', async (req, res) => {
     try {
         const { platform, amount, source, status } = req.body;
@@ -90,11 +91,13 @@ app.get('/', (req, res) => {
     res.json({
         name: 'AI Agents API',
         version: '1.0.0',
+        cors: 'enabled for all',
         endpoints: ['/api/test', '/api/earnings', '/api/earnings/total']
     });
 });
 
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
+    console.log(`✅ CORS: enabled for all origins`);
     console.log(`✅ Supabase: ${supabaseUrl ? 'Configured' : 'Missing'}`);
 });
