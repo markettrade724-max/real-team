@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Agents | أرباح حقيقية عبر Supabase</title>
+    <title>AI Agents | أرباح حقيقية</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -108,7 +108,7 @@
         <div id="status" class="status status-warning">🔄 جاري الاتصال بقاعدة البيانات...</div>
     </div>
 
-    <div class="stats-grid" id="stats">
+    <div class="stats-grid">
         <div class="stat-card"><div>💰 إجمالي الأرباح</div><div class="stat-value" id="total">0</div><div>درهم</div></div>
         <div class="stat-card"><div>📊 عدد العمليات</div><div class="stat-value" id="count">0</div></div>
         <div class="stat-card"><div>✅ مكتملة</div><div class="stat-value" id="completed">0</div></div>
@@ -130,41 +130,41 @@
                 <option value="pending">⏳ قيد الانتظار</option>
                 <option value="completed">✅ مكتمل</option>
             </select>
-            <button onclick="addEarning()">➕ إضافة ربح</button>
-            <button onclick="loadData()">🔄 تحديث</button>
+            <button onclick="window.addEarning()">➕ إضافة ربح</button>
+            <button onclick="window.loadData()">🔄 تحديث</button>
         </div>
     </div>
 
     <div class="card">
         <h2>📋 سجل الأرباح</h2>
         <div style="overflow-x: auto;">
-            <table id="earningsTable">
-                <thead>
-                    <tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th>th
-                </thead>
-                <tbody id="earningsBody">
-                    <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
-                </tbody>
+            <table>
+                <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+                <tbody id="earningsBody"><tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr></tbody>
             </table>
         </div>
     </div>
 </div>
 
 <script>
-    // ⚠️ قم باستبدال هذين السطرين ببيانات Supabase الحقيقية ⚠️
-    const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';      // ضع رابط مشروعك
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';                  // ضع المفتاح العام
+    // ========== بيانات Supabase (استبدلها بقيمك الحقيقية) ==========
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+    // ==============================================================
 
-    // تهيئة Supabase (مرة واحدة فقط)
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // تجنب التعريف المكرر: نتحقق إذا كان supabase موجودًا بالفعل
+    let supabase;
+    if (typeof window.supabase === 'undefined') {
+        console.error('Supabase SDK not loaded');
+    } else {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
 
-    // الوكلاء
-    const agents = ["المدير التنفيذي", "محلل البيانات", "مدير المنصات", "مدير الخدمات", "المسوق الرقمي", "مدير المحتوى", "المحاسب", "مطور الويب", "مطور الألعاب"];
-
-    function displayAgents() {
-        const grid = document.getElementById('agentsGrid');
-        if (!grid) return;
-        grid.innerHTML = agents.map(agent => `
+    // عرض الوكلاء
+    const agents = ["المدير التنفيذي","محلل البيانات","مدير المنصات","مدير الخدمات","المسوق الرقمي","مدير المحتوى","المحاسب","مطور الويب","مطور الألعاب"];
+    const agentsGrid = document.getElementById('agentsGrid');
+    if (agentsGrid) {
+        agentsGrid.innerHTML = agents.map(agent => `
             <div class="agent-card">
                 <div style="font-weight:bold;">🤖 ${agent}</div>
                 <div style="font-size:12px; color:#10b981; margin-top:8px;">🟢 يعمل</div>
@@ -172,21 +172,46 @@
         `).join('');
     }
 
+    // دوال رئيسية
     async function loadData() {
         const statusDiv = document.getElementById('status');
+        if (!supabase) {
+            statusDiv.innerHTML = '❌ لم يتم تهيئة Supabase';
+            statusDiv.className = 'status status-error';
+            return;
+        }
         try {
             const { data, error } = await supabase
                 .from('earnings')
                 .select('*')
                 .order('date', { ascending: false });
-
             if (error) throw error;
 
             statusDiv.innerHTML = '✅ متصل بقاعدة البيانات (Supabase)';
             statusDiv.className = 'status status-success';
 
-            displayEarnings(data || []);
-            updateStats(data || []);
+            const tbody = document.getElementById('earningsBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td></tr>';
+            } else {
+                tbody.innerHTML = data.map(item => `
+                    <tr>
+                        <td>${escapeHtml(item.platform || '-')}</td>
+                        <td><strong>${Number(item.amount).toFixed(2)}</strong> درهم</td>
+                        <td>${escapeHtml(item.source || '-')}</td>
+                        <td><span class="status-${item.status === 'completed' ? 'completed' : 'pending'}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
+                        <td>${item.date ? new Date(item.date).toLocaleString('ar-MA') : '-'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const total = data.reduce((s, e) => s + Number(e.amount), 0);
+            const completed = data.filter(e => e.status === 'completed').length;
+            const pending = data.filter(e => e.status === 'pending').length;
+            document.getElementById('total').innerText = total.toFixed(2);
+            document.getElementById('count').innerText = data.length;
+            document.getElementById('completed').innerText = completed;
+            document.getElementById('pending').innerText = pending;
         } catch (err) {
             console.error(err);
             statusDiv.innerHTML = `❌ فشل الاتصال: ${err.message}`;
@@ -195,47 +220,18 @@
         }
     }
 
-    function displayEarnings(earnings) {
-        const tbody = document.getElementById('earningsBody');
-        if (!earnings.length) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td></tr>';
+    async function addEarning() {
+        if (!supabase) {
+            alert('Supabase غير مهيأ');
             return;
         }
-        tbody.innerHTML = earnings.map(item => `
-            <tr>
-                <td>${escapeHtml(item.platform || '-')}</td>
-                <td><strong>${Number(item.amount).toFixed(2)}</strong> درهم</td>
-                <td>${escapeHtml(item.source || '-')}</td>
-                <td><span class="status-${item.status === 'completed' ? 'completed' : 'pending'}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
-                <td>${item.date ? new Date(item.date).toLocaleString('ar-MA') : '-'}</td>
-            </tr>
-        `).join('');
-    }
-
-    function updateStats(earnings) {
-        const total = earnings.reduce((s, e) => s + Number(e.amount), 0);
-        const completed = earnings.filter(e => e.status === 'completed').length;
-        const pending = earnings.filter(e => e.status === 'pending').length;
-        document.getElementById('total').innerText = total.toFixed(2);
-        document.getElementById('count').innerText = earnings.length;
-        document.getElementById('completed').innerText = completed;
-        document.getElementById('pending').innerText = pending;
-    }
-
-    async function addEarning() {
         const platform = document.getElementById('platform').value.trim();
         const amount = parseFloat(document.getElementById('amount').value);
         const source = document.getElementById('source').value.trim();
         const status = document.getElementById('statusSelect').value;
 
-        if (isNaN(amount) || amount <= 0) {
-            alert('الرجاء إدخال مبلغ صحيح');
-            return;
-        }
-        if (!platform) {
-            alert('الرجاء إدخال اسم المنصة');
-            return;
-        }
+        if (isNaN(amount) || amount <= 0) { alert('الرجاء إدخال مبلغ صحيح'); return; }
+        if (!platform) { alert('الرجاء إدخال اسم المنصة'); return; }
 
         try {
             const { error } = await supabase
@@ -248,9 +244,7 @@
                     type: 'income',
                     date: new Date().toISOString()
                 }]);
-
             if (error) throw error;
-
             alert(`✅ تم إضافة ${amount.toFixed(2)} درهم من ${platform}`);
             document.getElementById('amount').value = '';
             loadData();
@@ -261,22 +255,16 @@
 
     function escapeHtml(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m] || m));
     }
 
-    // بدء التشغيل
-    displayAgents();
+    // ربط الدوال لاستخدامها من onclick
+    window.loadData = loadData;
+    window.addEarning = addEarning;
+
+    // بدء التحميل
     loadData();
     setInterval(loadData, 30000);
-
-    // جعل الدوال متاحة للـ onclick
-    window.addEarning = addEarning;
-    window.loadData = loadData;
 </script>
 </body>
 </html>
