@@ -1,41 +1,123 @@
-// استخدم رابط Railway بدلاً من Supabase مباشرة
-const API_BASE_URL = 'https://real-team.up.railway.app';
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Agents | أرباح حقيقية</title>
+    <style>
+        /* أضف كل الـ CSS الذي كتبناه سابقاً هنا، مع التأكد من أن التصميم متجاوب وجميل */
+        body { font-family: 'Cairo', sans-serif; background: #f0f4fa; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 24px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* ... باقي الـ CSS ... */
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🤖 فريق AI Agents</h1>
+    <div id="status">🔄 جاري الاتصال بالسيرفر...</div>
+    <div class="stats" id="stats"></div>
+    <div class="form" id="addForm">
+        <input type="text" id="platform" placeholder="المنصة">
+        <input type="number" id="amount" placeholder="المبلغ">
+        <input type="text" id="source" placeholder="المصدر">
+        <select id="statusSelect">
+            <option value="pending">قيد الانتظار</option>
+            <option value="completed">مكتمل</option>
+        </select>
+        <button onclick="addEarning()">➕ إضافة ربح</button>
+        <button onclick="loadEarnings()">🔄 تحديث</button>
+    </div>
+    <table id="earningsTable">
+        <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+        <tbody id="earningsBody"><tr><td colspan="5">جاري التحميل...</td></tr></tbody>
+    </table>
+</div>
 
-// جلب الأرباح
-async function loadEarnings() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/earnings`);
-        const data = await response.json();
-        
-        if (data.success) {
-            displayEarnings(data.data);
-            updateStats(data.data);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
+<script>
+    // ⚠️ استبدل هذا الرابط بالرابط الذي تراه في لوحة تحكم Railway ⚠️
+    const API_BASE_URL = 'https://real-team.up.railway.app'; // <--- غيّر هذا إلى الرابط الصحيح
 
-// إضافة ربح جديد
-async function addEarning() {
-    const platform = document.getElementById('platform').value;
-    const amount = parseFloat(document.getElementById('amount').value);
-    const source = document.getElementById('source').value;
-    const status = document.getElementById('statusSelect').value;
-    
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/earnings`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ platform, amount, source, status })
-        });
-        
-        const result = await response.json();
-        if (result.success) {
-            alert(`✅ تم إضافة ${amount} درهم`);
-            loadEarnings();
+    async function loadEarnings() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/earnings`);
+            const data = await response.json();
+            if (data.success) {
+                displayEarnings(data.data);
+                updateStats(data.data);
+                document.getElementById('status').innerHTML = '✅ متصل بالسيرفر وقاعدة البيانات';
+                document.getElementById('status').style.color = 'green';
+            } else {
+                throw new Error(data.error || 'فشل في تحميل البيانات');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('status').innerHTML = `❌ خطأ في الاتصال بالسيرفر: ${error.message}. تأكد من أن السيرفر يعمل على ${API_BASE_URL}`;
+            document.getElementById('status').style.color = 'red';
         }
-    } catch (error) {
-        alert('❌ خطأ: ' + error.message);
     }
-}
+
+    async function addEarning() {
+        const platform = document.getElementById('platform').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const source = document.getElementById('source').value;
+        const status = document.getElementById('statusSelect').value;
+
+        if (!amount || amount <= 0) {
+            alert('الرجاء إدخال مبلغ صحيح');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/earnings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ platform, amount, source, status })
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert(`✅ تم إضافة ${amount} درهم من ${platform}`);
+                document.getElementById('amount').value = '';
+                loadEarnings(); // تحديث الجدول والإحصائيات
+            } else {
+                alert('❌ فشل الإضافة: ' + (result.error || 'خطأ غير معروف'));
+            }
+        } catch (error) {
+            alert('❌ خطأ في الاتصال: ' + error.message);
+        }
+    }
+
+    function displayEarnings(earnings) {
+        const tbody = document.getElementById('earningsBody');
+        if (!earnings || earnings.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5">لا توجد أرباح مسجلة بعد</td></tr>';
+            return;
+        }
+        tbody.innerHTML = earnings.map(item => `
+            <tr>
+                <td>${item.platform || '-'}</td>
+                <td><strong>${Number(item.amount).toFixed(2)}</strong> درهم</td>
+                <td>${item.source || '-'}</td>
+                <td><span class="status-${item.status}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
+                <td>${item.date ? new Date(item.date).toLocaleString('ar-MA') : '-'}</td>
+            </tr>
+        `).join('');
+    }
+
+    function updateStats(earnings) {
+        const total = earnings.reduce((sum, e) => sum + Number(e.amount), 0);
+        const completed = earnings.filter(e => e.status === 'completed').length;
+        const pending = earnings.filter(e => e.status === 'pending').length;
+        document.getElementById('stats').innerHTML = `
+            <div class="stat-card">💰 الإجمالي: <strong>${total.toFixed(2)}</strong> درهم</div>
+            <div class="stat-card">📊 العمليات: ${earnings.length}</div>
+            <div class="stat-card">✅ المكتملة: ${completed}</div>
+            <div class="stat-card">⏳ قيد الانتظار: ${pending}</div>
+        `;
+    }
+
+    // تحميل البيانات عند فتح الصفحة
+    loadEarnings();
+    // تحديث تلقائي كل 30 ثانية
+    setInterval(loadEarnings, 30000);
+</script>
+</body>
+</html>
