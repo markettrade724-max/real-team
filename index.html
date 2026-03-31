@@ -1,217 +1,41 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فريق AI Agents</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            margin: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        h1, h2 {
-            color: #333;
-        }
-        button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        input, select {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            text-align: right;
-            border-bottom: 1px solid #ddd;
-        }
-        .status-completed {
-            background: #d4edda;
-            padding: 3px 10px;
-            border-radius: 15px;
-            color: #155724;
-        }
-        .status-pending {
-            background: #fff3cd;
-            padding: 3px 10px;
-            border-radius: 15px;
-            color: #856404;
-        }
-        .success {
-            color: green;
-        }
-        .error {
-            color: red;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="card">
-            <h1>🤖 فريق AI Agents</h1>
-            <p id="status">🔄 جاري الاتصال بقاعدة البيانات...</p>
-        </div>
+// استخدم رابط Railway بدلاً من Supabase مباشرة
+const API_BASE_URL = 'https://real-team.up.railway.app';
 
-        <div class="card">
-            <h2>💰 إجمالي الأرباح</h2>
-            <div style="font-size: 2rem; color: #667eea;" id="total">0</div>
-            <div>درهم</div>
-        </div>
-
-        <div class="card">
-            <h2>➕ إضافة ربح جديد</h2>
-            <input type="text" id="platform" placeholder="المنصة" value="urpay">
-            <input type="number" id="amount" placeholder="المبلغ" step="0.01">
-            <input type="text" id="source" placeholder="المصدر" value="cashback">
-            <select id="status">
-                <option value="pending">قيد الانتظار</option>
-                <option value="completed">مكتمل</option>
-            </select>
-            <button onclick="addEarning()">إضافة</button>
-            <button onclick="loadData()">تحديث</button>
-        </div>
-
-        <div class="card">
-            <h2>📋 سجل الأرباح</h2>
-            <div style="overflow-x: auto;">
-                <table id="earningsTable">
-                    <thead>
-                        <tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th>+
-                    </thead>
-                    <tbody id="earningsBody">
-                        <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td>+
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // بيانات Supabase - استبدل هذه ببياناتك الحقيقية
-        const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';  // 👈 غير هذا
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';              // 👈 غير هذا
+// جلب الأرباح
+async function loadEarnings() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/earnings`);
+        const data = await response.json();
         
-        let supabase;
-        
-        // تهيئة Supabase
-        try {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            document.getElementById('status').innerHTML = '✅ متصل بقاعدة البيانات';
-            document.getElementById('status').style.color = 'green';
-        } catch(e) {
-            document.getElementById('status').innerHTML = '❌ فشل الاتصال: ' + e.message;
-            document.getElementById('status').style.color = 'red';
+        if (data.success) {
+            displayEarnings(data.data);
+            updateStats(data.data);
         }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// إضافة ربح جديد
+async function addEarning() {
+    const platform = document.getElementById('platform').value;
+    const amount = parseFloat(document.getElementById('amount').value);
+    const source = document.getElementById('source').value;
+    const status = document.getElementById('statusSelect').value;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/earnings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ platform, amount, source, status })
+        });
         
-        // جلب البيانات
-        async function loadData() {
-            if (!supabase) return;
-            
-            try {
-                const { data, error } = await supabase
-                    .from('earnings')
-                    .select('*')
-                    .order('date', { ascending: false });
-                
-                if (error) throw error;
-                
-                // عرض البيانات في الجدول
-                const tbody = document.getElementById('earningsBody');
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5">لا توجد أرباح مسجلة</td></tr>';
-                } else {
-                    tbody.innerHTML = data.map(item => `
-                        <tr>
-                            <td>${item.platform || '-'}</td>
-                            <td><strong>${parseFloat(item.amount).toFixed(2)}</strong> درهم</td>
-                            <td>${item.source || '-'}</td>
-                            <td><span class="status-${item.status}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
-                            <td>${new Date(item.date).toLocaleString('ar-MA')}</td>
-                        </tr>
-                    `).join('');
-                }
-                
-                // حساب الإجمالي
-                const total = data.reduce((sum, item) => sum + parseFloat(item.amount), 0);
-                document.getElementById('total').innerHTML = total.toFixed(2);
-                
-            } catch(error) {
-                console.error('خطأ:', error);
-                document.getElementById('earningsBody').innerHTML = `<tr><td colspan="5" style="color:red;">خطأ: ${error.message}</td></tr>`;
-            }
+        const result = await response.json();
+        if (result.success) {
+            alert(`✅ تم إضافة ${amount} درهم`);
+            loadEarnings();
         }
-        
-        // إضافة ربح
-        async function addEarning() {
-            if (!supabase) {
-                alert('قاعدة البيانات غير متصلة');
-                return;
-            }
-            
-            const platform = document.getElementById('platform').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const source = document.getElementById('source').value;
-            const status = document.getElementById('status').value;
-            
-            if (!amount || amount <= 0) {
-                alert('الرجاء إدخال مبلغ صحيح');
-                return;
-            }
-            
-            try {
-                const { error } = await supabase
-                    .from('earnings')
-                    .insert([{
-                        platform: platform,
-                        amount: amount,
-                        source: source,
-                        status: status,
-                        type: 'income',
-                        date: new Date().toISOString()
-                    }]);
-                
-                if (error) throw error;
-                
-                alert(`✅ تم إضافة ${amount} درهم`);
-                document.getElementById('amount').value = '';
-                loadData();
-                
-            } catch(error) {
-                alert('❌ خطأ: ' + error.message);
-            }
-        }
-        
-        // تحميل البيانات عند فتح الصفحة
-        loadData();
-        
-        // تحديث تلقائي كل 30 ثانية
-        setInterval(loadData, 30000);
-    </script>
-</body>
-</html>
+    } catch (error) {
+        alert('❌ خطأ: ' + error.message);
+    }
+}
