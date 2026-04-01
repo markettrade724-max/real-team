@@ -2,527 +2,217 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AI Agents | فريق الابتكار السحري</title>
-    <!-- مكتبة Supabase بصيغة UMD (تعمل بدون مشاكل export) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents | فريق الابتكار</title>
+    <!-- ✅ النسخة UMD من Supabase (لا تحتوي على export) -->
     <script src="https://unpkg.com/@supabase/supabase-js@2.39.0/dist/umd/supabase.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
-            background: linear-gradient(145deg, #0a0f2c 0%, #0f172a 100%);
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
-            padding: 24px 16px;
+            padding: 20px;
         }
-
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        /* بطاقة الترحيب */
+        .container { max-width: 1200px; margin: 0 auto; }
         .hero {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 40px;
+            border-radius: 32px;
             padding: 32px 24px;
             text-align: center;
             color: white;
             margin-bottom: 32px;
-            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.4);
         }
-
-        .hero h1 {
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-            margin-bottom: 16px;
-        }
-
+        .hero h1 { font-size: 2rem; margin-bottom: 12px; }
         .status-badge {
             display: inline-block;
             background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(6px);
             padding: 8px 20px;
-            border-radius: 60px;
+            border-radius: 40px;
             font-size: 0.9rem;
-            font-weight: 600;
         }
-
-        /* بطاقات الإحصائيات */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 32px;
         }
-
         .stat-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 28px;
+            background: white;
+            border-radius: 24px;
             padding: 24px 12px;
             text-align: center;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card h3 {
-            font-size: 1rem;
-            color: #334155;
-            margin-bottom: 12px;
-        }
-
-        .stat-value {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #1e293b;
-        }
-
-        .stat-unit {
-            font-size: 0.9rem;
-            color: #475569;
-        }
-
-        /* قسم الوكلاء */
-        .agents-section {
+        .stat-value { font-size: 2rem; font-weight: bold; color: #1e293b; }
+        .agents-section, .form-section, .table-section {
             background: white;
-            border-radius: 32px;
-            padding: 28px 24px;
-            margin-bottom: 32px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
-
-        .agents-section h2 {
-            font-size: 1.6rem;
-            color: #0f172a;
-            border-right: 5px solid #667eea;
-            padding-right: 18px;
+            border-radius: 28px;
+            padding: 24px;
             margin-bottom: 24px;
         }
-
         .agents-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 16px;
+            margin-top: 16px;
         }
-
         .agent-card {
             background: #f8fafc;
-            border-radius: 24px;
-            padding: 18px;
+            padding: 16px;
+            border-radius: 20px;
             border: 1px solid #e2e8f0;
-            transition: all 0.2s;
         }
-
-        .agent-card:hover {
-            border-color: #667eea;
-            background: #f1f5f9;
-        }
-
-        .agent-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .agent-role {
-            font-size: 0.8rem;
-            color: #475569;
-            margin: 8px 0;
-        }
-
-        .agent-status {
-            display: inline-block;
-            background: #dcfce7;
-            color: #15803d;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        /* نموذج الإضافة */
-        .form-section {
-            background: white;
-            border-radius: 32px;
-            padding: 28px 24px;
-            margin-bottom: 32px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
-
-        .form-section h2 {
-            font-size: 1.6rem;
-            color: #0f172a;
-            border-right: 5px solid #10b981;
-            padding-right: 18px;
-            margin-bottom: 20px;
-        }
-
         .form-group {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            align-items: center;
+            margin-top: 16px;
         }
-
-        .form-group input,
-        .form-group select {
+        input, select {
             flex: 1;
-            min-width: 140px;
             padding: 12px 16px;
             border: 1px solid #cbd5e1;
             border-radius: 48px;
-            font-size: 0.9rem;
-            background: #fff;
         }
-
-        .btn {
+        button {
             background: #667eea;
             border: none;
             padding: 12px 24px;
             border-radius: 48px;
             color: white;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
         }
-
-        .btn:hover {
-            background: #5a67d8;
-        }
-
-        .btn-success {
-            background: #10b981;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-        }
-
-        /* الجدول */
-        .table-section {
-            background: white;
-            border-radius: 32px;
-            padding: 28px 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-
-        .table-section h2 {
-            font-size: 1.6rem;
-            color: #0f172a;
-            border-right: 5px solid #f59e0b;
-            padding-right: 18px;
-            margin-bottom: 20px;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
         }
-
-        th {
-            background: #f1f5f9;
-            padding: 14px 12px;
-            text-align: right;
-            font-weight: 600;
-            color: #334155;
-        }
-
-        td {
+        th, td {
             padding: 12px;
+            text-align: right;
             border-bottom: 1px solid #e2e8f0;
         }
-
-        .status-completed {
-            background: #d1fae5;
-            color: #065f46;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .status-pending {
-            background: #fed7aa;
-            color: #9b2c1d;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .loading-row {
-            text-align: center;
-            padding: 32px;
-            color: #64748b;
-        }
-
-        .error-msg {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 16px;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 32px;
-            color: #94a3b8;
-            font-size: 0.75rem;
-        }
-
-        @media (max-width: 640px) {
-            .hero h1 {
-                font-size: 1.6rem;
-            }
-            .form-group {
-                flex-direction: column;
-            }
-            .btn {
-                width: 100%;
-            }
-        }
+        .status-completed { background: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 40px; display: inline-block; }
+        .status-pending { background: #fed7aa; color: #9b2c1d; padding: 4px 12px; border-radius: 40px; display: inline-block; }
+        .error-msg { color: #b91c1c; background: #fee2e2; padding: 12px; border-radius: 20px; text-align: center; }
+        @media (max-width: 640px) { .form-group { flex-direction: column; } button { width: 100%; } }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- رأس الصفحة -->
     <div class="hero">
         <h1>🤖 فريق AI Agents</h1>
         <p>9 وكلاء اصطناعيون | منتجات أصلية متطورة ساحرة</p>
         <div class="status-badge" id="connectionStatus">🔄 جاري الاتصال بقاعدة البيانات...</div>
     </div>
 
-    <!-- الإحصائيات -->
     <div class="stats-grid">
-        <div class="stat-card"><h3>💰 إجمالي الأرباح</h3><div class="stat-value" id="totalEarnings">0</div><span class="stat-unit">درهم</span></div>
+        <div class="stat-card"><h3>💰 إجمالي الأرباح</h3><div class="stat-value" id="totalEarnings">0</div><span>درهم</span></div>
         <div class="stat-card"><h3>📊 عدد العمليات</h3><div class="stat-value" id="transactionCount">0</div></div>
         <div class="stat-card"><h3>✅ مكتملة</h3><div class="stat-value" id="completedCount">0</div></div>
         <div class="stat-card"><h3>⏳ قيد الانتظار</h3><div class="stat-value" id="pendingCount">0</div></div>
     </div>
 
-    <!-- الوكلاء -->
     <div class="agents-section">
         <h2>🧠 فريق الـ 9 وكلاء</h2>
         <div class="agents-grid" id="agentsGrid"></div>
     </div>
 
-    <!-- إضافة ربح -->
     <div class="form-section">
-        <h2>➕ إضافة ربح جديد (للمشرف العام)</h2>
+        <h2>➕ إضافة ربح جديد</h2>
         <div class="form-group">
             <input type="text" id="platform" placeholder="المنصة" value="urpay">
-            <input type="number" id="amount" placeholder="المبلغ *" step="0.01" required>
+            <input type="number" id="amount" placeholder="المبلغ *" step="0.01">
             <input type="text" id="source" placeholder="المصدر" value="cashback">
-            <select id="statusSelect">
-                <option value="pending">⏳ قيد الانتظار</option>
-                <option value="completed">✅ مكتمل</option>
-            </select>
-            <button class="btn" onclick="addEarning()">➕ إضافة ربح</button>
-            <button class="btn btn-success" onclick="loadEarnings()">🔄 تحديث الكل</button>
+            <select id="statusSelect"><option value="pending">⏳ قيد الانتظار</option><option value="completed">✅ مكتمل</option></select>
+            <button onclick="addEarning()">➕ إضافة ربح</button>
+            <button onclick="loadEarnings()">🔄 تحديث</button>
         </div>
     </div>
 
-    <!-- سجل الأرباح -->
     <div class="table-section">
-        <h2>📋 سجل الأرباح (من Supabase)</h2>
-        <div style="overflow-x: auto;">
-            <table id="earningsTable">
-                <thead>
-                    <tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th>th
-                </thead>
-                <tbody id="earningsTableBody">
-                    <tr><td colspan="5" class="loading-row">جاري تحميل البيانات...</td></tr>
-                </tbody>
+        <h2>📋 سجل الأرباح</h2>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+                <tbody id="earningsTableBody"><tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr></tbody>
             </table>
         </div>
     </div>
-    <footer>⚡ النظام يعمل بشكل حقيقي | التحديث التلقائي كل 30 ثانية</footer>
+    <footer style="text-align:center; margin-top:20px; color:#94a3b8;">⚡ النظام يعمل بشكل حقيقي | تحديث تلقائي كل 30 ثانية</footer>
 </div>
 
 <script>
-    // ================== بيانات Supabase (أدخل بياناتك الحقيقية هنا) ==================
-    const SUPABASE_URL = 'https://https://xeleyltuqhvglxedigno.supabase.co';      // ⚠️ غيّر هذا
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';                  // ⚠️ غيّر هذا
-    // ============================================================================
+    // ================== أدخل بيانات Supabase الحقيقية هنا ==================
+    const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';   // ⚠️ غيّر هذا
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';               // ⚠️ غيّر هذا
+    // =================================================================
 
-    let supabaseClient = null;
-    let connectionOk = false;
+    let supabase = null;
 
-    // تهيئة Supabase
     function initSupabase() {
-        try {
-            if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-                throw new Error('مكتبة Supabase لم تُحمّل بشكل صحيح');
-            }
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            connectionOk = true;
-            document.getElementById('connectionStatus').innerHTML = '✅ متصل بقاعدة البيانات (Supabase)';
-            document.getElementById('connectionStatus').style.background = 'rgba(16,185,129,0.3)';
-            console.log('✅ Supabase initialized');
-            return true;
-        } catch (err) {
-            console.error('Supabase init error:', err);
-            document.getElementById('connectionStatus').innerHTML = '❌ فشل الاتصال: ' + err.message;
-            document.getElementById('connectionStatus').style.background = 'rgba(220,38,38,0.3)';
-            connectionOk = false;
+        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+            document.getElementById('connectionStatus').innerHTML = '❌ مكتبة Supabase لم تحمل';
             return false;
         }
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        document.getElementById('connectionStatus').innerHTML = '✅ متصل بقاعدة البيانات';
+        return true;
     }
 
-    // عرض الوكلاء (بيانات ثابتة)
-    const agentsList = [
-        { name: "المدير التنفيذي", role: "القيادة واتخاذ القرارات الاستراتيجية" },
-        { name: "محلل البيانات", role: "تحليل الأداء وتقديم التقارير" },
-        { name: "مدير المنصات", role: "إدارة حسابات المنصات وAPI" },
-        { name: "مدير الخدمات", role: "تنفيذ الخدمات التقنية الفريدة" },
-        { name: "المسوق الرقمي", role: "التسويق وجلب العملاء" },
-        { name: "مدير المحتوى", role: "إنشاء المحتوى والسردية" },
-        { name: "المحاسب", role: "تتبع الأرباح والمصروفات" },
-        { name: "مطور الويب", role: "تطوير الواجهات والـ API" },
-        { name: "مطور الألعاب", role: "تطوير ألعاب أصلية ساحرة" }
-    ];
+    const agents = ["المدير التنفيذي","محلل البيانات","مدير المنصات","مدير الخدمات","المسوق الرقمي","مدير المحتوى","المحاسب","مطور الويب","مطور الألعاب"];
+    document.getElementById('agentsGrid').innerHTML = agents.map(a => `<div class="agent-card"><strong>🤖 ${a}</strong><div style="font-size:12px;color:#10b981;">🟢 يعمل</div></div>`).join('');
 
-    function renderAgents() {
-        const container = document.getElementById('agentsGrid');
-        if (!container) return;
-        container.innerHTML = agentsList.map(agent => `
-            <div class="agent-card">
-                <div class="agent-name">🤖 ${agent.name}</div>
-                <div class="agent-role">${agent.role}</div>
-                <div class="agent-status">🟢 يعمل</div>
-            </div>
-        `).join('');
-    }
-
-    // جلب الأرباح من Supabase
-    async function fetchEarnings() {
-        if (!supabaseClient || !connectionOk) {
-            throw new Error('Supabase غير مهيأ');
-        }
-        const { data, error } = await supabaseClient
-            .from('earnings')
-            .select('*')
-            .order('date', { ascending: false });
-        if (error) throw error;
-        return data || [];
-    }
-
-    // تحديث الجدول والإحصائيات
     async function loadEarnings() {
-        const statusDiv = document.getElementById('connectionStatus');
-        const tbody = document.getElementById('earningsTableBody');
-        if (!supabaseClient) {
-            initSupabase();
-            if (!supabaseClient) return;
-        }
+        if (!supabase) if (!initSupabase()) return;
         try {
-            const earnings = await fetchEarnings();
-            if (!earnings || earnings.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="loading-row">📭 لا توجد أرباح مسجلة بعد. أضف ربحك الأول!</td></tr>';
+            const { data, error } = await supabase.from('earnings').select('*').order('date', { ascending: false });
+            if (error) throw error;
+            const tbody = document.getElementById('earningsTableBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td></tr>';
             } else {
-                tbody.innerHTML = earnings.map(item => `
+                tbody.innerHTML = data.map(item => `
                     <tr>
-                        <td>${escapeHtml(item.platform || '—')}</td>
+                        <td>${escapeHtml(item.platform || '-')}</td>
                         <td><strong>${Number(item.amount).toFixed(2)}</strong> درهم</td>
-                        <td>${escapeHtml(item.source || '—')}</td>
+                        <td>${escapeHtml(item.source || '-')}</td>
                         <td><span class="status-${item.status === 'completed' ? 'completed' : 'pending'}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
-                        <td>${item.date ? new Date(item.date).toLocaleString('ar-MA') : '—'}</td>
+                        <td>${item.date ? new Date(item.date).toLocaleString('ar-MA') : '-'}</td>
                     </tr>
                 `).join('');
             }
-
-            // تحديث الإحصائيات
-            const total = earnings.reduce((s, e) => s + Number(e.amount), 0);
-            const completed = earnings.filter(e => e.status === 'completed').length;
-            const pending = earnings.filter(e => e.status === 'pending').length;
+            const total = data.reduce((s, e) => s + Number(e.amount), 0);
             document.getElementById('totalEarnings').innerText = total.toFixed(2);
-            document.getElementById('transactionCount').innerText = earnings.length;
-            document.getElementById('completedCount').innerText = completed;
-            document.getElementById('pendingCount').innerText = pending;
-
-            if (statusDiv.innerHTML.includes('فشل')) {
-                statusDiv.innerHTML = '✅ متصل بقاعدة البيانات (Supabase)';
-                statusDiv.style.background = 'rgba(16,185,129,0.3)';
-            }
+            document.getElementById('transactionCount').innerText = data.length;
+            document.getElementById('completedCount').innerText = data.filter(e => e.status === 'completed').length;
+            document.getElementById('pendingCount').innerText = data.filter(e => e.status === 'pending').length;
         } catch (err) {
-            console.error('Load error:', err);
-            tbody.innerHTML = `<tr><td colspan="5" class="error-msg">❌ فشل التحميل: ${err.message}</td></tr>`;
-            statusDiv.innerHTML = `❌ خطأ في التحميل: ${err.message}`;
-            statusDiv.style.background = 'rgba(220,38,38,0.3)';
+            console.error(err);
+            document.getElementById('earningsTableBody').innerHTML = `<tr><td colspan="5" class="error-msg">❌ خطأ: ${err.message}</td></tr>`;
         }
     }
 
-    // إضافة ربح جديد
     window.addEarning = async function() {
-        if (!supabaseClient || !connectionOk) {
-            alert('❌ قاعدة البيانات غير متصلة. تأكد من إدخال بيانات Supabase الصحيحة.');
-            return;
-        }
+        if (!supabase) initSupabase();
         const platform = document.getElementById('platform').value.trim();
         const amount = parseFloat(document.getElementById('amount').value);
-        const source = document.getElementById('source').value.trim() || 'manual';
+        const source = document.getElementById('source').value.trim();
         const status = document.getElementById('statusSelect').value;
-
-        if (isNaN(amount) || amount <= 0) {
-            alert('⚠️ الرجاء إدخال مبلغ صحيح (أكبر من 0)');
-            return;
-        }
-        if (!platform) {
-            alert('⚠️ الرجاء إدخال اسم المنصة');
-            return;
-        }
-
+        if (isNaN(amount) || amount <= 0) { alert('مبلغ صحيح'); return; }
+        if (!platform) { alert('اسم المنصة'); return; }
         try {
-            const { error } = await supabaseClient
-                .from('earnings')
-                .insert([{
-                    platform,
-                    amount,
-                    source,
-                    status,
-                    type: 'income',
-                    date: new Date().toISOString()
-                }]);
+            const { error } = await supabase.from('earnings').insert([{ platform, amount, source, status, type: 'income', date: new Date().toISOString() }]);
             if (error) throw error;
-            alert(`✅ تم إضافة ${amount.toFixed(2)} درهم من ${platform}`);
+            alert(`✅ تم إضافة ${amount.toFixed(2)} درهم`);
             document.getElementById('amount').value = '';
             loadEarnings();
-        } catch (err) {
-            console.error('Insert error:', err);
-            alert('❌ فشل إضافة الربح: ' + err.message);
-        }
+        } catch (err) { alert('❌ فشل: ' + err.message); }
     };
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
+    function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m)) || ''; }
 
-    // بدء التطبيق
-    renderAgents();
     initSupabase();
     loadEarnings();
     setInterval(loadEarnings, 30000);
