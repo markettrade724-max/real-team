@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Agents | فريق الابتكار</title>
-    <!-- ✅ النسخة UMD من Supabase (لا تحتوي على export) -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2.39.0/dist/umd/supabase.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -134,7 +132,7 @@
     <div class="table-section">
         <h2>📋 سجل الأرباح</h2>
         <div style="overflow-x:auto;">
-            <table>
+             <table id="earningsTable">
                 <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></tr></thead>
                 <tbody id="earningsTableBody"><tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr></tbody>
             </table>
@@ -144,31 +142,35 @@
 </div>
 
 <script>
-    // ================== أدخل بيانات Supabase الحقيقية هنا ==================
+    // ================== بيانات Supabase (أدخل بياناتك الحقيقية هنا) ==================
     const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';   // ⚠️ غيّر هذا
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';               // ⚠️ غيّر هذا
-    // =================================================================
+    // ============================================================================
 
-    let supabase = null;
+    const API_URL = `${SUPABASE_URL}/rest/v1`;
+    const HEADERS = {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+    };
 
-    function initSupabase() {
-        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-            document.getElementById('connectionStatus').innerHTML = '❌ مكتبة Supabase لم تحمل';
-            return false;
-        }
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        document.getElementById('connectionStatus').innerHTML = '✅ متصل بقاعدة البيانات';
-        return true;
-    }
-
+    // عرض الوكلاء (ثابت)
     const agents = ["المدير التنفيذي","محلل البيانات","مدير المنصات","مدير الخدمات","المسوق الرقمي","مدير المحتوى","المحاسب","مطور الويب","مطور الألعاب"];
     document.getElementById('agentsGrid').innerHTML = agents.map(a => `<div class="agent-card"><strong>🤖 ${a}</strong><div style="font-size:12px;color:#10b981;">🟢 يعمل</div></div>`).join('');
 
+    async function fetchAPI(endpoint, options = {}) {
+        const res = await fetch(`${API_URL}/${endpoint}`, {
+            ...options,
+            headers: { ...HEADERS, ...options.headers }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        return res.json();
+    }
+
     async function loadEarnings() {
-        if (!supabase) if (!initSupabase()) return;
+        const statusDiv = document.getElementById('connectionStatus');
         try {
-            const { data, error } = await supabase.from('earnings').select('*').order('date', { ascending: false });
-            if (error) throw error;
+            const data = await fetchAPI('earnings?select=*&order=date.desc');
             const tbody = document.getElementById('earningsTableBody');
             if (!data || data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td></tr>';
@@ -184,36 +186,51 @@
                 `).join('');
             }
             const total = data.reduce((s, e) => s + Number(e.amount), 0);
+            const completed = data.filter(e => e.status === 'completed').length;
+            const pending = data.filter(e => e.status === 'pending').length;
             document.getElementById('totalEarnings').innerText = total.toFixed(2);
             document.getElementById('transactionCount').innerText = data.length;
-            document.getElementById('completedCount').innerText = data.filter(e => e.status === 'completed').length;
-            document.getElementById('pendingCount').innerText = data.filter(e => e.status === 'pending').length;
+            document.getElementById('completedCount').innerText = completed;
+            document.getElementById('pendingCount').innerText = pending;
+            statusDiv.innerHTML = '✅ متصل بقاعدة البيانات (REST)';
+            statusDiv.style.background = 'rgba(16,185,129,0.3)';
         } catch (err) {
             console.error(err);
-            document.getElementById('earningsTableBody').innerHTML = `<tr><td colspan="5" class="error-msg">❌ خطأ: ${err.message}</td></tr>`;
+            statusDiv.innerHTML = `❌ فشل الاتصال: ${err.message}`;
+            statusDiv.style.background = 'rgba(220,38,38,0.3)';
+            document.getElementById('earningsTableBody').innerHTML = `<tr><td colspan="5" class="error-msg">⚠️ ${err.message}</td></tr>`;
         }
     }
 
     window.addEarning = async function() {
-        if (!supabase) initSupabase();
         const platform = document.getElementById('platform').value.trim();
         const amount = parseFloat(document.getElementById('amount').value);
-        const source = document.getElementById('source').value.trim();
+        const source = document.getElementById('source').value.trim() || 'manual';
         const status = document.getElementById('statusSelect').value;
         if (isNaN(amount) || amount <= 0) { alert('مبلغ صحيح'); return; }
         if (!platform) { alert('اسم المنصة'); return; }
         try {
-            const { error } = await supabase.from('earnings').insert([{ platform, amount, source, status, type: 'income', date: new Date().toISOString() }]);
-            if (error) throw error;
+            await fetchAPI('earnings', {
+                method: 'POST',
+                body: JSON.stringify({
+                    platform, amount, source, status,
+                    type: 'income',
+                    date: new Date().toISOString()
+                })
+            });
             alert(`✅ تم إضافة ${amount.toFixed(2)} درهم`);
             document.getElementById('amount').value = '';
             loadEarnings();
-        } catch (err) { alert('❌ فشل: ' + err.message); }
+        } catch (err) {
+            alert('❌ فشل الإضافة: ' + err.message);
+        }
     };
 
-    function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m)) || ''; }
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m));
+    }
 
-    initSupabase();
     loadEarnings();
     setInterval(loadEarnings, 30000);
     window.loadEarnings = loadEarnings;
