@@ -1,0 +1,35 @@
+<!-- نفس الكود السابق، لكن مع إضافة التحقق من وجود الجدول -->
+<script>
+    // ... التهيئة كما هي ...
+    
+    async function loadData() {
+        const statusDiv = document.getElementById('status');
+        const supabase = window.supabaseClient;
+        if (!supabase) { /* ... */ }
+        
+        try {
+            // ✅ التحقق من وجود الجدول أولاً
+            const { error: tableCheckError } = await supabase
+                .from('earnings')
+                .select('id')
+                .limit(1);
+            
+            if (tableCheckError && tableCheckError.message.includes('relation')) {
+                throw new Error('الجدول "earnings" غير موجود في قاعدة البيانات. الرجاء إنشاؤه.');
+            }
+            
+            // ثم جلب البيانات
+            const { data, error } = await supabase
+                .from('earnings')
+                .select('*')
+                .order('date', { ascending: false });
+            
+            if (error) throw error;
+            // ... باقي الكود ...
+        } catch (err) {
+            statusDiv.innerHTML = `❌ فشل: ${err.message}`;
+            // عرض تعليمات للمشرف العام في Console
+            console.error('Supabase Error:', err);
+        }
+    }
+</script>
