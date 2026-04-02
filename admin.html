@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المشرف | AI Agents</title>
+    <title>المشرف | realteam</title>
     <style>
+        /* نفس الأنماط السابقة مع تغيير الألوان إن أردت */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Cairo', 'Segoe UI', sans-serif;
             background: #0f172a;
             padding: 24px 16px;
         }
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1300px; margin: 0 auto; }
         .header {
             background: linear-gradient(135deg, #1e293b, #0f172a);
             border-radius: 32px;
@@ -22,14 +20,8 @@
             margin-bottom: 32px;
             border: 1px solid #334155;
         }
-        .header h1 {
-            color: #f1f5f9;
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
-        .header p {
-            color: #94a3b8;
-        }
+        .header h1 { color: #f1f5f9; font-size: 1.8rem; margin-bottom: 8px; }
+        .header p { color: #94a3b8; }
         .status-badge {
             background: #1e293b;
             display: inline-block;
@@ -52,16 +44,8 @@
             text-align: center;
             border: 1px solid #334155;
         }
-        .stat-card h3 {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-        }
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #facc15;
-        }
+        .stat-card h3 { color: #94a3b8; font-size: 0.9rem; margin-bottom: 12px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: #facc15; }
         .section {
             background: #1e293b;
             border-radius: 28px;
@@ -69,12 +53,7 @@
             margin-bottom: 32px;
             border: 1px solid #334155;
         }
-        .section h2 {
-            color: #f1f5f9;
-            border-right: 4px solid #facc15;
-            padding-right: 16px;
-            margin-bottom: 20px;
-        }
+        .section h2 { color: #f1f5f9; border-right: 4px solid #facc15; padding-right: 16px; margin-bottom: 20px; }
         .form-group {
             display: flex;
             flex-wrap: wrap;
@@ -100,9 +79,7 @@
             color: #0f172a;
             transition: 0.2s;
         }
-        button:hover {
-            background: #eab308;
-        }
+        button:hover { background: #eab308; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -113,10 +90,7 @@
             text-align: right;
             border-bottom: 1px solid #334155;
         }
-        th {
-            color: #facc15;
-            font-weight: normal;
-        }
+        th { color: #facc15; font-weight: normal; }
         .status-completed {
             background: #10b98120;
             color: #10b981;
@@ -154,22 +128,22 @@
 <div class="container">
     <div class="header">
         <h1>🔐 لوحة تحكم المشرف العام</h1>
-        <p>إدارة الأرباح، الإحصائيات، وسجل العمليات</p>
+        <p>إدارة الأرباح، الإحصائيات، وسجل العمليات | realteam</p>
         <div class="status-badge" id="statusBadge">🔄 جاري التحميل...</div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card"><h3>💰 إجمالي الأرباح</h3><div class="stat-value" id="totalEarnings">0</div><div>درهم</div></div>
+        <div class="stat-card"><h3>💰 إجمالي الأرباح</h3><div class="stat-value" id="totalEarnings">0</div><div>USD</div></div>
         <div class="stat-card"><h3>📊 عدد العمليات</h3><div class="stat-value" id="transactionCount">0</div></div>
         <div class="stat-card"><h3>✅ مكتملة</h3><div class="stat-value" id="completedCount">0</div></div>
         <div class="stat-card"><h3>⏳ قيد الانتظار</h3><div class="stat-value" id="pendingCount">0</div></div>
     </div>
 
     <div class="section">
-        <h2>➕ إضافة ربح جديد</h2>
+        <h2>➕ إضافة ربح جديد (بالدولار)</h2>
         <div class="form-group">
-            <input type="text" id="platform" placeholder="المنصة (مثال: ko-fi, itch.io)" value="ko-fi">
-            <input type="number" id="amount" placeholder="المبلغ *" step="0.01">
+            <input type="text" id="platform" placeholder="المنصة (ko-fi, itch.io, x)" value="ko-fi">
+            <input type="number" id="amount" placeholder="المبلغ USD *" step="0.01">
             <input type="text" id="source" placeholder="المصدر" value="donation">
             <select id="statusSelect">
                 <option value="pending">⏳ قيد الانتظار</option>
@@ -181,16 +155,12 @@
     </div>
 
     <div class="section">
-        <h2>📋 سجل الأرباح</h2>
+        <h2>📋 سجل الأرباح (USD)</h2>
         <div style="overflow-x:auto;">
             <table id="earningsTable">
-                <thead>
-                    <tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th>th
-                </thead>
-                <tbody id="earningsBody">
-                    <tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr>
-                </tbody>
-             </table>
+                <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></thead>
+                <tbody id="earningsBody"><tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr></tbody>
+            </table>
         </div>
     </div>
     <footer>⚡ جميع البيانات محفوظة في Supabase | تحديث تلقائي كل 30 ثانية</footer>
@@ -198,7 +168,7 @@
 
 <script>
     // ================== الحماية بكلمة مرور ==================
-    const adminPassword = "sb_publishable_LO7cPrgvcKRMuBvb0VaViw_rmvnX7SH";  // ⚠️ غيّر هذه الكلمة إلى كلمة قوية
+    const adminPassword = "sb_publishable_LO7cPrgvcKRMuBvb0VaViw_rmvnX7SH";  // ⚠️ غير هذه الكلمة فورًا
     const userPass = prompt("🔐 أدخل كلمة مرور المشرف:");
     if (userPass !== adminPassword) {
         document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;color:red;'>🚫 غير مصرح بالدخول</h1>";
@@ -206,10 +176,10 @@
     }
     // =====================================================
 
-    // ================== بيانات Supabase (أدخل بياناتك الحقيقية) ==================
-    const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';      // ⚠️ غيّر هذا
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';                  // ⚠️ غيّر هذا
-    // ============================================================================
+    // ================== بيانات Supabase ==================
+    const SUPABASE_URL = 'xeleyltuqhvglxedigno.supabase.co';      // ⚠️ أدخل رابط مشروعك
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';                  // ⚠️ أدخل المفتاح العام
+    // =====================================================
 
     const API_URL = `${SUPABASE_URL}/rest/v1`;
     const HEADERS = {
@@ -238,7 +208,7 @@
                 tbody.innerHTML = data.map(item => `
                     <tr>
                         <td>${escapeHtml(item.platform || '-')}</td>
-                        <td><strong>${Number(item.amount).toFixed(2)}</strong> درهم</td>
+                        <td><strong>${Number(item.amount).toFixed(2)}</strong> USD</td>
                         <td>${escapeHtml(item.source || '-')}</td>
                         <td><span class="status-${item.status === 'completed' ? 'completed' : 'pending'}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
                         <td>${item.date ? new Date(item.date).toLocaleString('ar-MA') : '-'}</td>
@@ -268,7 +238,7 @@
         const source = document.getElementById('source').value.trim();
         const status = document.getElementById('statusSelect').value;
 
-        if (isNaN(amount) || amount <= 0) { alert('⚠️ الرجاء إدخال مبلغ صحيح'); return; }
+        if (isNaN(amount) || amount <= 0) { alert('⚠️ الرجاء إدخال مبلغ صحيح (دولار)'); return; }
         if (!platform) { alert('⚠️ الرجاء إدخال اسم المنصة'); return; }
 
         try {
@@ -280,7 +250,7 @@
                     date: new Date().toISOString()
                 })
             });
-            alert(`✅ تم إضافة ${amount.toFixed(2)} درهم من ${platform}`);
+            alert(`✅ تم إضافة ${amount.toFixed(2)} USD من ${platform}`);
             document.getElementById('amount').value = '';
             loadData();
         } catch (err) {
