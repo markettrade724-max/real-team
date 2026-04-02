@@ -1,137 +1,35 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>realteam | منتجات أصلية متطورة ساحرة</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Cairo', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container { max-width: 1000px; margin: 0 auto; }
-        .lang-bar {
-            text-align: left;
-            direction: ltr;
-            margin-bottom: 20px;
-        }
-        .lang-bar a {
-            color: white;
-            background: rgba(255,255,255,0.2);
-            padding: 6px 12px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 40px;
-            padding: 48px 24px;
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 16px; }
-        .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 24px; }
-        .button-group {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .btn {
-            padding: 12px 28px;
-            border-radius: 48px;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.2s;
-        }
-        .btn-primary {
-            background: white;
-            color: #667eea;
-        }
-        .btn-secondary {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-        .btn:hover { transform: translateY(-3px); }
-        .products {
-            background: white;
-            border-radius: 32px;
-            padding: 32px;
-            margin-bottom: 40px;
-        }
-        .products h2 {
-            color: #0f172a;
-            border-right: 5px solid #667eea;
-            padding-right: 16px;
-            margin-bottom: 24px;
-        }
-        .product-card {
-            background: #f8fafc;
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
-        }
-        .product-card h3 { color: #0f172a; margin-bottom: 12px; }
-        .product-card p { color: #475569; line-height: 1.6; }
-        .coming-soon {
-            background: #f1f5f9;
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            color: #667eea;
-            margin-top: 12px;
-        }
-        footer {
-            text-align: center;
-            color: #94a3b8;
-            margin-top: 40px;
-        }
-        @media (max-width: 640px) {
-            .hero h1 { font-size: 1.8rem; }
-            .btn { padding: 10px 20px; }
-        }
-    </style>
+    <title>realteam | Redirecting...</title>
+    <script>
+        // قائمة اللغات المدعومة وملفاتها
+        const languages = {
+            ar: { file: 'ar.html', name: 'العربية', priority: 1 },   // العربية
+            en: { file: 'en.html', name: 'English', priority: 2 },    // الإنجليزية
+            fr: { file: 'fr.html', name: 'Français', priority: 3 },    // الفرنسية
+            es: { file: 'es.html', name: 'Español', priority: 4 },     // الإسبانية
+            de: { file: 'de.html', name: 'Deutsch', priority: 5 },     // الألمانية
+            zh: { file: 'zh.html', name: '中文', priority: 6 }          // الصينية
+        };
+
+        // 1. الحصول على لغة المتصفح (مثال: 'ar', 'en-US' -> 'en')
+        let userLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
+        
+        // 2. التحقق من وجود اللغة في قائمتنا
+        let targetLang = languages[userLang] ? userLang : 'en';
+        
+        // 3. (اختياري) يمكنك أيضاً فحص Geolocation API لتحديد البلد وتحسين الدقة
+        //    لكننا سنكتفي بلغة المتصفح للتبسيط.
+
+        // 4. إعادة التوجيه إلى الملف المناسب
+        window.location.href = languages[targetLang].file;
+    </script>
 </head>
 <body>
-<div class="container">
-    <div class="lang-bar">
-        <a href="en.html">🇬🇧 English</a>
-    </div>
-    <div class="hero">
-        <h1>🤖 realteam</h1>
-        <p>نبتكر منتجات أصلية، متطورة، وساحرة</p>
-        <div class="button-group">
-            <a href="https://ko-fi.com/realteam" target="_blank" class="btn btn-primary">☕ ادعم رحلتنا</a>
-            <a href="https://twitter.com/realteam" target="_blank" class="btn btn-secondary">🐦 تابعنا على X</a>
-        </div>
-    </div>
-
-    <div class="products">
-        <h2>🎮 منتجاتنا القادمة</h2>
-        <div class="product-card">
-            <h3>لعبة [اسم اللعبة]</h3>
-            <p>لعبة ساحرة بمزيج فريد من الفن والمغامرة. ستأخذك في رحلة لا تُنسى. قريباً.</p>
-            <div class="coming-soon">⏳ قريباً</div>
-        </div>
-        <div class="product-card">
-            <h3>أداة الذكاء الاصطناعي</h3>
-            <p>أداة مبتكرة تساعد المبدعين على تحقيق أفكارهم بسرعة. قيد التطوير.</p>
-            <div class="coming-soon">⚙️ في التطوير</div>
-        </div>
-    </div>
-
-    <footer>
-        <p>© 2025 realteam — نبني المستقبل بتقنيات ساحرة</p>
-        <p><a href="admin.html" style="color:#475569; font-size:12px;">🔐 دخول المشرف</a></p>
-    </footer>
-</div>
+    <p>جاري إعادة التوجيه إلى النسخة المناسبة...</p>
+    <p>Redirecting to your language...</p>
 </body>
 </html>
