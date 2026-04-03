@@ -19,15 +19,19 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
-// نقطة بسيطة لجلب الأرباح (اختبار)
+// نقطة اختبار بسيطة
 app.get('/api/test', async (req, res) => {
-    const { data, error } = await supabase.from('earnings').select('count', { count: 'exact' });
-    if (error) return res.status(500).json({ error: error.message });
-    res.json({ success: true, count: data });
+    try {
+        const { data, error } = await supabase.from('earnings').select('count', { count: 'exact', head: true });
+        if (error) throw error;
+        res.json({ success: true, message: 'Supabase connected', count: data });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
-    console.log(`✅ Supabase: ${supabaseUrl ? 'configured' : 'missing'}`);
+    console.log(`✅ Supabase: ${supabaseUrl ? 'configured' : 'MISSING'}`);
 });
