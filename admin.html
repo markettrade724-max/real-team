@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المشرف | realteam</title>
     <style>
-        /* نفس الأنماط السابقة مع تغيير الألوان إن أردت */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Cairo', 'Segoe UI', sans-serif;
@@ -53,7 +52,12 @@
             margin-bottom: 32px;
             border: 1px solid #334155;
         }
-        .section h2 { color: #f1f5f9; border-right: 4px solid #facc15; padding-right: 16px; margin-bottom: 20px; }
+        .section h2 {
+            color: #f1f5f9;
+            border-right: 4px solid #facc15;
+            padding-right: 16px;
+            margin-bottom: 20px;
+        }
         .form-group {
             display: flex;
             flex-wrap: wrap;
@@ -91,59 +95,37 @@
             border-bottom: 1px solid #334155;
         }
         th { color: #facc15; font-weight: normal; }
-        .status-completed {
-            background: #10b98120;
-            color: #10b981;
-            padding: 4px 12px;
-            border-radius: 40px;
-            display: inline-block;
-        }
-        .status-pending {
-            background: #facc1520;
-            color: #facc15;
-            padding: 4px 12px;
-            border-radius: 40px;
-            display: inline-block;
-        }
-        .error-msg {
-            color: #f87171;
-            background: #7f1a1a40;
-            padding: 12px;
-            border-radius: 20px;
-            text-align: center;
-        }
-        footer {
-            text-align: center;
-            color: #475569;
-            margin-top: 32px;
-            font-size: 0.8rem;
-        }
-        @media (max-width: 640px) {
-            .form-group { flex-direction: column; }
-            button { width: 100%; }
-        }
+        .status-completed { background: #10b98120; color: #10b981; padding: 4px 12px; border-radius: 40px; display: inline-block; }
+        .status-pending { background: #facc1520; color: #facc15; padding: 4px 12px; border-radius: 40px; display: inline-block; }
+        .error-msg { color: #f87171; background: #7f1a1a40; padding: 12px; border-radius: 20px; text-align: center; }
+        footer { text-align: center; color: #475569; margin-top: 32px; font-size: 0.8rem; }
+        @media (max-width: 640px) { .form-group { flex-direction: column; } button { width: 100%; } }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <h1>🔐 لوحة تحكم المشرف العام</h1>
-        <p>إدارة الأرباح، الإحصائيات، وسجل العمليات | realteam</p>
+        <p>إدارة الأرباح، الإحصائيات، وسجل العمليات</p>
         <div class="status-badge" id="statusBadge">🔄 جاري التحميل...</div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card"><h3>💰 إجمالي الأرباح</h3><div class="stat-value" id="totalEarnings">0</div><div>USD</div></div>
+        <div class="stat-card"><h3>💰 إجمالي الأرباح (USD)</h3><div class="stat-value" id="totalEarnings">0</div><div>دولار</div></div>
         <div class="stat-card"><h3>📊 عدد العمليات</h3><div class="stat-value" id="transactionCount">0</div></div>
         <div class="stat-card"><h3>✅ مكتملة</h3><div class="stat-value" id="completedCount">0</div></div>
         <div class="stat-card"><h3>⏳ قيد الانتظار</h3><div class="stat-value" id="pendingCount">0</div></div>
     </div>
 
     <div class="section">
-        <h2>➕ إضافة ربح جديد (بالدولار)</h2>
+        <h2>➕ إضافة ربح جديد</h2>
         <div class="form-group">
-            <input type="text" id="platform" placeholder="المنصة (ko-fi, itch.io, x)" value="ko-fi">
-            <input type="number" id="amount" placeholder="المبلغ USD *" step="0.01">
+            <input type="text" id="platform" placeholder="المنصة (ko-fi, itch.io...)" value="ko-fi">
+            <input type="number" id="amount" placeholder="المبلغ *" step="0.01">
+            <select id="currencySelect">
+                <option value="USD">🇺🇸 دولار (USD)</option>
+                <option value="EUR">🇪🇺 يورو (EUR)</option>
+            </select>
             <input type="text" id="source" placeholder="المصدر" value="donation">
             <select id="statusSelect">
                 <option value="pending">⏳ قيد الانتظار</option>
@@ -155,31 +137,33 @@
     </div>
 
     <div class="section">
-        <h2>📋 سجل الأرباح (USD)</h2>
+        <h2>📋 سجل الأرباح</h2>
         <div style="overflow-x:auto;">
             <table id="earningsTable">
-                <thead><tr><th>المنصة</th><th>المبلغ</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th></thead>
-                <tbody id="earningsBody"><tr><td colspan="5" style="text-align:center;">جاري التحميل...</td></tr></tbody>
-            </table>
+                <thead>
+                    <tr><th>المنصة</th><th>المبلغ</th><th>العملة</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th>th
+                </thead>
+                <tbody id="earningsBody">
+                    <tr><td colspan="6" style="text-align:center;">جاري التحميل...</td></tr>
+                </tbody>
+             </table>
         </div>
     </div>
     <footer>⚡ جميع البيانات محفوظة في Supabase | تحديث تلقائي كل 30 ثانية</footer>
 </div>
 
 <script>
-    // ================== الحماية بكلمة مرور ==================
-    const adminPassword = "sb_publishable_LO7cPrgvcKRMuBvb0VaViw_rmvnX7SH";  // ⚠️ غير هذه الكلمة فورًا
+    // ========== الحماية بكلمة مرور ==========
+    const adminPassword = "سر_الفريق2025";sb_publishable_LO7cPrgvcKRMuBvb0VaViw_rmvnX7SH// ⚠️ غيرها إلى كلمة قوية
     const userPass = prompt("🔐 أدخل كلمة مرور المشرف:");
     if (userPass !== adminPassword) {
         document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;color:red;'>🚫 غير مصرح بالدخول</h1>";
         throw new Error("Unauthorized");
     }
-    // =====================================================
-
-    // ================== بيانات Supabase ==================
-    const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';      // ⚠️ أدخل رابط مشروعك
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';                  // ⚠️ أدخل المفتاح العام
-    // =====================================================
+    // ========== بيانات Supabase (أدخل بياناتك الحقيقية) ==========
+    const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';      // ⚠️ غير هذا
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';                  // ⚠️ غير هذا
+    // ============================================================
 
     const API_URL = `${SUPABASE_URL}/rest/v1`;
     const HEADERS = {
@@ -189,10 +173,7 @@
     };
 
     async function fetchAPI(endpoint, options = {}) {
-        const res = await fetch(`${API_URL}/${endpoint}`, {
-            ...options,
-            headers: { ...HEADERS, ...options.headers }
-        });
+        const res = await fetch(`${API_URL}/${endpoint}`, { ...options, headers: { ...HEADERS, ...options.headers } });
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         return res.json();
     }
@@ -203,12 +184,13 @@
             const data = await fetchAPI('earnings?select=*&order=date.desc');
             const tbody = document.getElementById('earningsBody');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td></tr>';
             } else {
                 tbody.innerHTML = data.map(item => `
                     <tr>
                         <td>${escapeHtml(item.platform || '-')}</td>
-                        <td><strong>${Number(item.amount).toFixed(2)}</strong> USD</td>
+                        <td><strong>${Number(item.amount).toFixed(2)}</strong></td>
+                        <td>${item.currency || 'USD'}</td>
                         <td>${escapeHtml(item.source || '-')}</td>
                         <td><span class="status-${item.status === 'completed' ? 'completed' : 'pending'}">${item.status === 'completed' ? '✅ مكتمل' : '⏳ قيد الانتظار'}</span></td>
                         <td>${item.date ? new Date(item.date).toLocaleString('ar-MA') : '-'}</td>
@@ -216,41 +198,39 @@
                 `).join('');
             }
 
-            const total = data.reduce((s, e) => s + Number(e.amount), 0);
-            const completed = data.filter(e => e.status === 'completed').length;
-            const pending = data.filter(e => e.status === 'pending').length;
-            document.getElementById('totalEarnings').innerText = total.toFixed(2);
+            const totalUSD = data.reduce((s, e) => s + (e.currency === 'USD' ? Number(e.amount) : 0), 0);
+            document.getElementById('totalEarnings').innerText = totalUSD.toFixed(2);
             document.getElementById('transactionCount').innerText = data.length;
-            document.getElementById('completedCount').innerText = completed;
-            document.getElementById('pendingCount').innerText = pending;
-
+            document.getElementById('completedCount').innerText = data.filter(e => e.status === 'completed').length;
+            document.getElementById('pendingCount').innerText = data.filter(e => e.status === 'pending').length;
             statusDiv.innerHTML = '✅ متصل بقاعدة البيانات (REST)';
         } catch (err) {
             console.error(err);
             statusDiv.innerHTML = `❌ فشل الاتصال: ${err.message}`;
-            document.getElementById('earningsBody').innerHTML = `<tr><td colspan="5" class="error-msg">⚠️ ${err.message}</td></tr>`;
+            document.getElementById('earningsBody').innerHTML = `<tr><td colspan="6" class="error-msg">⚠️ ${err.message}</td></tr>`;
         }
     }
 
     window.addEarning = async function() {
         const platform = document.getElementById('platform').value.trim();
         const amount = parseFloat(document.getElementById('amount').value);
+        const currency = document.getElementById('currencySelect').value;
         const source = document.getElementById('source').value.trim();
         const status = document.getElementById('statusSelect').value;
 
-        if (isNaN(amount) || amount <= 0) { alert('⚠️ الرجاء إدخال مبلغ صحيح (دولار)'); return; }
+        if (isNaN(amount) || amount <= 0) { alert('⚠️ الرجاء إدخال مبلغ صحيح'); return; }
         if (!platform) { alert('⚠️ الرجاء إدخال اسم المنصة'); return; }
 
         try {
             await fetchAPI('earnings', {
                 method: 'POST',
                 body: JSON.stringify({
-                    platform, amount, source: source || 'manual', status,
+                    platform, amount, currency, source: source || 'manual', status,
                     type: 'income',
                     date: new Date().toISOString()
                 })
             });
-            alert(`✅ تم إضافة ${amount.toFixed(2)} USD من ${platform}`);
+            alert(`✅ تم إضافة ${amount.toFixed(2)} ${currency} من ${platform}`);
             document.getElementById('amount').value = '';
             loadData();
         } catch (err) {
@@ -258,10 +238,7 @@
         }
     };
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m));
-    }
+    function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m)) || ''; }
 
     loadData();
     setInterval(loadData, 30000);
