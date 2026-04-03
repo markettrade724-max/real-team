@@ -20,9 +20,14 @@ app.get('/health', (req, res) => {
 
 app.get('/api/test', async (req, res) => {
     try {
-        const { data, error } = await supabase.from('earnings').select('count', { count: 'exact', head: true });
+        // الإصلاح: استخراج count من النتيجة مباشرةً وليس من data
+        const { count, error } = await supabase
+            .from('earnings')
+            .select('*', { count: 'exact', head: true });
+
         if (error) throw error;
-        res.json({ success: true, count: data });
+
+        res.json({ success: true, count });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
