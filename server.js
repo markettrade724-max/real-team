@@ -4,190 +4,198 @@ import crypto from 'crypto';
 
 const app = express();
 
-// ─── Middleware ───────────────────────────────────────────────
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // مطلوب لاستقبال Ko-fi
+// ====================== إعدادات الوسائط ======================
+app.use(express.json()); // لـ PayPal (يرسل JSON)
+app.use(express.urlencoded({ extended: true })); // لـ Ko-fi (يرسل x-www-form-urlencoded)
 
-// ─── متغيرات البيئة ───────────────────────────────────────────
-const {
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY, // استخدام service role بدلاً من anon key
-  KOFI_VERIFICATION_TOKEN,
-  PAYPAL_WEBHOOK_ID,
-  PORT = 3000,
-} = process.env;
+// ====================== قراءة المتغيرات البيئية ======================
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // ✅ SERVICE_ROLE_KEY
+const kofiVerificationToken = process.env.KOFI_VERIFICATION_TOKEN;
+const paypalWebhookId = process.env.PAYPAL_WEBHOOK_ID;
+const paypalClientId = process.env.PAYPAL_CLIENT_ID;
+const paypalClientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-const missing = [
-  !SUPABASE_URL && 'SUPABASE_URL',
-  !SUPABASE_SERVICE_ROLE_KEY && 'SUPABASE_SERVICE_ROLE_KEY',
-  !KOFI_VERIFICATION_TOKEN && 'KOFI_VERIFICATION_TOKEN',
-  !PAYPAL_WEBHOOK_ID && 'PAYPAL_WEBHOOK_ID',
-].filter(Boolean);
-
-if (missing.length > 0) {
-  console.error('❌ Missing environment variables:', missing.join(', '));
-  process.exit(1);
+// التحقق من وجود المتغيرات الأساسية
+if (!supabaseUrl || !supabaseServiceKey) {
+    console.error('❌ Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+    process.exit(1);
 }
 
-// ─── Supabase Client ──────────────────────────────────────────
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+// تهيئة Supabase بـ SERVICE_ROLE_KEY (يتجاوز RLS)
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// ─── دالة إضافة ربح ──────────────────────────────────────────
-async function addEarning({ platform, amount, currency, source, status, transactionId }) {
-  const parsedAmount = parseFloat(amount); // تحويل صريح إلى رقم
-
-  if (isNaN(parsedAmount)) {
-    console.error(`❌ Invalid amount: "${amount}" from ${platform}`);
-    return false;
-  }
-
-  const { error } = await supabase.from('earnings').insert([{
-    platform,
-    amount: parsedAmount,
-    currency,
-    source,
-    status,
-    type: 'income',
-    transaction_id: transactionId,
-    date: new Date().toISOString(),
-  }]);
-
-  if (error) {
-    console.error(`❌ Insert error [${platform}]:`, error.message);
-    return false;
-  }
-
-  console.log(`✅ Added: ${parsedAmount} ${currency} from ${platform}`);
-  return true;
-}
-
-// ─── Ko-fi Webhook ────────────────────────────────────────────
-app.post('/webhook/kofi', async (req, res) => {
-  try {
-    // Ko-fi يُرسل البيانات كـ form-urlencoded مع حقل "data" يحتوي JSON
-    const raw = req.body?.data;
-    if (!raw) {
-      console.warn('⚠️ Ko-fi: missing data field');
-      return res.sendStatus(400);
-    }
-
-    let data;
+// ====================== دالة مساعدة لإضافة ربح ======================
+async function addEarning(platform, amount, currency, source, status, transactionId = null) {
     try {
-      data = JSON.parse(raw);
-    } catch {
-      console.warn('⚠️ Ko-fi: invalid JSON in data field');
-      return res.sendStatus(400);
+        const { error } = await supabase
+            .from('earnings')
+            .insert([{
+                platform,
+                amount: parseFloat(amount),
+                currency: currency || 'USD',
+                source: source || 'auto',
+                status: status || 'completed',
+                type: 'income',
+                transaction_id: transactionId,
+                date: new Date().toISOString()
+            }]);
+        
+        if (error) {
+            console.error('❌ DB Insert Error:', error);
+            return false;
+        }
+        console.log(`✅ Added: ${amount} ${currency} from ${platform} (${transactionId})`);
+        return true;
+    } catch (err) {
+        console.error('❌ Exception:', err);
+        return false;
     }
+}
 
-    // التحقق من الـ verification token
-    if (data.verification_token !== KOFI_VERIFICATION_TOKEN) {
-      console.warn('⚠️ Ko-fi: invalid verification token');
-      return res.sendStatus(401);
+// ====================== Webhook: Ko-fi (مع التحقق من التوكن) ======================
+app.post('/webhook/kofi', async (req, res) => {
+    console.log('📨 Ko-fi webhook received');
+    
+    try {
+        // Ko-fi يرسل البيانات كـ x-www-form-urlencoded مع حقل data يحتوي على JSON
+        let payload;
+        if (req.body.data) {
+            payload = JSON.parse(req.body.data);
+        } else {
+            payload = req.body;
+        }
+        
+        const { verification_token, type, data } = payload;
+        
+        // التحقق من صحة التوكن
+        if (kofiVerificationToken && verification_token !== kofiVerificationToken) {
+            console.warn('⚠️ Invalid Ko-fi verification token');
+            return res.status(403).send('Invalid token');
+        }
+        
+        if (type === 'Donation' || type === 'Shop Order') {
+            const amount = data.amount;
+            const currency = data.currency || 'USD';
+            const transactionId = data.transaction_id || data.order_id || `kofi_${Date.now()}`;
+            const source = type === 'Donation' ? 'donation' : 'shop';
+            
+            await addEarning('Ko-fi', amount, currency, source, 'completed', transactionId);
+        }
+        
+        res.sendStatus(200);
+    } catch (err) {
+        console.error('❌ Ko-fi error:', err);
+        res.status(500).send('Internal error');
     }
-
-    if (data.type === 'Donation') {
-      const success = await addEarning({
-        platform: 'Ko-fi',
-        amount: data.amount,
-        currency: data.currency,
-        source: 'donation',
-        status: 'completed',
-        transactionId: data.kofi_transaction_id,
-      });
-
-      if (!success) return res.sendStatus(500);
-    }
-
-    res.sendStatus(200);
-  } catch (err) {
-    console.error('❌ Ko-fi webhook error:', err);
-    res.sendStatus(500);
-  }
 });
 
-// ─── PayPal Webhook ───────────────────────────────────────────
-app.post('/webhook/paypal', async (req, res) => {
-  try {
-    // التحقق من توقيع PayPal
-    const isValid = verifyPaypalSignature(req);
-    if (!isValid) {
-      console.warn('⚠️ PayPal: invalid webhook signature');
-      return res.sendStatus(401);
+// ====================== Webhook: PayPal (مع التحقق من التوقيع) ======================
+async function verifyPayPalWebhook(req, body) {
+    // إذا لم يتم إعداد webhook id، نسمح مؤقتاً (مع تحذير)
+    if (!paypalWebhookId || !paypalClientId || !paypalClientSecret) {
+        console.warn('⚠️ PayPal webhook verification disabled (missing env vars)');
+        return true;
     }
-
-    const event = req.body;
-
-    if (event?.event_type === 'PAYMENT.CAPTURE.COMPLETED') {
-      const amount = event?.resource?.amount?.value;
-      const currency = event?.resource?.amount?.currency_code;
-      const transactionId = event?.resource?.id;
-
-      if (!amount || !currency || !transactionId) {
-        console.warn('⚠️ PayPal: missing required fields', { amount, currency, transactionId });
-        return res.sendStatus(400);
-      }
-
-      const success = await addEarning({
-        platform: 'PayPal',
-        amount,
-        currency,
-        source: 'payment',
-        status: 'completed',
-        transactionId,
-      });
-
-      if (!success) return res.sendStatus(500);
-    }
-
-    res.sendStatus(200);
-  } catch (err) {
-    console.error('❌ PayPal webhook error:', err);
-    res.sendStatus(500);
-  }
-});
-
-// ─── التحقق من توقيع PayPal ───────────────────────────────────
-function verifyPaypalSignature(req) {
-  try {
+    
+    // الحصول على توقيع PayPal من headers
+    const transmissionSig = req.headers['paypal-transmission-sig'];
     const transmissionId = req.headers['paypal-transmission-id'];
-    const timestamp     = req.headers['paypal-transmission-time'];
-    const certUrl       = req.headers['paypal-cert-url'];
-    const signature     = req.headers['paypal-transmission-sig'];
-
-    if (!transmissionId || !timestamp || !certUrl || !signature) return false;
-
-    // بناء رسالة التحقق
-    const message = `${transmissionId}|${timestamp}|${PAYPAL_WEBHOOK_ID}|${crc32(JSON.stringify(req.body))}`;
-
-    // ملاحظة: التحقق الكامل يتطلب جلب الشهادة من certUrl والتحقق بـ RSA
-    // هنا نتحقق على الأقل من وجود الـ headers — للإنتاج الكامل استخدم paypal-rest-sdk
-    return Boolean(message && signature);
-  } catch {
-    return false;
-  }
+    const transmissionTime = req.headers['paypal-transmission-time'];
+    const certUrl = req.headers['paypal-cert-url'];
+    const authAlgo = req.headers['paypal-auth-algo'];
+    
+    if (!transmissionSig || !transmissionId) {
+        console.warn('⚠️ Missing PayPal signature headers');
+        return false;
+    }
+    
+    // الحصول على access token من PayPal
+    const auth = Buffer.from(`${paypalClientId}:${paypalClientSecret}`).toString('base64');
+    const tokenRes = await fetch('https://api.paypal.com/v1/oauth2/token', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'grant_type=client_credentials'
+    });
+    const tokenData = await tokenRes.json();
+    const accessToken = tokenData.access_token;
+    
+    if (!accessToken) {
+        console.error('❌ Failed to get PayPal access token');
+        return false;
+    }
+    
+    // التحقق من التوقيع
+    const verifyRes = await fetch('https://api.paypal.com/v1/notifications/verify-webhook-signature', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            transmission_id: transmissionId,
+            transmission_time: transmissionTime,
+            webhook_id: paypalWebhookId,
+            webhook_event: body,
+            cert_url: certUrl,
+            auth_algo: authAlgo,
+            transmission_sig: transmissionSig
+        })
+    });
+    
+    const verifyData = await verifyRes.json();
+    return verifyData.verification_status === 'SUCCESS';
 }
 
-function crc32(str) {
-  return crypto.createHash('crc32').update(str).digest('hex');
-}
-
-// ─── Health Check (مع فحص Supabase) ──────────────────────────
-app.get('/health', async (req, res) => {
-  try {
-    const { error } = await supabase
-      .from('earnings')
-      .select('count', { count: 'exact', head: true });
-
-    if (error) throw error;
-
-    res.json({ status: 'ok', database: 'connected' });
-  } catch (err) {
-    console.error('❌ Health check failed:', err.message);
-    res.status(503).json({ status: 'degraded', database: 'disconnected' });
-  }
+app.post('/webhook/paypal', async (req, res) => {
+    console.log('📨 PayPal webhook received');
+    
+    try {
+        // التحقق من التوقيع
+        const isValid = await verifyPayPalWebhook(req, req.body);
+        if (!isValid) {
+            console.warn('⚠️ Invalid PayPal signature');
+            return res.status(401).send('Invalid signature');
+        }
+        
+        const eventType = req.body.event_type;
+        const resource = req.body.resource;
+        
+        if (eventType === 'PAYMENT.CAPTURE.COMPLETED') {
+            const amount = resource.amount?.value;
+            const currency = resource.amount?.currency_code;
+            const transactionId = resource.id;
+            
+            if (amount) {
+                await addEarning('PayPal', amount, currency, 'payment', 'completed', transactionId);
+            }
+        }
+        
+        res.sendStatus(200);
+    } catch (err) {
+        console.error('❌ PayPal error:', err);
+        res.status(500).send('Internal error');
+    }
 });
 
-// ─── تشغيل السيرفر ────────────────────────────────────────────
+// ====================== نقطة فحص الصحة ======================
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        supabase: supabaseUrl ? 'configured' : 'missing',
+        service_role: supabaseServiceKey ? 'configured' : 'missing'
+    });
+});
+
+// ====================== تشغيل الخادم ======================
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`✅ Supabase service role: ${supabaseServiceKey ? 'configured' : 'MISSING'}`);
+    console.log(`✅ Ko-fi verification: ${kofiVerificationToken ? 'enabled' : 'disabled'}`);
+    console.log(`✅ PayPal verification: ${paypalWebhookId ? 'enabled' : 'disabled'}`);
 });
