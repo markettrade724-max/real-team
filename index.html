@@ -1,35 +1,373 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>realteam | Redirecting...</title>
-    <script>
-        // قائمة اللغات المدعومة وملفاتها
-        const languages = {
-            ar: { file: 'ar.html', name: 'العربية', priority: 1 },   // العربية
-            en: { file: 'en.html', name: 'English', priority: 2 },    // الإنجليزية
-            fr: { file: 'fr.html', name: 'Français', priority: 3 },    // الفرنسية
-            es: { file: 'es.html', name: 'Español', priority: 4 },     // الإسبانية
-            de: { file: 'de.html', name: 'Deutsch', priority: 5 },     // الألمانية
-            zh: { file: 'zh.html', name: '中文', priority: 6 }          // الصينية
-        };
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>realteam | ألعاب وبرامج أصلية متطورة ساحرة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        // 1. الحصول على لغة المتصفح (مثال: 'ar', 'en-US' -> 'en')
-        let userLang = (navigator.language || navigator.userLanguage || 'en').split('-')[0];
-        
-        // 2. التحقق من وجود اللغة في قائمتنا
-        let targetLang = languages[userLang] ? userLang : 'en';
-        
-        // 3. (اختياري) يمكنك أيضاً فحص Geolocation API لتحديد البلد وتحسين الدقة
-        //    لكننا سنكتفي بلغة المتصفح للتبسيط.
+        body {
+            font-family: 'Cairo', 'Segoe UI', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(145deg, #0a0f2c 0%, #0f172a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-        // 4. إعادة التوجيه إلى الملف المناسب
-        window.location.href = languages[targetLang].file;
-    </script>
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 48px;
+            padding: 60px 32px;
+            text-align: center;
+            color: white;
+            margin-bottom: 48px;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.4);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 32px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Products Grid */
+        .products {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(2px);
+            border-radius: 48px;
+            padding: 48px 32px;
+            margin-bottom: 48px;
+        }
+
+        .products h2 {
+            color: #f1f5f9;
+            font-size: 2rem;
+            border-right: 6px solid #facc15;
+            padding-right: 24px;
+            margin-bottom: 40px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 32px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.3);
+        }
+
+        .product-image {
+            height: 200px;
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .product-info {
+            padding: 24px;
+        }
+
+        .product-info h3 {
+            font-size: 1.6rem;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .product-info p {
+            color: #334155;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .product-badge {
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: #94a3b8;
+            padding: 32px 0;
+            border-top: 1px solid #334155;
+        }
+
+        /* Language Switcher */
+        .lang-selector {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: none;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { padding: 40px 20px; }
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .btn { padding: 10px 20px; font-size: 0.9rem; }
+            .products-grid { grid-template-columns: 1fr; }
+            .product-info h3 { font-size: 1.3rem; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .hero h1 { font-size: 1.6rem; }
+        }
+    </style>
 </head>
 <body>
-    <p>جاري إعادة التوجيه إلى النسخة المناسبة...</p>
-    <p>Redirecting to your language...</p>
+<select id="langSwitcher" class="lang-selector">
+    <option value="ar">🇸🇦 العربية</option>
+    <option value="en">🇬🇧 English</option>
+    <option value="fr">🇫🇷 Français</option>
+    <option value="es">🇪🇸 Español</option>
+    <option value="de">🇩🇪 Deutsch</option>
+    <option value="zh">🇨🇳 中文</option>
+</select>
+
+<div class="container">
+    <div class="hero">
+        <h1 id="heroTitle">فريق realteam</h1>
+        <p id="heroSub">نبتكر ألعابًا وبرامج أصلية، متطورة، وساحرة</p>
+        <div class="button-group">
+            <a id="supportBtn" href="https://ko-fi.com/aiagents" target="_blank" class="btn btn-primary">☕ ادعم الفريق</a>
+            <a id="followBtn" href="https://twitter.com/AIAgentsTeam" target="_blank" class="btn btn-secondary">🐦 تابعنا على X</a>
+        </div>
+    </div>
+
+    <div class="products">
+        <h2 id="productsTitle">🎮 منتجاتنا</h2>
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <footer>
+        <p id="footerText">© 2025 فريق realteam — نبني المستقبل بتقنيات ساحرة</p>
+    </footer>
+</div>
+
+<script>
+    // قائمة المنتجات (تضاف هنا أي لعبة أو برنامج جديد)
+    const productsList = [
+        {
+            id: 1,
+            nameKey: "game1_name",
+            descKey: "game1_desc",
+            badgeKey: "coming_soon",
+            imageEmoji: "🎮"
+        },
+        {
+            id: 2,
+            nameKey: "game2_name",
+            descKey: "game2_desc",
+            badgeKey: "in_dev",
+            imageEmoji: "⚙️"
+        }
+    ];
+
+    // الترجمات (6 لغات)
+    const translations = {
+        ar: {
+            heroTitle: "فريق realteam",
+            heroSub: "نبتكر ألعابًا وبرامج أصلية، متطورة، وساحرة",
+            supportBtn: "☕ ادعم الفريق",
+            followBtn: "🐦 تابعنا على X",
+            productsTitle: "🎮 منتجاتنا",
+            footerText: "© 2025 فريق realteam — نبني المستقبل بتقنيات ساحرة",
+            game1_name: "لعبة [اسم اللعبة الأولى]",
+            game1_desc: "لعبة ساحرة بمزيج فريد من الفن والمغامرة. تجربة لا تُنسى.",
+            game2_name: "أداة الذكاء الاصطناعي",
+            game2_desc: "أداة مبتكرة تساعد المبدعين على تحقيق أفكارهم بسرعة.",
+            coming_soon: "⏳ قريباً",
+            in_dev: "⚙️ قيد التطوير"
+        },
+        en: {
+            heroTitle: "realteam",
+            heroSub: "We create original, advanced, magical games & software",
+            supportBtn: "☕ Support the team",
+            followBtn: "🐦 Follow us on X",
+            productsTitle: "🎮 Our Products",
+            footerText: "© 2025 realteam — Building the future with magical tech",
+            game1_name: "Game [First Game Name]",
+            game1_desc: "A magical game with unique art and adventure. An unforgettable experience.",
+            game2_name: "AI Tool",
+            game2_desc: "An innovative tool to help creators realize their ideas quickly.",
+            coming_soon: "⏳ Coming soon",
+            in_dev: "⚙️ In development"
+        },
+        fr: {
+            heroTitle: "realteam",
+            heroSub: "Nous créons des jeux et logiciels originaux, avancés et magiques",
+            supportBtn: "☕ Soutenir l'équipe",
+            followBtn: "🐦 Suivez-nous sur X",
+            productsTitle: "🎮 Nos produits",
+            footerText: "© 2025 realteam — Construisons l'avenir avec une technologie magique",
+            game1_name: "Jeu [Nom du premier jeu]",
+            game1_desc: "Un jeu magique avec un art unique et de l'aventure. Une expérience inoubliable.",
+            game2_name: "Outil IA",
+            game2_desc: "Un outil innovant pour aider les créateurs à concrétiser leurs idées rapidement.",
+            coming_soon: "⏳ Bientôt",
+            in_dev: "⚙️ En développement"
+        },
+        es: {
+            heroTitle: "realteam",
+            heroSub: "Creamos juegos y software originales, avanzados y mágicos",
+            supportBtn: "☕ Apoya al equipo",
+            followBtn: "🐦 Síguenos en X",
+            productsTitle: "🎮 Nuestros productos",
+            footerText: "© 2025 realteam — Construyendo el futuro con tecnología mágica",
+            game1_name: "Juego [Nombre del primer juego]",
+            game1_desc: "Un juego mágico con arte único y aventura. Una experiencia inolvidable.",
+            game2_name: "Herramienta IA",
+            game2_desc: "Una herramienta innovadora para ayudar a los creadores a hacer realidad sus ideas rápidamente.",
+            coming_soon: "⏳ Próximamente",
+            in_dev: "⚙️ En desarrollo"
+        },
+        de: {
+            heroTitle: "realteam",
+            heroSub: "Wir schaffen originelle, fortschrittliche, magische Spiele und Software",
+            supportBtn: "☕ Unterstütze das Team",
+            followBtn: "🐦 Folge uns auf X",
+            productsTitle: "🎮 Unsere Produkte",
+            footerText: "© 2025 realteam — Die Zukunft mit magischer Technologie gestalten",
+            game1_name: "Spiel [Name des ersten Spiels]",
+            game1_desc: "Ein magisches Spiel mit einzigartiger Kunst und Abenteuer. Ein unvergessliches Erlebnis.",
+            game2_name: "KI-Tool",
+            game2_desc: "Ein innovatives Tool, das Kreativen hilft, ihre Ideen schnell zu verwirklichen.",
+            coming_soon: "⏳ Bald verfügbar",
+            in_dev: "⚙️ In Entwicklung"
+        },
+        zh: {
+            heroTitle: "realteam 团队",
+            heroSub: "我们创造原创、先进、神奇的游戏和软件",
+            supportBtn: "☕ 支持团队",
+            followBtn: "🐦 在 X 上关注我们",
+            productsTitle: "🎮 我们的产品",
+            footerText: "© 2025 realteam — 用神奇技术构建未来",
+            game1_name: "游戏 [第一款游戏名称]",
+            game1_desc: "一款神奇的游戏，融合了独特的艺术与冒险。难忘的体验。",
+            game2_name: "人工智能工具",
+            game2_desc: "一款创新工具，帮助创作者快速实现他们的想法。",
+            coming_soon: "⏳ 即将推出",
+            in_dev: "⚙️ 开发中"
+        }
+    };
+
+    let currentLang = localStorage.getItem('lang') || 'ar';
+
+    function applyLanguage(lang) {
+        const t = translations[lang];
+        if (!t) return;
+        document.getElementById('heroTitle').innerText = t.heroTitle;
+        document.getElementById('heroSub').innerText = t.heroSub;
+        document.getElementById('supportBtn').innerText = t.supportBtn;
+        document.getElementById('followBtn').innerText = t.followBtn;
+        document.getElementById('productsTitle').innerText = t.productsTitle;
+        document.getElementById('footerText').innerText = t.footerText;
+
+        // إعادة بناء قائمة المنتجات باللغة الجديدة
+        const container = document.getElementById('productsGrid');
+        if (container) {
+            container.innerHTML = productsList.map(product => `
+                <div class="product-card">
+                    <div class="product-image">${product.imageEmoji}</div>
+                    <div class="product-info">
+                        <h3>${t[product.nameKey] || product.nameKey}</h3>
+                        <p>${t[product.descKey] || product.descKey}</p>
+                        <span class="product-badge">${t[product.badgeKey] || product.badgeKey}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // اتجاه الصفحة
+        document.body.style.direction = lang === 'ar' ? 'rtl' : 'ltr';
+        document.body.style.textAlign = lang === 'ar' ? 'right' : 'left';
+        localStorage.setItem('lang', lang);
+    }
+
+    document.getElementById('langSwitcher').addEventListener('change', (e) => applyLanguage(e.target.value));
+    document.getElementById('langSwitcher').value = currentLang;
+    applyLanguage(currentLang);
+</script>
 </body>
 </html>
