@@ -120,7 +120,7 @@
     <div class="section">
         <h2>➕ إضافة ربح جديد</h2>
         <div class="form-group">
-            <input type="text" id="platform" placeholder="المنصة (ko-fi, itch.io...)" value="ko-fi">
+            <input type="text" id="platform" placeholder="المنصة" value="ko-fi">
             <input type="number" id="amount" placeholder="المبلغ *" step="0.01">
             <select id="currencySelect">
                 <option value="USD">🇺🇸 دولار (USD)</option>
@@ -144,26 +144,27 @@
                     <tr><th>المنصة</th><th>المبلغ</th><th>العملة</th><th>المصدر</th><th>الحالة</th><th>التاريخ</th>th
                 </thead>
                 <tbody id="earningsBody">
-                    <tr><td colspan="6" style="text-align:center;">جاري التحميل...</td></tr>
+                    <tr><td colspan="6" style="text-align:center;">جاري التحميل......</td></tr>
                 </tbody>
-             </table>
+            </table>
         </div>
     </div>
     <footer>⚡ جميع البيانات محفوظة في Supabase | تحديث تلقائي كل 30 ثانية</footer>
 </div>
 
 <script>
-    // ========== الحماية بكلمة مرور ==========
-    const adminPassword = "سر_الفريق2025";0000// ⚠️ غيرها إلى كلمة قوية
+    // ========== 🔐 قم بتعديل هذه القيم الثلاث فقط ==========
+    const adminPassword = "sb_publishable_LO7cPrgvcKRMuBvb0VaViw_rmvnX7SH";  // 1. كلمة المرور (غيرها بما تريد)
+    const SUPABASE_URL = "https://xeleyltuqhvglxedigno.supabase.co";    // 2. رابط Supabase
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY";                // 3. المفتاح العام
+    // =======================================================
+
+    // التحقق من كلمة المرور
     const userPass = prompt("🔐 أدخل كلمة مرور المشرف:");
     if (userPass !== adminPassword) {
         document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;color:red;'>🚫 غير مصرح بالدخول</h1>";
         throw new Error("Unauthorized");
     }
-    // ========== بيانات Supabase (أدخل بياناتك الحقيقية) ==========
-    const SUPABASE_URL = 'https://xeleyltuqhvglxedigno.supabase.co';      // ⚠️ غير هذا
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbGV5bHR1cWh2Z2x4ZWRpZ25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODIzODAsImV4cCI6MjA5MDI1ODM4MH0.6vfbta13Gh9YaBGhpew8sBKvKNeT5jlDiVGmZqZBrwY';                  // ⚠️ غير هذا
-    // ============================================================
 
     const API_URL = `${SUPABASE_URL}/rest/v1`;
     const HEADERS = {
@@ -184,7 +185,7 @@
             const data = await fetchAPI('earnings?select=*&order=date.desc');
             const tbody = document.getElementById('earningsBody');
             if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td><tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">📭 لا توجد أرباح مسجلة بعد</td></tr>';
             } else {
                 tbody.innerHTML = data.map(item => `
                     <tr>
