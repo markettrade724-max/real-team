@@ -1,0 +1,73 @@
+[
+  {
+    "id": "memory-cosmos",
+    "slug": "memory-cosmos",
+    "type": "memory",
+    "category": "game",
+    "status": "available",
+    "emoji": "🌌",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "name":   { "ar":"ذاكرة الكون",    "en":"Memory Cosmos",       "fr":"Mémoire Cosmos",   "es":"Memoria Cosmos",    "de":"Kosmos Memory",  "zh":"宇宙记忆"    },
+    "desc":   { "ar":"تحدّى ذاكرتك بين النجوم", "en":"Challenge your memory among the stars", "fr":"Défiez votre mémoire parmi les étoiles", "es":"Desafía tu memoria entre las estrellas", "de":"Fordere dein Gedächtnis unter den Sternen", "zh":"在星际间挑战记忆" },
+    "iap": [
+      { "id":"no-ads",      "type":"remove_ads",    "price":1.99, "emoji":"🚫",  "name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"} },
+      { "id":"hint-pack",   "type":"consumable",    "price":0.99, "emoji":"💡",  "name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"} },
+      { "id":"theme-neon",  "type":"cosmetic",      "price":1.49, "emoji":"🌈",  "name":{"ar":"ثيم النيون","en":"Neon Theme","fr":"Thème néon","es":"Tema neón","de":"Neon-Theme","zh":"霓虹主题"} },
+      { "id":"full-unlock", "type":"unlock",        "price":2.99, "emoji":"⭐",  "name":{"ar":"فتح كل المستويات","en":"Unlock All Levels","fr":"Débloquer tout","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"} }
+    ]
+  },
+  {
+    "id": "neon-puzzle",
+    "slug": "neon-puzzle",
+    "type": "puzzle",
+    "category": "game",
+    "status": "available",
+    "emoji": "🧩",
+    "accent": "#f472b6",
+    "accentRgb": "244,114,182",
+    "gradient": "135deg,#1a0533,#831843",
+    "name":   { "ar":"لغز النيون",    "en":"Neon Puzzle",     "fr":"Puzzle Néon",    "es":"Puzzle Neón",    "de":"Neon-Puzzle", "zh":"霓虹拼图"  },
+    "desc":   { "ar":"أعد تركيب الصورة قبل انتهاء الوقت", "en":"Reassemble the image before time runs out", "fr":"Réassemblez l'image avant la fin du temps", "es":"Reconstruye la imagen antes del tiempo", "de":"Bilde das Bild zusammen bevor die Zeit abläuft", "zh":"在时间耗尽前重新拼合图像" },
+    "iap": [
+      { "id":"no-ads",      "type":"remove_ads",    "price":1.99, "emoji":"🚫",  "name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"} },
+      { "id":"extra-time",  "type":"consumable",    "price":0.99, "emoji":"⏱️", "name":{"ar":"5 تمديدات وقت","en":"5 Time Extensions","fr":"5 extensions","es":"5 extensiones","de":"5 Zeitverlängerungen","zh":"5次延时"} },
+      { "id":"theme-cyber", "type":"cosmetic",      "price":1.49, "emoji":"🤖",  "name":{"ar":"ثيم سايبر","en":"Cyber Theme","fr":"Thème cyber","es":"Tema cyber","de":"Cyber-Theme","zh":"赛博主题"} },
+      { "id":"full-unlock", "type":"unlock",        "price":3.99, "emoji":"⭐",  "name":{"ar":"المجموعة الكاملة","en":"Full Collection","fr":"Collection complète","es":"Colección completa","de":"Vollständige Sammlung","zh":"完整收藏"} }
+    ]
+  },
+  {
+    "id": "focus-tool",
+    "slug": "focus-tool",
+    "type": "tool",
+    "category": "app",
+    "status": "available",
+    "emoji": "🧘",
+    "accent": "#34d399",
+    "accentRgb": "52,211,153",
+    "gradient": "135deg,#022c22,#064e3b",
+    "name":   { "ar":"أداة التركيز",  "en":"Focus Tool",      "fr":"Outil Focus",    "es":"Herramienta Focus", "de":"Fokus-Tool",  "zh":"专注工具"  },
+    "desc":   { "ar":"مؤقت بومودورو ذكي مع إحصائيات", "en":"Smart Pomodoro timer with stats", "fr":"Minuteur Pomodoro intelligent avec stats", "es":"Temporizador Pomodoro inteligente", "de":"Intelligenter Pomodoro-Timer mit Statistiken", "zh":"智能番茄钟与统计" },
+    "iap": [
+      { "id":"no-ads",      "type":"remove_ads",    "price":1.99, "emoji":"🚫",  "name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"} },
+      { "id":"stats-pro",   "type":"feature",       "price":2.49, "emoji":"📊",  "name":{"ar":"إحصائيات Pro","en":"Pro Stats","fr":"Stats Pro","es":"Stats Pro","de":"Pro-Statistiken","zh":"专业统计"} },
+      { "id":"themes-pack", "type":"cosmetic",      "price":1.99, "emoji":"🎨",  "name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack de thèmes","es":"Pack de temas","de":"Theme-Paket","zh":"主题包"} },
+      { "id":"full-pro",    "type":"unlock",        "price":4.99, "emoji":"👑",  "name":{"ar":"النسخة Pro الكاملة","en":"Full Pro Version","fr":"Version Pro complète","es":"Versión Pro completa","de":"Vollständige Pro-Version","zh":"完整Pro版"} }
+    ]
+  },
+  {
+    "id": "word-storm",
+    "slug": "word-storm",
+    "type": "word",
+    "category": "game",
+    "status": "coming_soon",
+    "emoji": "🌪️",
+    "accent": "#fbbf24",
+    "accentRgb": "251,191,36",
+    "gradient": "135deg,#1c1007,#78350f",
+    "name":   { "ar":"عاصفة الكلمات", "en":"Word Storm",      "fr":"Tempête de Mots","es":"Tormenta de Palabras","de":"Wortsturm","zh":"文字风暴" },
+    "desc":   { "ar":"تسابق مع الزمن لبناء أكبر عدد من الكلمات", "en":"Race against time to build as many words as possible", "fr":"Courez contre la montre", "es":"Compite contra el tiempo", "de":"Wette gegen die Zeit", "zh":"与时间赛跑" },
+    "iap": []
+  }
+]
