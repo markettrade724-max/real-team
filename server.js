@@ -37,6 +37,11 @@ async function saveEarning({ platform, amount, currency='USD', source, status='c
   return true;
 }
 
+// ── products.json ─────────────────────────────────────────────
+app.get('/products.json', (req, res) => {
+  res.sendFile(join(__dirname, 'products.json'));
+});
+
 // ── Ko-fi webhook ─────────────────────────────────────────────
 app.post('/webhook/kofi', async (req, res) => {
   try {
@@ -45,9 +50,7 @@ app.post('/webhook/kofi', async (req, res) => {
     let data;
     try { data = JSON.parse(raw); } catch { return res.sendStatus(400); }
     if (data.verification_token !== KOFI_VERIFICATION_TOKEN) return res.sendStatus(401);
-
     if (['Donation','Shop Order','Subscription'].includes(data.type)) {
-      // استخراج iapId من حقل message إن وُجد
       const iapId = data.message?.match(/\[iap:([^\]]+)\]/)?.[1] || null;
       const ok = await saveEarning({
         platform:'Ko-fi', amount:data.amount, currency:data.currency||'USD',
@@ -94,7 +97,7 @@ app.post('/api/admin/earnings', requireAdmin, async (req,res) => {
   ok ? res.json({ success:true }) : res.status(500).json({ error:'Insert failed' });
 });
 
-// ── Admin: GET products (live from products.json) ─────────────
+// ── Admin: GET products ───────────────────────────────────────
 app.get('/api/admin/products', requireAdmin, async (req,res) => {
   try {
     const { readFileSync } = await import('fs');
