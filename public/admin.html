@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — realteam</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060610;--s:#0d0d1f;--s2:#111122;--b:rgba(255,255,255,0.07);
+  --acc:#facc15;--acc2:#818cf8;--red:#ef4444;--green:#22c55e;
+  --txt:#f1f5f9;--mut:#64748b;
+  --font:'Tajawal',sans-serif;--mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(99,102,241,0.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(99,102,241,0.03) 1px,transparent 1px);
+  background-size:48px 48px;}
+
+/* ── LOGIN ── */
+#loginWrap{position:relative;z-index:1;display:flex;align-items:center;
+  justify-content:center;min-height:100vh;padding:20px;}
+.login-card{background:var(--s);border:1px solid var(--b);border-radius:24px;
+  padding:48px 36px;width:100%;max-width:360px;text-align:center;}
+.login-logo{font-family:var(--mono);font-size:1.1rem;color:var(--acc);margin-bottom:28px;}
+.login-logo span{color:var(--acc2);}
+.login-card h2{font-size:1.3rem;font-weight:900;margin-bottom:6px;}
+.login-card p{color:var(--mut);font-size:0.83rem;margin-bottom:24px;}
+.inp{width:100%;background:var(--bg);border:1px solid var(--b);padding:12px 16px;
+  border-radius:10px;color:var(--txt);font-size:0.95rem;font-family:var(--font);
+  margin-bottom:12px;transition:border-color 0.2s;}
+.inp:focus{outline:none;border-color:rgba(250,204,21,0.4);}
+.btn-login{width:100%;background:var(--acc);color:#000;border:none;padding:13px;
+  border-radius:10px;font-weight:700;font-size:0.95rem;font-family:var(--font);
+  cursor:pointer;transition:box-shadow 0.2s;}
+.btn-login:hover{box-shadow:0 0 24px rgba(250,204,21,0.3);}
+.login-err{color:var(--red);font-size:0.82rem;margin-top:10px;display:none;}
+
+/* ── TOPBAR ── */
+#dashWrap{display:none;position:relative;z-index:1;}
+.topbar{position:sticky;top:0;z-index:50;padding:13px 28px;
+  background:rgba(6,6,16,0.9);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--b);
+  display:flex;align-items:center;justify-content:space-between;}
+.topbar-logo{font-family:var(--mono);font-size:0.95rem;color:var(--acc);}
+.topbar-logo span{color:var(--acc2);}
+.topbar-r{display:flex;align-items:center;gap:10px;}
+.db-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);}
+.db-dot.off{background:var(--red);box-shadow:0 0 7px var(--red);}
+.db-txt{font-size:0.75rem;color:var(--mut);}
+.btn-sm{background:rgba(255,255,255,0.05);border:1px solid var(--b);color:var(--mut);
+  padding:6px 13px;border-radius:8px;font-size:0.77rem;cursor:pointer;font-family:var(--font);}
+.btn-sm:hover{color:var(--txt);}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--b);padding:0 28px;background:var(--bg);}
+.tab{padding:13px 20px;font-size:0.85rem;cursor:pointer;color:var(--mut);
+  border-bottom:2px solid transparent;transition:0.2s;font-family:var(--font);}
+.tab.active{color:var(--acc);border-bottom-color:var(--acc);}
+.tab:hover:not(.active){color:var(--txt);}
+
+/* ── CONTENT ── */
+.content{max-width:1200px;margin:0 auto;padding:32px 24px;}
+.panel{display:none;}.panel.active{display:block;}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:32px;}
+.stat{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:18px 16px;}
+.stat-lbl{font-family:var(--mono);font-size:0.65rem;color:var(--mut);letter-spacing:0.1em;margin-bottom:8px;}
+.stat-val{font-family:var(--mono);font-size:1.7rem;font-weight:700;color:var(--acc);}
+.stat-sub{font-size:0.72rem;color:var(--mut);margin-top:4px;}
+
+/* ── CARD ── */
+.card{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:20px;margin-bottom:20px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-title{font-size:0.88rem;font-weight:700;display:flex;align-items:center;gap:8px;}
+.card-title::before{content:'';width:3px;height:14px;background:var(--acc);border-radius:2px;display:block;}
+
+/* ── FORM ── */
+.form-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
+.ff{flex:1;min-width:120px;}
+.ff label{display:block;font-size:0.7rem;color:var(--mut);margin-bottom:5px;font-family:var(--mono);}
+.fi{width:100%;background:var(--bg);border:1px solid var(--b);padding:9px 13px;
+  border-radius:8px;color:var(--txt);font-size:0.88rem;font-family:var(--font);}
+.fi:focus{outline:none;border-color:rgba(250,204,21,0.35);}
+.btn-add{background:var(--acc);color:#000;border:none;padding:9px 20px;border-radius:8px;
+  font-weight:700;font-size:0.88rem;font-family:var(--font);cursor:pointer;white-space:nowrap;}
+.btn-add:hover{box-shadow:0 0 18px rgba(250,204,21,0.3);}
+.btn-ref{background:rgba(255,255,255,0.05);border:1px solid var(--b);color:var(--mut);
+  padding:9px 14px;border-radius:8px;font-size:0.82rem;cursor:pointer;font-family:var(--font);}
+.btn-ref:hover{color:var(--txt);}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:0.84rem;}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--b);}
+th{color:var(--mut);font-weight:400;font-family:var(--mono);font-size:0.68rem;letter-spacing:0.08em;}
+.badge{display:inline-block;padding:2px 9px;border-radius:100px;font-size:0.72rem;}
+.b-ok{background:rgba(34,197,94,0.12);color:#4ade80;}
+.b-wait{background:rgba(250,204,21,0.12);color:#facc15;}
+.b-game{background:rgba(129,140,248,0.12);color:var(--acc2);}
+.b-app{background:rgba(52,211,153,0.12);color:#34d399;}
+.b-soon{background:rgba(100,116,139,0.12);color:var(--mut);}
+.empty{text-align:center;color:var(--mut);padding:48px 0;font-size:0.88rem;}
+
+/* ── PRODUCTS GRID ── */
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.prod-card{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:16px;
+  display:flex;gap:12px;align-items:flex-start;}
+.prod-emoji{font-size:2.2rem;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(255,255,255,0.1));}
+.prod-info{flex:1;min-width:0;}
+.prod-name{font-size:0.9rem;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prod-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.prod-iaps{font-size:0.72rem;color:var(--mut);}
+.prod-iap-item{display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg);border-radius:6px;padding:4px 8px;margin-top:4px;font-size:0.75rem;}
+.prod-iap-price{font-family:var(--mono);color:var(--acc);}
+
+/* ── IAP STATS ── */
+.iap-row{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid var(--b);}
+.iap-row:last-child{border-bottom:none;}
+.iap-name{font-size:0.85rem;}
+.iap-count{font-family:var(--mono);font-size:0.9rem;color:var(--acc);}
+
+footer{border-top:1px solid var(--b);padding:24px;text-align:center;
+  color:var(--mut);font-size:0.78rem;margin-top:40px;}
+
+@media(max-width:640px){
+  .topbar,.tabs{padding-inline:14px;}
+  .content{padding:20px 14px;}
+  .form-row{flex-direction:column;}
+  .btn-add,.btn-ref{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">real<span>team</span></div>
+    <h2>لوحة التحكم</h2>
+    <p>أدخل كلمة المرور للمتابعة</p>
+    <input class="inp" type="password" id="passInp" placeholder="كلمة المرور"
+      onkeydown="if(event.key==='Enter')login()">
+    <button class="btn-login" onclick="login()">دخول →</button>
+    <div class="login-err" id="loginErr">❌ كلمة مرور خاطئة</div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashWrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-logo">real<span>team</span> <span style="color:var(--mut);font-size:0.7rem"> / admin</span></div>
+    <div class="topbar-r">
+      <div class="db-dot" id="dbDot"></div>
+      <span class="db-txt" id="dbTxt">جاري الاتصال...</span>
+      <a href="/" class="btn-sm">🏠 الموقع</a>
+      <button class="btn-sm" onclick="logout()">خروج</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('earnings',this)">💰 الأرباح</div>
+    <div class="tab" onclick="switchTab('products',this)">🎮 المنتجات</div>
+    <div class="tab" onclick="switchTab('iap',this)">🛒 المشتريات</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ TAB: EARNINGS ══ -->
+    <div class="panel active" id="tab-earnings">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat"><div class="stat-lbl">TOTAL USD</div><div class="stat-val" id="stTotal">0.00</div><div class="stat-sub">دولار أمريكي</div></div>
+        <div class="stat"><div class="stat-lbl">TRANSACTIONS</div><div class="stat-val" id="stCount">0</div><div class="stat-sub">عملية</div></div>
+        <div class="stat"><div class="stat-lbl">COMPLETED</div><div class="stat-val" id="stOk">0</div><div class="stat-sub">مكتملة</div></div>
+        <div class="stat"><div class="stat-lbl">PENDING</div><div class="stat-val" id="stPend">0</div><div class="stat-sub">قيد الانتظار</div></div>
+        <div class="stat"><div class="stat-lbl">KO-FI</div><div class="stat-val" id="stKofi">0</div><div class="stat-sub">عملية</div></div>
+        <div class="stat"><div class="stat-lbl">PAYPAL</div><div class="stat-val" id="stPaypal">0</div><div class="stat-sub">عملية</div></div>
+      </div>
+
+      <!-- Add earning -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">إضافة ربح يدوي</div>
+          <button class="btn-ref" onclick="loadEarnings()">🔄 تحديث</button>
+        </div>
+        <div class="form-row">
+          <div class="ff"><label>المنصة</label><input class="fi" id="fPlatform" value="ko-fi"></div>
+          <div class="ff"><label>المبلغ *</label><input class="fi" id="fAmount" type="number" step="0.01" placeholder="0.00"></div>
+          <div class="ff"><label>العملة</label>
+            <select class="fi" id="fCurrency"><option value="USD">USD</option><option value="EUR">EUR</option></select>
+          </div>
+          <div class="ff"><label>المصدر</label><input class="fi" id="fSource" value="donation"></div>
+          <div class="ff"><label>IAP ID</label><input class="fi" id="fIapId" placeholder="no-ads / hint-pack..."></div>
+          <div class="ff"><label>الحالة</label>
+            <select class="fi" id="fStatus"><option value="completed">مكتمل</option><option value="pending">انتظار</option></select>
+          </div>
+          <button class="btn-add" onclick="addEarning()">➕ إضافة</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card">
+        <div class="card-title">سجل الأرباح</div>
+        <div class="tbl-wrap" style="margin-top:16px">
+          <table>
+            <thead><tr>
+              <th>المنصة</th><th>المبلغ</th><th>العملة</th>
+              <th>المصدر</th><th>IAP</th><th>الحالة</th><th>التاريخ</th>
+            </tr></thead>
+            <tbody id="earningsTbody"><tr><td colspan="7" class="empty">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: PRODUCTS ══ -->
+    <div class="panel" id="tab-products">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">المنتجات من products.json</div>
+          <button class="btn-ref" onclick="loadProducts()">🔄 تحديث</button>
+        </div>
+        <div class="prod-grid" id="prodGrid">
+          <div class="empty">جاري التحميل...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: IAP STATS ══ -->
+    <div class="panel" id="tab-iap">
+      <div class="stats-row" id="iapStats">
+        <div class="stat"><div class="stat-lbl">IAP REVENUE</div><div class="stat-val" id="iapTotal">0.00</div><div class="stat-sub">من المشتريات الداخلية</div></div>
+        <div class="stat"><div class="stat-lbl">MOST BOUGHT</div><div class="stat-val" id="iapTop">—</div><div class="stat-sub">الأكثر مبيعاً</div></div>
+        <div class="stat"><div class="stat-lbl">NO-ADS SALES</div><div class="stat-val" id="iapNoAds">0</div><div class="stat-sub">مبيعة</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">تفصيل المشتريات الداخلية</div>
+        <div id="iapDetail" style="margin-top:16px">
+          <div class="empty">جاري التحميل...</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <footer>⚡ realteam admin — البيانات من Supabase · تحديث تلقائي 30ث</footer>
+</div>
+
+<script>
+let token = '';
+
+// ══ AUTH ══════════════════════════════════════════════════════
+async function login() {
+  const pass = document.getElementById('passInp').value;
+  if (!pass) return;
+  try {
+    const r = await fetch('/api/admin/earnings', { headers:{ 'x-admin-token': pass } });
+    if (r.ok) {
+      token = pass;
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('dashWrap').style.display  = 'block';
+      loadAll();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  } catch { document.getElementById('loginErr').style.display = 'block'; }
+}
+function logout() { token=''; location.reload(); }
+
+// ══ TABS ══════════════════════════════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'products') loadProducts();
+  if (id === 'iap') loadIAP();
+}
+
+// ══ LOAD ALL ══════════════════════════════════════════════════
+function loadAll() { loadEarnings(); }
+
+// ══ EARNINGS ══════════════════════════════════════════════════
+async function loadEarnings() {
+  const dot = document.getElementById('dbDot');
+  const txt = document.getElementById('dbTxt');
+  try {
+    const r = await fetch('/api/admin/earnings', { headers:{ 'x-admin-token': token } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const { data } = await r.json();
+
+    // stats
+    const usd    = data.reduce((s,e) => s + (e.currency==='USD' ? +e.amount : 0), 0);
+    const ok     = data.filter(e => e.status==='completed');
+    const pend   = data.filter(e => e.status==='pending');
+    const kofi   = data.filter(e => e.platform==='Ko-fi');
+    const paypal = data.filter(e => e.platform==='PayPal');
+    document.getElementById('stTotal').textContent  = usd.toFixed(2);
+    document.getElementById('stCount').textContent  = data.length;
+    document.getElementById('stOk').textContent     = ok.length;
+    document.getElementById('stPend').textContent   = pend.length;
+    document.getElementById('stKofi').textContent   = kofi.length;
+    document.getElementById('stPaypal').textContent = paypal.length;
+
+    // table
+    const tb = document.getElementById('earningsTbody');
+    if (!data.length) {
+      tb.innerHTML = '<tr><td colspan="7" class="empty">📭 لا توجد أرباح بعد</td></tr>';
+    } else {
+      tb.innerHTML = data.map(e => `
+        <tr>
+          <td>${esc(e.platform)}</td>
+          <td><strong style="font-family:var(--mono)">${(+e.amount).toFixed(2)}</strong></td>
+          <td>${esc(e.currency)}</td>
+          <td>${esc(e.source)}</td>
+          <td>${e.iap_id ? `<span class="badge b-game">${esc(e.iap_id)}</span>` : '<span style="color:var(--mut)">—</span>'}</td>
+          <td><span class="badge ${e.status==='completed'?'b-ok':'b-wait'}">${e.status==='completed'?'✓ مكتمل':'⏳ انتظار'}</span></td>
+          <td style="color:var(--mut);font-size:0.78rem">${e.date ? new Date(e.date).toLocaleString('ar-MA') : '—'}</td>
+        </tr>`).join('');
+    }
+
+    dot.className = 'db-dot';
+    txt.textContent = 'متصل بقاعدة البيانات';
+  } catch(err) {
+    dot.className = 'db-dot off';
+    txt.textContent = 'فشل: ' + err.message;
+  }
+}
+
+// ══ ADD EARNING ════════════════════════════════════════════════
+async function addEarning() {
+  const platform = document.getElementById('fPlatform').value.trim();
+  const amount   = parseFloat(document.getElementById('fAmount').value);
+  const currency = document.getElementById('fCurrency').value;
+  const source   = document.getElementById('fSource').value.trim() || 'manual';
+  const iapId    = document.getElementById('fIapId').value.trim() || null;
+  const status   = document.getElementById('fStatus').value;
+
+  if (!platform)              { alert('أدخل اسم المنصة'); return; }
+  if (isNaN(amount)||amount<=0) { alert('أدخل مبلغاً صحيحاً'); return; }
+
+  try {
+    const r = await fetch('/api/admin/earnings', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'x-admin-token': token },
+      body: JSON.stringify({ platform, amount, currency, source, iap_id:iapId, status })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    document.getElementById('fAmount').value = '';
+    document.getElementById('fIapId').value  = '';
+    await loadEarnings();
+  } catch(err) { alert('❌ ' + err.message); }
+}
+
+// ══ PRODUCTS ══════════════════════════════════════════════════
+async function loadProducts() {
+  try {
+    const r = await fetch('/api/admin/products', { headers:{ 'x-admin-token': token } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const { data } = await r.json();
+    const grid = document.getElementById('prodGrid');
+
+    grid.innerHTML = data.map(p => {
+      const name = p.name?.ar || p.name?.en || p.id;
+      const catBadge = p.category==='game' ? 'b-game' : 'b-app';
+      const statusBadge = p.status==='available' ? 'b-ok' : 'b-soon';
+      const statusLabel = p.status==='available' ? 'متاح' : 'قريباً';
+      return `
+        <div class="prod-card">
+          <div class="prod-emoji">${p.emoji}</div>
+          <div class="prod-info">
+            <div class="prod-name">${esc(name)}</div>
+            <div class="prod-meta">
+              <span class="badge ${catBadge}">${p.category?.toUpperCase()}</span>
+              <span class="badge ${statusBadge}">${statusLabel}</span>
+              <span class="badge b-wait">${p.type?.toUpperCase()}</span>
+            </div>
+            <div class="prod-iaps">${p.iap?.length||0} مشتريات داخلية</div>
+            ${(p.iap||[]).map(i => `
+              <div class="prod-iap-item">
+                <span>${i.emoji} ${i.name?.ar||i.name?.en}</span>
+                <span class="prod-iap-price">$${i.price?.toFixed(2)}</span>
+              </div>`).join('')}
+          </div>
+        </div>`;
+    }).join('');
+  } catch(err) {
+    document.getElementById('prodGrid').innerHTML = `<div class="empty">❌ ${err.message}</div>`;
+  }
+}
+
+// ══ IAP STATS ═════════════════════════════════════════════════
+async function loadIAP() {
+  try {
+    const r = await fetch('/api/admin/earnings', { headers:{ 'x-admin-token': token } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const { data } = await r.json();
+
+    const iapOnly = data.filter(e => e.iap_id);
+    const iapRev  = iapOnly.reduce((s,e) => s + (e.currency==='USD' ? +e.amount : 0), 0);
+
+    // count per iap_id
+    const counts = {};
+    iapOnly.forEach(e => { counts[e.iap_id] = (counts[e.iap_id]||0)+1; });
+    const sorted  = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+    const topId   = sorted[0]?.[0] || '—';
+    const noAds   = counts['no-ads'] || 0;
+
+    document.getElementById('iapTotal').textContent  = iapRev.toFixed(2);
+    document.getElementById('iapTop').textContent    = topId;
+    document.getElementById('iapNoAds').textContent  = noAds;
+
+    const detail = document.getElementById('iapDetail');
+    if (!sorted.length) {
+      detail.innerHTML = '<div class="empty">لا توجد مشتريات بعد</div>';
+      return;
+    }
+    detail.innerHTML = sorted.map(([id, count]) => {
+      const rev = iapOnly.filter(e=>e.iap_id===id).reduce((s,e)=>s+(e.currency==='USD'?+e.amount:0),0);
+      return `
+        <div class="iap-row">
+          <span class="iap-name"><span class="badge b-game" style="margin-left:8px">${esc(id)}</span></span>
+          <div style="display:flex;align-items:center;gap:20px">
+            <span style="color:var(--mut);font-size:0.78rem">${count} مبيعة</span>
+            <span class="iap-count">$${rev.toFixed(2)}</span>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(err) {
+    document.getElementById('iapDetail').innerHTML = `<div class="empty">❌ ${err.message}</div>`;
+  }
+}
+
+// ══ HELPERS ═══════════════════════════════════════════════════
+function esc(s) {
+  return String(s||'—').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+}
+
+// تحديث تلقائي كل 30 ثانية
+setInterval(() => { if (token) loadEarnings(); }, 30000);
+</script>
+</body>
+</html>
