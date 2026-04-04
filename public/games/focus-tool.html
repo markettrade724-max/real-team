@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أداة التركيز — realteam</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060610;--surface:#0d0d1f;--border:rgba(255,255,255,0.08);
+  --accent:#34d399;--accentRgb:52,211,153;
+  --text:#f1f5f9;--muted:#64748b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 100px;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(52,211,153,0.06),transparent);}
+.wrap{position:relative;z-index:1;width:100%;max-width:480px;}
+
+.g-back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:0.82rem;
+  text-decoration:none;margin-bottom:24px;margin-top:8px;transition:color 0.2s;}
+.g-back:hover{color:var(--text);}
+
+/* AD */
+#ad-banner{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;
+  padding:9px 14px;text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;}
+#ad-banner.hidden{display:none;}
+.ad-remove-btn{background:rgba(52,211,153,0.15);color:var(--accent);border:none;padding:4px 10px;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;}
+
+/* TIMER */
+.timer-wrap{text-align:center;margin-bottom:32px;}
+.timer-ring{position:relative;width:220px;height:220px;margin:0 auto 20px;}
+.timer-ring svg{transform:rotate(-90deg);}
+.timer-ring circle{fill:none;stroke:var(--surface);stroke-width:8;}
+.timer-ring .progress{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+.timer-display{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.timer-time{font-family:'Space Mono',monospace;font-size:2.6rem;font-weight:700;color:var(--text);}
+.timer-mode{font-size:0.8rem;color:var(--muted);margin-top:4px;}
+.timer-controls{display:flex;gap:12px;justify-content:center;}
+.btn-ctrl{background:var(--surface);border:1px solid var(--border);color:var(--text);
+  padding:10px 24px;border-radius:12px;font-size:0.9rem;cursor:pointer;font-family:inherit;
+  transition:border-color 0.2s,background 0.2s;}
+.btn-ctrl:hover{border-color:rgba(52,211,153,0.4);background:rgba(52,211,153,0.06);}
+.btn-ctrl.primary{background:var(--accent);color:#000;font-weight:700;border-color:var(--accent);}
+.btn-ctrl.primary:hover{box-shadow:0 0 20px rgba(52,211,153,0.4);}
+
+/* MODE SELECTOR */
+.modes{display:flex;gap:8px;margin-bottom:28px;}
+.mode-btn{flex:1;padding:10px 8px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);color:var(--muted);font-size:0.82rem;cursor:pointer;
+  font-family:inherit;text-align:center;transition:0.2s;}
+.mode-btn.active{border-color:rgba(52,211,153,0.5);background:rgba(52,211,153,0.1);color:var(--accent);font-weight:700;}
+
+/* STATS (Pro feature) */
+.stats-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;position:relative;}
+.stats-section.locked::after{content:'🔒 Pro';position:absolute;inset:0;background:rgba(6,6,16,0.7);
+  border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:700;color:var(--muted);cursor:pointer;}
+.section-title{font-size:0.85rem;font-weight:700;color:var(--muted);margin-bottom:14px;font-family:'Space Mono',monospace;letter-spacing:0.08em;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat-item{text-align:center;}
+.stat-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);}
+.stat-lbl{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="g-back">← العودة</a>
+
+  <div id="ad-banner">
+    <span>📢 الإعلانات تدعم الفريق</span>
+    <button class="ad-remove-btn" onclick="IAPStore.open()">إزالة $1.99</button>
+  </div>
+
+  <!-- MODE -->
+  <div class="modes">
+    <button class="mode-btn active" onclick="setMode('focus',25,this)">🧘 تركيز<br><small>25 min</small></button>
+    <button class="mode-btn" onclick="setMode('short',5,this)">☕ استراحة قصيرة<br><small>5 min</small></button>
+    <button class="mode-btn" onclick="setMode('long',15,this)">🌿 استراحة طويلة<br><small>15 min</small></button>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer-wrap">
+    <div class="timer-ring">
+      <svg width="220" height="220" viewBox="0 0 220 220">
+        <circle cx="110" cy="110" r="96"/>
+        <circle class="progress" id="progress-ring" cx="110" cy="110" r="96"
+          stroke-dasharray="603" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-display">
+        <div class="timer-time" id="timer-display">25:00</div>
+        <div class="timer-mode" id="mode-label">تركيز</div>
+      </div>
+    </div>
+    <div class="timer-controls">
+      <button class="btn-ctrl" onclick="reset()">↺</button>
+      <button class="btn-ctrl primary" id="btn-start" onclick="toggle()">▶ ابدأ</button>
+      <button class="btn-ctrl" onclick="skip()">⏭</button>
+    </div>
+  </div>
+
+  <!-- STATS (locked until Pro) -->
+  <div class="stats-section" id="stats-section" onclick="handleStatsClick()">
+    <div class="section-title">STATS</div>
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-val" id="s-sessions">0</div><div class="stat-lbl">جلسات</div></div>
+      <div class="stat-item"><div class="stat-val" id="s-minutes">0</div><div class="stat-lbl">دقيقة</div></div>
+      <div class="stat-item"><div class="stat-val" id="s-streak">0</div><div class="stat-lbl">متواصل</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="/iap-modal.js"></script>
+<script>
+IAPStore.init('focus-tool', 'ar', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"stats-pro","type":"feature","price":2.49,"emoji":"📊","name":{"ar":"إحصائيات Pro","en":"Pro Stats","fr":"Stats Pro","es":"Stats Pro","de":"Pro-Statistiken","zh":"专业统计"}},{"id":"themes-pack","type":"cosmetic","price":1.99,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack de thèmes","es":"Pack de temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-pro","type":"unlock","price":4.99,"emoji":"👑","name":{"ar":"النسخة Pro الكاملة","en":"Full Pro Version","fr":"Version Pro complète","es":"Versión Pro completa","de":"Vollständige Pro-Version","zh":"完整Pro版"}}]);
+if(IAPStore.isOwned('no-ads')) document.getElementById('ad-banner').classList.add('hidden');
+window.addEventListener('iap:no-ads', ()=>document.getElementById('ad-banner').classList.add('hidden'));
+
+// unlock stats on purchase
+function checkPro(){ document.getElementById('stats-section').classList.toggle('locked',!IAPStore.isOwned('stats-pro')&&!IAPStore.isOwned('full-pro')); }
+window.addEventListener('iap:purchased', checkPro);
+checkPro();
+
+function handleStatsClick(){
+  const locked=document.getElementById('stats-section').classList.contains('locked');
+  if(locked) IAPStore.open();
+}
+
+// ── Timer Logic ───────────────────────────────────────────────
+let duration=25*60, remaining=25*60, running=false, interval=null, mode='focus';
+const CIRC=2*Math.PI*96;
+
+function setMode(m,mins,btn){
+  mode=m; duration=mins*60; remaining=mins*60;
+  running=false; clearInterval(interval);
+  document.getElementById('btn-start').textContent='▶ ابدأ';
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function toggle(){
+  if(running){ running=false; clearInterval(interval); document.getElementById('btn-start').textContent='▶ ابدأ'; }
+  else { running=true; interval=setInterval(tick,1000); document.getElementById('btn-start').textContent='⏸ توقف'; }
+}
+
+function tick(){
+  if(remaining<=0){ finish(); return; }
+  remaining--; render();
+}
+
+function render(){
+  const m=Math.floor(remaining/60),s=remaining%60;
+  document.getElementById('timer-display').textContent=m+':'+(s<10?'0':'')+s;
+  const pct=1-(remaining/duration);
+  document.getElementById('progress-ring').style.strokeDashoffset=CIRC*pct;
+}
+
+function reset(){ running=false; clearInterval(interval); remaining=duration; document.getElementById('btn-start').textContent='▶ ابدأ'; render(); }
+
+function skip(){ finish(); }
+
+function finish(){
+  running=false; clearInterval(interval);
+  document.getElementById('btn-start').textContent='▶ ابدأ';
+  // stats
+  const sessions=parseInt(localStorage.getItem('rt_sessions_focus-tool')||'0')+1;
+  const minutes=parseInt(localStorage.getItem('rt_minutes_focus-tool')||'0')+(duration/60|0);
+  localStorage.setItem('rt_sessions_focus-tool',sessions);
+  localStorage.setItem('rt_minutes_focus-tool',minutes);
+  document.getElementById('s-sessions').textContent=sessions;
+  document.getElementById('s-minutes').textContent=minutes;
+  remaining=duration; render();
+  if(mode==='focus') alert('✅ انتهت الجلسة! خذ استراحة.');
+}
+
+// load stats
+document.getElementById('s-sessions').textContent=localStorage.getItem('rt_sessions_focus-tool')||'0';
+document.getElementById('s-minutes').textContent=localStorage.getItem('rt_minutes_focus-tool')||'0';
+render();
+</script>
+</body>
+</html>
