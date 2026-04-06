@@ -1,0 +1,29 @@
+name: QA Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server.js'
+      - 'public/**'
+      - 'products.json'
+  workflow_dispatch:
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Wait for Railway deployment
+        run: sleep 30  # انتظر 30 ثانية حتى يكتمل النشر
+
+      - name: Run QA tests
+        run: node scripts/qa-bot.js
+        env:
+          SITE_URL: https://real-team-production.up.railway.app
