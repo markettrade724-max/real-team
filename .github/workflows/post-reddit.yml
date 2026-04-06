@@ -1,0 +1,26 @@
+name: Post to Reddit
+
+on:
+  schedule:
+    - cron: '0 15 * * 3'  # كل أربعاء الساعة 3 مساءً
+  workflow_dispatch:
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Post to Reddit
+        run: node scripts/post-reddit.js
+        env:
+          REDDIT_CLIENT_ID:     ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USERNAME:      ${{ secrets.REDDIT_USERNAME }}
+          REDDIT_PASSWORD:      ${{ secrets.REDDIT_PASSWORD }}
+          SITE_URL: https://real-team-production.up.railway.app
