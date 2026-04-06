@@ -1,0 +1,39 @@
+name: Generate Ideas (Gemini)
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # كل إثنين الساعة 9 صباحاً
+  workflow_dispatch:       # تشغيل يدوي
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate new idea
+        run: node scripts/generate-ideas.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Generate levels for existing games
+        run: node scripts/generate-levels.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Rebuild games
+        run: node game-generator.js
+
+      - name: Commit changes
+        run: |
+          git config user.name  "gemini-bot[bot]"
+          git config user.email "gemini-bot@users.noreply.github.com"
+          git add products.json public/games/
+          git diff --staged --quiet && echo "⏭ No changes" || (git commit -m "🤖 Gemini: new idea + levels [skip ci]" && git push)
