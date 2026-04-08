@@ -225,5 +225,15 @@ function showWin(){
 
 initGame();
 </script>
+
+<!-- Social Bar -->
+<script src="/social-bar.js"></script>
+<script>
+  SocialBar.init({
+    title: '{{GAME_NAME}} — realteam',
+    url:   'https://real-team-production.up.railway.app/games/{{PRODUCT_ID}}.html',
+    lang:  '{{LANG}}'
+  });
+</script>
 </body>
 </html>
