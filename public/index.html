@@ -243,5 +243,14 @@ document.getElementById('langSel').value=lang;
 document.getElementById('langSel').addEventListener('change',e=>{ lang=e.target.value; localStorage.setItem('rt_lang',lang); applyLang(); });
 loadProducts();
 </script>
+
+<script src="/social-bar.js"></script>
+<script>
+  SocialBar.init({
+    title: 'realteam — ألعاب وتطبيقات مجانية',
+    url:   'https://real-team-production.up.railway.app',
+    lang:  localStorage.getItem('rt_lang') || 'ar'
+  });
+</script>
 </body>
 </html>
