@@ -181,5 +181,15 @@ document.getElementById('s-sessions').textContent=localStorage.getItem('rt_sessi
 document.getElementById('s-minutes').textContent=localStorage.getItem('rt_minutes_{{PRODUCT_ID}}')||'0';
 render();
 </script>
+
+<!-- Social Bar -->
+<script src="/social-bar.js"></script>
+<script>
+  SocialBar.init({
+    title: '{{GAME_NAME}} — realteam',
+    url:   'https://real-team-production.up.railway.app/games/{{PRODUCT_ID}}.html',
+    lang:  '{{LANG}}'
+  });
+</script>
 </body>
 </html>
