@@ -4,260 +4,529 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — realteam</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#060610;--s:#0d0d1f;--s2:#111122;--b:rgba(255,255,255,0.07);
-  --acc:#facc15;--acc2:#818cf8;--red:#ef4444;--green:#22c55e;
-  --txt:#f1f5f9;--mut:#64748b;
+  --bg:#030308;--s:#09090f;--s2:#0f0f1a;--b:rgba(255,255,255,0.06);
+  --acc:#facc15;--acc2:#818cf8;--red:#ef4444;--green:#22c55e;--blue:#3b82f6;
+  --txt:#f1f5f9;--mut:#475569;--mut2:#64748b;
   --font:'Tajawal',sans-serif;--mono:'Space Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
 body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;}
+
+/* grid bg */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;
-  background-image:linear-gradient(rgba(99,102,241,0.03) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(99,102,241,0.03) 1px,transparent 1px);
-  background-size:48px 48px;}
+  background-image:linear-gradient(rgba(129,140,248,0.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(129,140,248,0.03) 1px,transparent 1px);
+  background-size:32px 32px;}
+
+/* glow top */
+body::after{content:'';position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:600px;height:1px;background:linear-gradient(90deg,transparent,var(--acc2),transparent);
+  pointer-events:none;}
 
 /* ── LOGIN ── */
 #loginWrap{position:relative;z-index:1;display:flex;align-items:center;
   justify-content:center;min-height:100vh;padding:20px;}
-.login-card{background:var(--s);border:1px solid var(--b);border-radius:24px;
-  padding:48px 36px;width:100%;max-width:360px;text-align:center;}
-.login-logo{font-family:var(--mono);font-size:1.1rem;color:var(--acc);margin-bottom:28px;}
+.login-card{
+  background:linear-gradient(135deg,#0d0d1f,#090912);
+  border:1px solid rgba(129,140,248,0.2);
+  border-radius:28px;padding:52px 40px;width:100%;max-width:380px;text-align:center;
+  box-shadow:0 0 60px rgba(129,140,248,0.08);
+}
+.login-logo{font-family:var(--mono);font-size:1.3rem;color:var(--acc);margin-bottom:8px;letter-spacing:-1px;}
 .login-logo span{color:var(--acc2);}
-.login-card h2{font-size:1.3rem;font-weight:900;margin-bottom:6px;}
-.login-card p{color:var(--mut);font-size:0.83rem;margin-bottom:24px;}
-.inp{width:100%;background:var(--bg);border:1px solid var(--b);padding:12px 16px;
-  border-radius:10px;color:var(--txt);font-size:0.95rem;font-family:var(--font);
-  margin-bottom:12px;transition:border-color 0.2s;}
-.inp:focus{outline:none;border-color:rgba(250,204,21,0.4);}
-.btn-login{width:100%;background:var(--acc);color:#000;border:none;padding:13px;
-  border-radius:10px;font-weight:700;font-size:0.95rem;font-family:var(--font);
-  cursor:pointer;transition:box-shadow 0.2s;}
-.btn-login:hover{box-shadow:0 0 24px rgba(250,204,21,0.3);}
-.login-err{color:var(--red);font-size:0.82rem;margin-top:10px;display:none;}
+.login-sub{color:var(--mut2);font-size:0.78rem;margin-bottom:32px;font-family:var(--mono);}
+.inp{
+  width:100%;background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);padding:13px 18px;
+  border-radius:12px;color:var(--txt);font-size:0.95rem;font-family:var(--font);
+  margin-bottom:12px;transition:border-color 0.2s,box-shadow 0.2s;text-align:center;
+  letter-spacing:0.2em;
+}
+.inp:focus{outline:none;border-color:rgba(250,204,21,0.4);box-shadow:0 0 20px rgba(250,204,21,0.08);}
+.btn-login{
+  width:100%;background:var(--acc);color:#000;border:none;padding:14px;
+  border-radius:12px;font-weight:900;font-size:0.95rem;font-family:var(--font);
+  cursor:pointer;transition:box-shadow 0.2s,transform 0.2s;letter-spacing:0.05em;
+}
+.btn-login:hover{box-shadow:0 0 32px rgba(250,204,21,0.4);transform:translateY(-2px);}
+.login-err{color:var(--red);font-size:0.8rem;margin-top:12px;display:none;font-family:var(--mono);}
 
 /* ── TOPBAR ── */
 #dashWrap{display:none;position:relative;z-index:1;}
-.topbar{position:sticky;top:0;z-index:50;padding:13px 28px;
-  background:rgba(6,6,16,0.9);backdrop-filter:blur(20px);
+.topbar{
+  position:sticky;top:0;z-index:50;padding:12px 28px;
+  background:rgba(3,3,8,0.92);backdrop-filter:blur(24px);
   border-bottom:1px solid var(--b);
-  display:flex;align-items:center;justify-content:space-between;}
-.topbar-logo{font-family:var(--mono);font-size:0.95rem;color:var(--acc);}
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-logo{font-family:var(--mono);font-size:0.95rem;color:var(--acc);letter-spacing:-0.5px;}
 .topbar-logo span{color:var(--acc2);}
+.topbar-logo small{color:var(--mut);font-size:0.68rem;margin-right:6px;}
 .topbar-r{display:flex;align-items:center;gap:10px;}
-.db-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);}
-.db-dot.off{background:var(--red);box-shadow:0 0 7px var(--red);}
-.db-txt{font-size:0.75rem;color:var(--mut);}
-.btn-sm{background:rgba(255,255,255,0.05);border:1px solid var(--b);color:var(--mut);
-  padding:6px 13px;border-radius:8px;font-size:0.77rem;cursor:pointer;font-family:var(--font);}
-.btn-sm:hover{color:var(--txt);}
+.live-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;
+}
+.live-dot.off{background:var(--red);box-shadow:0 0 8px var(--red);animation:none;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.db-txt{font-size:0.72rem;color:var(--mut2);font-family:var(--mono);}
+.btn-sm{
+  background:rgba(255,255,255,0.04);border:1px solid var(--b);
+  color:var(--mut2);padding:6px 14px;border-radius:8px;
+  font-size:0.75rem;cursor:pointer;font-family:var(--font);
+  transition:color 0.2s,border-color 0.2s;
+}
+.btn-sm:hover{color:var(--txt);border-color:rgba(255,255,255,0.15);}
 
 /* ── TABS ── */
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--b);padding:0 28px;background:var(--bg);}
-.tab{padding:13px 20px;font-size:0.85rem;cursor:pointer;color:var(--mut);
-  border-bottom:2px solid transparent;transition:0.2s;font-family:var(--font);}
+.tabs{
+  display:flex;padding:0 28px;
+  background:var(--bg);border-bottom:1px solid var(--b);
+  overflow-x:auto;gap:0;
+}
+.tab{
+  padding:14px 20px;font-size:0.82rem;cursor:pointer;color:var(--mut2);
+  border-bottom:2px solid transparent;transition:0.2s;font-family:var(--font);
+  white-space:nowrap;display:flex;align-items:center;gap:6px;
+}
 .tab.active{color:var(--acc);border-bottom-color:var(--acc);}
 .tab:hover:not(.active){color:var(--txt);}
+.tab-badge{
+  background:rgba(250,204,21,0.15);color:var(--acc);
+  font-size:0.65rem;padding:1px 6px;border-radius:100px;font-family:var(--mono);
+}
 
-/* ── CONTENT ── */
-.content{max-width:1200px;margin:0 auto;padding:32px 24px;}
+/* ── LAYOUT ── */
+.content{max-width:1300px;margin:0 auto;padding:28px 24px;}
 .panel{display:none;}.panel.active{display:block;}
 
-/* ── STATS ── */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:32px;}
-.stat{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:18px 16px;}
-.stat-lbl{font-family:var(--mono);font-size:0.65rem;color:var(--mut);letter-spacing:0.1em;margin-bottom:8px;}
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:28px;}
+.stat{
+  background:var(--s);border:1px solid var(--b);border-radius:14px;
+  padding:18px 16px;position:relative;overflow:hidden;
+  transition:border-color 0.2s,transform 0.2s;
+}
+.stat:hover{border-color:rgba(250,204,21,0.2);transform:translateY(-2px);}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(250,204,21,0.3),transparent);}
+.stat-lbl{font-family:var(--mono);font-size:0.62rem;color:var(--mut2);
+  letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
 .stat-val{font-family:var(--mono);font-size:1.7rem;font-weight:700;color:var(--acc);}
-.stat-sub{font-size:0.72rem;color:var(--mut);margin-top:4px;}
+.stat-sub{font-size:0.7rem;color:var(--mut2);margin-top:4px;}
+.stat-trend{font-size:0.7rem;margin-top:6px;}
+.stat-trend.up{color:var(--green);}
+.stat-trend.down{color:var(--red);}
 
 /* ── CARD ── */
-.card{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:20px;margin-bottom:20px;}
-.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.card-title{font-size:0.88rem;font-weight:700;display:flex;align-items:center;gap:8px;}
-.card-title::before{content:'';width:3px;height:14px;background:var(--acc);border-radius:2px;display:block;}
+.card{
+  background:var(--s);border:1px solid var(--b);border-radius:16px;
+  padding:22px;margin-bottom:20px;
+}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.card-title{
+  font-size:0.85rem;font-weight:700;display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);color:var(--txt);letter-spacing:0.05em;
+}
+.card-title::before{
+  content:'';width:3px;height:14px;
+  background:linear-gradient(to bottom,var(--acc),var(--acc2));
+  border-radius:2px;display:block;
+}
 
 /* ── FORM ── */
 .form-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
 .ff{flex:1;min-width:120px;}
-.ff label{display:block;font-size:0.7rem;color:var(--mut);margin-bottom:5px;font-family:var(--mono);}
-.fi{width:100%;background:var(--bg);border:1px solid var(--b);padding:9px 13px;
-  border-radius:8px;color:var(--txt);font-size:0.88rem;font-family:var(--font);}
-.fi:focus{outline:none;border-color:rgba(250,204,21,0.35);}
-.btn-add{background:var(--acc);color:#000;border:none;padding:9px 20px;border-radius:8px;
-  font-weight:700;font-size:0.88rem;font-family:var(--font);cursor:pointer;white-space:nowrap;}
-.btn-add:hover{box-shadow:0 0 18px rgba(250,204,21,0.3);}
-.btn-ref{background:rgba(255,255,255,0.05);border:1px solid var(--b);color:var(--mut);
-  padding:9px 14px;border-radius:8px;font-size:0.82rem;cursor:pointer;font-family:var(--font);}
+.ff label{display:block;font-size:0.68rem;color:var(--mut2);
+  margin-bottom:5px;font-family:var(--mono);letter-spacing:0.08em;text-transform:uppercase;}
+.fi{
+  width:100%;background:rgba(255,255,255,0.03);
+  border:1px solid var(--b);padding:9px 13px;
+  border-radius:8px;color:var(--txt);font-size:0.88rem;
+  font-family:var(--font);transition:border-color 0.2s;
+}
+.fi:focus{outline:none;border-color:rgba(250,204,21,0.3);}
+.btn-add{
+  background:var(--acc);color:#000;border:none;padding:9px 22px;
+  border-radius:8px;font-weight:700;font-size:0.88rem;
+  font-family:var(--font);cursor:pointer;white-space:nowrap;
+  transition:box-shadow 0.2s,transform 0.2s;
+}
+.btn-add:hover{box-shadow:0 0 20px rgba(250,204,21,0.3);transform:translateY(-1px);}
+.btn-ref{
+  background:rgba(255,255,255,0.04);border:1px solid var(--b);
+  color:var(--mut2);padding:9px 16px;border-radius:8px;
+  font-size:0.82rem;cursor:pointer;font-family:var(--font);
+  transition:color 0.2s;
+}
 .btn-ref:hover{color:var(--txt);}
 
 /* ── TABLE ── */
 .tbl-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:0.84rem;}
-th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--b);}
-th{color:var(--mut);font-weight:400;font-family:var(--mono);font-size:0.68rem;letter-spacing:0.08em;}
-.badge{display:inline-block;padding:2px 9px;border-radius:100px;font-size:0.72rem;}
-.b-ok{background:rgba(34,197,94,0.12);color:#4ade80;}
-.b-wait{background:rgba(250,204,21,0.12);color:#facc15;}
-.b-game{background:rgba(129,140,248,0.12);color:var(--acc2);}
-.b-app{background:rgba(52,211,153,0.12);color:#34d399;}
-.b-soon{background:rgba(100,116,139,0.12);color:var(--mut);}
-.empty{text-align:center;color:var(--mut);padding:48px 0;font-size:0.88rem;}
+table{width:100%;border-collapse:collapse;font-size:0.83rem;}
+th{
+  color:var(--mut2);font-weight:400;font-family:var(--mono);
+  font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;
+  padding:10px 12px;border-bottom:1px solid var(--b);text-align:right;
+}
+td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:right;
+  transition:background 0.15s;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.badge{display:inline-flex;align-items:center;gap:4px;
+  padding:2px 9px;border-radius:100px;font-size:0.7rem;font-family:var(--mono);}
+.b-ok   {background:rgba(34,197,94,0.1);color:#4ade80;}
+.b-wait {background:rgba(250,204,21,0.1);color:#facc15;}
+.b-game {background:rgba(129,140,248,0.1);color:var(--acc2);}
+.b-app  {background:rgba(52,211,153,0.1);color:#34d399;}
+.b-soon {background:rgba(100,116,139,0.1);color:var(--mut2);}
+.b-kofi {background:rgba(255,94,91,0.1);color:#ff5e5b;}
+.b-pp   {background:rgba(0,112,186,0.1);color:#60a5fa;}
+.empty  {text-align:center;color:var(--mut2);padding:52px 0;font-size:0.85rem;}
 
-/* ── PRODUCTS GRID ── */
+/* ── PRODUCTS ── */
 .prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
-.prod-card{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:16px;
-  display:flex;gap:12px;align-items:flex-start;}
-.prod-emoji{font-size:2.2rem;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(255,255,255,0.1));}
+.prod-card{
+  background:var(--s2);border:1px solid var(--b);border-radius:14px;
+  padding:16px;display:flex;gap:14px;align-items:flex-start;
+  transition:border-color 0.2s,transform 0.2s;
+}
+.prod-card:hover{border-color:rgba(250,204,21,0.2);transform:translateY(-2px);}
+.prod-emoji{font-size:2.4rem;flex-shrink:0;}
 .prod-info{flex:1;min-width:0;}
-.prod-name{font-size:0.9rem;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.prod-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
-.prod-iaps{font-size:0.72rem;color:var(--mut);}
-.prod-iap-item{display:flex;align-items:center;justify-content:space-between;
-  background:var(--bg);border-radius:6px;padding:4px 8px;margin-top:4px;font-size:0.75rem;}
-.prod-iap-price{font-family:var(--mono);color:var(--acc);}
+.prod-name{font-size:0.9rem;font-weight:700;margin-bottom:6px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prod-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.prod-iap-item{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,0.03);border-radius:6px;
+  padding:4px 8px;margin-top:4px;font-size:0.73rem;
+}
+.prod-iap-price{font-family:var(--mono);color:var(--acc);font-size:0.75rem;}
 
-/* ── IAP STATS ── */
-.iap-row{display:flex;align-items:center;justify-content:space-between;
-  padding:10px 0;border-bottom:1px solid var(--b);}
-.iap-row:last-child{border-bottom:none;}
-.iap-name{font-size:0.85rem;}
-.iap-count{font-family:var(--mono);font-size:0.9rem;color:var(--acc);}
+/* ── AGENTS PANEL ── */
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.agent-card{
+  background:var(--s2);border:1px solid var(--b);border-radius:14px;padding:18px;
+  transition:border-color 0.2s;
+}
+.agent-card.success{border-color:rgba(34,197,94,0.2);}
+.agent-card.failed {border-color:rgba(239,68,68,0.2);}
+.agent-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.agent-name{font-size:0.85rem;font-weight:700;font-family:var(--mono);}
+.agent-status{font-size:0.7rem;padding:2px 8px;border-radius:100px;font-family:var(--mono);}
+.agent-status.ok {background:rgba(34,197,94,0.1);color:#4ade80;}
+.agent-status.err{background:rgba(239,68,68,0.1);color:#f87171;}
+.agent-status.run{background:rgba(250,204,21,0.1);color:#facc15;}
+.agent-meta{font-size:0.75rem;color:var(--mut2);}
+.agent-preview{
+  font-size:0.75rem;color:var(--mut2);margin-top:8px;
+  background:rgba(255,255,255,0.03);border-radius:6px;
+  padding:8px;font-family:var(--mono);line-height:1.6;
+  max-height:80px;overflow:hidden;text-overflow:ellipsis;
+}
 
-footer{border-top:1px solid var(--b);padding:24px;text-align:center;
-  color:var(--mut);font-size:0.78rem;margin-top:40px;}
+/* ── ROADMAP ── */
+.roadmap-box{
+  background:linear-gradient(135deg,rgba(129,140,248,0.06),rgba(250,204,21,0.04));
+  border:1px solid rgba(129,140,248,0.2);border-radius:14px;padding:20px;
+  margin-bottom:16px;
+}
+.roadmap-title{font-size:1rem;font-weight:700;color:var(--acc2);margin-bottom:14px;}
+.task-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 0;border-bottom:1px solid var(--b);
+}
+.task-item:last-child{border-bottom:none;}
+.task-priority{
+  font-size:0.65rem;padding:2px 7px;border-radius:4px;
+  font-family:var(--mono);white-space:nowrap;flex-shrink:0;
+}
+.p-high  {background:rgba(239,68,68,0.1);color:#f87171;}
+.p-med   {background:rgba(250,204,21,0.1);color:#facc15;}
+.p-low   {background:rgba(100,116,139,0.1);color:var(--mut2);}
+.task-text{font-size:0.83rem;}
+.task-reason{font-size:0.75rem;color:var(--mut2);margin-top:2px;}
+
+/* ── ANALYTICS CHARTS ── */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.chart-box{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:16px;}
+.chart-label{font-family:var(--mono);font-size:0.65rem;color:var(--mut2);
+  letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.bar-name{font-size:0.75rem;width:80px;flex-shrink:0;text-align:left;color:var(--mut2);}
+[dir=rtl] .bar-name{text-align:right;}
+.bar-track{flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width 1s ease;}
+.bar-val{font-family:var(--mono);font-size:0.72rem;color:var(--acc);width:40px;flex-shrink:0;}
+
+footer{border-top:1px solid var(--b);padding:20px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  color:var(--mut2);font-size:0.72rem;font-family:var(--mono);}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.panel.active{animation:fadeIn 0.3s ease;}
 
 @media(max-width:640px){
-  .topbar,.tabs{padding-inline:14px;}
-  .content{padding:20px 14px;}
+  .topbar,.tabs,.content{padding-inline:14px;}
   .form-row{flex-direction:column;}
   .btn-add,.btn-ref{width:100%;}
+  .chart-row{grid-template-columns:1fr;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══ -->
+<!-- ══ LOGIN ══════════════════════════════════════════════════ -->
 <div id="loginWrap">
   <div class="login-card">
     <div class="login-logo">real<span>team</span></div>
-    <h2>لوحة التحكم</h2>
-    <p>أدخل كلمة المرور للمتابعة</p>
-    <input class="inp" type="password" id="passInp" placeholder="كلمة المرور"
+    <div class="login-sub">ADMIN DASHBOARD — AUTHORIZED ONLY</div>
+    <input class="inp" type="password" id="passInp" placeholder="••••••••"
       onkeydown="if(event.key==='Enter')login()">
-    <button class="btn-login" onclick="login()">دخول →</button>
-    <div class="login-err" id="loginErr">❌ كلمة مرور خاطئة</div>
+    <button class="btn-login" onclick="login()">ENTER →</button>
+    <div class="login-err" id="loginErr">// ACCESS DENIED</div>
   </div>
 </div>
 
-<!-- ══ DASHBOARD ══ -->
+<!-- ══ DASHBOARD ══════════════════════════════════════════════ -->
 <div id="dashWrap">
 
-  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-logo">real<span>team</span> <span style="color:var(--mut);font-size:0.7rem"> / admin</span></div>
+    <div class="topbar-logo">
+      real<span>team</span>
+      <small>/ admin v2.0</small>
+    </div>
     <div class="topbar-r">
-      <div class="db-dot" id="dbDot"></div>
-      <span class="db-txt" id="dbTxt">جاري الاتصال...</span>
-      <a href="/" class="btn-sm">🏠 الموقع</a>
-      <button class="btn-sm" onclick="logout()">خروج</button>
+      <div class="live-dot" id="liveDot"></div>
+      <span class="db-txt" id="dbTxt">connecting...</span>
+      <a href="/" class="btn-sm">🏠</a>
+      <button class="btn-sm" onclick="loadAll()">⟳</button>
+      <button class="btn-sm" onclick="logout()">logout</button>
     </div>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('earnings',this)">💰 الأرباح</div>
-    <div class="tab" onclick="switchTab('products',this)">🎮 المنتجات</div>
-    <div class="tab" onclick="switchTab('iap',this)">🛒 المشتريات</div>
+    <div class="tab active" onclick="switchTab('earnings',this)">
+      💰 Earnings <span class="tab-badge" id="badge-earnings">0</span>
+    </div>
+    <div class="tab" onclick="switchTab('products',this)">
+      🎮 Products <span class="tab-badge" id="badge-products">0</span>
+    </div>
+    <div class="tab" onclick="switchTab('iap',this)">
+      🛒 IAP
+    </div>
+    <div class="tab" onclick="switchTab('agents',this)">
+      🤖 Agents
+    </div>
+    <div class="tab" onclick="switchTab('analytics',this)">
+      📊 Analytics
+    </div>
+    <div class="tab" onclick="switchTab('roadmap',this)">
+      🗺️ Roadmap
+    </div>
   </div>
 
   <div class="content">
 
-    <!-- ══ TAB: EARNINGS ══ -->
+    <!-- ══ EARNINGS ══ -->
     <div class="panel active" id="tab-earnings">
-
-      <!-- Stats -->
       <div class="stats-row">
-        <div class="stat"><div class="stat-lbl">TOTAL USD</div><div class="stat-val" id="stTotal">0.00</div><div class="stat-sub">دولار أمريكي</div></div>
-        <div class="stat"><div class="stat-lbl">TRANSACTIONS</div><div class="stat-val" id="stCount">0</div><div class="stat-sub">عملية</div></div>
-        <div class="stat"><div class="stat-lbl">COMPLETED</div><div class="stat-val" id="stOk">0</div><div class="stat-sub">مكتملة</div></div>
-        <div class="stat"><div class="stat-lbl">PENDING</div><div class="stat-val" id="stPend">0</div><div class="stat-sub">قيد الانتظار</div></div>
-        <div class="stat"><div class="stat-lbl">KO-FI</div><div class="stat-val" id="stKofi">0</div><div class="stat-sub">عملية</div></div>
-        <div class="stat"><div class="stat-lbl">PAYPAL</div><div class="stat-val" id="stPaypal">0</div><div class="stat-sub">عملية</div></div>
+        <div class="stat">
+          <div class="stat-lbl">TOTAL USD</div>
+          <div class="stat-val" id="stTotal">0.00</div>
+          <div class="stat-sub">all time</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">THIS WEEK</div>
+          <div class="stat-val" id="stWeek">0.00</div>
+          <div class="stat-trend" id="stTrend">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">TRANSACTIONS</div>
+          <div class="stat-val" id="stCount">0</div>
+          <div class="stat-sub">total</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">COMPLETED</div>
+          <div class="stat-val" id="stOk">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">PENDING</div>
+          <div class="stat-val" id="stPend">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">KO-FI</div>
+          <div class="stat-val" id="stKofi">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">PAYPAL</div>
+          <div class="stat-val" id="stPaypal">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">IAP REVENUE</div>
+          <div class="stat-val" id="stIap">0.00</div>
+        </div>
       </div>
 
-      <!-- Add earning -->
       <div class="card">
         <div class="card-head">
-          <div class="card-title">إضافة ربح يدوي</div>
-          <button class="btn-ref" onclick="loadEarnings()">🔄 تحديث</button>
+          <div class="card-title">ADD MANUAL EARNING</div>
+          <button class="btn-ref" onclick="loadEarnings()">⟳ refresh</button>
         </div>
         <div class="form-row">
-          <div class="ff"><label>المنصة</label><input class="fi" id="fPlatform" value="ko-fi"></div>
-          <div class="ff"><label>المبلغ *</label><input class="fi" id="fAmount" type="number" step="0.01" placeholder="0.00"></div>
-          <div class="ff"><label>العملة</label>
-            <select class="fi" id="fCurrency"><option value="USD">USD</option><option value="EUR">EUR</option></select>
+          <div class="ff"><label>Platform</label><input class="fi" id="fPlatform" value="ko-fi"></div>
+          <div class="ff"><label>Amount *</label><input class="fi" id="fAmount" type="number" step="0.01" placeholder="0.00"></div>
+          <div class="ff"><label>Currency</label>
+            <select class="fi" id="fCurrency">
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+            </select>
           </div>
-          <div class="ff"><label>المصدر</label><input class="fi" id="fSource" value="donation"></div>
-          <div class="ff"><label>IAP ID</label><input class="fi" id="fIapId" placeholder="no-ads / hint-pack..."></div>
-          <div class="ff"><label>الحالة</label>
-            <select class="fi" id="fStatus"><option value="completed">مكتمل</option><option value="pending">انتظار</option></select>
+          <div class="ff"><label>Source</label><input class="fi" id="fSource" value="donation"></div>
+          <div class="ff"><label>IAP ID</label><input class="fi" id="fIapId" placeholder="no-ads..."></div>
+          <div class="ff"><label>Status</label>
+            <select class="fi" id="fStatus">
+              <option value="completed">completed</option>
+              <option value="pending">pending</option>
+            </select>
           </div>
-          <button class="btn-add" onclick="addEarning()">➕ إضافة</button>
+          <button class="btn-add" onclick="addEarning()">+ ADD</button>
         </div>
       </div>
 
-      <!-- Table -->
       <div class="card">
-        <div class="card-title">سجل الأرباح</div>
-        <div class="tbl-wrap" style="margin-top:16px">
+        <div class="card-title" style="margin-bottom:16px">TRANSACTION LOG</div>
+        <div class="tbl-wrap">
           <table>
             <thead><tr>
-              <th>المنصة</th><th>المبلغ</th><th>العملة</th>
-              <th>المصدر</th><th>IAP</th><th>الحالة</th><th>التاريخ</th>
+              <th>Platform</th><th>Amount</th><th>Currency</th>
+              <th>Source</th><th>IAP</th><th>Status</th><th>Date</th>
             </tr></thead>
-            <tbody id="earningsTbody"><tr><td colspan="7" class="empty">جاري التحميل...</td></tr></tbody>
+            <tbody id="earningsTbody">
+              <tr><td colspan="7" class="empty">loading...</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ══ TAB: PRODUCTS ══ -->
+    <!-- ══ PRODUCTS ══ -->
     <div class="panel" id="tab-products">
       <div class="card">
         <div class="card-head">
-          <div class="card-title">المنتجات من products.json</div>
-          <button class="btn-ref" onclick="loadProducts()">🔄 تحديث</button>
+          <div class="card-title">PRODUCT CATALOG</div>
+          <button class="btn-ref" onclick="loadProducts()">⟳ refresh</button>
         </div>
         <div class="prod-grid" id="prodGrid">
-          <div class="empty">جاري التحميل...</div>
+          <div class="empty">loading...</div>
         </div>
       </div>
     </div>
 
-    <!-- ══ TAB: IAP STATS ══ -->
+    <!-- ══ IAP ══ -->
     <div class="panel" id="tab-iap">
-      <div class="stats-row" id="iapStats">
-        <div class="stat"><div class="stat-lbl">IAP REVENUE</div><div class="stat-val" id="iapTotal">0.00</div><div class="stat-sub">من المشتريات الداخلية</div></div>
-        <div class="stat"><div class="stat-lbl">MOST BOUGHT</div><div class="stat-val" id="iapTop">—</div><div class="stat-sub">الأكثر مبيعاً</div></div>
-        <div class="stat"><div class="stat-lbl">NO-ADS SALES</div><div class="stat-val" id="iapNoAds">0</div><div class="stat-sub">مبيعة</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">تفصيل المشتريات الداخلية</div>
-        <div id="iapDetail" style="margin-top:16px">
-          <div class="empty">جاري التحميل...</div>
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat">
+          <div class="stat-lbl">IAP REVENUE</div>
+          <div class="stat-val" id="iapRevenue">0.00</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">TOP SELLER</div>
+          <div class="stat-val" style="font-size:1rem" id="iapTop">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">NO-ADS SOLD</div>
+          <div class="stat-val" id="iapNoAds">0</div>
         </div>
       </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">IAP BREAKDOWN</div>
+        <div id="iapDetail"><div class="empty">loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ══ AGENTS ══ -->
+    <div class="panel" id="tab-agents">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">LAST AGENT RUN</div>
+          <button class="btn-ref" onclick="loadAgents()">⟳ refresh</button>
+        </div>
+        <div id="agentRunInfo" style="font-size:0.75rem;color:var(--mut2);font-family:var(--mono);margin-bottom:16px"></div>
+        <div class="agent-grid" id="agentGrid">
+          <div class="empty">no run data yet</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">LATEST IDEA</div>
+        </div>
+        <div id="latestIdea"><div class="empty">—</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">MARKETING CONTENT</div>
+        </div>
+        <div id="marketingContent"><div class="empty">—</div></div>
+      </div>
+    </div>
+
+    <!-- ══ ANALYTICS ══ -->
+    <div class="panel" id="tab-analytics">
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-lbl">TOTAL REVENUE</div>
+          <div class="stat-val" id="an-total">0.00</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">THIS WEEK</div>
+          <div class="stat-val" id="an-week">0.00</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">THIS MONTH</div>
+          <div class="stat-val" id="an-month">0.00</div>
+        </div>
+        <div class="stat">
+          <div class="stat-lbl">TREND</div>
+          <div class="stat-val" style="font-size:1rem" id="an-trend">—</div>
+        </div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-box">
+          <div class="chart-label">Revenue by Platform</div>
+          <div id="chartPlatform"></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-label">IAP Sales</div>
+          <div id="chartIap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ROADMAP ══ -->
+    <div class="panel" id="tab-roadmap">
+      <div id="roadmapContent"><div class="empty">loading...</div></div>
     </div>
 
   </div><!-- /content -->
 
-  <footer>⚡ realteam admin — البيانات من Supabase · تحديث تلقائي 30ث</footer>
+  <footer>
+    <span>⚡ realteam admin v2.0</span>
+    <span id="lastUpdate">—</span>
+    <span>auto-refresh 30s</span>
+  </footer>
 </div>
 
 <script>
 let token = '';
+let allEarnings = [];
 
 // ══ AUTH ══════════════════════════════════════════════════════
 async function login() {
@@ -271,11 +540,15 @@ async function login() {
       document.getElementById('dashWrap').style.display  = 'block';
       loadAll();
     } else {
-      document.getElementById('loginErr').style.display = 'block';
+      const err = document.getElementById('loginErr');
+      err.style.display = 'block';
+      err.textContent = `// ACCESS DENIED (${r.status})`;
     }
-  } catch { document.getElementById('loginErr').style.display = 'block'; }
+  } catch(e) {
+    document.getElementById('loginErr').style.display = 'block';
+  }
 }
-function logout() { token=''; location.reload(); }
+function logout() { token = ''; location.reload(); }
 
 // ══ TABS ══════════════════════════════════════════════════════
 function switchTab(id, btn) {
@@ -283,57 +556,67 @@ function switchTab(id, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
-  if (id === 'products') loadProducts();
-  if (id === 'iap') loadIAP();
+  if (id === 'products')  loadProducts();
+  if (id === 'iap')       loadIAP();
+  if (id === 'agents')    loadAgents();
+  if (id === 'analytics') loadAnalytics();
+  if (id === 'roadmap')   loadRoadmap();
 }
 
-// ══ LOAD ALL ══════════════════════════════════════════════════
 function loadAll() { loadEarnings(); }
 
 // ══ EARNINGS ══════════════════════════════════════════════════
 async function loadEarnings() {
-  const dot = document.getElementById('dbDot');
+  const dot = document.getElementById('liveDot');
   const txt = document.getElementById('dbTxt');
   try {
     const r = await fetch('/api/admin/earnings', { headers:{ 'x-admin-token': token } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const { data } = await r.json();
+    allEarnings = data;
 
-    // stats
-    const usd    = data.reduce((s,e) => s + (e.currency==='USD' ? +e.amount : 0), 0);
-    const ok     = data.filter(e => e.status==='completed');
-    const pend   = data.filter(e => e.status==='pending');
-    const kofi   = data.filter(e => e.platform==='Ko-fi');
-    const paypal = data.filter(e => e.platform==='PayPal');
+    const now   = Date.now();
+    const week  = data.filter(e => now - new Date(e.date) < 7*864e5);
+    const usd   = data.reduce((s,e) => s + (e.currency==='USD'?+e.amount:0), 0);
+    const wUsd  = week.reduce((s,e)  => s + (e.currency==='USD'?+e.amount:0), 0);
+    const iapR  = data.filter(e=>e.iap_id).reduce((s,e) => s+(e.currency==='USD'?+e.amount:0), 0);
+
     document.getElementById('stTotal').textContent  = usd.toFixed(2);
+    document.getElementById('stWeek').textContent   = wUsd.toFixed(2);
     document.getElementById('stCount').textContent  = data.length;
-    document.getElementById('stOk').textContent     = ok.length;
-    document.getElementById('stPend').textContent   = pend.length;
-    document.getElementById('stKofi').textContent   = kofi.length;
-    document.getElementById('stPaypal').textContent = paypal.length;
+    document.getElementById('stOk').textContent     = data.filter(e=>e.status==='completed').length;
+    document.getElementById('stPend').textContent   = data.filter(e=>e.status==='pending').length;
+    document.getElementById('stKofi').textContent   = data.filter(e=>e.platform==='Ko-fi').length;
+    document.getElementById('stPaypal').textContent = data.filter(e=>e.platform==='PayPal').length;
+    document.getElementById('stIap').textContent    = iapR.toFixed(2);
+    document.getElementById('badge-earnings').textContent = data.length;
 
-    // table
+    const trend = document.getElementById('stTrend');
+    if (wUsd > 0) { trend.textContent = '↑ growing'; trend.className = 'stat-trend up'; }
+    else          { trend.textContent = '→ no sales'; trend.className = 'stat-trend'; }
+
     const tb = document.getElementById('earningsTbody');
     if (!data.length) {
-      tb.innerHTML = '<tr><td colspan="7" class="empty">📭 لا توجد أرباح بعد</td></tr>';
+      tb.innerHTML = '<tr><td colspan="7" class="empty">// no transactions yet</td></tr>';
     } else {
       tb.innerHTML = data.map(e => `
         <tr>
-          <td>${esc(e.platform)}</td>
-          <td><strong style="font-family:var(--mono)">${(+e.amount).toFixed(2)}</strong></td>
-          <td>${esc(e.currency)}</td>
-          <td>${esc(e.source)}</td>
-          <td>${e.iap_id ? `<span class="badge b-game">${esc(e.iap_id)}</span>` : '<span style="color:var(--mut)">—</span>'}</td>
-          <td><span class="badge ${e.status==='completed'?'b-ok':'b-wait'}">${e.status==='completed'?'✓ مكتمل':'⏳ انتظار'}</span></td>
-          <td style="color:var(--mut);font-size:0.78rem">${e.date ? new Date(e.date).toLocaleString('ar-MA') : '—'}</td>
+          <td><span class="badge ${e.platform==='Ko-fi'?'b-kofi':'b-pp'}">${esc(e.platform)}</span></td>
+          <td><strong style="font-family:var(--mono);color:var(--acc)">${(+e.amount).toFixed(2)}</strong></td>
+          <td style="font-family:var(--mono);font-size:0.75rem">${esc(e.currency)}</td>
+          <td style="color:var(--mut2)">${esc(e.source)}</td>
+          <td>${e.iap_id?`<span class="badge b-game">${esc(e.iap_id)}</span>`:'<span style="color:var(--mut2)">—</span>'}</td>
+          <td><span class="badge ${e.status==='completed'?'b-ok':'b-wait'}">${e.status}</span></td>
+          <td style="color:var(--mut2);font-size:0.75rem;font-family:var(--mono)">${e.date?new Date(e.date).toLocaleString('ar-MA'):'—'}</td>
         </tr>`).join('');
     }
 
-    dot.className = 'db-dot';
-    txt.textContent = 'متصل بقاعدة البيانات';
+    dot.className = 'live-dot';
+    txt.textContent = 'connected';
+    document.getElementById('lastUpdate').textContent = 'updated ' + new Date().toLocaleTimeString();
   } catch(err) {
-    dot.className = 'db-dot off';
-    txt.textContent = 'فشل: ' + err.message;
+    dot.className = 'live-dot off';
+    txt.textContent = 'error: ' + err.message;
   }
 }
 
@@ -345,21 +628,18 @@ async function addEarning() {
   const source   = document.getElementById('fSource').value.trim() || 'manual';
   const iapId    = document.getElementById('fIapId').value.trim() || null;
   const status   = document.getElementById('fStatus').value;
-
-  if (!platform)              { alert('أدخل اسم المنصة'); return; }
-  if (isNaN(amount)||amount<=0) { alert('أدخل مبلغاً صحيحاً'); return; }
-
+  if (!platform || isNaN(amount) || amount <= 0) { alert('// invalid input'); return; }
   try {
     const r = await fetch('/api/admin/earnings', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json', 'x-admin-token': token },
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'x-admin-token': token },
       body: JSON.stringify({ platform, amount, currency, source, iap_id:iapId, status })
     });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     document.getElementById('fAmount').value = '';
     document.getElementById('fIapId').value  = '';
     await loadEarnings();
-  } catch(err) { alert('❌ ' + err.message); }
+  } catch(err) { alert('// error: ' + err.message); }
 }
 
 // ══ PRODUCTS ══════════════════════════════════════════════════
@@ -368,25 +648,21 @@ async function loadProducts() {
     const r = await fetch('/api/admin/products', { headers:{ 'x-admin-token': token } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const { data } = await r.json();
-    const grid = document.getElementById('prodGrid');
-
-    grid.innerHTML = data.map(p => {
+    document.getElementById('badge-products').textContent = data.length;
+    document.getElementById('prodGrid').innerHTML = data.map(p => {
       const name = p.name?.ar || p.name?.en || p.id;
-      const catBadge = p.category==='game' ? 'b-game' : 'b-app';
-      const statusBadge = p.status==='available' ? 'b-ok' : 'b-soon';
-      const statusLabel = p.status==='available' ? 'متاح' : 'قريباً';
       return `
         <div class="prod-card">
           <div class="prod-emoji">${p.emoji}</div>
           <div class="prod-info">
             <div class="prod-name">${esc(name)}</div>
             <div class="prod-meta">
-              <span class="badge ${catBadge}">${p.category?.toUpperCase()}</span>
-              <span class="badge ${statusBadge}">${statusLabel}</span>
-              <span class="badge b-wait">${p.type?.toUpperCase()}</span>
+              <span class="badge ${p.category==='game'?'b-game':'b-app'}">${p.category}</span>
+              <span class="badge b-wait">${p.type}</span>
+              <span class="badge ${p.status==='available'?'b-ok':'b-soon'}">${p.status}</span>
             </div>
-            <div class="prod-iaps">${p.iap?.length||0} مشتريات داخلية</div>
-            ${(p.iap||[]).map(i => `
+            <div style="font-size:0.72rem;color:var(--mut2);margin-bottom:4px">${p.iap?.length||0} in-app purchases</div>
+            ${(p.iap||[]).slice(0,3).map(i=>`
               <div class="prod-iap-item">
                 <span>${i.emoji} ${i.name?.ar||i.name?.en}</span>
                 <span class="prod-iap-price">$${i.price?.toFixed(2)}</span>
@@ -395,58 +671,180 @@ async function loadProducts() {
         </div>`;
     }).join('');
   } catch(err) {
-    document.getElementById('prodGrid').innerHTML = `<div class="empty">❌ ${err.message}</div>`;
+    document.getElementById('prodGrid').innerHTML = `<div class="empty">// ${err.message}</div>`;
   }
 }
 
-// ══ IAP STATS ═════════════════════════════════════════════════
+// ══ IAP ═══════════════════════════════════════════════════════
 async function loadIAP() {
+  const iapOnly = allEarnings.filter(e => e.iap_id);
+  const rev     = iapOnly.reduce((s,e) => s+(e.currency==='USD'?+e.amount:0), 0);
+  const counts  = {};
+  iapOnly.forEach(e => { counts[e.iap_id] = (counts[e.iap_id]||0)+1; });
+  const sorted  = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+
+  document.getElementById('iapRevenue').textContent = rev.toFixed(2);
+  document.getElementById('iapTop').textContent     = sorted[0]?.[0] || '—';
+  document.getElementById('iapNoAds').textContent   = counts['no-ads'] || 0;
+
+  const detail = document.getElementById('iapDetail');
+  if (!sorted.length) { detail.innerHTML = '<div class="empty">// no IAP sales yet</div>'; return; }
+  detail.innerHTML = sorted.map(([id, count]) => {
+    const r2 = iapOnly.filter(e=>e.iap_id===id).reduce((s,e)=>s+(e.currency==='USD'?+e.amount:0),0);
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--b)">
+      <span><span class="badge b-game" style="margin-left:8px">${esc(id)}</span></span>
+      <div style="display:flex;gap:20px;align-items:center">
+        <span style="color:var(--mut2);font-size:0.75rem">${count} sold</span>
+        <span style="font-family:var(--mono);color:var(--acc)">$${r2.toFixed(2)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ AGENTS ════════════════════════════════════════════════════
+async function loadAgents() {
   try {
-    const r = await fetch('/api/admin/earnings', { headers:{ 'x-admin-token': token } });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const { data } = await r.json();
+    // جلب تقرير آخر تشغيل
+    const r = await fetch('/agent-results/run-report.json');
+    if (!r.ok) throw new Error('No run report yet');
+    const report = await r.json();
 
-    const iapOnly = data.filter(e => e.iap_id);
-    const iapRev  = iapOnly.reduce((s,e) => s + (e.currency==='USD' ? +e.amount : 0), 0);
+    document.getElementById('agentRunInfo').innerHTML =
+      `Run ID: ${report.runId} &nbsp;|&nbsp; Duration: ${report.totalDuration} &nbsp;|&nbsp; ` +
+      `✅ ${report.summary.passed} passed &nbsp;|&nbsp; ❌ ${report.summary.failed} failed` +
+      (report.summary.newGame ? ` &nbsp;|&nbsp; 🎮 New: ${report.summary.newGame}` : '');
 
-    // count per iap_id
-    const counts = {};
-    iapOnly.forEach(e => { counts[e.iap_id] = (counts[e.iap_id]||0)+1; });
-    const sorted  = Object.entries(counts).sort((a,b) => b[1]-a[1]);
-    const topId   = sorted[0]?.[0] || '—';
-    const noAds   = counts['no-ads'] || 0;
+    const AGENT_LABELS = {
+      idea:'Idea Agent', story:'Story Agent', levels:'Level Agent',
+      art:'Art Agent', code:'Code Agent', marketing:'Marketing Agent',
+      analytics:'Analytics Agent', feedback:'Feedback Agent', roadmap:'Roadmap Agent'
+    };
 
-    document.getElementById('iapTotal').textContent  = iapRev.toFixed(2);
-    document.getElementById('iapTop').textContent    = topId;
-    document.getElementById('iapNoAds').textContent  = noAds;
+    document.getElementById('agentGrid').innerHTML = Object.entries(report.agents).map(([k, v]) => `
+      <div class="agent-card ${v.success?'success':'failed'}">
+        <div class="agent-head">
+          <span class="agent-name">${AGENT_LABELS[k]||k}</span>
+          <span class="agent-status ${v.success?'ok':'err'}">${v.success?'✓ OK':'✗ FAIL'}</span>
+        </div>
+        <div class="agent-meta">
+          ⏱ ${v.duration} &nbsp;|&nbsp; 🔄 ${v.attempts} attempt(s)
+          ${v.error?`<br><span style="color:var(--red)">${esc(v.error)}</span>`:''}
+        </div>
+      </div>`).join('');
 
-    const detail = document.getElementById('iapDetail');
-    if (!sorted.length) {
-      detail.innerHTML = '<div class="empty">لا توجد مشتريات بعد</div>';
-      return;
-    }
-    detail.innerHTML = sorted.map(([id, count]) => {
-      const rev = iapOnly.filter(e=>e.iap_id===id).reduce((s,e)=>s+(e.currency==='USD'?+e.amount:0),0);
-      return `
-        <div class="iap-row">
-          <span class="iap-name"><span class="badge b-game" style="margin-left:8px">${esc(id)}</span></span>
-          <div style="display:flex;align-items:center;gap:20px">
-            <span style="color:var(--mut);font-size:0.78rem">${count} مبيعة</span>
-            <span class="iap-count">$${rev.toFixed(2)}</span>
+  } catch(err) {
+    document.getElementById('agentGrid').innerHTML = `<div class="empty">// ${err.message}</div>`;
+  }
+
+  // آخر فكرة
+  try {
+    const r = await fetch('/agent-results/ideas.json');
+    if (r.ok) {
+      const idea = await r.json();
+      document.getElementById('latestIdea').innerHTML = `
+        <div style="display:flex;gap:16px;align-items:flex-start">
+          <div style="font-size:3rem">${idea.emoji||'🎮'}</div>
+          <div>
+            <div style="font-size:1rem;font-weight:700;margin-bottom:4px">${idea.name?.en||idea.id}</div>
+            <div style="font-size:0.85rem;color:var(--mut2);margin-bottom:8px">${idea.name?.ar||''}</div>
+            <div style="font-size:0.8rem;color:var(--mut2)">${idea.concept||''}</div>
+            <div style="margin-top:8px;display:flex;gap:6px">
+              <span class="badge b-game">${idea.type}</span>
+              <span class="badge b-app">${idea.category}</span>
+            </div>
           </div>
         </div>`;
-    }).join('');
+    }
+  } catch {}
+
+  // محتوى التسويق
+  try {
+    const r = await fetch('/agent-results/marketing.json');
+    if (r.ok) {
+      const m = await r.json();
+      document.getElementById('marketingContent').innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:12px">
+          ${m.twitter?.en?`<div><div class="chart-label">TWITTER</div><div class="agent-preview">${esc(m.twitter.en)}</div></div>`:''}
+          ${m.reddit?.title?`<div><div class="chart-label">REDDIT</div><div class="agent-preview"><strong>${esc(m.reddit.title)}</strong><br>${esc(m.reddit.body?.slice(0,120))}...</div></div>`:''}
+        </div>`;
+    }
+  } catch {}
+}
+
+// ══ ANALYTICS ══════════════════════════════════════════════════
+async function loadAnalytics() {
+  try {
+    const r = await fetch('/agent-results/analytics.json');
+    if (r.ok) {
+      const a = await r.json();
+      document.getElementById('an-total').textContent = a.totals?.revenueUSD?.toFixed(2) || '0.00';
+      document.getElementById('an-week').textContent  = a.thisWeek?.revenueUSD?.toFixed(2) || '0.00';
+      document.getElementById('an-month').textContent = a.thisMonth?.revenueUSD?.toFixed(2) || '0.00';
+      document.getElementById('an-trend').textContent = a.trend || '—';
+    }
+  } catch {}
+
+  // رسم مخططات من بيانات Supabase
+  const plat = {};
+  allEarnings.forEach(e => { plat[e.platform] = (plat[e.platform]||0) + +e.amount; });
+  const maxPlat = Math.max(...Object.values(plat), 1);
+  document.getElementById('chartPlatform').innerHTML = Object.entries(plat).map(([k,v]) => `
+    <div class="bar-row">
+      <div class="bar-name">${esc(k)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/maxPlat*100).toFixed(0)}%;background:var(--acc)"></div></div>
+      <div class="bar-val">$${v.toFixed(0)}</div>
+    </div>`).join('') || '<div style="color:var(--mut2);font-size:0.8rem">no data</div>';
+
+  const iapC = {};
+  allEarnings.filter(e=>e.iap_id).forEach(e => { iapC[e.iap_id]=(iapC[e.iap_id]||0)+1; });
+  const maxIap = Math.max(...Object.values(iapC), 1);
+  document.getElementById('chartIap').innerHTML = Object.entries(iapC).map(([k,v]) => `
+    <div class="bar-row">
+      <div class="bar-name">${esc(k)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/maxIap*100).toFixed(0)}%;background:var(--acc2)"></div></div>
+      <div class="bar-val">${v}</div>
+    </div>`).join('') || '<div style="color:var(--mut2);font-size:0.8rem">no IAP sales</div>';
+}
+
+// ══ ROADMAP ════════════════════════════════════════════════════
+async function loadRoadmap() {
+  try {
+    const r = await fetch('/agent-results/roadmap.json');
+    if (!r.ok) throw new Error('No roadmap yet');
+    const road = await r.json();
+    document.getElementById('roadmapContent').innerHTML = `
+      <div class="roadmap-box">
+        <div class="roadmap-title">🎯 ${esc(road.weekPriority||'—')}</div>
+        <div style="display:flex;gap:16px;font-size:0.8rem;color:var(--mut2);margin-bottom:12px">
+          <span>Focus: <strong style="color:var(--acc2)">${esc(road.focusArea||'—')}</strong></span>
+          <span>Goal: <strong style="color:var(--acc)">$${esc(road.revenueGoal||'0')}</strong></span>
+        </div>
+        ${(road.tasks||[]).map(t=>`
+          <div class="task-item">
+            <span class="task-priority p-${t.priority==='high'?'high':t.priority==='medium'?'med':'low'}">${t.priority}</span>
+            <div>
+              <div class="task-text">${esc(t.task)}</div>
+              <div class="task-reason">${esc(t.reason)}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+      ${road.recommendation?`
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">💡 RECOMMENDATION</div>
+        <p style="font-size:0.88rem;line-height:1.7;color:var(--mut2)">${esc(road.recommendation)}</p>
+      </div>`:''}`;
   } catch(err) {
-    document.getElementById('iapDetail').innerHTML = `<div class="empty">❌ ${err.message}</div>`;
+    document.getElementById('roadmapContent').innerHTML = `<div class="empty">// ${err.message}</div>`;
   }
 }
 
-// ══ HELPERS ═══════════════════════════════════════════════════
+// ══ HELPERS ════════════════════════════════════════════════════
 function esc(s) {
-  return String(s||'—').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+  return String(s||'').replace(/[&<>"']/g, m =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
-// تحديث تلقائي كل 30 ثانية
+// auto refresh
 setInterval(() => { if (token) loadEarnings(); }, 30000);
 </script>
 </body>
