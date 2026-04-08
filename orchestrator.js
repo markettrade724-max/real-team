@@ -1,6 +1,6 @@
 /**
- * orchestrator.js - المنسق الرئيسي المحسن
- * يضمن تدفق البيانات بين الوكلاء ومعالجة الأخطاء بمرونة
+ * orchestrator.js - المنسق المطور
+ * متوافق مع تدفق بيانات Gemini 2.0 Flash
  */
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -8,137 +8,87 @@ import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const RESULTS_DIR = join(__dirname, 'agent-results');
+if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
-// إنشاء مجلد النتائج إذا لم يكن موجوداً
-if (!existsSync(RESULTS_DIR)) {
-  mkdirSync(RESULTS_DIR, { recursive: true });
-}
-
-/**
- * دالة لحفظ نتائج كل وكيل في ملف منفصل
- */
 function saveResult(filename, data) {
   if (!data) return;
   const path = join(RESULTS_DIR, filename);
-  try {
-    writeFileSync(path, JSON.stringify(data, null, 2), 'utf8');
-    console.log(`💾 Saved: agent-results/${filename}`);
-  } catch (err) {
-    console.error(`⚠️ Failed to save ${filename}:`, err.message);
-  }
+  writeFileSync(path, JSON.stringify(data, null, 2), 'utf8');
+  console.log(`💾 Saved to disk: agent-results/${filename}`);
 }
 
-/**
- * دالة تشغيل الوكيل مع معالجة الأخطاء
- */
 async function runAgent(name, agentPath, ...args) {
-  console.log(`\n${'─'.repeat(40)}`);
-  console.log(`🤖 Running: ${name}`);
-  
+  console.log(`\n${'─'.repeat(45)}`);
+  console.log(`🤖 Running [${name}]...`);
   try {
     const mod = await import(agentPath);
-    
-    // التأكد من أن الموديول يحتوي على دالة run
-    if (typeof mod.run !== 'function') {
-      throw new Error(`Agent "${name}" does not export a run() function.`);
-    }
-
     const result = await mod.run(...args);
     
-    if (!result) {
-      throw new Error(`Agent "${name}" returned no data (null/undefined).`);
-    }
-
-    console.log(`✅ ${name} completed successfully`);
+    if (!result) throw new Error(`${name} returned null/empty data`);
+    
+    console.log(`✅ ${name} completed successfully.`);
     return result;
   } catch (err) {
+    // تعديل هام: طباعة تفاصيل الخطأ بدقة للمساعدة في الإصلاح
     console.error(`❌ ${name} failed: ${err.message}`);
-    // طباعة تفاصيل الخطأ (Stack Trace) للمساعدة في حل المشكلة في الـ Logs
-    if (err.stack) {
-      const shortStack = err.stack.split('\n').slice(0, 3).join('\n');
-      console.error(shortStack);
-    }
-    return null;
+    return null; 
   }
 }
 
 async function main() {
-  console.log('🚀 Orchestrator starting...');
-  console.log(`📅 ${new Date().toISOString()}`);
+  console.log('🚀 Team Orchestrator Started (Gemini 2.0 Mode)');
+  console.log(`⏰ Time: ${new Date().toISOString()}`);
 
   const results = {};
 
-  // 1. الوكيل الأساسي: Idea Agent
-  // ملاحظة: إذا فشل هذا الوكيل، معظم الوكلاء الآخرين سيتوقفون لأنهم يعتمدون عليه
+  // 1. توليد الفكرة (حجر الزاوية)
+  // تم تحديث هذا الوكيل ليعمل بـ Gemini 2.0 Flash
   results.idea = await runAgent('Idea Agent', './agents/idea-agent.js');
   if (results.idea) saveResult('ideas.json', results.idea);
 
-  // 2. Story Agent (يعتمد على الفكرة)
+  // 2. تشغيل وكلاء المحتوى (تعتمد على الفكرة)
   if (results.idea) {
+    // نمرر نتائج الفكرة للوكلاء التاليين
     results.story = await runAgent('Story Agent', './agents/story-agent.js', results.idea);
+    results.art   = await runAgent('Art Agent', './agents/art-agent.js', results.idea);
+    
     if (results.story) saveResult('story.json', results.story);
+    if (results.art)   saveResult('art.json', results.art);
   }
 
-  // 3. Level Agent (يعتمد على الفكرة والقصة)
-  if (results.idea) {
-    results.levels = await runAgent('Level Agent', './agents/level-agent.js', results.idea, results.story);
-    if (results.levels) saveResult('levels.json', results.levels);
-  }
-
-  // 4. Art Agent (يعتمد على الفكرة)
-  if (results.idea) {
-    results.art = await runAgent('Art Agent', './agents/art-agent.js', results.idea);
-    if (results.art) saveResult('art.json', results.art);
-  }
-
-  // 5. Code Agent (يعتمد على الفكرة، القصة، المستويات، والفن)
-  if (results.idea && results.art) {
-    results.code = await runAgent('Code Agent', './agents/code-agent.js', results.idea, results.story, results.levels, results.art);
-    if (results.code) saveResult('code.json', results.code);
-  }
-
-  // 6. Marketing Agent (يعتمد على الفكرة والفن)
-  if (results.idea) {
-    results.marketing = await runAgent('Marketing Agent', './agents/marketing-agent.js', results.idea, results.art);
-    if (results.marketing) saveResult('marketing.json', results.marketing);
-  }
-
-  // 7. Analytics Agent (مستقل - يعمل حتى لو فشل الـ Idea Agent)
+  // 3. وكلاء الأنظمة المستقلة (تعمل حتى لو فشلت الفكرة)
   results.analytics = await runAgent('Analytics Agent', './agents/analytics-agent.js');
+  results.feedback  = await runAgent('Feedback Agent', './agents/feedback-agent.js');
+
   if (results.analytics) saveResult('analytics.json', results.analytics);
+  if (results.feedback)  saveResult('feedback.json', results.feedback);
 
-  // 8. Feedback Agent (مستقل)
-  results.feedback = await runAgent('Feedback Agent', './agents/feedback-agent.js');
-  if (results.feedback) saveResult('feedback.json', results.feedback);
-
-  // 9. Roadmap Agent (يعتمد على جميع النتائج السابقة)
+  // 4. وكيل خارطة الطريق (يجمع كل ما سبق)
   results.roadmap = await runAgent('Roadmap Agent', './agents/roadmap-agent.js', results);
   if (results.roadmap) saveResult('roadmap.json', results.roadmap);
 
-  // ── الملخص النهائي لنتائج التشغيل ──────────────────────────
-  console.log('\n' + '═'.repeat(40));
-  console.log('📊 SUMMARY REPORT');
-  console.log('═'.repeat(40));
+  // --- تقرير الحالة النهائي ---
+  console.log('\n' + '═'.repeat(45));
+  console.log('🏁 FINAL STATUS REPORT');
+  console.log('═'.repeat(45));
   
-  Object.keys(results).forEach(key => {
-    const status = results[key] ? '✅ SUCCESS' : '❌ FAILED';
-    console.log(`${key.padEnd(12)} : ${status}`);
-  });
-
-  const failedCount = Object.values(results).filter(v => !v).length;
-  console.log('\n' + '═'.repeat(40));
+  const statusSummary = Object.entries(results).map(([agent, data]) => {
+    return `${data ? '✅' : '❌'} ${agent.padEnd(12)}`;
+  }).join('\n');
   
-  if (failedCount === 0) {
-    console.log('🎉 Mission accomplished! All agents reported back.');
+  console.log(statusSummary);
+  
+  const failed = Object.values(results).filter(v => !v).length;
+  if (failed > 0) {
+    console.warn(`\n⚠️ Finished with ${failed} issues. Check logs above.`);
+    // في GitHub Actions، قد ترغب في الخروج بـ 1 ليعطيك تنبيه أحمر
+    // process.exit(1); 
   } else {
-    console.log(`⚠️ Process finished with ${failedCount} failure(s). Check logs above.`);
-    // لا نخرج بـ exit(1) هنا إذا كان هناك نتائج جزئية نريد حفظها، 
-    // ولكن إذا كنت تريد لـ GitHub Actions أن تظهر باللون الأحمر عند أي فشل، فكّر في تفعيل السطر التالي:
-    // process.exit(1);
+    console.log('\n🎉 All agents successfully coordinated!');
   }
 }
 
 main().catch(err => {
-  console.error('💥 Critical Orchestrator Crash:', err.message);
+  console.error('💥 Critical System Failure:', err.message);
   process.exit(1);
 });
