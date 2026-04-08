@@ -1,6 +1,6 @@
 /**
- * idea-agent.js - المصحح
- * يولّد أفكاراً إبداعية مع ضمان استلام JSON نظيف
+ * idea-agent.js - النسخة النهائية المستقرة
+ * تم تصحيح رابط الموديل وتفعيل وضع JSON الصارم
  */
 
 import { readFileSync } from 'fs';
@@ -10,84 +10,93 @@ import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
 
+/**
+ * دالة الاتصال بـ Gemini API
+ */
 async function gemini(prompt) {
-  // استخدام v1beta لدعم JSON Mode
+  // الرابط المصحح لنسخة v1beta وموديل gemini-1.5-flash
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
   
   const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { 
-          temperature: 0.8, // خفض الحرارة قليلاً لزيادة الالتزام بالهيكل
-          maxOutputTokens: 2048,
-          responseMimeType: "application/json" // إجبار الموديل على إخراج JSON فقط
-        }
-      })
-    }
-  );
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { 
+        temperature: 0.8, 
+        maxOutputTokens: 2048,
+        responseMimeType: "application/json" // إجبار الموديل على إرسال JSON فقط
+      }
+    })
+  });
 
   const data = await res.json();
-  
+
+  // فحص الأخطاء القادمة من جوجل
   if (data.error) {
+    console.error("❌ Gemini API Details:", JSON.stringify(data.error, null, 2));
     throw new Error(`Gemini API Error: ${data.error.message}`);
   }
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Gemini returned an empty response');
-  
-  return text;
+  const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!responseText) {
+    throw new Error('Empty response: Gemini candidate content is missing');
+  }
+
+  return responseText;
 }
 
 export async function run() {
-  // قراءة المنتجات الحالية لتجنب التكرار
-  const productsPath = join(__dirname, '..', 'products.json');
-  const products = JSON.parse(readFileSync(productsPath, 'utf8'));
-  // إرسال آخر 20 معرف فقط لتوفير الـ Tokens وضمان السياق
-  const existingIds = products.slice(-20).map(p => p.id).join(', ');
+  // 1. قراءة المنتجات الحالية لتجنب التكرار
+  let existingIds = "";
+  try {
+    const productsPath = join(__dirname, '..', 'products.json');
+    const products = JSON.parse(readFileSync(productsPath, 'utf8'));
+    existingIds = products.slice(-20).map(p => p.id).join(', ');
+  } catch (e) {
+    console.warn("⚠️ Could not read products.json, starting fresh.");
+  }
 
+  // 2. اختيار نوع عشوائي
   const TYPES = ['memory', 'puzzle', 'word', 'quiz', 'tool', 'arcade'];
   const type = TYPES[Math.floor(Math.random() * TYPES.length)];
 
+  // 3. كتابة البرومبت (الطلب)
   const prompt = `
-Act as an expert game designer. Suggest a new ${type === 'tool' ? 'utility app' : 'game'} of type "${type}".
-Do not repeat these ideas: ${existingIds}.
+Act as an expert creative game and app designer. 
+Generate a new, innovative ${type === 'tool' ? 'app' : 'game'} idea of type "${type}".
+The idea must be executable in a web browser (HTML5/JS).
 
-Requirements:
-- HTML5 compatible.
-- Creative and unique.
+Avoid these existing IDs: ${existingIds}
 
-Return ONLY this JSON structure:
+Return ONLY a JSON object with this structure:
 {
-  "id": "unique-slug-in-english",
+  "id": "slug-in-english",
   "type": "${type}",
   "category": "${type === 'tool' ? 'app' : 'game'}",
   "emoji": "🎮",
-  "concept": "Brief core idea in English",
-  "uniqueFeature": "What makes it special",
-  "targetAudience": "Target audience",
+  "concept": "Core idea description",
   "name": { "ar": "..", "en": "..", "fr": "..", "es": "..", "de": "..", "zh": ".." },
   "desc": { "ar": "..", "en": "..", "fr": "..", "es": "..", "de": "..", "zh": ".." },
-  "tags": ["tag1", "tag2", "tag3"]
+  "tags": ["tag1", "tag2"]
 }`;
 
   const raw = await gemini(prompt);
   
   try {
-    // تنظيف النص لضمان عدم وجود علامات Markdown زائدة
+    // تنظيف الرد من أي علامات Markdown قد يضيفها الموديل رغم طلب JSON
     const cleanJson = raw.replace(/```json|```/g, "").trim();
     const idea = JSON.parse(cleanJson);
 
-    // إضافة البيانات التعريفية
+    // إضافة بيانات إضافية للتوثيق
     idea.generatedAt = new Date().toISOString();
     idea.generatedBy = 'idea-agent';
 
-    console.log(`✅ New idea generated: ${idea.id}`);
+    console.log(`✅ Successfully generated idea: ${idea.id}`);
     return idea;
 
   } catch (err) {
-    console.error('❌ JSON Parsing failed. Raw response:', raw);
-    throw new Error('Invalid JSON format from Gemini');
+    console.error('❌ JSON Parsing Error. Content received:', raw);
+    throw new Error('Failed to parse Gemini response as JSON');
   }
 }
