@@ -1,29 +1,29 @@
 {
-  "runId": "2026-04-09T10-16-34",
-  "timestamp": "2026-04-09T10:17:30.676Z",
-  "totalDuration": "55.8s",
+  "runId": "2026-04-09T11-05-11",
+  "timestamp": "2026-04-09T11:05:57.739Z",
+  "totalDuration": "46.7s",
   "agents": {
     "idea": {
       "success": false,
-      "duration": "6.5s",
+      "duration": "1.0s",
       "attempts": 3,
       "error": "Invalid response from Gemini"
     },
     "analytics": {
       "success": false,
-      "duration": "15ms",
+      "duration": "27ms",
       "attempts": 3,
       "error": "Supabase error: TypeError: fetch failed"
     },
     "feedback": {
       "success": false,
-      "duration": "6.0s",
+      "duration": "6.1s",
       "attempts": 3,
       "error": "Invalid feedback response"
     },
     "roadmap": {
       "success": false,
-      "duration": "119ms",
+      "duration": "101ms",
       "attempts": 3,
       "error": "Invalid roadmap response"
     }
