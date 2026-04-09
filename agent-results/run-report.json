@@ -1,0 +1,37 @@
+{
+  "runId": "2026-04-09T10-16-34",
+  "timestamp": "2026-04-09T10:17:30.676Z",
+  "totalDuration": "55.8s",
+  "agents": {
+    "idea": {
+      "success": false,
+      "duration": "6.5s",
+      "attempts": 3,
+      "error": "Invalid response from Gemini"
+    },
+    "analytics": {
+      "success": false,
+      "duration": "15ms",
+      "attempts": 3,
+      "error": "Supabase error: TypeError: fetch failed"
+    },
+    "feedback": {
+      "success": false,
+      "duration": "6.0s",
+      "attempts": 3,
+      "error": "Invalid feedback response"
+    },
+    "roadmap": {
+      "success": false,
+      "duration": "119ms",
+      "attempts": 3,
+      "error": "Invalid roadmap response"
+    }
+  },
+  "summary": {
+    "total": 4,
+    "passed": 0,
+    "failed": 4,
+    "newGame": null
+  }
+}
