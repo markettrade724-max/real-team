@@ -1,290 +1,201 @@
 /**
- * orchestrator.js — المنسق الرئيسي المتطور
- * يشغّل كل الوكلاء بالترتيب مع:
- * - إعادة المحاولة عند الفشل
- * - توقيت دقيق لكل وكيل
- * - تقرير مفصّل في النهاية
- * - حفظ حالة التشغيل
+ * orchestrator.js — المنسق الرئيسي
+ * يحترم حدود Gemini: 5 RPM / 20 RPD
  */
 
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname   = dirname(fileURLToPath(import.meta.url));
 const RESULTS_DIR = join(__dirname, 'agent-results');
-
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
 // ── إعدادات ───────────────────────────────────────────────────
-const CONFIG = {
-  maxRetries:  2,       // عدد إعادة المحاولات عند الفشل
-  retryDelay:  3000,    // انتظار 3 ثوانٍ بين المحاولات
-  timeout:     60000,   // 60 ثانية كحد أقصى لكل وكيل
-};
+const DELAY_BETWEEN_AGENTS = 15000; // 15 ثانية بين كل وكيل (يحترم 5 RPM)
+const MAX_RETRIES          = 2;
+const TIMEOUT              = 90000; // 90 ثانية
+
+let geminiCallsToday = 0;
+const MAX_DAILY_CALLS = 18; // نحتفظ بـ 2 احتياط من 20
 
 // ── مساعدات ───────────────────────────────────────────────────
 function saveResult(filename, data) {
-  const path = join(RESULTS_DIR, filename);
-  writeFileSync(path, JSON.stringify(data, null, 2), 'utf8');
-  console.log(`   💾 Saved → agent-results/${filename}`);
+  writeFileSync(join(RESULTS_DIR, filename), JSON.stringify(data, null, 2), 'utf8');
+  console.log(`   💾 ${filename}`);
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-function formatDuration(ms) {
-  if (ms < 1000) return `${ms}ms`;
-  return `${(ms / 1000).toFixed(1)}s`;
-}
+function fmt(ms) { return ms < 1000 ? `${ms}ms` : `${(ms/1000).toFixed(1)}s`; }
 
-// ── تشغيل وكيل مع إعادة المحاولة والـ timeout ────────────────
-async function runAgent(name, agentPath, args = [], options = {}) {
-  const { retries = CONFIG.maxRetries, required = false } = options;
-  const sep = '─'.repeat(44);
+// ── تشغيل وكيل ────────────────────────────────────────────────
+async function runAgent(name, agentPath, args = []) {
+  console.log(`\n${'─'.repeat(44)}`);
+  console.log(`🤖 ${name}`);
 
-  console.log(`\n${sep}`);
-  console.log(`🤖  ${name}`);
-  console.log(sep);
+  // تحقق من الحد اليومي
+  if (geminiCallsToday >= MAX_DAILY_CALLS) {
+    console.warn(`   ⚠️ Daily limit reached (${geminiCallsToday}/${MAX_DAILY_CALLS}) — skipping`);
+    return { success: false, error: 'Daily limit', skippedByLimit: true };
+  }
 
-  for (let attempt = 1; attempt <= retries + 1; attempt++) {
+  // انتظر بين الوكلاء لاحترام 5 RPM
+  console.log(`   ⏳ Waiting ${DELAY_BETWEEN_AGENTS/1000}s (rate limit)...`);
+  await sleep(DELAY_BETWEEN_AGENTS);
+
+  for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
     if (attempt > 1) {
-      console.log(`   🔄 Retry ${attempt - 1}/${retries}...`);
-      await sleep(CONFIG.retryDelay);
+      console.log(`   🔄 Retry ${attempt-1}/${MAX_RETRIES} (waiting 20s)...`);
+      await sleep(20000);
     }
 
-    const startTime = Date.now();
-
+    const t0 = Date.now();
     try {
-      // timeout wrapper
-      const mod    = await import(agentPath + `?t=${Date.now()}`);
+      const mod    = await import(`${agentPath}?t=${Date.now()}`);
       const result = await Promise.race([
         mod.run(...args),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout after ' + CONFIG.timeout/1000 + 's')), CONFIG.timeout)
-        )
+        new Promise((_,rej) => setTimeout(() => rej(new Error('Timeout')), TIMEOUT))
       ]);
-
-      const duration = Date.now() - startTime;
-      console.log(`   ✅ Done in ${formatDuration(duration)}`);
-      return { success: true, data: result, duration, attempts: attempt };
-
-    } catch (err) {
-      const duration = Date.now() - startTime;
-      console.error(`   ❌ Failed (${formatDuration(duration)}): ${err.message}`);
-
-      if (attempt === retries + 1) {
-        if (required) {
-          console.error(`   🚨 CRITICAL: ${name} is required — aborting`);
-          process.exit(1);
-        }
-        return { success: false, error: err.message, duration, attempts: attempt };
+      geminiCallsToday++;
+      console.log(`   ✅ ${fmt(Date.now()-t0)} | Gemini calls today: ${geminiCallsToday}`);
+      return { success: true, data: result, duration: fmt(Date.now()-t0), attempts: attempt };
+    } catch(err) {
+      console.error(`   ❌ ${fmt(Date.now()-t0)}: ${err.message}`);
+      if (attempt === MAX_RETRIES + 1) {
+        return { success: false, error: err.message, duration: fmt(Date.now()-t0), attempts: attempt };
       }
     }
+  }
+}
+
+// ── وكلاء بدون Gemini (لا يحتاجون انتظار) ────────────────────
+async function runAgentNoGemini(name, agentPath, args = []) {
+  console.log(`\n${'─'.repeat(44)}`);
+  console.log(`🤖 ${name} (no Gemini)`);
+  const t0 = Date.now();
+  try {
+    const mod    = await import(`${agentPath}?t=${Date.now()}`);
+    const result = await mod.run(...args);
+    console.log(`   ✅ ${fmt(Date.now()-t0)}`);
+    return { success: true, data: result, duration: fmt(Date.now()-t0), attempts: 1 };
+  } catch(err) {
+    console.error(`   ❌ ${err.message}`);
+    return { success: false, error: err.message, duration: fmt(Date.now()-t0), attempts: 1 };
   }
 }
 
 // ── main ──────────────────────────────────────────────────────
 async function main() {
-  const startTime = Date.now();
-  const runId     = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const t0    = Date.now();
+  const runId = new Date().toISOString().replace(/[:.]/g,'').slice(0,15);
 
-  console.log('╔══════════════════════════════════════════╗');
-  console.log('║     🚀  REALTEAM ORCHESTRATOR  🚀        ║');
-  console.log('╚══════════════════════════════════════════╝');
-  console.log(`📅 Run ID: ${runId}`);
-  console.log(`🔧 Config: ${CONFIG.maxRetries} retries, ${CONFIG.timeout/1000}s timeout\n`);
+  console.log('╔═══════════════════════════════════════════╗');
+  console.log('║      🚀  REALTEAM ORCHESTRATOR  🚀        ║');
+  console.log('╚═══════════════════════════════════════════╝');
+  console.log(`📅 Run: ${runId}`);
+  console.log(`⚡ Gemini limit: ${MAX_DAILY_CALLS} calls/day | 5 RPM`);
 
-  const log = {};   // سجل كل الوكلاء
-  const data = {};  // بيانات للتمرير بين الوكلاء
+  const log  = {};
+  const data = {};
 
-  // ─────────────────────────────────────────────────────────────
-  // المرحلة ١: توليد المحتوى
-  // ─────────────────────────────────────────────────────────────
-  console.log('\n📦  PHASE 1: Content Generation');
+  // ─── المرحلة ١: توليد محتوى (يحتاج Gemini) ──────────────────
+  console.log('\n\n📦 PHASE 1: Content Generation');
 
-  log.idea = await runAgent(
-    'Idea Agent — توليد فكرة جديدة',
-    './agents/idea-agent.js',
-    [], { required: false }
-  );
-  if (log.idea.success) {
-    data.idea = log.idea.data;
-    saveResult('ideas.json', data.idea);
-    console.log(`   💡 Idea: "${data.idea.name?.en}" (${data.idea.type})`);
-  }
+  log.idea = await runAgent('Idea Agent', './agents/idea-agent.js', []);
+  if (log.idea?.success) { data.idea = log.idea.data; saveResult('ideas.json', data.idea); }
 
   if (data.idea) {
-    log.story = await runAgent(
-      'Story Agent — كتابة القصة',
-      './agents/story-agent.js',
-      [data.idea]
-    );
-    if (log.story.success) {
-      data.story = log.story.data;
-      saveResult('story.json', data.story);
-      console.log(`   📖 Story: "${data.story.mainCharacter?.name}"`);
-    }
+    log.story = await runAgent('Story Agent', './agents/story-agent.js', [data.idea]);
+    if (log.story?.success) { data.story = log.story.data; saveResult('story.json', data.story); }
 
-    log.levels = await runAgent(
-      'Level Agent — تصميم المستويات',
-      './agents/level-agent.js',
-      [data.idea, data.story]
-    );
-    if (log.levels.success) {
-      data.levels = log.levels.data;
-      saveResult('levels.json', data.levels);
-      console.log(`   🎯 Levels: ${data.levels.totalLevels} levels`);
-    }
+    log.art = await runAgent('Art Agent', './agents/art-agent.js', [data.idea]);
+    if (log.art?.success) { data.art = log.art.data; saveResult('art.json', data.art); }
 
-    log.art = await runAgent(
-      'Art Agent — الهوية البصرية',
-      './agents/art-agent.js',
-      [data.idea]
-    );
-    if (log.art.success) {
-      data.art = log.art.data;
-      saveResult('art.json', data.art);
-      console.log(`   🎨 Art: ${data.art.mood} / ${data.art.accent}`);
-    }
+    log.levels = await runAgent('Level Agent', './agents/level-agent.js', [data.idea, data.story]);
+    if (log.levels?.success) { data.levels = log.levels.data; saveResult('levels.json', data.levels); }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // المرحلة ٢: بناء اللعبة
-  // ─────────────────────────────────────────────────────────────
-  console.log('\n🏗️   PHASE 2: Game Building');
+  // ─── المرحلة ٢: بناء اللعبة (بدون Gemini) ────────────────────
+  console.log('\n\n🏗️  PHASE 2: Build');
 
   if (data.idea && data.art) {
-    log.code = await runAgent(
-      'Code Agent — بناء اللعبة',
-      './agents/code-agent.js',
-      [data.idea, data.story, data.levels, data.art]
-    );
-    if (log.code.success) {
-      data.code = log.code.data;
-      saveResult('code.json', data.code);
-      if (data.code.skipped) {
-        console.log(`   ⏭️  Skipped (already exists)`);
-      } else {
-        console.log(`   🎮 Built: ${data.code.id}`);
-      }
-    }
-  } else {
-    console.log('   ⏭️  Skipped — no idea or art generated');
+    log.code = await runAgentNoGemini('Code Agent', './agents/code-agent.js',
+      [data.idea, data.story, data.levels, data.art]);
+    if (log.code?.success) { data.code = log.code.data; saveResult('code.json', data.code); }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // المرحلة ٣: التسويق
-  // ─────────────────────────────────────────────────────────────
-  console.log('\n📣  PHASE 3: Marketing');
+  // ─── المرحلة ٣: تحليل (بدون Gemini) ─────────────────────────
+  console.log('\n\n📊 PHASE 3: Analytics (no Gemini)');
 
-  if (data.idea) {
-    log.marketing = await runAgent(
-      'Marketing Agent — محتوى التسويق',
-      './agents/marketing-agent.js',
-      [data.idea, data.art]
-    );
-    if (log.marketing.success) {
-      data.marketing = log.marketing.data;
-      saveResult('marketing.json', data.marketing);
-      console.log(`   📝 Posts ready for all platforms`);
-    }
+  log.analytics = await runAgentNoGemini('Analytics Agent', './agents/analytics-agent.js', []);
+  if (log.analytics?.success) { data.analytics = log.analytics.data; saveResult('analytics.json', data.analytics); }
+
+  // ─── المرحلة ٤: تسويق + ملاحظات (يحتاج Gemini) ──────────────
+  console.log('\n\n📣 PHASE 4: Marketing & Feedback');
+
+  if (data.idea && geminiCallsToday < MAX_DAILY_CALLS) {
+    log.marketing = await runAgent('Marketing Agent', './agents/marketing-agent.js', [data.idea, data.art]);
+    if (log.marketing?.success) { data.marketing = log.marketing.data; saveResult('marketing.json', data.marketing); }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // المرحلة ٤: التحليل والتخطيط
-  // ─────────────────────────────────────────────────────────────
-  console.log('\n📊  PHASE 4: Analysis & Planning');
-
-  log.analytics = await runAgent(
-    'Analytics Agent — تحليل الأداء',
-    './agents/analytics-agent.js',
-    []
-  );
-  if (log.analytics.success) {
-    data.analytics = log.analytics.data;
-    saveResult('analytics.json', data.analytics);
-    console.log(`   💰 Revenue: $${data.analytics.totals?.revenueUSD || 0} total`);
-    console.log(`   📈 Trend: ${data.analytics.trend}`);
+  if (geminiCallsToday < MAX_DAILY_CALLS) {
+    log.feedback = await runAgent('Feedback Agent', './agents/feedback-agent.js', []);
+    if (log.feedback?.success) { data.feedback = log.feedback.data; saveResult('feedback.json', data.feedback); }
   }
 
-  log.feedback = await runAgent(
-    'Feedback Agent — تقييم المحتوى',
-    './agents/feedback-agent.js',
-    []
-  );
-  if (log.feedback.success) {
-    data.feedback = log.feedback.data;
-    saveResult('feedback.json', data.feedback);
-    console.log(`   💬 ${data.feedback.suggestions?.length || 0} suggestions`);
+  // ─── المرحلة ٥: خارطة الطريق (يحتاج Gemini) ─────────────────
+  console.log('\n\n🗺️  PHASE 5: Roadmap');
+
+  if (geminiCallsToday < MAX_DAILY_CALLS) {
+    log.roadmap = await runAgent('Roadmap Agent', './agents/roadmap-agent.js',
+      [{ analytics: data.analytics, feedback: data.feedback, idea: data.idea, code: data.code }]);
+    if (log.roadmap?.success) { data.roadmap = log.roadmap.data; saveResult('roadmap.json', data.roadmap); }
   }
 
-  log.roadmap = await runAgent(
-    'Roadmap Agent — خارطة الأسبوع',
-    './agents/roadmap-agent.js',
-    [{ analytics: data.analytics, feedback: data.feedback, idea: data.idea, code: data.code }]
-  );
-  if (log.roadmap.success) {
-    data.roadmap = log.roadmap.data;
-    saveResult('roadmap.json', data.roadmap);
-    console.log(`   🗺️  Focus: ${data.roadmap.focusArea}`);
-    console.log(`   🎯 Goal: $${data.roadmap.revenueGoal}`);
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  // تقرير نهائي
-  // ─────────────────────────────────────────────────────────────
-  const totalDuration = Date.now() - startTime;
-
+  // ─── تقرير نهائي ─────────────────────────────────────────────
   const report = {
     runId,
     timestamp:     new Date().toISOString(),
-    totalDuration: formatDuration(totalDuration),
+    totalDuration: fmt(Date.now()-t0),
+    geminiCalls:   geminiCallsToday,
     agents: Object.fromEntries(
-      Object.entries(log).map(([k, v]) => [k, {
-        success:  v.success,
-        duration: formatDuration(v.duration),
-        attempts: v.attempts,
-        error:    v.error || null,
+      Object.entries(log).map(([k,v]) => [k, {
+        success:  v?.success || false,
+        duration: v?.duration || '—',
+        attempts: v?.attempts || 0,
+        error:    v?.error || null,
       }])
     ),
     summary: {
       total:   Object.keys(log).length,
-      passed:  Object.values(log).filter(v => v.success).length,
-      failed:  Object.values(log).filter(v => !v.success).length,
+      passed:  Object.values(log).filter(v=>v?.success).length,
+      failed:  Object.values(log).filter(v=>!v?.success).length,
       newGame: data.code?.id || null,
     }
   };
 
   saveResult('run-report.json', report);
 
-  console.log('\n╔══════════════════════════════════════════╗');
-  console.log('║              📊  REPORT                  ║');
-  console.log('╠══════════════════════════════════════════╣');
-  Object.entries(log).forEach(([k, v]) => {
-    const icon = v.success ? '✅' : '❌';
-    const time = formatDuration(v.duration);
-    console.log(`║  ${icon} ${k.padEnd(18)} ${time.padStart(8)}         ║`);
+  console.log('\n╔═══════════════════════════════════════════╗');
+  console.log('║                 📊 REPORT                 ║');
+  console.log('╠═══════════════════════════════════════════╣');
+  Object.entries(log).forEach(([k,v]) => {
+    const icon = v?.success ? '✅' : '❌';
+    console.log(`║  ${icon} ${k.padEnd(16)} ${(v?.duration||'—').padStart(8)}          ║`);
   });
-  console.log('╠══════════════════════════════════════════╣');
-  console.log(`║  ⏱️  Total: ${formatDuration(totalDuration).padEnd(30)} ║`);
-  console.log(`║  ✅ Passed: ${String(report.summary.passed).padEnd(29)} ║`);
-  console.log(`║  ❌ Failed: ${String(report.summary.failed).padEnd(29)} ║`);
+  console.log('╠═══════════════════════════════════════════╣');
+  console.log(`║  ⏱️  ${fmt(Date.now()-t0).padEnd(37)}║`);
+  console.log(`║  ✅ ${String(report.summary.passed).padEnd(38)}║`);
+  console.log(`║  ❌ ${String(report.summary.failed).padEnd(38)}║`);
+  console.log(`║  ⚡ Gemini: ${String(geminiCallsToday+'/'+MAX_DAILY_CALLS).padEnd(31)}║`);
   if (report.summary.newGame) {
-    console.log(`║  🎮 New game: ${report.summary.newGame.padEnd(27)} ║`);
+    console.log(`║  🎮 ${report.summary.newGame.padEnd(38)}║`);
   }
-  console.log('╚══════════════════════════════════════════╝');
-
-  if (report.summary.failed > 0) {
-    console.warn(`\n⚠️  ${report.summary.failed} agent(s) failed — check logs above`);
-  } else {
-    console.log('\n🎉 All agents completed successfully!');
-  }
+  console.log('╚═══════════════════════════════════════════╝');
 }
 
 main().catch(err => {
-  console.error('\n💥 Orchestrator crashed:', err.message);
-  console.error(err.stack);
+  console.error('💥 Crashed:', err.message);
   process.exit(1);
 });
