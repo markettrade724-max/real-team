@@ -1,29 +1,30 @@
 {
-  "runId": "2026-04-09T11-05-11",
-  "timestamp": "2026-04-09T11:05:57.739Z",
-  "totalDuration": "46.7s",
+  "runId": "2026-04-09T1129",
+  "timestamp": "2026-04-09T11:33:19.295Z",
+  "totalDuration": "199.6s",
+  "geminiCalls": 0,
   "agents": {
     "idea": {
       "success": false,
-      "duration": "1.0s",
+      "duration": "6.1s",
       "attempts": 3,
-      "error": "Invalid response from Gemini"
+      "error": "Cannot parse JSON from: {\n  \"id\": \"synapse-flow\",\n  \"type\": \"tool\",\n  \"category\": \"app\",\n  "
     },
     "analytics": {
       "success": false,
-      "duration": "27ms",
-      "attempts": 3,
+      "duration": "90ms",
+      "attempts": 1,
       "error": "Supabase error: TypeError: fetch failed"
     },
     "feedback": {
       "success": false,
-      "duration": "6.1s",
+      "duration": "6.5s",
       "attempts": 3,
       "error": "Invalid feedback response"
     },
     "roadmap": {
       "success": false,
-      "duration": "101ms",
+      "duration": "150ms",
       "attempts": 3,
       "error": "Invalid roadmap response"
     }
