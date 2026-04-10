@@ -1,79 +1,29 @@
-/**
- * marketing-agent.js
- * يولّد منشورات تسويقية لكل المنصات
- */
+import { askGemini } from './_gemini.js';
+import { logger }    from '../logger.js';
 
-const GEMINI_KEY = process.env.GEMINI_API_KEY;
-const SITE_URL   = process.env.SITE_URL || 'https://real-team-production.up.railway.app';
-
-async function gemini(prompt) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.95, maxOutputTokens: 2000 }
-      })
-    }
-  );
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-}
+const SITE_URL = process.env.SITE_URL || 'https://real-team-production.up.railway.app';
 
 export async function run(idea, art) {
   const name    = idea.name?.en || idea.id;
-  const nameAr  = idea.name?.ar || idea.id;
-  const desc    = idea.desc?.en || '';
   const gameUrl = `${SITE_URL}/games/${idea.id}.html`;
 
-  const prompt = `
-أنت خبير تسويق رقمي. اكتب محتوى تسويقياً للعبة "${name}" (${idea.emoji}).
-
-معلومات اللعبة:
-- النوع: ${idea.type}
-- الوصف: ${desc}
-- الرابط: ${gameUrl}
-- مجانية مع مشتريات اختيارية
-
-اكتب منشوراً لكل منصة. أجب بـ JSON فقط:
+  const posts = await askGemini(`
+Create marketing content for the game "${name}" (${idea.emoji}).
+Description: ${idea.desc?.en}
+URL: ${gameUrl}
+Free to play with optional in-app purchases.
+Return ONLY valid JSON:
 {
-  "twitter": {
-    "en": "تغريدة بالإنجليزية (max 280 chars) مع هاشتاقات",
-    "ar": "تغريدة بالعربية (max 280 chars)"
-  },
-  "reddit": {
-    "title": "عنوان Reddit بالإنجليزية",
-    "body": "نص المنشور بالإنجليزية (فقرتان)"
-  },
-  "facebook": {
-    "ar": "منشور فيسبوك بالعربية (3-4 جمل مع إيموجي)",
-    "en": "Facebook post in English (3-4 sentences with emojis)"
-  },
-  "tiktok": {
-    "caption": "كابشن TikTok قصير جذاب بالإنجليزية",
-    "hashtags": ["hashtag1", "hashtag2", "hashtag3", "hashtag4", "hashtag5"]
-  },
-  "youtube": {
-    "title": "عنوان YouTube بالإنجليزية (جذاب للـ SEO)",
-    "description": "وصف YouTube بالإنجليزية (3 فقرات)",
-    "tags": ["tag1", "tag2", "tag3"]
-  }
-}`;
+  "twitter": { "en": "tweet max 280 chars with hashtags", "ar": "تغريدة" },
+  "reddit":  { "title": "Reddit title", "body": "two paragraphs" },
+  "facebook": { "ar": "منشور", "en": "post" },
+  "tiktok":  { "caption": "short caption", "hashtags": ["h1","h2","h3","h4","h5"] },
+  "youtube": { "title": "SEO title", "description": "3 paragraphs", "tags": ["t1","t2","t3"] }
+}`, 0.95);
 
-  const raw   = await gemini(prompt);
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('Invalid marketing response');
-
-  const posts = JSON.parse(match[0]);
   posts.gameId      = idea.id;
   posts.gameUrl     = gameUrl;
   posts.generatedAt = new Date().toISOString();
-
-  console.log(`📣 Marketing content generated for: ${name}`);
-  console.log(`   Twitter: ${posts.twitter?.en?.slice(0, 60)}...`);
-  console.log(`   Reddit title: ${posts.reddit?.title}`);
-
+  logger.info('Marketing generated', { gameId: idea.id });
   return posts;
 }
