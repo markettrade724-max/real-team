@@ -1,9 +1,5 @@
-/**
- * art-agent.js
- * يولّد الهوية البصرية للعبة (ألوان، تدرجات، إيموجي)
- */
-
-const GEMINI_KEY = process.env.GEMINI_API_KEY;
+import { askGemini } from './_gemini.js';
+import { logger }    from '../logger.js';
 
 const PALETTES = [
   { accent:'#818cf8', accentRgb:'129,140,248', gradient:'135deg,#1e1b4b,#312e81', mood:'cosmic'    },
@@ -16,56 +12,26 @@ const PALETTES = [
   { accent:'#2dd4bf', accentRgb:'45,212,191',  gradient:'135deg,#042830,#134e4a', mood:'tech'      },
 ];
 
-async function gemini(prompt) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.9, maxOutputTokens: 512 }
-      })
-    }
-  );
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-}
-
 export async function run(idea) {
-  // اختر لوحة ألوان تناسب الفكرة
-  const prompt = `
-للعبة "${idea.name?.en}" من نوع "${idea.type}" بفكرة "${idea.concept}".
-أي من هذه الأجواء البصرية يناسبها أكثر؟
-${PALETTES.map((p, i) => `${i}: ${p.mood}`).join(', ')}
-أجب برقم فقط (0-${PALETTES.length - 1}):`;
+  const result = await askGemini(`
+For game "${idea.name?.en}" (${idea.type}), concept: "${idea.concept}".
+Choose the best visual mood from: ${PALETTES.map((p,i)=>`${i}:${p.mood}`).join(', ')}
+Also suggest 12 thematic emojis.
+Return ONLY valid JSON:
+{ "paletteIndex": 0, "emojis": ["e1","e2","e3","e4","e5","e6","e7","e8","e9","e10","e11","e12"] }
+`, 0.8);
 
-  const raw   = await gemini(prompt);
-  const index = parseInt(raw.trim()) || 0;
-  const palette = PALETTES[Math.min(index, PALETTES.length - 1)];
-
-  // توليد إيموجي مناسبة
-  const emojiPrompt = `
-اقترح 12 إيموجي مناسبة تماماً للعبة "${idea.name?.en}" (${idea.type}).
-الأجواء: ${palette.mood}
-أجب بـ JSON فقط: ["e1","e2","e3","e4","e5","e6","e7","e8","e9","e10","e11","e12"]`;
-
-  const emojiRaw   = await gemini(emojiPrompt);
-  const emojiMatch = emojiRaw.match(/\[[\s\S]*\]/);
-  const emojis     = emojiMatch ? JSON.parse(emojiMatch[0]).slice(0, 12) : ['🎮','⭐','🌟','💫','✨','🎯','🔮','💎','🌈','🎪','🎨','🎭'];
-
+  const palette = PALETTES[result.paletteIndex] || PALETTES[0];
   const art = {
-    gameId:     idea.id,
-    mood:       palette.mood,
-    accent:     palette.accent,
-    accentRgb:  palette.accentRgb,
-    gradient:   palette.gradient,
-    emojis,
+    gameId:    idea.id,
+    mood:      palette.mood,
+    accent:    palette.accent,
+    accentRgb: palette.accentRgb,
+    gradient:  palette.gradient,
+    emojis:    result.emojis?.slice(0,12) || [],
     generatedAt: new Date().toISOString(),
   };
 
-  console.log(`🎨 Art: mood=${art.mood}, accent=${art.accent}`);
-  console.log(`   Emojis: ${art.emojis.join(' ')}`);
-
+  logger.info('Art generated', { gameId: idea.id, mood: art.mood, accent: art.accent });
   return art;
 }
