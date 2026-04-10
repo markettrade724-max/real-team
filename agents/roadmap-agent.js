@@ -1,77 +1,30 @@
-/**
- * roadmap-agent.js
- * يخطط أولويات الأسبوع القادم بناءً على كل النتائج
- */
+import { askGemini } from './_gemini.js';
+import { logger }    from '../logger.js';
 
-const GEMINI_KEY = process.env.GEMINI_API_KEY;
+export async function run({ analytics, feedback, idea, code }) {
+  const roadmap = await askGemini(`
+You are a product manager. Plan next week based on:
+- Revenue trend: ${analytics?.trend || 'unknown'}
+- Total revenue: $${analytics?.totals?.revenueUSD || 0}
+- This week: $${analytics?.thisWeek?.revenueUSD || 0}
+- Weaknesses: ${feedback?.weaknesses?.join(', ') || 'none'}
+- Missing types: ${feedback?.missingTypes?.join(', ') || 'none'}
+- New game this week: ${idea?.name?.en || 'none'} (${code?.skipped ? 'skipped' : 'added'})
 
-async function gemini(prompt) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 1000 }
-      })
-    }
-  );
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-}
-
-export async function run(allResults) {
-  const { analytics, feedback, idea, code } = allResults;
-
-  const context = `
-الأداء الحالي:
-- إجمالي الإيرادات: $${analytics?.totals?.revenueUSD || 0}
-- هذا الأسبوع: $${analytics?.thisWeek?.revenueUSD || 0}
-- الاتجاه: ${analytics?.trend || 'unknown'}
-
-الملاحظات:
-- نقاط الضعف: ${feedback?.weaknesses?.join(', ') || 'none'}
-- الأنواع المفقودة: ${feedback?.missingTypes?.join(', ') || 'none'}
-
-هذا الأسبوع:
-- اللعبة الجديدة: ${idea?.name?.en || 'none'} (${code?.skipped ? 'skipped' : 'added'})
-`;
-
-  const prompt = `
-أنت مدير منتج خبير. بناءً على هذه البيانات:
-${context}
-
-ضع خطة عمل للأسبوع القادم. أجب بـ JSON فقط:
+Return ONLY valid JSON:
 {
-  "weekPriority": "الأولوية الرئيسية هذا الأسبوع",
+  "weekPriority": "main priority",
   "tasks": [
-    { "task": "مهمة 1", "priority": "high", "reason": "السبب" },
-    { "task": "مهمة 2", "priority": "medium", "reason": "السبب" },
-    { "task": "مهمة 3", "priority": "low", "reason": "السبب" }
+    { "task": "", "priority": "high", "reason": "" },
+    { "task": "", "priority": "medium", "reason": "" },
+    { "task": "", "priority": "low", "reason": "" }
   ],
-  "focusArea": "marketing/content/quality/growth",
-  "revenueGoal": "هدف الإيرادات للأسبوع القادم بالدولار",
-  "recommendation": "توصية واحدة مهمة للفريق"
-}`;
+  "focusArea":      "marketing/content/quality/growth",
+  "revenueGoal":    "weekly goal in USD",
+  "recommendation": "one key recommendation"
+}`, 0.7);
 
-  const raw   = await gemini(prompt);
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('Invalid roadmap response');
-
-  const roadmap = JSON.parse(match[0]);
   roadmap.createdAt = new Date().toISOString();
-  roadmap.basedOn   = {
-    trend:       analytics?.trend,
-    totalGames:  feedback?.totalGames,
-    newGame:     idea?.id,
-  };
-
-  console.log(`🗺️ Roadmap:`);
-  console.log(`   Priority: ${roadmap.weekPriority}`);
-  console.log(`   Focus: ${roadmap.focusArea}`);
-  console.log(`   Revenue goal: $${roadmap.revenueGoal}`);
-  console.log(`   Recommendation: ${roadmap.recommendation}`);
-
+  logger.info('Roadmap created', { focus: roadmap.focusArea, goal: roadmap.revenueGoal });
   return roadmap;
 }
