@@ -1,32 +1,32 @@
 {
-  "runId": "2026-04-09T1129",
-  "timestamp": "2026-04-09T11:33:19.295Z",
-  "totalDuration": "199.6s",
+  "runId": "2026-04-10T1453",
+  "timestamp": "2026-04-10T14:58:46.694Z",
+  "totalDuration": "294.6s",
   "geminiCalls": 0,
   "agents": {
     "idea": {
       "success": false,
-      "duration": "6.1s",
+      "duration": "3.9s",
       "attempts": 3,
-      "error": "Cannot parse JSON from: {\n  \"id\": \"synapse-flow\",\n  \"type\": \"tool\",\n  \"category\": \"app\",\n  "
+      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     },
     "analytics": {
       "success": false,
-      "duration": "90ms",
-      "attempts": 1,
-      "error": "Supabase error: TypeError: fetch failed"
+      "duration": "7.1s",
+      "attempts": 3,
+      "error": "Supabase: TypeError: fetch failed"
     },
     "feedback": {
       "success": false,
-      "duration": "6.5s",
+      "duration": "1.2s",
       "attempts": 3,
-      "error": "Invalid feedback response"
+      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     },
     "roadmap": {
       "success": false,
-      "duration": "150ms",
+      "duration": "9.6s",
       "attempts": 3,
-      "error": "Invalid roadmap response"
+      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     }
   },
   "summary": {
