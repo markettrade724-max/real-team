@@ -12,7 +12,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app       = express();
 
 // ── Security Middleware ───────────────────────────────────────
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 app.use(cors({ origin: process.env.SITE_URL || '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
