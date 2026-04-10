@@ -1,93 +1,25 @@
-/**
- * level-agent.js
- * يصمم مستويات متصاعدة الصعوبة للألعاب
- */
-
-const GEMINI_KEY = process.env.GEMINI_API_KEY;
-
-async function gemini(prompt) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.8, maxOutputTokens: 2000 }
-      })
-    }
-  );
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-}
+import { askGemini } from './_gemini.js';
+import { logger }    from '../logger.js';
 
 export async function run(idea, story) {
-  const prompt = `
-أنت مصمم مستويات ألعاب خبير. صمم 5 مستويات متصاعدة الصعوبة للعبة "${idea.name?.en}".
-
-معلومات:
-- نوع اللعبة: ${idea.type}
-- الهدف: ${story?.objective || idea.concept}
-- الشخصية: ${story?.mainCharacter?.name || 'البطل'}
-
-أجب بـ JSON فقط:
+  const levels = await askGemini(`
+Design 5 progressive levels for the game "${idea.name?.en}" (type: ${idea.type}).
+Objective: ${story?.objective || idea.concept}
+Return ONLY valid JSON:
 {
   "gameId": "${idea.id}",
   "totalLevels": 5,
-  "emojis": ["إيموجي1", "إيموجي2", "إيموجي3", "إيموجي4", "إيموجي5", "إيموجي6", "إيموجي7", "إيموجي8", "إيموجي9", "إيموجي10", "إيموجي11", "إيموجي12"],
+  "emojis": ["e1","e2","e3","e4","e5","e6","e7","e8","e9","e10","e11","e12"],
   "levels": [
-    {
-      "number": 1,
-      "name": { "ar": "اسم المستوى", "en": "Level Name" },
-      "difficulty": "easy",
-      "pairs": 4,
-      "timeLimit": 60,
-      "description": { "ar": "وصف", "en": "Description" }
-    },
-    {
-      "number": 2,
-      "name": { "ar": "اسم المستوى", "en": "Level Name" },
-      "difficulty": "medium",
-      "pairs": 6,
-      "timeLimit": 50,
-      "description": { "ar": "وصف", "en": "Description" }
-    },
-    {
-      "number": 3,
-      "name": { "ar": "اسم المستوى", "en": "Level Name" },
-      "difficulty": "medium",
-      "pairs": 8,
-      "timeLimit": 45,
-      "description": { "ar": "وصف", "en": "Description" }
-    },
-    {
-      "number": 4,
-      "name": { "ar": "اسم المستوى", "en": "Level Name" },
-      "difficulty": "hard",
-      "pairs": 10,
-      "timeLimit": 40,
-      "description": { "ar": "وصف", "en": "Description" }
-    },
-    {
-      "number": 5,
-      "name": { "ar": "اسم المستوى", "en": "Level Name" },
-      "difficulty": "expert",
-      "pairs": 12,
-      "timeLimit": 35,
-      "description": { "ar": "وصف", "en": "Description" }
-    }
+    { "number":1, "name":{"ar":"","en":""}, "difficulty":"easy",   "pairs":4,  "timeLimit":60 },
+    { "number":2, "name":{"ar":"","en":""}, "difficulty":"medium", "pairs":6,  "timeLimit":50 },
+    { "number":3, "name":{"ar":"","en":""}, "difficulty":"medium", "pairs":8,  "timeLimit":45 },
+    { "number":4, "name":{"ar":"","en":""}, "difficulty":"hard",   "pairs":10, "timeLimit":40 },
+    { "number":5, "name":{"ar":"","en":""}, "difficulty":"expert", "pairs":12, "timeLimit":35 }
   ]
-}`;
+}`, 0.8);
 
-  const raw   = await gemini(prompt);
-  const match = raw.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('Invalid levels response');
-
-  const levels = JSON.parse(match[0]);
   levels.generatedAt = new Date().toISOString();
-
-  console.log(`🎯 Levels: ${levels.totalLevels} levels designed`);
-  console.log(`   Emojis: ${levels.emojis?.join(' ')}`);
-
+  logger.info('Levels generated', { gameId: idea.id, total: levels.totalLevels });
   return levels;
 }
