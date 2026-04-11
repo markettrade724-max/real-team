@@ -9,13 +9,79 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "name":   { "ar":"ذاكرة الكون",    "en":"Memory Cosmos",       "fr":"Mémoire Cosmos",   "es":"Memoria Cosmos",    "de":"Kosmos Memory",  "zh":"宇宙记忆"    },
-    "desc":   { "ar":"تحدّى ذاكرتك بين النجوم", "en":"Challenge your memory among the stars", "fr":"Défiez votre mémoire parmi les étoiles", "es":"Desafía tu memoria entre las estrellas", "de":"Fordere dein Gedächtnis unter den Sternen", "zh":"在星际间挑战记忆" },
+    "name": {
+      "ar": "ذاكرة الكون",
+      "en": "Memory Cosmos",
+      "fr": "Mémoire Cosmos",
+      "es": "Memoria Cosmos",
+      "de": "Kosmos Memory",
+      "zh": "宇宙记忆"
+    },
+    "desc": {
+      "ar": "تحدّى ذاكرتك بين النجوم",
+      "en": "Challenge your memory among the stars",
+      "fr": "Défiez votre mémoire parmi les étoiles",
+      "es": "Desafía tu memoria entre las estrellas",
+      "de": "Fordere dein Gedächtnis unter den Sternen",
+      "zh": "在星际间挑战记忆"
+    },
     "iap": [
-      { "id":"no-ads",      "type":"remove_ads",    "price":1.99, "emoji":"🚫",  "name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"} },
-      { "id":"hint-pack",   "type":"consumable",    "price":0.99, "emoji":"💡",  "name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"} },
-      { "id":"theme-neon",  "type":"cosmetic",      "price":1.49, "emoji":"🌈",  "name":{"ar":"ثيم النيون","en":"Neon Theme","fr":"Thème néon","es":"Tema neón","de":"Neon-Theme","zh":"霓虹主题"} },
-      { "id":"full-unlock", "type":"unlock",        "price":2.99, "emoji":"⭐",  "name":{"ar":"فتح كل المستويات","en":"Unlock All Levels","fr":"Débloquer tout","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"} }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-neon",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🌈",
+        "name": {
+          "ar": "ثيم النيون",
+          "en": "Neon Theme",
+          "fr": "Thème néon",
+          "es": "Tema neón",
+          "de": "Neon-Theme",
+          "zh": "霓虹主题"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المستويات",
+          "en": "Unlock All Levels",
+          "fr": "Débloquer tout",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ]
   },
   {
@@ -28,13 +94,79 @@
     "accent": "#f472b6",
     "accentRgb": "244,114,182",
     "gradient": "135deg,#1a0533,#831843",
-    "name":   { "ar":"لغز النيون",    "en":"Neon Puzzle",     "fr":"Puzzle Néon",    "es":"Puzzle Neón",    "de":"Neon-Puzzle", "zh":"霓虹拼图"  },
-    "desc":   { "ar":"أعد تركيب الصورة قبل انتهاء الوقت", "en":"Reassemble the image before time runs out", "fr":"Réassemblez l'image avant la fin du temps", "es":"Reconstruye la imagen antes del tiempo", "de":"Bilde das Bild zusammen bevor die Zeit abläuft", "zh":"在时间耗尽前重新拼合图像" },
+    "name": {
+      "ar": "لغز النيون",
+      "en": "Neon Puzzle",
+      "fr": "Puzzle Néon",
+      "es": "Puzzle Neón",
+      "de": "Neon-Puzzle",
+      "zh": "霓虹拼图"
+    },
+    "desc": {
+      "ar": "أعد تركيب الصورة قبل انتهاء الوقت",
+      "en": "Reassemble the image before time runs out",
+      "fr": "Réassemblez l'image avant la fin du temps",
+      "es": "Reconstruye la imagen antes del tiempo",
+      "de": "Bilde das Bild zusammen bevor die Zeit abläuft",
+      "zh": "在时间耗尽前重新拼合图像"
+    },
     "iap": [
-      { "id":"no-ads",      "type":"remove_ads",    "price":1.99, "emoji":"🚫",  "name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"} },
-      { "id":"extra-time",  "type":"consumable",    "price":0.99, "emoji":"⏱️", "name":{"ar":"5 تمديدات وقت","en":"5 Time Extensions","fr":"5 extensions","es":"5 extensiones","de":"5 Zeitverlängerungen","zh":"5次延时"} },
-      { "id":"theme-cyber", "type":"cosmetic",      "price":1.49, "emoji":"🤖",  "name":{"ar":"ثيم سايبر","en":"Cyber Theme","fr":"Thème cyber","es":"Tema cyber","de":"Cyber-Theme","zh":"赛博主题"} },
-      { "id":"full-unlock", "type":"unlock",        "price":3.99, "emoji":"⭐",  "name":{"ar":"المجموعة الكاملة","en":"Full Collection","fr":"Collection complète","es":"Colección completa","de":"Vollständige Sammlung","zh":"完整收藏"} }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "extra-time",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "⏱️",
+        "name": {
+          "ar": "5 تمديدات وقت",
+          "en": "5 Time Extensions",
+          "fr": "5 extensions",
+          "es": "5 extensiones",
+          "de": "5 Zeitverlängerungen",
+          "zh": "5次延时"
+        }
+      },
+      {
+        "id": "theme-cyber",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🤖",
+        "name": {
+          "ar": "ثيم سايبر",
+          "en": "Cyber Theme",
+          "fr": "Thème cyber",
+          "es": "Tema cyber",
+          "de": "Cyber-Theme",
+          "zh": "赛博主题"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 3.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "المجموعة الكاملة",
+          "en": "Full Collection",
+          "fr": "Collection complète",
+          "es": "Colección completa",
+          "de": "Vollständige Sammlung",
+          "zh": "完整收藏"
+        }
+      }
     ]
   },
   {
@@ -47,13 +179,79 @@
     "accent": "#34d399",
     "accentRgb": "52,211,153",
     "gradient": "135deg,#022c22,#064e3b",
-    "name":   { "ar":"أداة التركيز",  "en":"Focus Tool",      "fr":"Outil Focus",    "es":"Herramienta Focus", "de":"Fokus-Tool",  "zh":"专注工具"  },
-    "desc":   { "ar":"مؤقت بومودورو ذكي مع إحصائيات", "en":"Smart Pomodoro timer with stats", "fr":"Minuteur Pomodoro intelligent avec stats", "es":"Temporizador Pomodoro inteligente", "de":"Intelligenter Pomodoro-Timer mit Statistiken", "zh":"智能番茄钟与统计" },
+    "name": {
+      "ar": "أداة التركيز",
+      "en": "Focus Tool",
+      "fr": "Outil Focus",
+      "es": "Herramienta Focus",
+      "de": "Fokus-Tool",
+      "zh": "专注工具"
+    },
+    "desc": {
+      "ar": "مؤقت بومودورو ذكي مع إحصائيات",
+      "en": "Smart Pomodoro timer with stats",
+      "fr": "Minuteur Pomodoro intelligent avec stats",
+      "es": "Temporizador Pomodoro inteligente",
+      "de": "Intelligenter Pomodoro-Timer mit Statistiken",
+      "zh": "智能番茄钟与统计"
+    },
     "iap": [
-      { "id":"no-ads",      "type":"remove_ads",    "price":1.99, "emoji":"🚫",  "name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"} },
-      { "id":"stats-pro",   "type":"feature",       "price":2.49, "emoji":"📊",  "name":{"ar":"إحصائيات Pro","en":"Pro Stats","fr":"Stats Pro","es":"Stats Pro","de":"Pro-Statistiken","zh":"专业统计"} },
-      { "id":"themes-pack", "type":"cosmetic",      "price":1.99, "emoji":"🎨",  "name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack de thèmes","es":"Pack de temas","de":"Theme-Paket","zh":"主题包"} },
-      { "id":"full-pro",    "type":"unlock",        "price":4.99, "emoji":"👑",  "name":{"ar":"النسخة Pro الكاملة","en":"Full Pro Version","fr":"Version Pro complète","es":"Versión Pro completa","de":"Vollständige Pro-Version","zh":"完整Pro版"} }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "stats-pro",
+        "type": "feature",
+        "price": 2.49,
+        "emoji": "📊",
+        "name": {
+          "ar": "إحصائيات Pro",
+          "en": "Pro Stats",
+          "fr": "Stats Pro",
+          "es": "Stats Pro",
+          "de": "Pro-Statistiken",
+          "zh": "专业统计"
+        }
+      },
+      {
+        "id": "themes-pack",
+        "type": "cosmetic",
+        "price": 1.99,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack de thèmes",
+          "es": "Pack de temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-pro",
+        "type": "unlock",
+        "price": 4.99,
+        "emoji": "👑",
+        "name": {
+          "ar": "النسخة Pro الكاملة",
+          "en": "Full Pro Version",
+          "fr": "Version Pro complète",
+          "es": "Versión Pro completa",
+          "de": "Vollständige Pro-Version",
+          "zh": "完整Pro版"
+        }
+      }
     ]
   },
   {
@@ -66,8 +264,204 @@
     "accent": "#fbbf24",
     "accentRgb": "251,191,36",
     "gradient": "135deg,#1c1007,#78350f",
-    "name":   { "ar":"عاصفة الكلمات", "en":"Word Storm",      "fr":"Tempête de Mots","es":"Tormenta de Palabras","de":"Wortsturm","zh":"文字风暴" },
-    "desc":   { "ar":"تسابق مع الزمن لبناء أكبر عدد من الكلمات", "en":"Race against time to build as many words as possible", "fr":"Courez contre la montre", "es":"Compite contra el tiempo", "de":"Wette gegen die Zeit", "zh":"与时间赛跑" },
+    "name": {
+      "ar": "عاصفة الكلمات",
+      "en": "Word Storm",
+      "fr": "Tempête de Mots",
+      "es": "Tormenta de Palabras",
+      "de": "Wortsturm",
+      "zh": "文字风暴"
+    },
+    "desc": {
+      "ar": "تسابق مع الزمن لبناء أكبر عدد من الكلمات",
+      "en": "Race against time to build as many words as possible",
+      "fr": "Courez contre la montre",
+      "es": "Compite contra el tiempo",
+      "de": "Wette gegen die Zeit",
+      "zh": "与时间赛跑"
+    },
     "iap": []
+  },
+  {
+    "id": "chrono-quest",
+    "slug": "chrono-quest",
+    "type": "memory",
+    "category": "game",
+    "status": "available",
+    "emoji": "⏳",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [
+      "⏳",
+      "🕰️",
+      "📜",
+      "🗝️",
+      "🧭",
+      "⚙️",
+      "🔭",
+      "⚛️",
+      "🗿",
+      "🚀",
+      "🌌",
+      "💎"
+    ],
+    "name": {
+      "ar": "رحلة الزمن",
+      "en": "Chrono-Quest",
+      "fr": "Chrono-Quête",
+      "es": "Crono-Búsqueda",
+      "de": "Chrono-Quest",
+      "zh": "时空之旅"
+    },
+    "desc": {
+      "ar": "انطلق في رحلة عبر الزمن والذاكرة! شاهد مسارًا غامضًا يتكشف ثم يختفي. التحدي هو النقر على المربعات بالترتيب الدقيق الذي ظهرت به لإكمال رحلة الزمن بنجاح. كل مستوى يقدم مسارات أطول وأكثر تعقيدًا.",
+      "en": "Embark on a journey through time and memory! Watch a mysterious path unfold and then vanish. Your challenge is to tap the tiles in the exact sequence they were revealed to successfully complete the Chrono-Quest. Each level introduces longer, more intricate paths.",
+      "fr": "Embarquez pour un voyage à travers le temps et la mémoire ! Observez un chemin mystérieux se dévoiler puis disparaître. Votre défi est de toucher les tuiles dans la séquence exacte où elles ont été révélées pour réussir la Chrono-Quête. Chaque niveau introduit des chemins plus longs et plus complexes.",
+      "es": "¡Embárcate en un viaje a través del tiempo y la memoria! Observa cómo un misterioso camino se despliega y luego desaparece. Tu desafío es tocar las fichas en la secuencia exacta en que fueron reveladas para completar con éxito la Crono-Búsqueda. Cada nivel introduce caminos más largos y complejos.",
+      "de": "Begib dich auf eine Reise durch Zeit und Gedächtnis! Beobachte, wie sich ein mysteriöser Pfad entfaltet und dann verschwindet. Deine Herausforderung ist es, die Kacheln in der exakten Reihenfolge anzutippen, in der sie aufgedeckt wurden, um die Chrono-Quest erfolgreich abzuschließen. Jedes Level führt längere, komplexere Pfade ein.",
+      "zh": "踏上穿越时空与记忆的旅程！观察一条神秘路径的展开与消失。你的挑战是按照它们出现的精确顺序点击方块，以成功完成时空之旅。每个级别都会引入更长、更复杂的路径。"
+    },
+    "tags": [
+      "sequential memory",
+      "pattern recognition",
+      "puzzle",
+      "brain training",
+      "mind game",
+      "pathfinding"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": {
+      "setting": "A labyrinthine realm within the Chronos Nexus, where timelines intersect and memories are the very fabric of reality.",
+      "mainCharacter": {
+        "name": "Kael, the Chrono-Cartographer",
+        "emoji": "🧭",
+        "description": "A skilled navigator of temporal currents, tasked with mapping and mending fractured timelines. Their keen memory is their greatest asset."
+      },
+      "objective": "Restore the integrity of time by accurately retracing the vanishing temporal pathways before history unravels.",
+      "intro": {
+        "ar": "إن محطة كرونوس، قلب الزمن النابض، تتعرض للهجوم! لقد أطلق وحش الذاكرة (Mnemosyne Maw) ضبابه الزمني، مذيبًا المسارات التاريخية التي تربط الماضي والحاضر والمستقبل. بصفتك كايل، رسام الخرائط الزمنية، يجب عليك استخدام ذاكرتك الفائقة لمراقبة المسارات المتلاشية عبر الشبكة الزمنية وإعادة تتبعها بدقة. كل تسلسل صحيح يعيد جزءًا من التاريخ؛ وكل خطوة منسية تهدد بحدوث مفارقة لا رجعة فيها. مصير جميع الخطوط الزمنية يعتمد على عقلك الحاد!",
+        "en": "The Chronos Nexus, the very heart of time, is under attack! The Mnemosyne Maw has unleashed its temporal mist, dissolving the historical pathways that connect past, present, and future. As Kael, the Chrono-Cartographer, you must use your unparalleled memory to observe the fading paths across the temporal grid and accurately retrace them. Every correct sequence restores a piece of history; every forgotten step risks an irreversible paradox. The fate of all timelines rests on your keen mind!"
+      },
+      "winMessage": {
+        "ar": "نجاح! لقد قمت بإعادة ربط المسار الزمني بشكل مثالي، وسد الثغرة وتجنب مفارقة كارثية. الخطوط الزمنية آمنة، في الوقت الحالي...",
+        "en": "Success! You have perfectly re-stitched the temporal pathway, sealing the breach and averting a catastrophic paradox. The timelines are safe, for now..."
+      },
+      "loseMessage": {
+        "ar": "لحظة متأخرة جدًا، ذاكرة باهتة جدًا... ينهار المسار الزمني، مرددًا صرخات التاريخ المنسي. مفارقة جديدة تموج عبر الزمن. يجب أن تحاول مرة أخرى!",
+        "en": "A moment too late, a memory too faded... The temporal pathway collapses, echoing with the cries of forgotten history. A new paradox ripples through time. You must try again!"
+      }
+    },
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "شظايا زمنية",
+          "en": "Temporal Fragments"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "أصداء الماضي",
+          "en": "Echoes of the Past"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "معضلات زمنية",
+          "en": "Chronal Conundrums"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "مسارات المفارقة",
+          "en": "Paradox Pathways"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "استعادة الاستمرارية",
+          "en": "Restoring the Continuum"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-11T11:40:16.778Z"
   }
 ]
