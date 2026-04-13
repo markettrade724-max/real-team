@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تواصل معنا — realteam</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060610;--s:#0d0d1f;--b:rgba(255,255,255,0.07);--acc:#facc15;--acc2:#818cf8;--txt:#f1f5f9;--mut:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(99,102,241,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.035) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+
+nav{position:fixed;top:0;inset-inline:0;z-index:100;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;background:rgba(6,6,16,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--b);}
+.logo{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--acc);}
+.logo b{color:var(--acc2);}
+.btn-back{background:transparent;border:1px solid var(--b);color:var(--mut);padding:7px 16px;border-radius:8px;font-size:0.82rem;cursor:pointer;font-family:'Tajawal',sans-serif;text-decoration:none;transition:0.2s;}
+.btn-back:hover{color:var(--txt);border-color:rgba(255,255,255,0.15);}
+
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:100px 24px 120px;}
+
+.hero{text-align:center;margin-bottom:56px;}
+.hero-emoji{font-size:3.5rem;display:block;margin-bottom:16px;filter:drop-shadow(0 0 24px rgba(250,204,21,0.4));}
+.hero h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:-1px;margin-bottom:12px;}
+.hero h1 em{font-style:normal;color:var(--acc);}
+.hero p{color:var(--mut);font-size:1rem;line-height:1.7;}
+
+/* CHANNELS */
+.channels{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:48px;}
+.channel{background:var(--s);border:1px solid var(--b);border-radius:16px;padding:24px 20px;text-align:center;text-decoration:none;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;display:block;}
+.channel:hover{transform:translateY(-4px);border-color:rgba(250,204,21,0.3);box-shadow:0 12px 32px rgba(0,0,0,0.3);}
+.channel-icon{font-size:2.2rem;display:block;margin-bottom:12px;}
+.channel-name{font-size:1rem;font-weight:700;margin-bottom:4px;}
+.channel-handle{font-size:0.8rem;color:var(--mut);font-family:'Space Mono',monospace;}
+
+/* FORM */
+.form-card{background:var(--s);border:1px solid var(--b);border-radius:20px;padding:32px;}
+.form-title{font-size:1.1rem;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.form-title::before{content:'';width:4px;height:18px;background:linear-gradient(var(--acc),var(--acc2));border-radius:2px;display:block;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:0.75rem;color:var(--mut);margin-bottom:6px;font-family:'Space Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--b);padding:12px 16px;border-radius:10px;color:var(--txt);font-size:0.92rem;font-family:'Tajawal',sans-serif;transition:border-color 0.2s;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:rgba(250,204,21,0.4);}
+.field textarea{resize:vertical;min-height:120px;line-height:1.6;}
+.btn-send{width:100%;background:var(--acc);color:#000;border:none;padding:14px;border-radius:12px;font-weight:900;font-size:1rem;font-family:'Tajawal',sans-serif;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;margin-top:8px;}
+.btn-send:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(250,204,21,0.4);}
+.success-msg{display:none;text-align:center;padding:20px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:12px;color:#4ade80;margin-top:16px;}
+
+/* FAQ */
+.faq{margin-top:48px;}
+.faq-title{font-size:1.1rem;font-weight:700;margin-bottom:20px;color:var(--acc2);}
+.faq-item{border-bottom:1px solid var(--b);padding:16px 0;}
+.faq-q{font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:0.95rem;}
+.faq-q::after{content:'+'；font-size:1.2rem;color:var(--acc);transition:transform 0.2s;}
+.faq-item.open .faq-q::after{transform:rotate(45deg);}
+.faq-a{color:var(--mut);font-size:0.88rem;line-height:1.7;max-height:0;overflow:hidden;transition:max-height 0.3s,padding 0.3s;}
+.faq-item.open .faq-a{max-height:200px;padding-top:10px;}
+
+@media(max-width:600px){.wrap{padding:90px 16px 100px;}.channels{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">real<b>team</b></a>
+  <a href="/" class="btn-back">← العودة</a>
+</nav>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="hero-emoji">💬</span>
+    <h1>تواصل <em>معنا</em></h1>
+    <p>نحن هنا للمساعدة — سواء كان لديك سؤال، اقتراح، أو مشكلة تقنية</p>
+  </div>
+
+  <!-- CHANNELS -->
+  <div class="channels">
+    <a href="https://ko-fi.com/aiagents" target="_blank" class="channel">
+      <span class="channel-icon">☕</span>
+      <div class="channel-name">Ko-fi</div>
+      <div class="channel-handle">ko-fi.com/aiagents</div>
+    </a>
+    <a href="https://twitter.com/AIAgentsTeam" target="_blank" class="channel">
+      <span class="channel-icon">𝕏</span>
+      <div class="channel-name">Twitter / X</div>
+      <div class="channel-handle">@AIAgentsTeam</div>
+    </a>
+    <a href="mailto:realteam@contact.com" class="channel">
+      <span class="channel-icon">📧</span>
+      <div class="channel-name">البريد الإلكتروني</div>
+      <div class="channel-handle">realteam@contact.com</div>
+    </a>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card">
+    <div class="form-title">أرسل رسالة</div>
+    <div class="field">
+      <label>الاسم</label>
+      <input type="text" id="fName" placeholder="اسمك">
+    </div>
+    <div class="field">
+      <label>البريد الإلكتروني</label>
+      <input type="email" id="fEmail" placeholder="email@example.com">
+    </div>
+    <div class="field">
+      <label>الموضوع</label>
+      <select id="fSubject">
+        <option value="support">🛠️ دعم تقني</option>
+        <option value="suggestion">💡 اقتراح</option>
+        <option value="bug">🐛 مشكلة في لعبة</option>
+        <option value="business">🤝 تعاون تجاري</option>
+        <option value="other">💬 أخرى</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>الرسالة</label>
+      <textarea id="fMessage" placeholder="اكتب رسالتك هنا..."></textarea>
+    </div>
+    <button class="btn-send" onclick="sendMessage()">إرسال الرسالة ✉️</button>
+    <div class="success-msg" id="successMsg">
+      ✅ تم إرسال رسالتك! سنرد عليك في أقرب وقت.
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <div class="faq-title">❓ أسئلة شائعة</div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">كيف أحصل على اللعبة بعد التبرع؟</div>
+      <div class="faq-a">بعد التبرع عبر Ko-fi ستصلك رسالة فورية برابط التحميل. إذا لم تصلك خلال 5 دقائق تواصل معنا.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">هل الألعاب مجانية فعلاً؟</div>
+      <div class="faq-a">نعم — جميع ألعابنا مجانية 100%. المشتريات الداخلية اختيارية تماماً لدعم الفريق.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">هل تعمل على الموبايل؟</div>
+      <div class="faq-a">نعم — جميع ألعابنا وتطبيقاتنا تعمل على الموبايل والكمبيوتر بدون تثبيت.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">كيف أقترح فكرة لعبة جديدة؟</div>
+      <div class="faq-a">أرسل لنا رسالة عبر النموذج أعلاه أو راسلنا على Twitter — نقرأ كل الاقتراحات!</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="/social-bar.js"></script>
+<script>
+// تغيير الاتجاه حسب اللغة
+const lang = localStorage.getItem('rt_lang') || 'ar';
+if (lang !== 'ar') {
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = 'ltr';
+}
+
+function sendMessage() {
+  const name    = document.getElementById('fName').value.trim();
+  const email   = document.getElementById('fEmail').value.trim();
+  const subject = document.getElementById('fSubject').value;
+  const message = document.getElementById('fMessage').value.trim();
+
+  if (!email || !message) { alert('الرجاء إدخال البريد الإلكتروني والرسالة'); return; }
+
+  // فتح Ko-fi كبديل مؤقت
+  const kofiMsg = encodeURIComponent(`[${subject}] من ${name||'زائر'}: ${message}`);
+  window.open(`https://ko-fi.com/aiagents?note=${kofiMsg}`, '_blank');
+
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('fMessage').value = '';
+}
+
+function toggleFaq(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+
+SocialBar.init({
+  title: 'تواصل مع realteam',
+  url:   'https://real-team-production.up.railway.app/contact.html',
+  lang
+});
+</script>
+</body>
+</html>
