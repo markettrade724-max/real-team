@@ -1,62 +1,32 @@
 {
-  "runId": "2026-04-11T1138",
-  "timestamp": "2026-04-11T11:41:20.881Z",
-  "totalDuration": "182.3s",
-  "geminiCalls": "6/6",
+  "runId": "2026-04-13T1103",
+  "timestamp": "2026-04-13T11:05:10.430Z",
+  "totalDuration": "121.1s",
+  "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "801ms",
+      "duration": "954ms",
       "attempts": 1,
       "error": null
     },
     "idea": {
-      "success": true,
-      "duration": "10.6s",
-      "attempts": 1,
-      "error": null
-    },
-    "story": {
-      "success": true,
-      "duration": "9.8s",
-      "attempts": 1,
-      "error": null
-    },
-    "art": {
-      "success": true,
-      "duration": "10.8s",
-      "attempts": 1,
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "6.2s",
-      "attempts": 1,
-      "error": null
-    },
-    "code": {
-      "success": true,
-      "duration": "40ms",
-      "attempts": 1,
-      "error": null
-    },
-    "marketing": {
-      "success": true,
-      "duration": "13.9s",
-      "attempts": 1,
-      "error": null
+      "success": false,
+      "duration": "701ms",
+      "attempts": 2,
+      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     },
     "roadmap": {
-      "success": true,
-      "duration": "10.1s",
-      "attempts": 1,
-      "error": null
+      "success": false,
+      "duration": "4.0s",
+      "attempts": 2,
+      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 8,
-    "failed": 0,
-    "newGame": "chrono-quest"
+    "total": 3,
+    "passed": 1,
+    "failed": 2,
+    "newGame": null
   }
 }
