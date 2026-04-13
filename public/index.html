@@ -1,6 +1,46 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+  <!-- ══ Google Analytics — ضع هذا في <head> لكل صفحة ══ -->
+<!-- 
+  خطوات التفعيل:
+  1. اذهب إلى analytics.google.com
+  2. أنشئ Property جديد
+  3. احصل على Measurement ID (G-XXXXXXXXXX)
+  4. استبدل G-XXXXXXXXXX بمعرّفك
+-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+
+  // تتبع أحداث مخصصة
+  window.trackEvent = function(action, category, label) {
+    gtag('event', action, {
+      event_category: category,
+      event_label:    label,
+    });
+  };
+</script>
+<!-- ══ نهاية Google Analytics ══ -->
+
+<!-- 
+  أحداث يجب تتبعها — أضفها في الكود:
+  
+  عند فتح المتجر:
+  trackEvent('open_store', 'IAP', productId);
+  
+  عند الشراء:
+  trackEvent('purchase', 'IAP', iapId);
+  
+  عند إزالة الإعلانات:
+  trackEvent('remove_ads', 'IAP', productId);
+  
+  عند انتهاء اللعبة:
+  trackEvent('game_complete', 'Game', gameId);
+-->
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-578HP461SJ"></script>
 <script>
