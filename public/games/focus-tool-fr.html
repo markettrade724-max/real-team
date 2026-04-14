@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>أداة التركيز — realteam</title>
+<title>Outil Focus — realteam</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -67,18 +67,18 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </head>
 <body>
 <div class="wrap">
-  <a href="/" class="g-back">← العودة</a>
+  <a href="/" class="g-back">← Retour</a>
 
   <div id="ad-banner">
-    <span>📢 الإعلانات تدعم الفريق</span>
-    <button class="ad-remove-btn" onclick="IAPStore.open()">إزالة $1.99</button>
+    <span>📢 Les pubs soutiennent l'équipe</span>
+    <button class="ad-remove-btn" onclick="IAPStore.open()">Supprimer 1,99$</button>
   </div>
 
   <!-- MODE -->
   <div class="modes">
-    <button class="mode-btn active" onclick="setMode('focus',25,this)">🧘 تركيز<br><small>25 min</small></button>
-    <button class="mode-btn" onclick="setMode('short',5,this)">☕ استراحة<br><small>5 min</small></button>
-    <button class="mode-btn" onclick="setMode('long',15,this)">🌿 استراحة طويلة<br><small>15 min</small></button>
+    <button class="mode-btn active" onclick="setMode('focus',25,this)">🧘 Focus<br><small>25 min</small></button>
+    <button class="mode-btn" onclick="setMode('short',5,this)">☕ Pause courte<br><small>5 min</small></button>
+    <button class="mode-btn" onclick="setMode('long',15,this)">🌿 Pause longue<br><small>15 min</small></button>
   </div>
 
   <!-- TIMER -->
@@ -91,12 +91,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       </svg>
       <div class="timer-display">
         <div class="timer-time" id="timer-display">25:00</div>
-        <div class="timer-mode" id="mode-label">تركيز</div>
+        <div class="timer-mode" id="mode-label">Focus</div>
       </div>
     </div>
     <div class="timer-controls">
       <button class="btn-ctrl" onclick="reset()">↺</button>
-      <button class="btn-ctrl primary" id="btn-start" onclick="toggle()">▶ ابدأ</button>
+      <button class="btn-ctrl primary" id="btn-start" onclick="toggle()">▶ Démarrer</button>
       <button class="btn-ctrl" onclick="skip()">⏭</button>
     </div>
   </div>
@@ -105,16 +105,16 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="stats-section" id="stats-section" onclick="handleStatsClick()">
     <div class="section-title">STATS</div>
     <div class="stats-grid">
-      <div class="stat-item"><div class="stat-val" id="s-sessions">0</div><div class="stat-lbl">جلسات</div></div>
-      <div class="stat-item"><div class="stat-val" id="s-minutes">0</div><div class="stat-lbl">دقيقة</div></div>
-      <div class="stat-item"><div class="stat-val" id="s-streak">0</div><div class="stat-lbl">متواصل</div></div>
+      <div class="stat-item"><div class="stat-val" id="s-sessions">0</div><div class="stat-lbl">Sessions</div></div>
+      <div class="stat-item"><div class="stat-val" id="s-minutes">0</div><div class="stat-lbl">Minutes</div></div>
+      <div class="stat-item"><div class="stat-val" id="s-streak">0</div><div class="stat-lbl">Série</div></div>
     </div>
   </div>
 </div>
 
 <script src="/iap-modal.js"></script>
 <script>
-IAPStore.init('focus-tool', 'ar', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"stats-pro","type":"feature","price":2.49,"emoji":"📊","name":{"ar":"إحصائيات Pro","en":"Pro Stats","fr":"Stats Pro","es":"Stats Pro","de":"Pro-Statistiken","zh":"专业统计"}},{"id":"themes-pack","type":"cosmetic","price":1.99,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack de thèmes","es":"Pack de temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-pro","type":"unlock","price":4.99,"emoji":"👑","name":{"ar":"النسخة Pro الكاملة","en":"Full Pro Version","fr":"Version Pro complète","es":"Versión Pro completa","de":"Vollständige Pro-Version","zh":"完整Pro版"}}]);
+IAPStore.init('focus-tool', 'fr', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"stats-pro","type":"feature","price":2.49,"emoji":"📊","name":{"ar":"إحصائيات Pro","en":"Pro Stats","fr":"Stats Pro","es":"Stats Pro","de":"Pro-Statistiken","zh":"专业统计"}},{"id":"themes-pack","type":"cosmetic","price":1.99,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack de thèmes","es":"Pack de temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-pro","type":"unlock","price":4.99,"emoji":"👑","name":{"ar":"النسخة Pro الكاملة","en":"Full Pro Version","fr":"Version Pro complète","es":"Versión Pro completa","de":"Vollständige Pro-Version","zh":"完整Pro版"}}]);
 if(IAPStore.isOwned('no-ads')) document.getElementById('ad-banner').classList.add('hidden');
 window.addEventListener('iap:no-ads', ()=>document.getElementById('ad-banner').classList.add('hidden'));
 
@@ -135,15 +135,15 @@ const CIRC=2*Math.PI*96;
 function setMode(m,mins,btn){
   mode=m; duration=mins*60; remaining=mins*60;
   running=false; clearInterval(interval);
-  document.getElementById('btn-start').textContent='▶ ابدأ';
+  document.getElementById('btn-start').textContent='▶ Démarrer';
   document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   render();
 }
 
 function toggle(){
-  if(running){ running=false; clearInterval(interval); document.getElementById('btn-start').textContent='▶ ابدأ'; }
-  else { running=true; interval=setInterval(tick,1000); document.getElementById('btn-start').textContent='⏸ توقف'; }
+  if(running){ running=false; clearInterval(interval); document.getElementById('btn-start').textContent='▶ Démarrer'; }
+  else { running=true; interval=setInterval(tick,1000); document.getElementById('btn-start').textContent='⏸ Pause'; }
 }
 
 function tick(){
@@ -158,13 +158,13 @@ function render(){
   document.getElementById('progress-ring').style.strokeDashoffset=CIRC*pct;
 }
 
-function reset(){ running=false; clearInterval(interval); remaining=duration; document.getElementById('btn-start').textContent='▶ ابدأ'; render(); }
+function reset(){ running=false; clearInterval(interval); remaining=duration; document.getElementById('btn-start').textContent='▶ Démarrer'; render(); }
 
 function skip(){ finish(); }
 
 function finish(){
   running=false; clearInterval(interval);
-  document.getElementById('btn-start').textContent='▶ ابدأ';
+  document.getElementById('btn-start').textContent='▶ Démarrer';
   // stats
   const sessions=parseInt(localStorage.getItem('rt_sessions_focus-tool')||'0')+1;
   const minutes=parseInt(localStorage.getItem('rt_minutes_focus-tool')||'0')+(duration/60|0);
@@ -173,7 +173,7 @@ function finish(){
   document.getElementById('s-sessions').textContent=sessions;
   document.getElementById('s-minutes').textContent=minutes;
   remaining=duration; render();
-  if(mode==='focus') alert('✅ انتهت الجلسة!');
+  if(mode==='focus') alert('✅ Session terminée!');
 }
 
 // load stats
@@ -186,9 +186,9 @@ render();
 <script src="/social-bar.js"></script>
 <script>
   SocialBar.init({
-    title: 'أداة التركيز — realteam',
+    title: 'Outil Focus — realteam',
     url:   'https://real-team-production.up.railway.app/games/focus-tool.html',
-    lang:  'ar'
+    lang:  'fr'
   });
 </script>
 </body>
