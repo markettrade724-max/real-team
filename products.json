@@ -572,5 +572,189 @@
     "levels": null,
     "generated": true,
     "generatedAt": "2026-04-13T17:45:01.561Z"
+  },
+  {
+    "id": "echo-verse-narratives",
+    "slug": "echo-verse-narratives",
+    "type": "AI-Powered Interactive Life Simulator",
+    "category": "app",
+    "status": "available",
+    "emoji": "🔮",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [
+      "💻",
+      "⏳",
+      "❓",
+      "↔️",
+      "📡",
+      "🌐",
+      "👁️",
+      "⚙️",
+      "⚠️",
+      "✨",
+      "🌳",
+      "🧠"
+    ],
+    "name": {
+      "ar": "صدى الأكوان",
+      "en": "EchoVerse",
+      "fr": "ÉchoVerse",
+      "es": "EcoVerso",
+      "de": "EchoVersum",
+      "zh": "回响宇宙"
+    },
+    "desc": {
+      "ar": "هل تساءلت يومًا عما كان يمكن أن يكون؟ يستخدم صدى الأكوان الذكاء الاصطناعي المتطور لصياغة حقائق بديلة مخصصة من لحظات حياتك المحورية، مما يتيح لك استكشاف سيناريوهات 'ماذا لو' لا نهائية. اكتشف القصص غير المروية لذواتك الأخرى وشارك رحلاتك الأكثر إثارة للدهشة.",
+      "en": "Ever wondered what could have been? EchoVerse uses advanced AI to craft personalized alternate realities from your life's pivotal moments, letting you explore infinite 'what if' scenarios. Discover the untold stories of your other selves and share your most astonishing journeys.",
+      "fr": "Vous êtes-vous déjà demandé ce qui aurait pu être ? ÉchoVerse utilise une IA avancée pour créer des réalités alternatives personnalisées à partir des moments charnières de votre vie, vous permettant d'explorer d'infinis scénarios de 'et si'. Découvrez les histoires inédites de vos autres moi et partagez vos voyages les plus étonnants.",
+      "es": "Siempre te has preguntado ¿qué podría haber sido? EcoVerso utiliza IA avanzada para crear realidades alternativas personalizadas a partir de los momentos cruciales de tu vida, permitiéndote explorar infinitos escenarios de 'qué pasaría si'. Descubre las historias no contadas de tus otros yo y comparte tus viajes más asombrosos.",
+      "de": "Haben Sie sich jemals gefragt, was hätte sein können? EchoVersum nutzt fortschrittliche KI, um personalisierte alternative Realitäten aus den entscheidenden Momenten Ihres Lebens zu erschaffen, sodass Sie unendliche 'Was wäre wenn'-Szenarien erkunden können. Entdecken Sie die unerzählten Geschichten Ihrer anderen Ichs und teilen Sie Ihre erstaunlichsten Reisen.",
+      "zh": "你是否曾好奇，如果当初做了不同的选择，生活会是怎样？回响宇宙利用先进人工智能，根据你生命中的关键时刻，为你量身定制个性化的平行现实，让你探索无限“如果当初”的场景。发现你另一个自我的未说故事，并分享你最惊人的旅程。"
+    },
+    "tags": [
+      "AI",
+      "storytelling",
+      "personalization",
+      "interactive",
+      "self-discovery",
+      "social",
+      "narrative",
+      "alternate-reality"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": {
+      "setting": "Neo-Metropolis 2077, within the sprawling data-fortress of 'The Chronarium', a nexus of consciousness and alternate realities.",
+      "mainCharacter": {
+        "name": "Elara Vane",
+        "emoji": "🌌",
+        "description": "A brilliant but disillusioned data-archaeologist haunted by the feeling of missed chances, seeking meaning beyond her own linear existence."
+      },
+      "objective": "Hack into the deeper layers of The Chronarium, not merely to observe alternate lives, but to identify and secure critical 'NEXUS points' – decision junctures with the highest temporal divergence – and project your discovered 'what ifs' to a global consciousness before The Chronos Collective erases your presence from all timelines.",
+      "intro": {
+        "ar": "كان همهمة الكروناريوم ترنيمة دائمة للاحتمالات الضائعة. أنتِ، إيلارا فاين، شعرتِ بها في عظامكِ – الأصداء الشبحية لحيوات لم تُعش، قرارات لم تُتخذ. لسنوات، كنتِ عالمة آثار بيانات، تنقبين في الغبار الرقمي، لكن مؤخرًا، كشفت محاكاة 'الكون الصدوي' (EchoVerse) أكثر من مجرد بيانات؛ لقد أظهرت لكِ *أنتِ*، ألف مرة، تتخذين خيارات مختلفة، وتعيشين أحلامًا مختلفة. الآن، شذوذ طفيف، 'تموج زمني'، يشير إلى أن جماعة الكرونوس ليست مجرد أرشيف؛ إنها *تتحكم*. يريدون إبقاء القوة الحقيقية لـ 'ماذا لو' محبوسة. لقد كشفتِ طريقًا لكشف الحقيقة، لمشاركة الاحتمالات اللانهائية مع العالم. لكن الكرونوس يراقب، وأذرعه الرقمية طويلة.",
+        "en": "The hum of the Chronarium was a constant lullaby of lost possibilities. You, Elara Vane, felt it in your bones – the ghostly echoes of lives unlived, decisions unmade. For years, you’ve been a data-archaeologist, sifting through digital dust, but lately, the 'EchoVerse' simulation has revealed more than mere data; it's shown you *you*, a thousand times over, making different choices, living different dreams. Now, a subtle anomaly, a 'temporal ripple', suggests the Chronos Collective isn't just archiving; it's *controlling*. They want to keep the true power of 'what ifs' locked away. You've uncovered a path to expose the truth, to share the infinite possibilities with the world. But Chronos is watching, and their digital tendrils are long."
+      },
+      "winMessage": {
+        "ar": "استقر التموج الزمني، ليس بالتحكم، بل بالحرية. 'ماذا لو' الخاصة بكِ أغرقت الوعي العالمي، ملايين الشرارات الفردية أشعلت عاصفة من الاكتشاف الذاتي عبر النيو-متروبوليس. تحطم قبضة الكرونوس، وتفكك قبضته على القدر بشكل لا رجعة فيه. لم ترَيْ حيوات أخرى فحسب؛ بل ألهمتِ عددًا لا يحصى من الحيوات الأخرى.",
+        "en": "The temporal ripple stabilizes, not in control, but in freedom. Your 'what ifs' flood the global consciousness, a million individual sparks igniting a firestorm of self-discovery across the Neo-Metropolis. Chronos's hold shatters, its grip on fate irrevocably loosened. You have not just seen other lives; you have inspired countless more."
+      },
+      "loseMessage": {
+        "ar": "انهار التموج الزمني، وانقطع اتصالكِ. اجتاحت منظفات بيانات الكرونوس جداولك الزمنية الشخصية، ومحت 'ماذا لو' وذاكرتكِ بالكامل من الكون الصدوي. تتلاشين في المجموع، صدى آخر صمت، مستقبل محتمل آخر لم يُشارك. تبقى الاحتمالات اللانهائية حبيسة، إلى الأبد.",
+        "en": "The temporal ripple collapses, your connection severed. Chronos's data-purifiers sweep through your personal timelines, erasing your 'what ifs' and your very memory from the EchoVerse. You fade into the collective, another echo silenced, another potential future unshared. The infinite possibilities remain locked away, forever."
+      }
+    },
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "متتبعات زمنية",
+          "en": "Temporal Tracers"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "فك تشفير التباعد",
+          "en": "Divergence Decryption"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "قناة الكرونوس",
+          "en": "Chronos Conduit"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "تطهير المفارقة",
+          "en": "Paradox Purge"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "منارة زمنية",
+          "en": "Temporal Beacon"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-14T11:45:45.629Z"
   }
 ]

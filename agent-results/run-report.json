@@ -1,38 +1,38 @@
 {
-  "runId": "2026-04-13T1741",
-  "timestamp": "2026-04-13T17:47:20.965Z",
-  "totalDuration": "379.3s",
-  "geminiCalls": "2/6",
+  "runId": "2026-04-14T1142",
+  "timestamp": "2026-04-14T11:47:41.742Z",
+  "totalDuration": "337.1s",
+  "geminiCalls": "6/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.2s",
+      "duration": "1.1s",
       "attempts": 1,
       "error": null
     },
     "idea": {
       "success": true,
-      "duration": "17.5s",
-      "attempts": 2,
+      "duration": "13.0s",
+      "attempts": 1,
       "error": null
     },
     "story": {
-      "success": false,
-      "duration": "3.7s",
-      "attempts": 2,
-      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
-    },
-    "art": {
       "success": true,
-      "duration": "11.4s",
+      "duration": "16.6s",
       "attempts": 2,
       "error": null
     },
+    "art": {
+      "success": true,
+      "duration": "8.9s",
+      "attempts": 1,
+      "error": null
+    },
     "levels": {
-      "success": false,
-      "duration": "1.0s",
+      "success": true,
+      "duration": "8.8s",
       "attempts": 2,
-      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+      "error": null
     },
     "code": {
       "success": true,
@@ -41,22 +41,22 @@
       "error": null
     },
     "marketing": {
-      "success": false,
-      "duration": "30.2s",
+      "success": true,
+      "duration": "18.2s",
       "attempts": 2,
-      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+      "error": null
     },
     "roadmap": {
-      "success": false,
-      "duration": "555ms",
-      "attempts": 2,
-      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+      "success": true,
+      "duration": "7.3s",
+      "attempts": 1,
+      "error": null
     }
   },
   "summary": {
     "total": 8,
-    "passed": 4,
-    "failed": 4,
-    "newGame": "aether-tales"
+    "passed": 8,
+    "failed": 0,
+    "newGame": "echo-verse-narratives"
   }
 }
