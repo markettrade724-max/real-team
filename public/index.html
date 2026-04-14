@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+  <script src="/lang-router.js"></script>
   <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -272,7 +273,7 @@ function renderGrid(t){
     const desc=p.desc[lang]||p.desc.en;
     const av=p.status==='available';
     const iapCount=p.iap?.length||0;
-    return `<div class="card reveal" ${av?`onclick="location.href='/games/${p.slug}.html'"`:''}style="${av?'':'opacity:.6;cursor:default'}">
+    return `<div class="card reveal" ${av?`onclick="location.href=getGameUrl('${p.slug}')"`:''}style="${av?'':'opacity:.6;cursor:default'}">
       <div class="card-img" style="background:linear-gradient(${p.gradient})">
         <span style="position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(${p.accentRgb},.5))">${p.emoji}</span>
       </div>
@@ -286,7 +287,7 @@ function renderGrid(t){
         <div class="card-desc">${desc}</div>
         <div class="card-footer">
           <div class="card-iap"><strong>${t.free}</strong> ${iapCount>0?'· '+t.iapCount.replace('{{n}}',iapCount):''}</div>
-          ${av?`<a href="/games/${p.slug}.html" class="btn-play" onclick="event.stopPropagation()">${t.play} →</a>`:`<span class="btn-soon">${t.soon}</span>`}
+          ${av?`<a href="${getGameUrl(p.slug)}" class="btn-play" onclick="event.stopPropagation()">${t.play} →</a>`:`<span class="btn-soon">${t.soon}</span>`}
         </div>
       </div>
     </div>`;
