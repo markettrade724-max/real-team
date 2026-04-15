@@ -48,7 +48,7 @@ EXISTING PRODUCTS (do not repeat): ${existingIds}
 
 CREATE something completely original. You have ZERO restrictions.
 Think across ALL categories:
-- 🎮 Games: strategy, RPG, horror, romance, sci-fi, simulation, platformer, idle, clicker, trivia, escape room
+- 🎮 Games: MOBA (Multiplayer Online Battle Arena), Battle Royale Games, Sports Games, Racing Games, Survival Horror Games, Shooter Games, Adventure Games, Action Games, strategy, RPGs, romance, sci-fi, simulation, platformer, idle, clicker, trivia, escape room
 - 🛠️ Tools: productivity, creativity, education, health, finance, travel
 - 🎨 Creative: generators, makers, builders, designers
 - 🧠 Brain: IQ tests, personality tests, memory training, logic puzzles
