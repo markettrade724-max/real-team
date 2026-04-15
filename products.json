@@ -1120,5 +1120,134 @@
     ],
     "generated": true,
     "generatedAt": "2026-04-15T11:40:58.290Z"
+  },
+  {
+    "id": "verse-forge",
+    "slug": "verse-forge",
+    "type": "collaborative-voxel-narrative-game",
+    "category": "game",
+    "status": "available",
+    "emoji": "🧱📖",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [
+      "🧱",
+      "🌌",
+      "🤖",
+      "✍️",
+      "🗺️",
+      "👥",
+      "✨",
+      "📖",
+      "🔍",
+      "🏗️",
+      "🚀",
+      "📜"
+    ],
+    "name": {
+      "ar": "نسج العوالم",
+      "en": "VerseForge",
+      "fr": "ForgeVerse",
+      "es": "ForjaVerso",
+      "de": "VerseSchmiede",
+      "zh": "叙事熔炉"
+    },
+    "desc": {
+      "ar": "اغمر نفسك في نسج العوالم، لعبة تعاونية رائدة حيث يشكل إبداعك مناظر طبيعية من الفوكسل تتطور باستمرار وقصصها الفريدة. شاهد كيف يحوّل \"المؤرخ\" المتقدم بالذكاء الاصطناعي أفعال اللاعبين الجماعية إلى حكايات ملحمية أو غريبة أو درامية، مولداً قصصاً رقمية فريدة قابلة للمشاركة في كل دورة.",
+      "en": "Dive into VerseForge, a groundbreaking collaborative game where your creativity shapes ever-evolving voxel landscapes and the stories they tell. Witness an advanced AI 'Chronicler' transform collective player actions into epic, whimsical, or dramatic tales, generating unique lore and shareable digital sagas every cycle.",
+      "fr": "Plongez dans ForgeVerse, un jeu collaboratif révolutionnaire où votre créativité façonne des paysages de voxels en constante évolution et les histoires qu'ils racontent. Observez un 'Chroniqueur' IA avancé transformer les actions collectives des joueurs en récits épiques, fantaisistes ou dramatiques, générant un lore unique et des sagas numériques partageables à chaque cycle.",
+      "es": "Sumérgete en ForjaVerso, un innovador juego colaborativo donde tu creatividad da forma a paisajes de vóxeles en constante evolución y a las historias que estos cuentan. Sé testigo de cómo un 'Cronista' de IA avanzado transforma las acciones colectivas de los jugadores en relatos épicos, caprichosos o dramáticos, generando un lore único y sagas digitales compartibles en cada ciclo.",
+      "de": "Tauche ein in VerseSchmiede, ein bahnbrechendes Kollaborationsspiel, in dem deine Kreativität ständig sich entwickelnde Voxel-Landschaften und deren Geschichten formt. Erlebe, wie ein fortschrittlicher KI-„Chronist“ kollektive Spieleraktionen in epische, skurrile oder dramatische Geschichten verwandelt und in jedem Zyklus einzigartige Überlieferungen und teilbare digitale Sagen generiert.",
+      "zh": "沉浸于叙事熔炉，一款开创性的协作游戏，你的创造力塑造着不断演变的体素景观及其所讲述的故事。见证高级AI“编年史官”如何将玩家的集体行动转化为史诗、异想天开或戏剧性的故事，在每个周期生成独特的传说和可分享的数字传奇。"
+    },
+    "tags": [
+      "voxel",
+      "AI storytelling",
+      "collaborative build",
+      "emergent narrative"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": {
+      "setting": "The Shardworlds of Aethel, a fragmented reality clinging to existence after the Great Sundering, constantly threatened by an encroaching void.",
+      "mainCharacter": {
+        "name": "The VerseForgers",
+        "emoji": "🤝",
+        "description": "A collective of curious minds and creative hands, drawn together by the call to rebuild, connect, and remember through collaborative voxel creation."
+      },
+      "objective": "To collectively sculpt new realities from fractured fragments, reclaim lost memories, and push back the encroaching Obscurity, ultimately forging a vibrant World Chronicle that documents their shared adventure.",
+      "intro": {
+        "ar": "عوالم الشظايا في إيثيل مكسورة. منذ عصور مضت، حطم الانشطار العظيم الواقع إلى جزر عائمة لا حصر لها، كل واحدة صدى باهتًا لماضٍ عظيم. الآن، تتحرك قوة قديمة تُعرف فقط بالغموض، تلتهم الكتل التي تجمع هذه العوالم معًا، وتمحو التاريخ والذاكرة والإمكانية. أنتم، مجموعة من ناسجي الآيات (VerseForgers)، تستيقظون في هذا الواقع المجزأ. هدفكم: النحت، والربط، والتذكر. كل كتلة توضع، كل هيكل يُبنى، كل قصة تُروى، هو عمل تحدٍ ضد الفراغ الزاحف. مصير إيثيل، وتاريخها، ومستقبلها، يقع بين أيديكم المتعاونة.",
+        "en": "The Shardworlds of Aethel lie fractured. Eons ago, the Great Sundering shattered reality into countless floating islands, each a mere echo of a grander past. Now, an ancient force known only as the Obscurity stirs, consuming the very blocks that hold these realms together, erasing history, memory, and possibility. You, a collective of VerseForgers, awaken in this fragmented reality. Your purpose: to sculpt, connect, and remember. Every block placed, every structure raised, every story told, is a defiant act against the encroaching void. The fate of Aethel, its history, and its future, rests in your collaborative hands."
+      },
+      "winMessage": {
+        "ar": "الغموض يتراجع! عبر الآية المكونة حديثًا، توحدت الشظايا المتناثرة، ليس كما كانت من قبل، بل كنسيج جديد نابض بالحياة من الإبداع التعاوني. سجل العالم، الذي كان مجموعة من الهمسات المتلاشية، يتلألأ الآن بآلاف القصص الجديدة، شهادات على خيالكم اللامحدود ووحدتكم الراسخة. إيثيل تتذكر، وتبدأ من جديد!",
+        "en": "The Obscurity recedes! Across the newly forged Verse, the scattered fragments have been reunited, not as they once were, but as a vibrant new tapestry of collaborative creation. The World Chronicle, once a collection of fading whispers, now gleams with a thousand new sagas, testaments to your boundless imagination and unwavering unity. Aethel remembers, and begins anew!"
+      },
+      "loseMessage": {
+        "ar": "الظلام الزاحف ابتلع كل شيء. تنهار الكتلة الأخيرة، وتتلاشى الذاكرة الأخيرة. إيثيل ليست أكثر من همسة في الفراغ، قصتها غير مكتوبة، ومستقبلها غير مصاغ. يبقى سجل العالم فارغًا، شاهدًا صامتًا على ما كان يمكن أن يكون. ربما، في آية أخرى، ستشتعل الشرارة من جديد...",
+        "en": "The encroaching darkness consumed all. The last block crumbles, the final memory fades. Aethel is no more than a whisper in the void, its story unwritten, its future unmade. The World Chronicle remains blank, a silent testament to what could have been. Perhaps, in another Verse, the spark will ignite again..."
+      }
+    },
+    "levels": null,
+    "generated": true,
+    "generatedAt": "2026-04-15T17:50:01.577Z"
   }
 ]
