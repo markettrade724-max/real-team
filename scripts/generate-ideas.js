@@ -23,7 +23,7 @@ const PALETTES = [
   { accent:'#3b82f6', accentRgb:'59,130,246',  gradient:'135deg,#030712,#1e3a5f' },
 ];
 
-const TYPES = ['memory','puzzle','word','tool','quiz'];
+const TYPES = [ 'MOBA (Multiplayer Online Battle Arena)','Battle Royale Games','Sports Games','Racing Games','Survival Horror Games','Shooter Games','Adventure Games','Action Games','strategy','RPGs','romance','sci-fi','simulation','platformer','idle','clicker','trivia','escape','room','memory','puzzle','word','tool','quiz'];
 const DEFAULT_IAPS = [
   { id:'no-ads',      type:'remove_ads', price:1.99, emoji:'🚫',
     name:{ar:'إزالة الإعلانات',en:'Remove Ads',fr:'Sans pub',es:'Sin anuncios',de:'Werbefrei',zh:'去广告'} },
