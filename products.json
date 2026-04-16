@@ -1249,5 +1249,171 @@
     "levels": null,
     "generated": true,
     "generatedAt": "2026-04-15T17:50:01.577Z"
+  },
+  {
+    "id": "aura-weaver",
+    "slug": "aura-weaver",
+    "type": "creative-app",
+    "category": "app",
+    "status": "available",
+    "emoji": "✨",
+    "templateFile": "tool-app.html",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [
+      "💡",
+      "✨",
+      "🎨",
+      "✍️",
+      "🎥",
+      "🖼️",
+      "🌟",
+      "🔮",
+      "🌐",
+      "🔥",
+      "♾️",
+      "🌈"
+    ],
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "شرارة الهالة",
+          "en": "The Spark of Aura"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "نسج الضوء",
+          "en": "Weaving Light"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "الصدى والرؤى",
+          "en": "Echoes & Visions"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "اللوحة الكمية",
+          "en": "Quantum Canvas"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "العراف الكوني",
+          "en": "Cosmic Oracle"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "name": {
+      "ar": "نسّاج الهالات",
+      "en": "Aura Weaver",
+      "fr": "Tisserand d'Aura",
+      "es": "Tejedora de Aura",
+      "de": "Aura-Weber",
+      "zh": "光环织者"
+    },
+    "desc": {
+      "ar": "أطلق العنان لروائع غير عادية تختبئ في لحظاتك اليومية. يستخدم نسّاج الهالات الذكاء الاصطناعي المتطور لتحويل صورك ومقاطع الفيديو الخاصة بك إلى أعمال فنية مذهلة وحالمة وسرديات شعرية. شارك إبداعاتك الفريدة مع مجتمع عالمي واكتشف السحر في كل إطار.",
+      "en": "Unleash the extraordinary hidden within your everyday moments. Aura Weaver uses cutting-edge AI to transform your photos and videos into stunning, dreamlike artworks and poetic narratives. Share your unique creations with a global community and discover the magic in every frame.",
+      "fr": "Libérez l'extraordinaire caché dans vos moments quotidiens. Tisserand d'Aura utilise une IA de pointe pour transformer vos photos et vidéos en œuvres d'art époustouflantes, oniriques et en récits poétiques. Partagez vos créations uniques avec une communauté mondiale et découvrez la magie dans chaque image.",
+      "es": "Libera lo extraordinario oculto en tus momentos cotidianos. Tejedora de Aura utiliza IA de vanguardia para transformar tus fotos y videos en obras de arte impresionantes y oníricas, y narrativas poéticas. Comparte tus creaciones únicas con una comunidad global y descubre la magia en cada fotograma.",
+      "de": "Entfesseln Sie das Außergewöhnliche, das in Ihren alltäglichen Momenten verborgen ist. Aura-Weber nutzt modernste KI, um Ihre Fotos und Videos in atemberaubende, traumhafte Kunstwerke und poetische Erzählungen zu verwandeln. Teilen Sie Ihre einzigartigen Kreationen mit einer globalen Gemeinschaft und entdecken Sie die Magie in jedem Bild.",
+      "zh": "释放您日常瞬间中隐藏的非凡之处。光环织者利用尖端人工智能将您的照片和视频转化为令人惊叹、如梦似幻的艺术作品和诗意叙事。与全球社区分享您的独特创作，并在每一帧中发现魔力。"
+    },
+    "tags": [
+      "AI art",
+      "generative art",
+      "photo editor",
+      "video editor",
+      "creative app",
+      "social sharing",
+      "visual storytelling",
+      "digital art",
+      "viral"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "generated": true,
+    "generatedAt": "2026-04-16T20:39:09.380Z"
   }
 ]
