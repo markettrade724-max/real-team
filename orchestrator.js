@@ -8,12 +8,10 @@ const __dirname   = dirname(fileURLToPath(import.meta.url));
 const RESULTS_DIR = join(__dirname, 'agent-results');
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
-// ── إعدادات Gemini ────────────────────────────────────────────
-// الحد اليومي المجاني: 20 طلب — نستخدم 6 فقط لتوليد لعبة واحدة
-const DELAY   = 20000; // 20 ثانية بين الطلبات (3 RPM آمن)
-const MAX_RPD = 6;     // 6 طلبات فقط: idea+story+art+levels+marketing+roadmap
+const DELAY   = 20000;
+const MAX_RPD = 8;     // رفعنا الحد: +1 لـ template-engineer +1 احتياطي
 const TIMEOUT = 120000;
-const RETRIES = 1;     // محاولة واحدة فقط لتوفير الحد
+const RETRIES = 1;
 
 let geminiCalls = 0;
 
@@ -70,7 +68,7 @@ async function main() {
   const log  = {};
   const data = {};
 
-  // ── Phase 1: Analytics (بدون Gemini — أولاً) ─────────────────
+  // ── Phase 1: Analytics (بدون Gemini) ─────────────────────────
   logger.info('Phase 1: Analytics');
   log.analytics = await run('Analytics Agent', './agents/analytics-agent.js', [], false);
   if (log.analytics?.success) { data.analytics = log.analytics.data; save('analytics.json', data.analytics); }
@@ -90,13 +88,31 @@ async function main() {
 
     log.levels = await run('Level Agent', './agents/level-agent.js', [data.idea, data.story]);
     if (log.levels?.success) { data.levels = log.levels.data; save('levels.json', data.levels); }
+
+    // ── template-engineer: يستخدم Gemini فقط للقوالب الجديدة ──
+    // للقوالب الكلاسيكية (memory/tool) لا يستدعي Gemini
+    const needsGemini = needsTemplateGemini(data.idea);
+    log.template = await run(
+      'Template Engineer',
+      './agents/template-engineer.js',
+      [data.idea, data.story],
+      needsGemini   // ← يُحسب في العداد فقط إذا احتاج Gemini
+    );
+    if (log.template?.success) {
+      data.template = log.template.data;
+      save('template.json', data.template);
+    }
   }
 
   // ── Phase 3: Build (بدون Gemini) ─────────────────────────────
   logger.info('Phase 3: Build');
   if (data.idea && data.art) {
-    log.code = await run('Code Agent', './agents/code-agent.js',
-      [data.idea, data.story, data.levels, data.art], false);
+    log.code = await run(
+      'Code Agent',
+      './agents/code-agent.js',
+      [data.idea, data.story, data.levels, data.art, data.template], // ← نمرر template
+      false  // ← code-agent نفسه لا يستدعي Gemini بعد الآن
+    );
     if (log.code?.success) { data.code = log.code.data; save('code.json', data.code); }
   }
 
@@ -138,6 +154,18 @@ async function main() {
     newGame:  report.summary.newGame,
     gemini:   report.geminiCalls,
   });
+}
+
+/**
+ * هل يحتاج template-engineer إلى Gemini؟
+ * القوالب الكلاسيكية لا تحتاج — القوالب الجديدة تحتاج
+ */
+function needsTemplateGemini(idea) {
+  const classicTypes = new Set([
+    'memory','puzzle','word','quiz','matching','trivia',
+    'tool','app','timer','tracker','calculator','generator','productivity','wellness',
+  ]);
+  return !classicTypes.has((idea?.type || '').toLowerCase());
 }
 
 main().catch(err => {
