@@ -1,32 +1,32 @@
 {
-  "runId": "2026-04-16T1141",
-  "timestamp": "2026-04-16T11:43:00.585Z",
-  "totalDuration": "92.0s",
-  "geminiCalls": "1/6",
+  "runId": "2026-04-16T1522",
+  "timestamp": "2026-04-16T15:24:50.435Z",
+  "totalDuration": "113.1s",
+  "geminiCalls": "0/8",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.4s",
+      "duration": "1.2s",
       "attempts": 1,
       "error": null
     },
     "idea": {
       "success": false,
-      "duration": "1.0s",
+      "duration": "484ms",
       "attempts": 2,
       "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     },
     "roadmap": {
-      "success": true,
-      "duration": "11.6s",
-      "attempts": 1,
-      "error": null
+      "success": false,
+      "duration": "9.0s",
+      "attempts": 2,
+      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     }
   },
   "summary": {
     "total": 3,
-    "passed": 2,
-    "failed": 1,
+    "passed": 1,
+    "failed": 2,
     "newGame": null
   }
 }
