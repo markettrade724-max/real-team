@@ -5,7 +5,42 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { selectTemplate } from './agents/template-engineer.js';
+
+// ── selectTemplate مضمّنة هنا لأن game-generator يُشغَّل مستقلاً ──
+const TEMPLATE_MAP = {
+  memory:'memory-game.html', puzzle:'memory-game.html',
+  word:'memory-game.html',   quiz:'memory-game.html',
+  matching:'memory-game.html', trivia:'memory-game.html', arcade:'memory-game.html',
+  tool:'tool-app.html',      app:'tool-app.html',
+  timer:'tool-app.html',     tracker:'tool-app.html',
+  calculator:'tool-app.html', generator:'tool-app.html',
+  productivity:'tool-app.html', wellness:'tool-app.html',
+  action:'action-shooter.html',   shooter:'action-shooter.html',
+  shooting:'action-shooter.html', space:'action-shooter.html',
+  bullet:'action-shooter.html',   battle:'action-shooter.html',
+  defense:'action-shooter.html',  survival:'action-shooter.html',
+  adventure:'adventure-rpg.html', rpg:'adventure-rpg.html',
+  dungeon:'adventure-rpg.html',   quest:'adventure-rpg.html',
+  story:'adventure-rpg.html',     narrative:'adventure-rpg.html',
+  exploration:'adventure-rpg.html',
+  runner:'endless-runner.html',   run:'endless-runner.html',
+  platformer:'endless-runner.html', dash:'endless-runner.html',
+  dodge:'endless-runner.html',    sprint:'endless-runner.html',
+  escape:'endless-runner.html',
+};
+
+function selectTemplate(idea) {
+  const type = (idea.type || '').toLowerCase().trim();
+  if (TEMPLATE_MAP[type]) return TEMPLATE_MAP[type];
+  for (const [key, tpl] of Object.entries(TEMPLATE_MAP)) {
+    if (type.includes(key) || key.includes(type)) return tpl;
+  }
+  const ctx = [idea.concept||'', ...(idea.tags||[])].join(' ').toLowerCase();
+  if (/shoot|bullet|enemy|wave/.test(ctx))           return 'action-shooter.html';
+  if (/adventure|rpg|quest|dungeon|hero/.test(ctx))  return 'adventure-rpg.html';
+  if (/run|jump|dodge|endless|sprint/.test(ctx))     return 'endless-runner.html';
+  return 'memory-game.html';
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
