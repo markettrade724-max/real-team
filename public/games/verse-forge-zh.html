@@ -2,238 +2,669 @@
 <html lang="zh" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>叙事熔炉 — realteam</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>叙事熔炉</title>
 <style>
-:root{
-  --bg:#060610; --surface:#0d0d1f; --border:rgba(255,255,255,0.08);
-  --accent:#818cf8; --accentRgb:129,140,248;
-  --text:#f1f5f9; --muted:#64748b;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;padding:20px 16px 100px;}
-body::before{content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(129,140,248,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(129,140,248,0.03) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;z-index:0;}
-.wrap{position:relative;z-index:1;width:100%;max-width:600px;}
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
 
-/* HEADER */
-.g-header{text-align:center;padding:24px 0 20px;}
-.g-back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:0.82rem;
-  text-decoration:none;margin-bottom:20px;transition:color 0.2s;}
-.g-back:hover{color:var(--text);}
-.g-emoji{font-size:3.5rem;filter:drop-shadow(0 0 24px rgba(129,140,248,0.5));display:block;margin-bottom:12px;}
-.g-title{font-size:1.8rem;font-weight:900;letter-spacing:-1px;}
-.g-title em{font-style:normal;color:var(--accent);}
-.g-sub{color:var(--muted);font-size:0.88rem;margin-top:6px;}
+  :root {
+    --accent: #818cf8;
+    --accent-rgb: 129,140,248;
+    --bg: #0a0706;
+    --surface: #130f0d;
+    --surface2: #1e1712;
+    --border: rgba(var(--accent-rgb),.25);
+    --text: #f0e6d3;
+    --text2: #9a8a7a;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --glow: 0 0 20px rgba(var(--accent-rgb),.5);
+    --parchment: linear-gradient(135deg, #1e1712 0%, #130f0d 50%, #1a1410 100%);
+  }
 
-/* AD BANNER (يختفي عند شراء no-ads) */
-#ad-banner{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;
-  padding:10px;text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:16px;
-  display:flex;align-items:center;justify-content:space-between;gap:8px;}
-#ad-banner.hidden{display:none;}
-.ad-remove-btn{background:rgba(129,140,248,0.15);color:var(--accent);border:none;
-  padding:5px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;font-family:inherit;white-space:nowrap;}
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-/* HUD */
-.hud{display:flex;justify-content:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
-.hud-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 18px;text-align:center;min-width:80px;}
-.hud-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);}
-.hud-lbl{font-size:0.65rem;color:var(--muted);margin-top:2px;letter-spacing:0.05em;}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    min-height: 100dvh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
 
-/* GRID */
-.g-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-.card{aspect-ratio:1;border-radius:14px;cursor:pointer;position:relative;
-  transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(.175,.885,.32,1.275);}
-.card.flipped,.card.matched{transform:rotateY(180deg);}
-.card.matched{cursor:default;}
-.face{position:absolute;inset:0;border-radius:14px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;}
-.back{background:var(--surface);border:1px solid var(--border);}
-.back::after{content:'?';font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:rgba(129,140,248,0.3);}
-.front{background:linear-gradient(135deg,var(--surface),rgba(129,140,248,0.15));
-  border:1px solid rgba(129,140,248,0.35);transform:rotateY(180deg);font-size:2rem;}
-.card.matched .front{border-color:var(--accent);box-shadow:0 0 16px rgba(129,140,248,0.35);}
+  /* ── HEADER ── */
+  #header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .5rem .8rem;
+    background: linear-gradient(180deg, rgba(var(--accent-rgb),.12) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+  }
 
-/* HINT (يُشترى) */
-#hint-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;justify-content:center;}
-.hint-btn{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.3);
-  color:var(--accent);padding:8px 16px;border-radius:10px;font-size:0.85rem;cursor:pointer;
-  font-family:inherit;transition:background 0.2s;}
-.hint-btn:hover{background:rgba(129,140,248,0.2);}
-.hint-count{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted);}
+  #back-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--accent); padding: .25rem .7rem;
+    border-radius: 4px; cursor: pointer;
+    font-family: 'Cinzel', serif; font-size: .7rem;
+    letter-spacing: .05em; transition: all .2s;
+  }
+  #back-btn:hover { background: rgba(var(--accent-rgb),.12); }
 
-/* ACTIONS */
-.g-actions{display:flex;gap:10px;margin-bottom:16px;}
-.btn-main{flex:1;padding:13px;border-radius:12px;background:var(--accent);color:#000;
-  font-weight:700;font-size:0.95rem;font-family:inherit;border:none;cursor:pointer;
-  transition:transform 0.2s,box-shadow 0.2s;}
-.btn-main:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(129,140,248,0.4);}
+  #game-title {
+    font-family: 'Cinzel', serif; font-weight: 900;
+    font-size: clamp(.75rem, 3vw, .95rem);
+    color: var(--accent); text-shadow: var(--glow);
+    letter-spacing: .08em;
+  }
 
-/* WIN OVERLAY */
-#win-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.85);
-  backdrop-filter:blur(12px);align-items:center;justify-content:center;}
-#win-overlay.show{display:flex;}
-.win-box{background:var(--surface);border:1px solid rgba(129,140,248,0.4);border-radius:24px;
-  padding:40px 32px;text-align:center;max-width:360px;width:90%;
-  box-shadow:0 0 60px rgba(129,140,248,0.2);}
-.win-emoji{font-size:3.5rem;display:block;margin-bottom:14px;}
-.win-title{font-size:1.8rem;font-weight:900;color:var(--accent);margin-bottom:8px;}
-.win-stats{color:var(--muted);font-size:0.88rem;line-height:1.9;margin-bottom:24px;}
-.win-stats strong{color:var(--text);}
+  /* ── STATS BAR ── */
+  #stats-bar {
+    display: flex; gap: .6rem; align-items: center;
+    padding: .4rem .8rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-group { display: flex; align-items: center; gap: .4rem; flex: 1; }
+  .stat-label { font-family: 'Cinzel', serif; font-size: .6rem; color: var(--text2); letter-spacing: .05em; white-space: nowrap; }
+
+  .bar-wrap { flex: 1; height: 8px; background: rgba(0,0,0,.5); border-radius: 4px; overflow: hidden; border: 1px solid rgba(var(--accent-rgb),.15); }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+  #hp-fill    { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+  #mp-fill    { background: linear-gradient(90deg, #2980b9, #3498db); }
+  #xp-fill    { background: linear-gradient(90deg, var(--accent), #fff); }
+
+  .stat-val {
+    font-family: 'Cinzel', serif; font-weight: 700;
+    font-size: .7rem; color: var(--text); min-width: 1.8rem; text-align: center;
+  }
+
+  /* ── SCENE ── */
+  #scene {
+    flex: 1; display: flex; flex-direction: column;
+    padding: .8rem; gap: .6rem; overflow-y: auto;
+    background: var(--parchment);
+    position: relative;
+  }
+
+  /* Atmospheric overlay */
+  #scene::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center top, rgba(var(--accent-rgb),.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Location header */
+  #location-header {
+    text-align: center;
+    padding: .6rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(0,0,0,.3);
+    position: relative;
+  }
+  #location-icon { font-size: 2rem; }
+  #location-name {
+    font-family: 'Cinzel', serif; font-weight: 700;
+    font-size: clamp(.85rem, 3.5vw, 1.1rem);
+    color: var(--accent); letter-spacing: .06em;
+    margin: .2rem 0;
+  }
+
+  /* Narrative text box */
+  #narrative-box {
+    background: rgba(0,0,0,.4);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .8rem 1rem;
+    font-style: italic;
+    font-size: clamp(.85rem, 3vw, 1rem);
+    line-height: 1.7;
+    color: var(--text2);
+    min-height: 4rem;
+    position: relative;
+  }
+  #narrative-box::before {
+    content: '"';
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    color: rgba(var(--accent-rgb),.3);
+    position: absolute; top: -.4rem; left: .3rem;
+    line-height: 1;
+  }
+
+  /* Combat area */
+  #combat-area {
+    display: flex; align-items: center; justify-content: space-around;
+    padding: .8rem;
+    background: rgba(0,0,0,.5);
+    border: 1px solid rgba(200,50,50,.3);
+    border-radius: 8px;
+    gap: 1rem;
+  }
+  #combat-area.hidden { display: none; }
+
+  .combatant { display: flex; flex-direction: column; align-items: center; gap: .3rem; flex: 1; }
+  .combatant-icon { font-size: 2.8rem; filter: drop-shadow(0 0 10px rgba(var(--accent-rgb),.4)); }
+  .combatant-name { font-family: 'Cinzel', serif; font-size: .7rem; color: var(--text2); }
+  .combatant-hp { width: 100%; max-width: 80px; height: 6px; background: rgba(0,0,0,.5); border-radius: 3px; overflow: hidden; }
+  .combatant-hp-fill { height: 100%; background: linear-gradient(90deg, #c0392b, #e74c3c); border-radius: 3px; transition: width .4s; }
+
+  #vs-label {
+    font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 900;
+    color: var(--accent); text-shadow: var(--glow);
+  }
+
+  #battle-log {
+    font-size: .75rem; color: var(--text2);
+    text-align: center; min-height: 1.5rem;
+    font-style: italic;
+  }
+
+  /* Choices */
+  #choices-area { display: flex; flex-direction: column; gap: .5rem; }
+  #choices-area.hidden { display: none; }
+
+  .choice-btn {
+    display: flex; align-items: center; gap: .7rem;
+    padding: .65rem .9rem;
+    background: rgba(0,0,0,.4);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: clamp(.85rem, 3vw, 1rem);
+    cursor: pointer;
+    transition: all .2s;
+    text-align: start;
+  }
+  .choice-btn:hover, .choice-btn:active {
+    background: rgba(var(--accent-rgb),.15);
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+  .choice-btn .ch-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .choice-btn .ch-cost { margin-left: auto; font-size: .7rem; color: var(--text2); white-space: nowrap; }
+
+  /* Combat action buttons */
+  #combat-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+  #combat-actions.hidden { display: none; }
+
+  .combat-btn {
+    flex: 1; min-width: 5rem;
+    padding: .55rem .5rem;
+    border-radius: 8px; border: 1px solid;
+    font-family: 'Cinzel', serif; font-size: .68rem;
+    font-weight: 700; letter-spacing: .04em;
+    cursor: pointer; transition: all .15s;
+    text-align: center;
+  }
+  .combat-btn:active { transform: scale(.94); }
+
+  #btn-attack { background: rgba(192,57,43,.2); border-color: #c0392b; color: #e74c3c; }
+  #btn-skill  { background: rgba(41,128,185,.2); border-color: #2980b9; color: #3498db; }
+  #btn-item   { background: rgba(var(--accent-rgb),.15); border-color: var(--accent); color: var(--accent); }
+  #btn-flee   { background: rgba(100,100,100,.2); border-color: #555; color: #aaa; }
+
+  /* Inventory / items row */
+  #items-row {
+    display: flex; gap: .4rem; flex-wrap: wrap;
+  }
+  .item-chip {
+    background: rgba(var(--accent-rgb),.1);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: .2rem .6rem;
+    font-size: .7rem;
+    color: var(--text2);
+    display: flex; align-items: center; gap: .3rem;
+  }
+  .item-chip strong { color: var(--accent); font-size: .65rem; }
+
+  /* ── OVERLAYS ── */
+  .overlay {
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 30;
+    background: rgba(10,7,6,.93);
+    backdrop-filter: blur(8px);
+    gap: 1rem; padding: 2rem; text-align: center;
+  }
+  .overlay.hidden { display: none; }
+
+  .overlay-icon { font-size: 4rem; }
+  .overlay-title {
+    font-family: 'Cinzel', serif; font-weight: 900;
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+    color: var(--accent); text-shadow: var(--glow);
+    letter-spacing: .08em;
+  }
+  .overlay-text { color: var(--text2); font-style: italic; font-size: 1rem; line-height: 1.6; max-width: 280px; }
+  .overlay-score {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem; font-weight: 700; color: var(--text);
+  }
+  .overlay-score span { color: var(--accent); }
+
+  .overlay-btn {
+    padding: .7rem 2.2rem;
+    background: var(--accent); border: none; border-radius: 8px;
+    color: #000; font-family: 'Cinzel', serif; font-weight: 700;
+    font-size: .8rem; letter-spacing: .08em; cursor: pointer;
+    transition: all .2s; box-shadow: var(--glow);
+    text-transform: uppercase;
+  }
+  .overlay-btn.ghost {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text2); box-shadow: none;
+  }
+
+  /* ── AD BAR ── */
+  #ad-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .3rem .8rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    font-size: .62rem; color: var(--text2);
+  }
+  #ad-remove { color: var(--accent); cursor: pointer; text-decoration: underline; }
+
+  /* Transition flash */
+  #flash { position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:40;transition:opacity .15s; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="g-header">
-    <a href="/" class="g-back">← 返回</a>
-    <span class="g-emoji">🧱📖</span>
-    <h1 class="g-title">叙事熔炉</h1>
-    <p class="g-sub">沉浸于叙事熔炉，一款开创性的协作游戏，你的创造力塑造着不断演变的体素景观及其所讲述的故事。见证高级AI“编年史官”如何将玩家的集体行动转化为史诗、异想天开或戏剧性的故事，在每个周期生成独特的传说和可分享的数字传奇。</p>
+
+<div id="flash"></div>
+
+<!-- HEADER -->
+<div id="header">
+  <button id="back-btn" onclick="history.back()">← 返回</button>
+  <div id="game-title">🧱📖 叙事熔炉</div>
+  <div style="font-family:'Cinzel',serif;font-size:.7rem;color:var(--accent)">Lv.<span id="hdr-level">1</span></div>
+</div>
+
+<!-- STATS -->
+<div id="stats-bar">
+  <div class="stat-group">
+    <span class="stat-label">HP</span>
+    <div class="bar-wrap"><div class="bar-fill" id="hp-fill" style="width:100%"></div></div>
+    <span class="stat-val" id="hp-val">100</span>
   </div>
-
-  <!-- إعلان (يختفي بعد شراء no-ads) -->
-  <div id="ad-banner">
-    <span>📢 广告支持我们的团队</span>
-    <button class="ad-remove-btn" onclick="IAPStore.open()">去除广告 $1.99</button>
+  <div class="stat-group">
+    <span class="stat-label">MP</span>
+    <div class="bar-wrap"><div class="bar-fill" id="mp-fill" style="width:100%"></div></div>
+    <span class="stat-val" id="mp-val">50</span>
   </div>
-
-  <!-- HUD -->
-  <div class="hud">
-    <div class="hud-card"><div class="hud-val" id="h-moves">0</div><div class="hud-lbl">步数</div></div>
-    <div class="hud-card"><div class="hud-val" id="h-time">0:00</div><div class="hud-lbl">时间</div></div>
-    <div class="hud-card"><div class="hud-val" id="h-pairs">0/8</div><div class="hud-lbl">配对</div></div>
-  </div>
-
-  <!-- GRID -->
-  <div class="g-grid" id="grid"></div>
-
-  <!-- HINT BAR -->
-  <div id="hint-bar">
-    <button class="hint-btn" onclick="useHint()">💡 提示</button>
-    <span class="hint-count" id="hint-count">{{HINTS_LEFT}} 剩余</span>
-  </div>
-
-  <!-- ACTIONS -->
-  <div class="g-actions">
-    <button class="btn-main" onclick="initGame()">🔄 新游戏</button>
+  <div class="stat-group">
+    <span class="stat-label">XP</span>
+    <div class="bar-wrap"><div class="bar-fill" id="xp-fill" style="width:0%"></div></div>
+    <span class="stat-val" id="xp-val">0</span>
   </div>
 </div>
 
-<!-- WIN -->
-<div id="win-overlay">
-  <div class="win-box">
-    <span class="win-emoji">🏆</span>
-    <div class="win-title">你赢了！</div>
-    <div class="win-stats" id="win-stats"></div>
-    <button class="btn-main" onclick="initGame();document.getElementById('win-overlay').classList.remove('show')">再玩</button>
+<!-- SCENE -->
+<div id="scene">
+
+  <!-- Location -->
+  <div id="location-header">
+    <div id="location-icon">🏰</div>
+    <div id="location-name">...</div>
   </div>
+
+  <!-- Narrative -->
+  <div id="narrative-box" id="narrative">...</div>
+
+  <!-- Items row -->
+  <div id="items-row"></div>
+
+  <!-- Combat -->
+  <div id="combat-area" class="hidden">
+    <div class="combatant" id="player-combatant">
+      <div class="combatant-icon" id="player-icon">🧱📖</div>
+      <div class="combatant-name" id="player-name">英雄</div>
+      <div class="combatant-hp"><div class="combatant-hp-fill" id="player-hp-bar" style="width:100%"></div></div>
+    </div>
+    <div>
+      <div id="vs-label">VS</div>
+      <div id="battle-log">...</div>
+    </div>
+    <div class="combatant" id="enemy-combatant">
+      <div class="combatant-icon" id="enemy-icon">👾</div>
+      <div class="combatant-name" id="enemy-name">???</div>
+      <div class="combatant-hp"><div class="combatant-hp-fill" id="enemy-hp-bar" style="width:100%"></div></div>
+    </div>
+  </div>
+
+  <!-- Combat actions -->
+  <div id="combat-actions" class="hidden">
+    <button class="combat-btn" id="btn-attack">⚔️ 攻击</button>
+    <button class="combat-btn" id="btn-skill">✨ 技能</button>
+    <button class="combat-btn" id="btn-item">🧪 道具</button>
+    <button class="combat-btn" id="btn-flee">🏃 逃跑</button>
+  </div>
+
+  <!-- Choices (exploration) -->
+  <div id="choices-area"></div>
+
 </div>
 
-<!-- IAP STORE -->
-<script src="/iap-modal.js"></script>
+<!-- AD BAR -->
+<div id="ad-bar">
+  <span>广告支持我们的团队</span>
+  <span id="ad-remove">去除广告 $1.99</span>
+</div>
+
+<!-- OVERLAYS -->
+<div class="overlay" id="overlay-start">
+  <div class="overlay-icon">🧱📖</div>
+  <div class="overlay-title">叙事熔炉</div>
+  <div class="overlay-text">沉浸于叙事熔炉，一款开创性的协作游戏，你的创造力塑造着不断演变的体素景观及其所讲述的故事。见证高级AI“编年史官”如何将玩家的集体行动转化为史诗、异想天开或戏剧性的故事，在每个周期生成独特的传说和可分享的数字传奇。</div>
+  <button class="overlay-btn" id="btn-start">⚔️ 开始</button>
+</div>
+
+<div class="overlay hidden" id="overlay-win">
+  <div class="overlay-icon">👑</div>
+  <div class="overlay-title">你赢了！</div>
+  <div class="overlay-score">XP: <span id="final-xp">0</span></div>
+  <div class="overlay-text" id="win-text"></div>
+  <button class="overlay-btn" id="btn-continue">下一关 →</button>
+  <button class="overlay-btn ghost" id="btn-restart-win">新游戏</button>
+</div>
+
+<div class="overlay hidden" id="overlay-lose">
+  <div class="overlay-icon">💀</div>
+  <div class="overlay-title">游戏结束</div>
+  <div class="overlay-text" id="lose-text"></div>
+  <button class="overlay-btn" id="btn-restart">新游戏</button>
+</div>
+
 <script>
-// ── Game Config ──────────────────────────────────────────────
-const EMOJIS = ["🧱","🌌","🤖","✍️","🗺️","👥","✨","📖","🔍","🏗️","🚀","📜"];
-const PAIRS  = 8;
-const COLS   = 4;
-let hints    = 3;
+// ─── CONFIG ──────────────────────────────────────────────────
+const CONFIG = {
+  emoji: '🧱📖',
+  accent: '#818cf8',
+  levels: [],
+  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+};
 
-// ── IAP Init ─────────────────────────────────────────────────
-IAPStore.init('verse-forge', 'zh', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}]);
+// ─── STATE ───────────────────────────────────────────────────
+const STATE = {
+  levelIdx: 0,
+  nodeIdx: 0,
+  hp: 100, maxHp: 100,
+  mp: 50,  maxMp: 50,
+  xp: 0,   xpToNext: 100,
+  playerLv: 1,
+  items: { potion: 2 },
+  inCombat: false,
+  enemy: null,
+  enemyHp: 0, enemyMaxHp: 0,
+};
 
-// إخفاء الإعلان إذا كان المستخدم اشترى no-ads سابقاً
-if (IAPStore.isOwned('no-ads')) document.getElementById('ad-banner').classList.add('hidden');
-window.addEventListener('iap:no-ads', () => document.getElementById('ad-banner').classList.add('hidden'));
-
-// إضافة تلميحات عند شراء hint-pack
-window.addEventListener('iap:purchased', e => {
-  if (e.detail.iapId === 'hint-pack') { hints += 10; updateHintCount(); }
-});
-
-// ── Game Logic ───────────────────────────────────────────────
-let cards=[], flipped=[], matched=0, moves=0, secs=0, timer=null, locked=false;
-
-function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
-
-function initGame(){
-  clearInterval(timer); secs=0; moves=0; matched=0; flipped=[]; locked=false;
-  const pool = shuffle([...EMOJIS]).slice(0, PAIRS);
-  cards = shuffle([...pool,...pool].map((e,i)=>({id:i,e,flipped:false,matched:false})));
-  renderGrid(); updateHUD();
-  timer = setInterval(()=>{ secs++; updateTime(); }, 1000);
+// ─── HELPERS ─────────────────────────────────────────────────
+function flash() {
+  const el = document.getElementById('flash');
+  el.style.opacity = '.6';
+  setTimeout(() => el.style.opacity = '0', 150);
 }
 
-function renderGrid(){
-  document.getElementById('grid').innerHTML = cards.map(c=>`
-    <div class="card${c.flipped?' flipped':''}${c.matched?' matched':''}" id="c${c.id}" onclick="flip(${c.id})">
-      <div class="face back"></div>
-      <div class="face front">${c.e}</div>
-    </div>`).join('');
+function updateBars() {
+  document.getElementById('hp-fill').style.width  = (STATE.hp / STATE.maxHp * 100) + '%';
+  document.getElementById('mp-fill').style.width  = (STATE.mp / STATE.maxMp * 100) + '%';
+  document.getElementById('xp-fill').style.width  = (STATE.xp / STATE.xpToNext * 100) + '%';
+  document.getElementById('hp-val').textContent   = STATE.hp;
+  document.getElementById('mp-val').textContent   = STATE.mp;
+  document.getElementById('xp-val').textContent   = STATE.xp;
+  document.getElementById('hdr-level').textContent = STATE.playerLv;
 }
 
-function flip(id){
-  if(locked) return;
-  const c=cards[id];
-  if(c.flipped||c.matched||flipped.length===2) return;
-  c.flipped=true; document.getElementById('c'+id).classList.add('flipped');
-  flipped.push(id);
-  if(flipped.length===2){
-    moves++; document.getElementById('h-moves').textContent=moves; locked=true;
-    const[a,b]=flipped;
-    if(cards[a].e===cards[b].e){
-      cards[a].matched=cards[b].matched=true;
-      ['c'+a,'c'+b].forEach(id=>document.getElementById(id).classList.add('matched'));
-      matched++; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS;
-      flipped=[]; locked=false;
-      if(matched===PAIRS) setTimeout(showWin,500);
-    } else {
-      setTimeout(()=>{
-        cards[a].flipped=cards[b].flipped=false;
-        ['c'+a,'c'+b].forEach(id=>document.getElementById(id).classList.remove('flipped'));
-        flipped=[]; locked=false;
-      },900);
-    }
+function gainXp(amount) {
+  STATE.xp += amount;
+  if (STATE.xp >= STATE.xpToNext) {
+    STATE.xp -= STATE.xpToNext;
+    STATE.playerLv++;
+    STATE.xpToNext = Math.floor(STATE.xpToNext * 1.5);
+    STATE.maxHp += 15; STATE.hp = STATE.maxHp;
+    STATE.maxMp += 8;  STATE.mp = STATE.maxMp;
+    showLog(`✨ Level Up! → Lv.${STATE.playerLv}`);
+  }
+  updateBars();
+}
+
+function showLog(msg) {
+  document.getElementById('battle-log').textContent = msg;
+}
+
+// ─── LEVEL DATA ──────────────────────────────────────────────
+function getLevelData() {
+  const lvls = CONFIG.levels;
+  if (lvls && lvls.length > 0) return lvls[Math.min(STATE.levelIdx, lvls.length - 1)];
+  // Fallback procedural level
+  return buildFallbackLevel(STATE.levelIdx);
+}
+
+function buildFallbackLevel(idx) {
+  const themes = [
+    { icon:'🌲', name:'Enchanted Forest', intro:'Ancient trees whisper forgotten secrets around you.', emojis:['🐺','🕷️','🐗','🦎'], story:['A rustling in the undergrowth reveals...','Deep in the forest, a shrine awaits...'] },
+    { icon:'🏔️', name:'Frozen Peak',     intro:'Bitter winds howl across treacherous mountain passes.', emojis:['🐻‍❄️','🦅','🐉','❄️'], story:['A cave entrance glows with an eerie light...','The summit holds ancient power...'] },
+    { icon:'🏰', name:'Cursed Castle',   intro:'Dark corridors stretch beyond the light of your torch.', emojis:['💀','🧟','🦇','👻'], story:['A groaning door opens before you...','The throne room shimmers with dark magic...'] },
+    { icon:'🌋', name:'Volcanic Lair',   intro:'Streams of lava illuminate the underground passage.', emojis:['🐲','🔥','💎','⚡'], story:['A forge of ancient weapons stands before you...','The volcano heart pulses with raw energy...'] },
+  ];
+  const t = themes[idx % themes.length];
+  const enCount = 3 + idx * 2;
+  const encounters = [];
+  for (let i = 0; i < enCount; i++) {
+    encounters.push({
+      type: i === enCount - 1 ? 'boss' : (Math.random() < .4 ? 'choice' : 'combat'),
+      icon: t.icon, locationName: t.name, narrative: t.story[i % t.story.length] || t.intro,
+      enemy: { icon: t.emojis[i % t.emojis.length], name: 'Enemy', hp: 20 + idx * 10 + i * 5, atk: 8 + idx * 3 },
+      choices: [
+        { icon:'⚔️', text:'Advance boldly',   effect:'combat' },
+        { icon:'🔍', text:'Search carefully',  effect:'loot'   },
+        { icon:'🏃', text:'Take another path', effect:'skip'   },
+      ],
+      winMessage: t.story[(i+1) % t.story.length] || '🎉',
+      loseMessage: 'You fall in battle...',
+    });
+  }
+  return { nodes: encounters, winMessage:'You conquered the ' + t.name + '!', loseMessage:'The darkness claims you...' };
+}
+
+// ─── SCENE RENDERING ─────────────────────────────────────────
+function renderNode() {
+  const ld = getLevelData();
+  const node = ld.nodes ? ld.nodes[STATE.nodeIdx] : null;
+  if (!node) { endGame(true); return; }
+
+  document.getElementById('location-icon').textContent   = node.icon || CONFIG.emoji;
+  document.getElementById('location-name').textContent   = node.locationName || '';
+  document.getElementById('narrative-box').textContent   = node.narrative || '';
+
+  // Items
+  renderItems();
+
+  // Hide all
+  document.getElementById('combat-area').classList.add('hidden');
+  document.getElementById('combat-actions').classList.add('hidden');
+  document.getElementById('choices-area').classList.add('hidden');
+
+  if (node.type === 'combat' || node.type === 'boss') {
+    startCombat(node);
+  } else {
+    showChoices(node);
   }
 }
 
-function useHint(){
-  if(hints<=0){ IAPStore.open(); return; }
-  hints--;
-  updateHintCount();
-  // اكشف زوجاً غير مكتشف لثانية واحدة
-  const hidden = cards.filter(c=>!c.matched&&!c.flipped);
-  if(hidden.length<2) return;
-  const pair = hidden.slice(0,2);
-  pair.forEach(c=>document.getElementById('c'+c.id).classList.add('flipped'));
-  setTimeout(()=>{ pair.forEach(c=>{ if(!c.matched) document.getElementById('c'+c.id).classList.remove('flipped'); }); }, 1000);
-}
-
-function updateHintCount(){ document.getElementById('hint-count').textContent = hints+' 剩余'; }
-function updateHUD(){ document.getElementById('h-moves').textContent=moves; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS; updateTime(); }
-function updateTime(){ const m=Math.floor(secs/60),s=secs%60; document.getElementById('h-time').textContent=m+':'+(s<10?'0':'')+s; }
-
-function showWin(){
-  clearInterval(timer);
-  const stars = moves<=PAIRS*2?'⭐⭐⭐':moves<=PAIRS*3?'⭐⭐':'⭐';
-  const m=Math.floor(secs/60),s=secs%60;
-  document.getElementById('win-stats').innerHTML=`${stars}<br><strong>${moves}</strong> 步数 · <strong>${m}:${s<10?'0':''}${s}</strong>`;
-  document.getElementById('win-overlay').classList.add('show');
-}
-
-initGame();
-</script>
-
-<!-- Social Bar -->
-<script src="/social-bar.js"></script>
-<script>
-  SocialBar.init({
-    title: '叙事熔炉 — realteam',
-    url:   'https://real-team-production.up.railway.app/games/verse-forge.html',
-    lang:  'zh'
+function renderItems() {
+  const row = document.getElementById('items-row');
+  row.innerHTML = '';
+  Object.entries(STATE.items).forEach(([key, val]) => {
+    if (val <= 0) return;
+    const chip = document.createElement('div');
+    chip.className = 'item-chip';
+    chip.innerHTML = `<span>🧪 ${key}</span><strong>×${val}</strong>`;
+    row.appendChild(chip);
   });
+}
+
+function showChoices(node) {
+  const area = document.getElementById('choices-area');
+  area.classList.remove('hidden');
+  area.innerHTML = '';
+  (node.choices || []).forEach((ch, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<span class="ch-icon">${ch.icon||'➡️'}</span><span>${ch.text}</span>`;
+    if (ch.cost) btn.innerHTML += `<span class="ch-cost">${ch.cost}</span>`;
+    btn.addEventListener('click', () => handleChoice(ch, node));
+    area.appendChild(btn);
+  });
+}
+
+function handleChoice(choice, node) {
+  flash();
+  if (choice.effect === 'combat') { node.type = 'combat'; startCombat(node); return; }
+  if (choice.effect === 'loot') {
+    STATE.items.potion = (STATE.items.potion || 0) + 1;
+    STATE.hp = Math.min(STATE.maxHp, STATE.hp + 15);
+    gainXp(20);
+    updateBars(); renderItems();
+    document.getElementById('narrative-box').textContent = '✨ You found a potion and gained strength!';
+    setTimeout(nextNode, 1500);
+    return;
+  }
+  if (choice.effect === 'skip') { gainXp(5); nextNode(); return; }
+  nextNode();
+}
+
+// ─── COMBAT ──────────────────────────────────────────────────
+function startCombat(node) {
+  const e = node.enemy || { icon:'👾', name:'Foe', hp:20, atk:8 };
+  STATE.inCombat = true;
+  STATE.enemy = e;
+  STATE.enemyMaxHp = e.hp;
+  STATE.enemyHp = e.hp;
+
+  document.getElementById('enemy-icon').textContent = e.icon;
+  document.getElementById('enemy-name').textContent = e.name;
+  document.getElementById('enemy-hp-bar').style.width = '100%';
+  document.getElementById('combat-area').classList.remove('hidden');
+  document.getElementById('combat-actions').classList.remove('hidden');
+  showLog('⚔️ Battle begins!');
+}
+
+function playerAttack(dmg, mpCost = 0) {
+  if (mpCost > STATE.mp) { showLog('Not enough MP!'); return; }
+  STATE.mp -= mpCost;
+  STATE.enemyHp = Math.max(0, STATE.enemyHp - dmg);
+  const pct = STATE.enemyHp / STATE.enemyMaxHp * 100;
+  document.getElementById('enemy-hp-bar').style.width = pct + '%';
+  showLog(`You deal ${dmg} damage!`);
+  updateBars();
+
+  if (STATE.enemyHp <= 0) { combatWin(); return; }
+  setTimeout(enemyTurn, 600);
+}
+
+function enemyTurn() {
+  if (!STATE.inCombat || STATE.enemyHp <= 0) return;
+  const atk = STATE.enemy.atk || 8;
+  const dmg = Math.max(1, atk + Math.floor(Math.random() * 5) - 2);
+  STATE.hp = Math.max(0, STATE.hp - dmg);
+  const pct = STATE.hp / STATE.maxHp * 100;
+  document.getElementById('player-hp-bar').style.width = pct + '%';
+  showLog(`Enemy deals ${dmg} damage!`);
+  updateBars();
+  if (STATE.hp <= 0) { endGame(false); }
+}
+
+function combatWin() {
+  STATE.inCombat = false;
+  const xp = 30 + STATE.levelIdx * 15;
+  gainXp(xp);
+  showLog(`🏆 Victory! +${xp} XP`);
+  document.getElementById('combat-actions').classList.add('hidden');
+  setTimeout(nextNode, 1800);
+}
+
+document.getElementById('btn-attack').addEventListener('click', () => {
+  const dmg = 15 + STATE.playerLv * 3 + Math.floor(Math.random() * 8);
+  playerAttack(dmg, 0);
+});
+document.getElementById('btn-skill').addEventListener('click', () => {
+  const dmg = 25 + STATE.playerLv * 5 + Math.floor(Math.random() * 10);
+  playerAttack(dmg, 12);
+});
+document.getElementById('btn-item').addEventListener('click', () => {
+  if ((STATE.items.potion || 0) <= 0) { showLog('No potions!'); return; }
+  STATE.items.potion--;
+  STATE.hp = Math.min(STATE.maxHp, STATE.hp + 40);
+  updateBars(); renderItems();
+  showLog('🧪 Used potion! +40 HP');
+  setTimeout(enemyTurn, 600);
+});
+document.getElementById('btn-flee').addEventListener('click', () => {
+  STATE.inCombat = false;
+  STATE.hp = Math.max(1, STATE.hp - 10);
+  updateBars();
+  nextNode();
+});
+
+// ─── NAVIGATION ──────────────────────────────────────────────
+function nextNode() {
+  flash();
+  STATE.nodeIdx++;
+  const ld = getLevelData();
+  if (!ld.nodes || STATE.nodeIdx >= ld.nodes.length) {
+    endGame(true);
+  } else {
+    setTimeout(renderNode, 200);
+  }
+}
+
+// ─── GAME STATES ─────────────────────────────────────────────
+function startGame() {
+  STATE.hp = STATE.maxHp; STATE.mp = STATE.maxMp;
+  STATE.xp = 0; STATE.items = { potion: 2 };
+  STATE.inCombat = false; STATE.nodeIdx = 0;
+  updateBars();
+  hideAllOverlays();
+  renderNode();
+}
+
+function endGame(win) {
+  if (win) {
+    document.getElementById('final-xp').textContent = STATE.xp;
+    const ld = getLevelData();
+    document.getElementById('win-text').textContent = ld.winMessage || '🎉 Chapter complete!';
+    showOverlay('overlay-win');
+  } else {
+    const ld = getLevelData();
+    document.getElementById('lose-text').textContent = ld.loseMessage || '💀';
+    showOverlay('overlay-lose');
+  }
+}
+
+function showOverlay(id) {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+function hideAllOverlays() {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
+}
+
+document.getElementById('btn-start').addEventListener('click', startGame);
+document.getElementById('btn-restart').addEventListener('click', startGame);
+document.getElementById('btn-restart-win').addEventListener('click', startGame);
+document.getElementById('btn-continue').addEventListener('click', () => {
+  STATE.levelIdx++;
+  STATE.nodeIdx = 0;
+  startGame();
+});
 </script>
 </body>
 </html>
