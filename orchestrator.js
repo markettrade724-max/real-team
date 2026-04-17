@@ -1,4 +1,4 @@
-import 'dotenv/config';
+// لا نستخدم dotenv — المتغيرات تأتي من GitHub Secrets مباشرة
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join }  from 'path';
