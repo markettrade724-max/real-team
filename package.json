@@ -3,17 +3,16 @@
   "version": "2.1.0",
   "type": "module",
   "scripts": {
-    "start":        "node server.js",
-    "dev":          "node --watch server.js",
-    "generate":     "node game-generator.js",
-    "agents":       "node orchestrator.js",
-    "qa":           "node scripts/qa-bot.js"
+    "start":    "node server.js",
+    "dev":      "node --watch server.js",
+    "generate": "node game-generator.js",
+    "agents":   "node orchestrator.js",
+    "qa":       "node scripts/qa-bot.js"
   },
   "dependencies": {
     "express":               "^5.2.1",
     "@supabase/supabase-js": "^2.102.1",
-    "@google/genai":         "latest",
-    "dotenv":                "^16.0.0",
+    "@google/genai":         "^0.7.0",
     "cors":                  "^2.8.5",
     "helmet":                "^8.0.0",
     "express-rate-limit":    "^7.0.0",
@@ -21,5 +20,5 @@
     "winston":               "^3.0.0",
     "zod":                   "^3.0.0"
   },
-  "engines": { "node": ">=18.0.0" }
+  "engines": { "node": ">=20.0.0" }
 }
