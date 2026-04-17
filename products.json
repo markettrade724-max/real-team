@@ -1415,5 +1415,166 @@
     "story": null,
     "generated": true,
     "generatedAt": "2026-04-16T20:39:09.380Z"
+  },
+  {
+    "id": "persona-prism",
+    "slug": "persona-prism",
+    "type": "AI Identity Explorer",
+    "category": "app",
+    "status": "available",
+    "emoji": "🎭",
+    "templateFile": "memory-game.html",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [
+      "🧘‍♀️",
+      "✨",
+      "👤",
+      "🔍",
+      "💡",
+      "🤖",
+      "💻",
+      "💎",
+      "🌈",
+      "🎨",
+      "🧠",
+      "🌌"
+    ],
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "الشرارة الأساسية",
+          "en": "The Core Spark"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "أصداء الذات",
+          "en": "Echoes of Self"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "وجوه المنشور",
+          "en": "Prismatic Facets"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "الذوات الكمومية",
+          "en": "Quantum Selves"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "اللوحة اللانهائية",
+          "en": "Infinite Canvas"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "name": {
+      "ar": "منشور الشخصية",
+      "en": "Persona Prism",
+      "fr": "Prisme de Persona",
+      "es": "Prisma de Persona",
+      "de": "Persona-Prisma",
+      "zh": "人格棱镜"
+    },
+    "desc": {
+      "ar": "انغمس في متاهة هويتك مع منشور الشخصية، تطبيق الذكاء الاصطناعي الثوري الذي يرسم خريطتك النفسية. شاهد ذاتك الحقيقية، ذواتك الماضية، ومستقبلك اللامحدود مجسمة بشكل جميل كصورة رمزية رقمية متطورة ومتعددة الأبعاد.",
+      "en": "Dive deep into the labyrinth of your identity with Persona Prism, the revolutionary AI app that maps your psyche. Witness your true self, past selves, and countless potential futures beautifully visualized as an evolving, multi-dimensional digital avatar.",
+      "fr": "Plongez au cœur du labyrinthe de votre identité avec Prisme de Persona, l'application IA révolutionnaire qui cartographie votre psyché. Observez votre vrai moi, vos moi passés et d'innombrables futurs potentiels magnifiquement visualisés sous forme d'un avatar numérique évolutif et multidimensionnel.",
+      "es": "Sumérgete profundamente en el laberinto de tu identidad con Prisma de Persona, la revolucionaria aplicación de IA que mapea tu psique. Contempla tu verdadero yo, tus yo pasados e innumerables futuros potenciales bellamente visualizados como un avatar digital evolutivo y multidimensional.",
+      "de": "Tauchen Sie tief ein in das Labyrinth Ihrer Identität mit Persona-Prisma, der revolutionären KI-App, die Ihre Psyche kartiert. Erleben Sie Ihr wahres Selbst, vergangene Ichs und unzählige potenzielle Zukünfte wunderschön visualisiert als sich entwickelnder, mehrdimensionaler digitaler Avatar.",
+      "zh": "借助人格棱镜，这款革命性的人工智能应用程序深入您的身份迷宫，它将绘制您的心灵地图。见证您的真我、过去的自我以及无数潜在的未来，它们都被精美地可视化为一个不断演变的多维数字形象。"
+    },
+    "tags": [
+      "AI",
+      "Self-Discovery",
+      "Digital Identity",
+      "Avatar Creation"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "generated": true,
+    "generatedAt": "2026-04-17T11:17:18.905Z"
   }
 ]
