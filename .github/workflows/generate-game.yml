@@ -2,8 +2,8 @@ name: Generate Games & Deploy
 
 on:
   push:
-    branches: [main]   # يشتغل عند أي push — ليس فقط عند تعديل ملفات معينة
-  workflow_dispatch:    # تشغيل يدوي من GitHub
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   generate:
@@ -18,8 +18,11 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Create games directory
-        run: mkdir -p public/games   # تأكد أن المجلد موجود دائماً
+        run: mkdir -p public/games
 
       - name: Generate all available games & apps
         run: node game-generator.js
