@@ -1,349 +1,221 @@
 /**
- * game-generator.js — يولّد الألعاب بـ 6 لغات من القوالب
+ * game-generator.js — يولّد الألعاب بكل اللغات الست
+ * v2: يدعم قوالب action-shooter, adventure-rpg, endless-runner
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// ── خريطة القوالب ─────────────────────────────────────────────
+// ── selectTemplate مضمّنة هنا لأن game-generator يُشغَّل مستقلاً ──
 const TEMPLATE_MAP = {
-  // ألعاب ذاكرة وألغاز
-  memory:   'memory-game.html',
-  puzzle:   'memory-game.html',
-  word:     'memory-game.html',
-  quiz:     'memory-game.html',
-  // أكشن وإطلاق نار
-  arcade:   'arcade-shooter.html',
-  shooter:  'arcade-shooter.html',
-  action:   'arcade-shooter.html',
-  space:    'arcade-shooter.html',
-  // مغامرات وRPG
-  rpg:       'adventure-rpg.html',
-  adventure: 'adventure-rpg.html',
-  story:     'adventure-rpg.html',
-  quest:     'adventure-rpg.html',
-  // تطبيقات وأدوات
-  tool:      'tool-app.html',
-  app:       'tool-app.html',
-  timer:     'tool-app.html',
-  focus:     'tool-app.html',
-  // افتراضي لأي نوع جديد
-  default:   'memory-game.html',
+  memory:'memory-game.html', puzzle:'memory-game.html',
+  word:'memory-game.html',   quiz:'memory-game.html',
+  matching:'memory-game.html', trivia:'memory-game.html', arcade:'memory-game.html',
+  tool:'tool-app.html',      app:'tool-app.html',
+  timer:'tool-app.html',     tracker:'tool-app.html',
+  calculator:'tool-app.html', generator:'tool-app.html',
+  productivity:'tool-app.html', wellness:'tool-app.html',
+  action:'action-shooter.html',   shooter:'action-shooter.html',
+  shooting:'action-shooter.html', space:'action-shooter.html',
+  bullet:'action-shooter.html',   battle:'action-shooter.html',
+  defense:'action-shooter.html',  survival:'action-shooter.html',
+  adventure:'adventure-rpg.html', rpg:'adventure-rpg.html',
+  dungeon:'adventure-rpg.html',   quest:'adventure-rpg.html',
+  story:'adventure-rpg.html',     narrative:'adventure-rpg.html',
+  exploration:'adventure-rpg.html',
+  runner:'endless-runner.html',   run:'endless-runner.html',
+  platformer:'endless-runner.html', dash:'endless-runner.html',
+  dodge:'endless-runner.html',    sprint:'endless-runner.html',
+  escape:'endless-runner.html',
 };
 
-// ── الترجمات ──────────────────────────────────────────────────
-const LABELS = {
-  ar:{ dir:'rtl',
-    START_LBL:'ابدأ اللعبة', SHOP_LBL:'المتجر', BEST_LBL:'أفضل نتيجة',
-    SCORE_LBL:'النقاط', LEVEL_LBL:'المستوى', LIVES_LBL:'الأرواح',
-    GAMEOVER_LBL:'انتهت اللعبة', RETRY_LBL:'حاول مجدداً', HOME_LBL:'الرئيسية',
-    NEW_BEST_LBL:'رقم قياسي جديد',
-    HERO_LBL:'البطل', NARRATOR_LBL:'الراوي', ELDER_LBL:'الشيخ',
-    MERCHANT_LBL:'التاجر',
-    ATTACK_LBL:'هجوم', MAGIC_LBL:'سحر', DEFEND_LBL:'دفاع', ITEM_LBL:'عنصر',
-    COMBAT_START_LBL:'المعركة بدأت!', DEFEND_MSG_LBL:'أنت في وضع الدفاع',
-    NO_MP_LBL:'نقاط السحر ناضبة', NO_ITEM_LBL:'لا عناصر متبقية',
-    NO_GOLD_LBL:'الذهب غير كافٍ',
-    ENEMY_WOLF:'الذئب المتوحش', ENEMY_BOSS:'ملك الظلام',
-    CHOICE_ENTER:'ادخل القرية', CHOICE_CAMP:'أقم معسكراً',
-    CHOICE_REST:'استرح (استعادة 30 HP)', CHOICE_ACCEPT:'اقبل المهمة',
-    CHOICE_SHOP:'تفضل للمتجر', CHOICE_LEAVE:'غادر',
-    CHOICE_BUY_POTION:'اشتر جرعة (15 ذهب)', CHOICE_FIGHT:'قاتل',
-    CHOICE_SNEAK:'تسلل خفية', CHOICE_BACK:'عد للخلف',
-    CHOICE_EXPLORE:'استكشف الزنزانة', CHOICE_BOSS:'واجه الملك',
-    CHOICE_CONTINUE:'تابع', CHOICE_RESTART:'ابدأ من جديد',
-    SCENE_INTRO:'في ليلة مظلمة، تجد نفسك على أبواب مملكة مهجورة. الأسطورة تقول أن كنزاً عظيماً مدفوناً في أعماقها.',
-    SCENE_VILLAGE:'أيها البطل، مملكتنا تتألم. وحوش الظلام تهاجمنا كل ليلة. هل ستساعدنا؟',
-    SCENE_CAMP:'النار تدفئك. هذا المكان آمن للاستراحة قبل المغامرة.',
-    SCENE_SHOP:'مرحباً بالبطل! لدي جرعات شفاء وأسلحة نادرة. ماذا تريد؟',
-    SCENE_FOREST:'الغابة الكثيفة مليئة بالأخطار. تسمع أصوات ذئاب في الظلام.',
-    SCENE_DUNGEON:'وصلت إلى الزنزانة القديمة. الهواء ثقيل برائحة الكبريت.',
-    SCENE_TREASURE:'وجدت حجرة مليئة بالذهب والجواهر! ثروة لا تُحصى.',
-    SCENE_VICTORY:'أنجزت! هزمت ملك الظلام وأنقذت المملكة. اسمك خُلّد في التاريخ!',
-    SCENE_DEFEAT:'سقطت في المعركة... لكن الأبطال لا يستسلمون. قم وحاول مجدداً!',
-    BACK_LBL:'رجوع', MOVES_LBL:'حركات', TIME_LBL:'وقت', PAIRS_LBL:'أزواج',
-    HINT_LBL:'تلميح', HINT_LEFT_LBL:'متبقي', RESTART_LBL:'لعبة جديدة',
-    WIN_TITLE:'أحسنت!', PLAY_AGAIN_LBL:'مرة أخرى',
-    AD_LABEL:'الإعلانات تدعم الفريق', AD_REMOVE_LABEL:'إزالة $1.99',
-    FOCUS_LBL:'تركيز', SHORT_LBL:'استراحة', LONG_LBL:'استراحة طويلة',
-    START_LBL2:'ابدأ', PAUSE_LBL:'توقف', SESSIONS_LBL:'جلسات',
-    MINUTES_LBL:'دقيقة', STREAK_LBL:'متواصل', DONE_LBL:'انتهت الجلسة!',
-  },
-  en:{ dir:'ltr',
-    START_LBL:'Play Now', SHOP_LBL:'Shop', BEST_LBL:'Best Score',
-    SCORE_LBL:'Score', LEVEL_LBL:'Level', LIVES_LBL:'Lives',
-    GAMEOVER_LBL:'Game Over', RETRY_LBL:'Try Again', HOME_LBL:'Home',
-    NEW_BEST_LBL:'New Record',
-    HERO_LBL:'Hero', NARRATOR_LBL:'Narrator', ELDER_LBL:'Elder',
-    MERCHANT_LBL:'Merchant',
-    ATTACK_LBL:'Attack', MAGIC_LBL:'Magic', DEFEND_LBL:'Defend', ITEM_LBL:'Item',
-    COMBAT_START_LBL:'Battle begins!', DEFEND_MSG_LBL:'You are defending',
-    NO_MP_LBL:'Not enough MP', NO_ITEM_LBL:'No items left',
-    NO_GOLD_LBL:'Not enough gold',
-    ENEMY_WOLF:'Wild Wolf', ENEMY_BOSS:'Dark King',
-    CHOICE_ENTER:'Enter the village', CHOICE_CAMP:'Set up camp',
-    CHOICE_REST:'Rest (restore 30 HP)', CHOICE_ACCEPT:'Accept the quest',
-    CHOICE_SHOP:'Visit the shop', CHOICE_LEAVE:'Leave',
-    CHOICE_BUY_POTION:'Buy potion (15 gold)', CHOICE_FIGHT:'Fight',
-    CHOICE_SNEAK:'Sneak past', CHOICE_BACK:'Go back',
-    CHOICE_EXPLORE:'Explore the dungeon', CHOICE_BOSS:'Face the king',
-    CHOICE_CONTINUE:'Continue', CHOICE_RESTART:'Start over',
-    SCENE_INTRO:'On a dark night, you find yourself at the gates of an abandoned kingdom. Legend speaks of a great treasure buried in its depths.',
-    SCENE_VILLAGE:'Hero, our kingdom suffers. Dark monsters attack every night. Will you help us?',
-    SCENE_CAMP:'The fire warms you. This place is safe for rest before your adventure.',
-    SCENE_SHOP:'Welcome hero! I have healing potions and rare weapons. What do you need?',
-    SCENE_FOREST:'The dense forest is full of dangers. You hear wolves howling in the darkness.',
-    SCENE_DUNGEON:'You have reached the ancient dungeon. The air is heavy with the smell of sulfur.',
-    SCENE_TREASURE:'You found a chamber full of gold and jewels! Uncountable riches.',
-    SCENE_VICTORY:'You did it! You defeated the Dark King and saved the kingdom. Your name is immortalized in history!',
-    SCENE_DEFEAT:'You fell in battle... but heroes never give up. Rise and try again!',
-    BACK_LBL:'Back', MOVES_LBL:'Moves', TIME_LBL:'Time', PAIRS_LBL:'Pairs',
-    HINT_LBL:'Hint', HINT_LEFT_LBL:'left', RESTART_LBL:'New Game',
-    WIN_TITLE:'You Win!', PLAY_AGAIN_LBL:'Play Again',
-    AD_LABEL:'Ads support our team', AD_REMOVE_LABEL:'Remove $1.99',
-    FOCUS_LBL:'Focus', SHORT_LBL:'Short Break', LONG_LBL:'Long Break',
-    START_LBL2:'Start', PAUSE_LBL:'Pause', SESSIONS_LBL:'Sessions',
-    MINUTES_LBL:'Minutes', STREAK_LBL:'Streak', DONE_LBL:'Session done!',
-  },
-  fr:{ dir:'ltr',
-    START_LBL:'Jouer', SHOP_LBL:'Boutique', BEST_LBL:'Meilleur score',
-    SCORE_LBL:'Score', LEVEL_LBL:'Niveau', LIVES_LBL:'Vies',
-    GAMEOVER_LBL:'Game Over', RETRY_LBL:'Réessayer', HOME_LBL:'Accueil',
-    NEW_BEST_LBL:'Nouveau record',
-    HERO_LBL:'Héros', NARRATOR_LBL:'Narrateur', ELDER_LBL:'Ancien',
-    MERCHANT_LBL:'Marchand',
-    ATTACK_LBL:'Attaque', MAGIC_LBL:'Magie', DEFEND_LBL:'Défense', ITEM_LBL:'Objet',
-    COMBAT_START_LBL:'Le combat commence!', DEFEND_MSG_LBL:'Vous défendez',
-    NO_MP_LBL:'Pas assez de MP', NO_ITEM_LBL:'Plus d\'objets',
-    NO_GOLD_LBL:'Pas assez d\'or',
-    ENEMY_WOLF:'Loup Sauvage', ENEMY_BOSS:'Roi des Ténèbres',
-    CHOICE_ENTER:'Entrer au village', CHOICE_CAMP:'Établir un camp',
-    CHOICE_REST:'Se reposer (+30 HP)', CHOICE_ACCEPT:'Accepter la quête',
-    CHOICE_SHOP:'Visiter la boutique', CHOICE_LEAVE:'Partir',
-    CHOICE_BUY_POTION:'Acheter potion (15 or)', CHOICE_FIGHT:'Combattre',
-    CHOICE_SNEAK:'Passer discrètement', CHOICE_BACK:'Retour',
-    CHOICE_EXPLORE:'Explorer le donjon', CHOICE_BOSS:'Affronter le roi',
-    CHOICE_CONTINUE:'Continuer', CHOICE_RESTART:'Recommencer',
-    SCENE_INTRO:'Par une nuit sombre, vous vous trouvez aux portes d\'un royaume abandonné.',
-    SCENE_VILLAGE:'Héros, notre royaume souffre. Des monstres nous attaquent chaque nuit.',
-    SCENE_CAMP:'Le feu vous réchauffe. Cet endroit est sûr pour se reposer.',
-    SCENE_SHOP:'Bienvenue héros! J\'ai des potions et des armes rares.',
-    SCENE_FOREST:'La forêt dense est pleine de dangers. Vous entendez des loups hurler.',
-    SCENE_DUNGEON:'Vous avez atteint l\'ancien donjon. L\'air est lourd.',
-    SCENE_TREASURE:'Vous avez trouvé une chambre pleine d\'or et de joyaux!',
-    SCENE_VICTORY:'Vous avez vaincu le Roi des Ténèbres et sauvé le royaume!',
-    SCENE_DEFEAT:'Vous êtes tombé... mais les héros ne capitulent pas. Relevez-vous!',
-    BACK_LBL:'Retour', MOVES_LBL:'Coups', TIME_LBL:'Temps', PAIRS_LBL:'Paires',
-    HINT_LBL:'Indice', HINT_LEFT_LBL:'restants', RESTART_LBL:'Nouveau jeu',
-    WIN_TITLE:'Bravo!', PLAY_AGAIN_LBL:'Rejouer',
-    AD_LABEL:'Les pubs soutiennent l\'équipe', AD_REMOVE_LABEL:'Supprimer 1,99$',
-    FOCUS_LBL:'Focus', SHORT_LBL:'Pause courte', LONG_LBL:'Pause longue',
-    START_LBL2:'Démarrer', PAUSE_LBL:'Pause', SESSIONS_LBL:'Sessions',
-    MINUTES_LBL:'Minutes', STREAK_LBL:'Série', DONE_LBL:'Session terminée!',
-  },
-  es:{ dir:'ltr',
-    START_LBL:'Jugar', SHOP_LBL:'Tienda', BEST_LBL:'Mejor puntuación',
-    SCORE_LBL:'Puntos', LEVEL_LBL:'Nivel', LIVES_LBL:'Vidas',
-    GAMEOVER_LBL:'Game Over', RETRY_LBL:'Intentar de nuevo', HOME_LBL:'Inicio',
-    NEW_BEST_LBL:'Nuevo récord',
-    HERO_LBL:'Héroe', NARRATOR_LBL:'Narrador', ELDER_LBL:'Anciano',
-    MERCHANT_LBL:'Mercader',
-    ATTACK_LBL:'Ataque', MAGIC_LBL:'Magia', DEFEND_LBL:'Defensa', ITEM_LBL:'Objeto',
-    COMBAT_START_LBL:'¡Comienza la batalla!', DEFEND_MSG_LBL:'Estás defendiendo',
-    NO_MP_LBL:'No hay suficiente MP', NO_ITEM_LBL:'No quedan objetos',
-    NO_GOLD_LBL:'No hay suficiente oro',
-    ENEMY_WOLF:'Lobo Salvaje', ENEMY_BOSS:'Rey Oscuro',
-    CHOICE_ENTER:'Entrar al pueblo', CHOICE_CAMP:'Establecer campamento',
-    CHOICE_REST:'Descansar (+30 HP)', CHOICE_ACCEPT:'Aceptar la misión',
-    CHOICE_SHOP:'Visitar la tienda', CHOICE_LEAVE:'Partir',
-    CHOICE_BUY_POTION:'Comprar poción (15 oro)', CHOICE_FIGHT:'Luchar',
-    CHOICE_SNEAK:'Pasar sigilosamente', CHOICE_BACK:'Volver',
-    CHOICE_EXPLORE:'Explorar la mazmorra', CHOICE_BOSS:'Enfrentar al rey',
-    CHOICE_CONTINUE:'Continuar', CHOICE_RESTART:'Empezar de nuevo',
-    SCENE_INTRO:'En una noche oscura, te encuentras ante las puertas de un reino abandonado.',
-    SCENE_VILLAGE:'Héroe, nuestro reino sufre. Monstruos oscuros atacan cada noche.',
-    SCENE_CAMP:'El fuego te calienta. Este lugar es seguro para descansar.',
-    SCENE_SHOP:'¡Bienvenido héroe! Tengo pociones y armas raras.',
-    SCENE_FOREST:'El denso bosque está lleno de peligros. Escuchas lobos aullando.',
-    SCENE_DUNGEON:'Has llegado a la mazmorra antigua. El aire es pesado.',
-    SCENE_TREASURE:'¡Encontraste una cámara llena de oro y joyas!',
-    SCENE_VICTORY:'¡Lo lograste! Derrotaste al Rey Oscuro y salvaste el reino.',
-    SCENE_DEFEAT:'Caíste en batalla... pero los héroes no se rinden. ¡Levántate!',
-    BACK_LBL:'Volver', MOVES_LBL:'Movs', TIME_LBL:'Tiempo', PAIRS_LBL:'Pares',
-    HINT_LBL:'Pista', HINT_LEFT_LBL:'restantes', RESTART_LBL:'Nuevo juego',
-    WIN_TITLE:'¡Ganaste!', PLAY_AGAIN_LBL:'Jugar de nuevo',
-    AD_LABEL:'Los anuncios apoyan al equipo', AD_REMOVE_LABEL:'Eliminar $1.99',
-    FOCUS_LBL:'Enfoque', SHORT_LBL:'Pausa corta', LONG_LBL:'Pausa larga',
-    START_LBL2:'Iniciar', PAUSE_LBL:'Pausar', SESSIONS_LBL:'Sesiones',
-    MINUTES_LBL:'Minutos', STREAK_LBL:'Racha', DONE_LBL:'¡Sesión completa!',
-  },
-  de:{ dir:'ltr',
-    START_LBL:'Spielen', SHOP_LBL:'Shop', BEST_LBL:'Bestes Ergebnis',
-    SCORE_LBL:'Punkte', LEVEL_LBL:'Level', LIVES_LBL:'Leben',
-    GAMEOVER_LBL:'Game Over', RETRY_LBL:'Nochmal', HOME_LBL:'Start',
-    NEW_BEST_LBL:'Neuer Rekord',
-    HERO_LBL:'Held', NARRATOR_LBL:'Erzähler', ELDER_LBL:'Ältester',
-    MERCHANT_LBL:'Händler',
-    ATTACK_LBL:'Angriff', MAGIC_LBL:'Magie', DEFEND_LBL:'Verteidigung', ITEM_LBL:'Item',
-    COMBAT_START_LBL:'Der Kampf beginnt!', DEFEND_MSG_LBL:'Du verteidigst',
-    NO_MP_LBL:'Nicht genug MP', NO_ITEM_LBL:'Keine Items mehr',
-    NO_GOLD_LBL:'Nicht genug Gold',
-    ENEMY_WOLF:'Wilder Wolf', ENEMY_BOSS:'Dunkler König',
-    CHOICE_ENTER:'Dorf betreten', CHOICE_CAMP:'Lager aufschlagen',
-    CHOICE_REST:'Ausruhen (+30 HP)', CHOICE_ACCEPT:'Quest annehmen',
-    CHOICE_SHOP:'Shop besuchen', CHOICE_LEAVE:'Verlassen',
-    CHOICE_BUY_POTION:'Trank kaufen (15 Gold)', CHOICE_FIGHT:'Kämpfen',
-    CHOICE_SNEAK:'Schleichen', CHOICE_BACK:'Zurück',
-    CHOICE_EXPLORE:'Dungeon erkunden', CHOICE_BOSS:'König herausfordern',
-    CHOICE_CONTINUE:'Weiter', CHOICE_RESTART:'Neu starten',
-    SCENE_INTRO:'In einer dunklen Nacht stehst du vor den Toren eines verlassenen Königreichs.',
-    SCENE_VILLAGE:'Held, unser Königreich leidet. Dunkle Monster greifen jede Nacht an.',
-    SCENE_CAMP:'Das Feuer wärmt dich. Dieser Ort ist sicher zum Ausruhen.',
-    SCENE_SHOP:'Willkommen Held! Ich habe Heiltränke und seltene Waffen.',
-    SCENE_FOREST:'Der dichte Wald ist voller Gefahren. Du hörst Wölfe heulen.',
-    SCENE_DUNGEON:'Du hast den alten Dungeon erreicht. Die Luft ist schwer.',
-    SCENE_TREASURE:'Du hast eine Kammer voller Gold und Juwelen gefunden!',
-    SCENE_VICTORY:'Du hast es geschafft! Du hast den Dunklen König besiegt!',
-    SCENE_DEFEAT:'Du bist im Kampf gefallen... aber Helden geben nicht auf!',
-    BACK_LBL:'Zurück', MOVES_LBL:'Züge', TIME_LBL:'Zeit', PAIRS_LBL:'Paare',
-    HINT_LBL:'Hinweis', HINT_LEFT_LBL:'übrig', RESTART_LBL:'Neues Spiel',
-    WIN_TITLE:'Gewonnen!', PLAY_AGAIN_LBL:'Nochmal',
-    AD_LABEL:'Anzeigen unterstützen das Team', AD_REMOVE_LABEL:'Entfernen 1,99$',
-    FOCUS_LBL:'Fokus', SHORT_LBL:'Kurze Pause', LONG_LBL:'Lange Pause',
-    START_LBL2:'Starten', PAUSE_LBL:'Pause', SESSIONS_LBL:'Sitzungen',
-    MINUTES_LBL:'Minuten', STREAK_LBL:'Serie', DONE_LBL:'Sitzung abgeschlossen!',
-  },
-  zh:{ dir:'ltr',
-    START_LBL:'开始游戏', SHOP_LBL:'商店', BEST_LBL:'最高分',
-    SCORE_LBL:'分数', LEVEL_LBL:'等级', LIVES_LBL:'生命',
-    GAMEOVER_LBL:'游戏结束', RETRY_LBL:'再试一次', HOME_LBL:'首页',
-    NEW_BEST_LBL:'新纪录',
-    HERO_LBL:'英雄', NARRATOR_LBL:'旁白', ELDER_LBL:'长老',
-    MERCHANT_LBL:'商人',
-    ATTACK_LBL:'攻击', MAGIC_LBL:'魔法', DEFEND_LBL:'防御', ITEM_LBL:'物品',
-    COMBAT_START_LBL:'战斗开始！', DEFEND_MSG_LBL:'你正在防御',
-    NO_MP_LBL:'MP不足', NO_ITEM_LBL:'没有物品了',
-    NO_GOLD_LBL:'金币不足',
-    ENEMY_WOLF:'野狼', ENEMY_BOSS:'黑暗之王',
-    CHOICE_ENTER:'进入村庄', CHOICE_CAMP:'建立营地',
-    CHOICE_REST:'休息（恢复30HP）', CHOICE_ACCEPT:'接受任务',
-    CHOICE_SHOP:'前往商店', CHOICE_LEAVE:'离开',
-    CHOICE_BUY_POTION:'购买药水（15金）', CHOICE_FIGHT:'战斗',
-    CHOICE_SNEAK:'悄悄通过', CHOICE_BACK:'返回',
-    CHOICE_EXPLORE:'探索地牢', CHOICE_BOSS:'挑战国王',
-    CHOICE_CONTINUE:'继续', CHOICE_RESTART:'重新开始',
-    SCENE_INTRO:'在一个黑暗的夜晚，你发现自己站在一座废弃王国的大门前。',
-    SCENE_VILLAGE:'英雄，我们的王国在受苦。黑暗怪物每晚袭击我们。',
-    SCENE_CAMP:'火焰温暖着你。这里是冒险前休息的安全地方。',
-    SCENE_SHOP:'欢迎英雄！我有治疗药水和稀有武器。',
-    SCENE_FOREST:'茂密的森林充满危险。你听到黑暗中有狼嚎叫。',
-    SCENE_DUNGEON:'你到达了古老的地牢。空气中弥漫着硫磺气味。',
-    SCENE_TREASURE:'你发现了一个充满黄金和珠宝的房间！',
-    SCENE_VICTORY:'你做到了！你击败了黑暗之王，拯救了王国！',
-    SCENE_DEFEAT:'你在战斗中倒下了……但英雄永不放弃。站起来再试！',
-    BACK_LBL:'返回', MOVES_LBL:'步数', TIME_LBL:'时间', PAIRS_LBL:'配对',
-    HINT_LBL:'提示', HINT_LEFT_LBL:'剩余', RESTART_LBL:'新游戏',
-    WIN_TITLE:'你赢了！', PLAY_AGAIN_LBL:'再玩',
-    AD_LABEL:'广告支持我们的团队', AD_REMOVE_LABEL:'去除广告 $1.99',
-    FOCUS_LBL:'专注', SHORT_LBL:'短暂休息', LONG_LBL:'长时间休息',
-    START_LBL2:'开始', PAUSE_LBL:'暂停', SESSIONS_LBL:'次数',
-    MINUTES_LBL:'分钟', STREAK_LBL:'连续', DONE_LBL:'专注完成！',
-  },
-};
-
-// ── ضمان ترجمات كاملة ─────────────────────────────────────────
-function ensureLang(obj, fallbackOrder = ['en','ar']) {
-  if (!obj) return {};
-  const LANGS = ['ar','en','fr','es','de','zh'];
-  const result = {};
-  LANGS.forEach(l => {
-    result[l] = obj[l];
-    if (!result[l]) {
-      for (const fb of fallbackOrder) {
-        if (obj[fb]) { result[l] = obj[fb]; break; }
-      }
-    }
-    result[l] = result[l] || '???';
-  });
-  return result;
+function selectTemplate(idea) {
+  const type = (idea.type || '').toLowerCase().trim();
+  if (TEMPLATE_MAP[type]) return TEMPLATE_MAP[type];
+  for (const [key, tpl] of Object.entries(TEMPLATE_MAP)) {
+    if (type.includes(key) || key.includes(type)) return tpl;
+  }
+  const ctx = [idea.concept||'', ...(idea.tags||[])].join(' ').toLowerCase();
+  if (/shoot|bullet|enemy|wave/.test(ctx))           return 'action-shooter.html';
+  if (/adventure|rpg|quest|dungeon|hero/.test(ctx))  return 'adventure-rpg.html';
+  if (/run|jump|dodge|endless|sprint/.test(ctx))     return 'endless-runner.html';
+  return 'memory-game.html';
 }
 
-// ── توليد لعبة واحدة ──────────────────────────────────────────
-function generate(product) {
-  const tplName = TEMPLATE_MAP[product.type] || TEMPLATE_MAP.default;
-  const tplPath = join(__dirname, 'templates', tplName);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// ── خريطة الأنواع → القوالب (legacy + new) ───────────────────
+const TYPE_DEFAULTS = {
+  // ── قوالب كلاسيكية ──
+  memory: { cols:4, pairs:8, emojiSize:'2rem', hintsStart:3, emojis:['🌌','⭐','🪐','🌙','☀️','🌠','🌟','🚀','🛸','🌍','💫','🌈'] },
+  puzzle: { cols:4, pairs:8, emojiSize:'2rem', hintsStart:2, emojis:['🧩','🎯','🔮','💎','🌀','⚡','🎪','🎨','🎭','🎬','🎮','🕹️'] },
+  word:   { cols:4, pairs:8, emojiSize:'2rem', hintsStart:3, emojis:['📝','✍️','📖','🔤','💬','🗣️','📚','🖊️','📰','💡','🔑','🎯'] },
+  quiz:   { cols:4, pairs:6, emojiSize:'2rem', hintsStart:3, emojis:['❓','💡','🎓','🏆','⭐','🔥','✅','❌','🎯','📊','🧠','🌟'] },
+  arcade: { cols:4, pairs:8, emojiSize:'2rem', hintsStart:2, emojis:['🕹️','👾','🎮','🚀','💥','⭐','🏆','💣','🎯','🔫','🛡️','⚡'] },
+};
+
+// ── ترجمات مشتركة ─────────────────────────────────────────────
+const LABELS = {
+  ar:{ dir:'rtl', back:'العودة', adLbl:'الإعلانات تدعم الفريق', adRemove:'إزالة $1.99', movesLbl:'حركة', timeLbl:'وقت', pairsLbl:'أزواج', hintLbl:'تلميح', hintLeft:'متبقي', restartLbl:'لعبة جديدة', winTitle:'أحسنت!', playAgain:'مجدداً', focusLbl:'تركيز', shortLbl:'استراحة', longLbl:'استراحة طويلة', startLbl:'ابدأ', pauseLbl:'توقف', sessionsLbl:'جلسات', minutesLbl:'دقيقة', streakLbl:'متواصل', doneLbl:'انتهت الجلسة!',
+      // action
+      scoreLbl:'نقاط', levelLbl:'مستوى', waveLbl:'موجة', fireLbl:'اطلق', specialLbl:'خاص', loseTitleLbl:'خسرت!', nextLbl:'التالي',
+      // adventure
+      heroLbl:'البطل', attackLbl:'هجوم', skillLbl:'مهارة', itemLbl:'عنصر', fleeLbl:'فرار',
+      // runner
+      bestLbl:'أفضل', coinsLbl:'عملات', distLbl:'مسافة', jumpLbl:'قفز', slideLbl:'انزلاق', overTitleLbl:'انتهت!',
+  },
+  en:{ dir:'ltr', back:'Back', adLbl:'Ads support our team', adRemove:'Remove $1.99', movesLbl:'Moves', timeLbl:'Time', pairsLbl:'Pairs', hintLbl:'Hint', hintLeft:'left', restartLbl:'New Game', winTitle:'You Win!', playAgain:'Play Again', focusLbl:'Focus', shortLbl:'Short Break', longLbl:'Long Break', startLbl:'Start', pauseLbl:'Pause', sessionsLbl:'Sessions', minutesLbl:'Minutes', streakLbl:'Streak', doneLbl:'Session done!',
+      scoreLbl:'Score', levelLbl:'Level', waveLbl:'Wave', fireLbl:'Fire', specialLbl:'Special', loseTitleLbl:'Game Over!', nextLbl:'Next',
+      heroLbl:'Hero', attackLbl:'Attack', skillLbl:'Skill', itemLbl:'Item', fleeLbl:'Flee',
+      bestLbl:'Best', coinsLbl:'Coins', distLbl:'Distance', jumpLbl:'Jump', slideLbl:'Slide', overTitleLbl:'Game Over!',
+  },
+  fr:{ dir:'ltr', back:'Retour', adLbl:"Les pubs soutiennent l'équipe", adRemove:'Supprimer 1,99$', movesLbl:'Coups', timeLbl:'Temps', pairsLbl:'Paires', hintLbl:'Indice', hintLeft:'restants', restartLbl:'Nouveau jeu', winTitle:'Bravo!', playAgain:'Rejouer', focusLbl:'Focus', shortLbl:'Pause courte', longLbl:'Pause longue', startLbl:'Démarrer', pauseLbl:'Pause', sessionsLbl:'Sessions', minutesLbl:'Minutes', streakLbl:'Série', doneLbl:'Session terminée!',
+      scoreLbl:'Score', levelLbl:'Niveau', waveLbl:'Vague', fireLbl:'Tirer', specialLbl:'Spécial', loseTitleLbl:'Perdu!', nextLbl:'Suivant',
+      heroLbl:'Héros', attackLbl:'Attaque', skillLbl:'Compétence', itemLbl:'Objet', fleeLbl:'Fuir',
+      bestLbl:'Meilleur', coinsLbl:'Pièces', distLbl:'Distance', jumpLbl:'Sauter', slideLbl:'Glisser', overTitleLbl:'Fin!',
+  },
+  es:{ dir:'ltr', back:'Volver', adLbl:'Los anuncios apoyan al equipo', adRemove:'Eliminar $1.99', movesLbl:'Movs', timeLbl:'Tiempo', pairsLbl:'Pares', hintLbl:'Pista', hintLeft:'restantes', restartLbl:'Nuevo Juego', winTitle:'¡Ganaste!', playAgain:'Jugar de nuevo', focusLbl:'Enfoque', shortLbl:'Pausa corta', longLbl:'Pausa larga', startLbl:'Iniciar', pauseLbl:'Pausar', sessionsLbl:'Sesiones', minutesLbl:'Minutos', streakLbl:'Racha', doneLbl:'¡Sesión completada!',
+      scoreLbl:'Puntos', levelLbl:'Nivel', waveLbl:'Ola', fireLbl:'Disparar', specialLbl:'Especial', loseTitleLbl:'¡Perdiste!', nextLbl:'Siguiente',
+      heroLbl:'Héroe', attackLbl:'Atacar', skillLbl:'Habilidad', itemLbl:'Objeto', fleeLbl:'Huir',
+      bestLbl:'Mejor', coinsLbl:'Monedas', distLbl:'Distancia', jumpLbl:'Saltar', slideLbl:'Deslizar', overTitleLbl:'¡Fin!',
+  },
+  de:{ dir:'ltr', back:'Zurück', adLbl:'Anzeigen unterstützen das Team', adRemove:'Entfernen 1,99$', movesLbl:'Züge', timeLbl:'Zeit', pairsLbl:'Paare', hintLbl:'Hinweis', hintLeft:'übrig', restartLbl:'Neues Spiel', winTitle:'Gewonnen!', playAgain:'Nochmal', focusLbl:'Fokus', shortLbl:'Kurze Pause', longLbl:'Lange Pause', startLbl:'Starten', pauseLbl:'Pause', sessionsLbl:'Sitzungen', minutesLbl:'Minuten', streakLbl:'Serie', doneLbl:'Sitzung abgeschlossen!',
+      scoreLbl:'Punkte', levelLbl:'Level', waveLbl:'Welle', fireLbl:'Schießen', specialLbl:'Spezial', loseTitleLbl:'Verloren!', nextLbl:'Weiter',
+      heroLbl:'Held', attackLbl:'Angriff', skillLbl:'Fähigkeit', itemLbl:'Gegenstand', fleeLbl:'Fliehen',
+      bestLbl:'Beste', coinsLbl:'Münzen', distLbl:'Entfernung', jumpLbl:'Springen', slideLbl:'Rutschen', overTitleLbl:'Vorbei!',
+  },
+  zh:{ dir:'ltr', back:'返回', adLbl:'广告支持我们的团队', adRemove:'去除广告 $1.99', movesLbl:'步数', timeLbl:'时间', pairsLbl:'配对', hintLbl:'提示', hintLeft:'剩余', restartLbl:'新游戏', winTitle:'你赢了！', playAgain:'再玩', focusLbl:'专注', shortLbl:'短暂休息', longLbl:'长时间休息', startLbl:'开始', pauseLbl:'暂停', sessionsLbl:'次数', minutesLbl:'分钟', streakLbl:'连续', doneLbl:'专注完成！',
+      scoreLbl:'分数', levelLbl:'关卡', waveLbl:'波次', fireLbl:'射击', specialLbl:'特殊', loseTitleLbl:'游戏结束', nextLbl:'下一关',
+      heroLbl:'英雄', attackLbl:'攻击', skillLbl:'技能', itemLbl:'道具', fleeLbl:'逃跑',
+      bestLbl:'最佳', coinsLbl:'金币', distLbl:'距离', jumpLbl:'跳跃', slideLbl:'滑行', overTitleLbl:'游戏结束',
+  },
+};
+
+// ── ضمان وجود ترجمة ──────────────────────────────────────────
+function ensureTranslations(nameObj, descObj) {
+  const LANGS = ['ar','en','fr','es','de','zh'];
+  const safeName = {}, safeDesc = {};
+  LANGS.forEach(l => {
+    safeName[l] = nameObj?.[l] || nameObj?.en || nameObj?.ar || 'Game';
+    safeDesc[l] = descObj?.[l] || descObj?.en || descObj?.ar || '';
+  });
+  return { safeName, safeDesc };
+}
+
+// ── استبدال كل المتغيرات في القالب ──────────────────────────
+function applyTemplate(tpl, product, lang, lbl, def, safeName, safeDesc) {
+  const name = safeName[lang];
+  const desc = safeDesc[lang];
+  const emojis = product.emojis || def?.emojis || [];
+  const levelsJson = JSON.stringify(product.levels || []);
+
+  return tpl
+    // أساسيات
+    .replace(/\{\{LANG\}\}/g, lang)
+    .replace(/\{\{DIR\}\}/g, lbl.dir)
+    .replace(/\{\{PRODUCT_ID\}\}/g, product.id)
+    .replace(/\{\{GAME_NAME\}\}/g, name)
+    .replace(/\{\{GAME_NAME_HTML\}\}/g, name)
+    .replace(/\{\{GAME_DESC\}\}/g, desc)
+    .replace(/\{\{EMOJI\}\}/g, product.emoji)
+    .replace(/\{\{ACCENT\}\}/g, product.accent)
+    .replace(/\{\{ACCENT_RGB\}\}/g, product.accentRgb)
+    // data
+    .replace(/\{\{EMOJIS_JSON\}\}/g, JSON.stringify(emojis))
+    .replace(/\{\{LEVELS_JSON\}\}/g, levelsJson)
+    .replace(/\{\{IAPS_JSON\}\}/g, JSON.stringify(product.iap || []))
+    // classic labels
+    .replace(/\{\{COLS\}\}/g, def?.cols || 4)
+    .replace(/\{\{PAIRS\}\}/g, def?.pairs || 8)
+    .replace(/\{\{EMOJI_SIZE\}\}/g, def?.emojiSize || '2rem')
+    .replace(/\{\{HINTS_START\}\}/g, def?.hintsStart || 3)
+    // shared labels
+    .replace(/\{\{BACK_LABEL\}\}/g, lbl.back)
+    .replace(/\{\{AD_LABEL\}\}/g, lbl.adLbl)
+    .replace(/\{\{AD_REMOVE_LABEL\}\}/g, lbl.adRemove)
+    .replace(/\{\{START_LBL\}\}/g, lbl.startLbl)
+    .replace(/\{\{RESTART_LBL\}\}/g, lbl.restartLbl)
+    .replace(/\{\{WIN_TITLE\}\}/g, lbl.winTitle)
+    // memory labels
+    .replace(/\{\{MOVES_LBL\}\}/g, lbl.movesLbl)
+    .replace(/\{\{TIME_LBL\}\}/g, lbl.timeLbl)
+    .replace(/\{\{PAIRS_LBL\}\}/g, lbl.pairsLbl)
+    .replace(/\{\{HINT_LBL\}\}/g, lbl.hintLbl)
+    .replace(/\{\{HINT_LEFT_LBL\}\}/g, lbl.hintLeft)
+    .replace(/\{\{PLAY_AGAIN_LBL\}\}/g, lbl.playAgain)
+    .replace(/\{\{FOCUS_LBL\}\}/g, lbl.focusLbl)
+    .replace(/\{\{SHORT_LBL\}\}/g, lbl.shortLbl)
+    .replace(/\{\{LONG_LBL\}\}/g, lbl.longLbl)
+    .replace(/\{\{PAUSE_LBL\}\}/g, lbl.pauseLbl)
+    .replace(/\{\{SESSIONS_LBL\}\}/g, lbl.sessionsLbl)
+    .replace(/\{\{MINUTES_LBL\}\}/g, lbl.minutesLbl)
+    .replace(/\{\{STREAK_LBL\}\}/g, lbl.streakLbl)
+    .replace(/\{\{DONE_LBL\}\}/g, lbl.doneLbl)
+    // action shooter labels
+    .replace(/\{\{SCORE_LBL\}\}/g, lbl.scoreLbl || 'Score')
+    .replace(/\{\{LEVEL_LBL\}\}/g, lbl.levelLbl || 'Level')
+    .replace(/\{\{WAVE_LBL\}\}/g, lbl.waveLbl || 'Wave')
+    .replace(/\{\{FIRE_LBL\}\}/g, lbl.fireLbl || 'Fire')
+    .replace(/\{\{SPECIAL_LBL\}\}/g, lbl.specialLbl || 'Special')
+    .replace(/\{\{LOSE_TITLE\}\}/g, lbl.loseTitleLbl || 'Game Over!')
+    .replace(/\{\{NEXT_LBL\}\}/g, lbl.nextLbl || 'Next')
+    // adventure labels
+    .replace(/\{\{HERO_LBL\}\}/g, lbl.heroLbl || 'Hero')
+    .replace(/\{\{ATTACK_LBL\}\}/g, lbl.attackLbl || 'Attack')
+    .replace(/\{\{SKILL_LBL\}\}/g, lbl.skillLbl || 'Skill')
+    .replace(/\{\{ITEM_LBL\}\}/g, lbl.itemLbl || 'Item')
+    .replace(/\{\{FLEE_LBL\}\}/g, lbl.fleeLbl || 'Flee')
+    .replace(/\{\{LOSE_TITLE\}\}/g, lbl.loseTitleLbl || 'Defeated!')
+    // runner labels
+    .replace(/\{\{BEST_LBL\}\}/g, lbl.bestLbl || 'Best')
+    .replace(/\{\{COINS_LBL\}\}/g, lbl.coinsLbl || 'Coins')
+    .replace(/\{\{DIST_LBL\}\}/g, lbl.distLbl || 'Distance')
+    .replace(/\{\{JUMP_LBL\}\}/g, lbl.jumpLbl || 'Jump')
+    .replace(/\{\{SLIDE_LBL\}\}/g, lbl.slideLbl || 'Slide')
+    .replace(/\{\{OVER_TITLE\}\}/g, lbl.overTitleLbl || 'Game Over!');
+}
+
+// ── generate ─────────────────────────────────────────────────
+function generate(product) {
+  // اختيار القالب: أولاً من product.templateFile، ثم selectTemplate
+  const tplName = product.templateFile || selectTemplate(product);
+  const tplPath = join(__dirname, 'templates', tplName);
   let tpl;
   try { tpl = readFileSync(tplPath, 'utf8'); }
-  catch(e) {
-    console.error(`❌ Template not found: ${tplName} for type: ${product.type}`);
-    return false;
+  catch {
+    console.error(`❌ Template not found: ${tplName}, falling back to memory-game.html`);
+    try { tpl = readFileSync(join(__dirname, 'templates', 'memory-game.html'), 'utf8'); }
+    catch { console.error('❌ Even fallback template missing!'); return false; }
   }
 
-  const safeName = ensureLang(product.name);
-  const safeDesc = ensureLang(product.desc);
-  const emojis   = product.emojis || ['🎮','⭐','🌟','💫','✨','🎯','🔮','💎','🌈','🎪','🎨','🎭'];
-  const outDir   = join(__dirname, 'public', 'games');
-  mkdirSync(outDir, { recursive: true });
+  const def = TYPE_DEFAULTS[product.type] || null;
+  const { safeName, safeDesc } = ensureTranslations(product.name, product.desc);
 
   const LANGS = ['ar','en','fr','es','de','zh'];
-  let built = 0;
+  const outDir = join(__dirname, 'public', 'games');
+  mkdirSync(outDir, { recursive: true });
 
   LANGS.forEach(lang => {
-    const lbl  = LABELS[lang];
-    const name = safeName[lang];
-    const desc = safeDesc[lang];
-
-    let out = tpl;
-
-    // المتغيرات الأساسية
-    const vars = {
-      LANG:       lang,
-      DIR:        lbl.dir,
-      PRODUCT_ID: product.id,
-      GAME_NAME:  name,
-      GAME_DESC:  desc,
-      EMOJI:      product.emoji || '🎮',
-      ACCENT:     product.accent || '#facc15',
-      ACCENT_RGB: product.accentRgb || '250,204,21',
-      IAPS_JSON:  JSON.stringify(product.iap || []),
-      EMOJIS_JSON: JSON.stringify(emojis),
-      // لعبة الذاكرة
-      COLS: '4', PAIRS: '8', EMOJI_SIZE: '2rem', HINTS_START: '3',
-      // كل الترجمات
-      ...lbl,
-      // override من LABELS
-      BACK_LBL:       lbl.BACK_LBL,
-      START_LBL:      lbl.START_LBL,
-    };
-
-    Object.entries(vars).forEach(([k, v]) => {
-      out = out.split(`{{${k}}}`).join(String(v ?? ''));
-    });
-
+    const lbl = LABELS[lang];
+    const out = applyTemplate(tpl, product, lang, lbl, def, safeName, safeDesc);
     const filename = lang === 'ar'
       ? `${product.slug}.html`
       : `${product.slug}-${lang}.html`;
-
     writeFileSync(join(outDir, filename), out, 'utf8');
-    built++;
   });
 
-  console.log(`✅ ${product.slug} (${product.type} → ${tplName}) → ${built} languages`);
+  console.log(`✅ ${product.slug} [${tplName}] → 6 languages`);
   return true;
 }
 
-// ── main ──────────────────────────────────────────────────────
+// ── main ─────────────────────────────────────────────────────
 const products = JSON.parse(readFileSync(join(__dirname, 'products.json'), 'utf8'));
 const target   = process.argv[2];
 const list     = target
   ? products.filter(p => p.id === target || p.slug === target)
   : products.filter(p => p.status === 'available');
 
-if (!list.length) { console.warn('⚠️ No products to generate'); process.exit(0); }
-
+if (!list.length) { console.warn('⚠️ No products'); process.exit(1); }
 let ok = 0;
 list.forEach(p => { if (generate(p)) ok++; });
-console.log(`\n🎮 Generated: ${ok}/${list.length} × 6 languages = ${ok*6} files`);
+console.log(`\n🎮 Generated ${ok}/${list.length} products × 6 languages`);
