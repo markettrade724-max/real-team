@@ -1,68 +1,26 @@
 {
-  "runId": "2026-04-16T2035",
-  "timestamp": "2026-04-16T20:41:04.879Z",
-  "totalDuration": "351.3s",
-  "geminiCalls": "5/8",
+  "runId": "2026-04-17T0958",
+  "timestamp": "2026-04-17T09:59:22.889Z",
+  "totalDuration": "25.8s",
+  "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.2s",
+      "duration": "1.3s",
       "attempts": 1,
       "error": null
     },
     "idea": {
-      "success": true,
-      "duration": "15.0s",
-      "attempts": 1,
-      "error": null
-    },
-    "story": {
       "success": false,
-      "duration": "1.5s",
-      "attempts": 2,
-      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
-    },
-    "art": {
-      "success": true,
-      "duration": "8.6s",
-      "attempts": 2,
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "16.4s",
-      "attempts": 2,
-      "error": null
-    },
-    "template": {
-      "success": true,
-      "duration": "2ms",
+      "duration": "12.5s",
       "attempts": 1,
-      "error": null
-    },
-    "code": {
-      "success": true,
-      "duration": "45ms",
-      "attempts": 1,
-      "error": null
-    },
-    "marketing": {
-      "success": false,
-      "duration": "163ms",
-      "attempts": 2,
-      "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 293.874229ms.\",\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-2.5-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"0s\"}]}}"
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "12.6s",
-      "attempts": 2,
-      "error": null
+      "error": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary"
     }
   },
   "summary": {
-    "total": 9,
-    "passed": 7,
-    "failed": 2,
-    "newGame": "aura-weaver"
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "newGame": null
   }
 }
