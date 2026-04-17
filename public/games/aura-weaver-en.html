@@ -7,179 +7,223 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#060610;--surface:#0d0d1f;--border:rgba(255,255,255,0.08);
-  --accent:#818cf8;--accentRgb:129,140,248;
-  --text:#f1f5f9;--muted:#64748b;
+  --bg:#060610; --surface:#0d0d1f; --border:rgba(255,255,255,0.08);
+  --accent:#818cf8; --accentRgb:129,140,248;
+  --text:#f1f5f9; --muted:#64748b;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);
-  min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 100px;}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(129,140,248,0.06),transparent);}
-.wrap{position:relative;z-index:1;width:100%;max-width:480px;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;padding:20px 16px 100px;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(129,140,248,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(129,140,248,0.03) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;width:100%;max-width:600px;}
 
+/* HEADER */
+.g-header{text-align:center;padding:24px 0 20px;}
 .g-back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:0.82rem;
-  text-decoration:none;margin-bottom:24px;margin-top:8px;transition:color 0.2s;}
+  text-decoration:none;margin-bottom:20px;transition:color 0.2s;}
 .g-back:hover{color:var(--text);}
+.g-emoji{font-size:3.5rem;filter:drop-shadow(0 0 24px rgba(129,140,248,0.5));display:block;margin-bottom:12px;}
+.g-title{font-size:1.8rem;font-weight:900;letter-spacing:-1px;}
+.g-title em{font-style:normal;color:var(--accent);}
+.g-sub{color:var(--muted);font-size:0.88rem;margin-top:6px;}
 
-/* AD */
-#ad-banner{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;
-  padding:9px 14px;text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:20px;
+/* AD BANNER (يختفي عند شراء no-ads) */
+#ad-banner{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;
+  padding:10px;text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:16px;
   display:flex;align-items:center;justify-content:space-between;gap:8px;}
 #ad-banner.hidden{display:none;}
-.ad-remove-btn{background:rgba(129,140,248,0.15);color:var(--accent);border:none;padding:4px 10px;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;}
+.ad-remove-btn{background:rgba(129,140,248,0.15);color:var(--accent);border:none;
+  padding:5px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;font-family:inherit;white-space:nowrap;}
 
-/* TIMER */
-.timer-wrap{text-align:center;margin-bottom:32px;}
-.timer-ring{position:relative;width:220px;height:220px;margin:0 auto 20px;}
-.timer-ring svg{transform:rotate(-90deg);}
-.timer-ring circle{fill:none;stroke:var(--surface);stroke-width:8;}
-.timer-ring .progress{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
-.timer-display{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.timer-time{font-family:'Space Mono',monospace;font-size:2.6rem;font-weight:700;color:var(--text);}
-.timer-mode{font-size:0.8rem;color:var(--muted);margin-top:4px;}
-.timer-controls{display:flex;gap:12px;justify-content:center;}
-.btn-ctrl{background:var(--surface);border:1px solid var(--border);color:var(--text);
-  padding:10px 24px;border-radius:12px;font-size:0.9rem;cursor:pointer;font-family:inherit;
-  transition:border-color 0.2s,background 0.2s;}
-.btn-ctrl:hover{border-color:rgba(129,140,248,0.4);background:rgba(129,140,248,0.06);}
-.btn-ctrl.primary{background:var(--accent);color:#000;font-weight:700;border-color:var(--accent);}
-.btn-ctrl.primary:hover{box-shadow:0 0 20px rgba(129,140,248,0.4);}
+/* HUD */
+.hud{display:flex;justify-content:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+.hud-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 18px;text-align:center;min-width:80px;}
+.hud-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);}
+.hud-lbl{font-size:0.65rem;color:var(--muted);margin-top:2px;letter-spacing:0.05em;}
 
-/* MODE SELECTOR */
-.modes{display:flex;gap:8px;margin-bottom:28px;}
-.mode-btn{flex:1;padding:10px 8px;border-radius:10px;border:1px solid var(--border);
-  background:var(--surface);color:var(--muted);font-size:0.82rem;cursor:pointer;
-  font-family:inherit;text-align:center;transition:0.2s;}
-.mode-btn.active{border-color:rgba(129,140,248,0.5);background:rgba(129,140,248,0.1);color:var(--accent);font-weight:700;}
+/* GRID */
+.g-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.card{aspect-ratio:1;border-radius:14px;cursor:pointer;position:relative;
+  transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(.175,.885,.32,1.275);}
+.card.flipped,.card.matched{transform:rotateY(180deg);}
+.card.matched{cursor:default;}
+.face{position:absolute;inset:0;border-radius:14px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;}
+.back{background:var(--surface);border:1px solid var(--border);}
+.back::after{content:'?';font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:rgba(129,140,248,0.3);}
+.front{background:linear-gradient(135deg,var(--surface),rgba(129,140,248,0.15));
+  border:1px solid rgba(129,140,248,0.35);transform:rotateY(180deg);font-size:2rem;}
+.card.matched .front{border-color:var(--accent);box-shadow:0 0 16px rgba(129,140,248,0.35);}
 
-/* STATS (Pro feature) */
-.stats-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;position:relative;}
-.stats-section.locked::after{content:'🔒 Pro';position:absolute;inset:0;background:rgba(6,6,16,0.7);
-  border-radius:16px;display:flex;align-items:center;justify-content:center;
-  font-size:1.2rem;font-weight:700;color:var(--muted);cursor:pointer;}
-.section-title{font-size:0.85rem;font-weight:700;color:var(--muted);margin-bottom:14px;font-family:'Space Mono',monospace;letter-spacing:0.08em;}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.stat-item{text-align:center;}
-.stat-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);}
-.stat-lbl{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+/* HINT (يُشترى) */
+#hint-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;justify-content:center;}
+.hint-btn{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.3);
+  color:var(--accent);padding:8px 16px;border-radius:10px;font-size:0.85rem;cursor:pointer;
+  font-family:inherit;transition:background 0.2s;}
+.hint-btn:hover{background:rgba(129,140,248,0.2);}
+.hint-count{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted);}
+
+/* ACTIONS */
+.g-actions{display:flex;gap:10px;margin-bottom:16px;}
+.btn-main{flex:1;padding:13px;border-radius:12px;background:var(--accent);color:#000;
+  font-weight:700;font-size:0.95rem;font-family:inherit;border:none;cursor:pointer;
+  transition:transform 0.2s,box-shadow 0.2s;}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(129,140,248,0.4);}
+
+/* WIN OVERLAY */
+#win-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(12px);align-items:center;justify-content:center;}
+#win-overlay.show{display:flex;}
+.win-box{background:var(--surface);border:1px solid rgba(129,140,248,0.4);border-radius:24px;
+  padding:40px 32px;text-align:center;max-width:360px;width:90%;
+  box-shadow:0 0 60px rgba(129,140,248,0.2);}
+.win-emoji{font-size:3.5rem;display:block;margin-bottom:14px;}
+.win-title{font-size:1.8rem;font-weight:900;color:var(--accent);margin-bottom:8px;}
+.win-stats{color:var(--muted);font-size:0.88rem;line-height:1.9;margin-bottom:24px;}
+.win-stats strong{color:var(--text);}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <a href="/" class="g-back">← Back</a>
+  <div class="g-header">
+    <a href="/" class="g-back">← {{BACK_LABEL}}</a>
+    <span class="g-emoji">✨</span>
+    <h1 class="g-title">{{GAME_NAME_HTML}}</h1>
+    <p class="g-sub">Unleash the extraordinary hidden within your everyday moments. Aura Weaver uses cutting-edge AI to transform your photos and videos into stunning, dreamlike artworks and poetic narratives. Share your unique creations with a global community and discover the magic in every frame.</p>
+  </div>
 
+  <!-- إعلان (يختفي بعد شراء no-ads) -->
   <div id="ad-banner">
     <span>📢 Ads support our team</span>
     <button class="ad-remove-btn" onclick="IAPStore.open()">Remove $1.99</button>
   </div>
 
-  <!-- MODE -->
-  <div class="modes">
-    <button class="mode-btn active" onclick="setMode('focus',25,this)">🧘 Focus<br><small>25 min</small></button>
-    <button class="mode-btn" onclick="setMode('short',5,this)">☕ Short Break<br><small>5 min</small></button>
-    <button class="mode-btn" onclick="setMode('long',15,this)">🌿 Long Break<br><small>15 min</small></button>
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-card"><div class="hud-val" id="h-moves">0</div><div class="hud-lbl">Moves</div></div>
+    <div class="hud-card"><div class="hud-val" id="h-time">0:00</div><div class="hud-lbl">Time</div></div>
+    <div class="hud-card"><div class="hud-val" id="h-pairs">0/8</div><div class="hud-lbl">Pairs</div></div>
   </div>
 
-  <!-- TIMER -->
-  <div class="timer-wrap">
-    <div class="timer-ring">
-      <svg width="220" height="220" viewBox="0 0 220 220">
-        <circle cx="110" cy="110" r="96"/>
-        <circle class="progress" id="progress-ring" cx="110" cy="110" r="96"
-          stroke-dasharray="603" stroke-dashoffset="0"/>
-      </svg>
-      <div class="timer-display">
-        <div class="timer-time" id="timer-display">25:00</div>
-        <div class="timer-mode" id="mode-label">Focus</div>
-      </div>
-    </div>
-    <div class="timer-controls">
-      <button class="btn-ctrl" onclick="reset()">↺</button>
-      <button class="btn-ctrl primary" id="btn-start" onclick="toggle()">▶ Start</button>
-      <button class="btn-ctrl" onclick="skip()">⏭</button>
-    </div>
+  <!-- GRID -->
+  <div class="g-grid" id="grid"></div>
+
+  <!-- HINT BAR -->
+  <div id="hint-bar">
+    <button class="hint-btn" onclick="useHint()">💡 Hint</button>
+    <span class="hint-count" id="hint-count">{{HINTS_LEFT}} left</span>
   </div>
 
-  <!-- STATS (locked until Pro) -->
-  <div class="stats-section" id="stats-section" onclick="handleStatsClick()">
-    <div class="section-title">STATS</div>
-    <div class="stats-grid">
-      <div class="stat-item"><div class="stat-val" id="s-sessions">0</div><div class="stat-lbl">Sessions</div></div>
-      <div class="stat-item"><div class="stat-val" id="s-minutes">0</div><div class="stat-lbl">Minutes</div></div>
-      <div class="stat-item"><div class="stat-val" id="s-streak">0</div><div class="stat-lbl">Streak</div></div>
-    </div>
+  <!-- ACTIONS -->
+  <div class="g-actions">
+    <button class="btn-main" onclick="initGame()">🔄 New Game</button>
   </div>
 </div>
 
+<!-- WIN -->
+<div id="win-overlay">
+  <div class="win-box">
+    <span class="win-emoji">🏆</span>
+    <div class="win-title">You Win!</div>
+    <div class="win-stats" id="win-stats"></div>
+    <button class="btn-main" onclick="initGame();document.getElementById('win-overlay').classList.remove('show')">Play Again</button>
+  </div>
+</div>
+
+<!-- IAP STORE -->
 <script src="/iap-modal.js"></script>
 <script>
+// ── Game Config ──────────────────────────────────────────────
+const EMOJIS = ["💡","✨","🎨","✍️","🎥","🖼️","🌟","🔮","🌐","🔥","♾️","🌈"];
+const PAIRS  = 8;
+const COLS   = 4;
+let hints    = 3;
+
+// ── IAP Init ─────────────────────────────────────────────────
 IAPStore.init('aura-weaver', 'en', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}]);
-if(IAPStore.isOwned('no-ads')) document.getElementById('ad-banner').classList.add('hidden');
-window.addEventListener('iap:no-ads', ()=>document.getElementById('ad-banner').classList.add('hidden'));
 
-// unlock stats on purchase
-function checkPro(){ document.getElementById('stats-section').classList.toggle('locked',!IAPStore.isOwned('stats-pro')&&!IAPStore.isOwned('full-pro')); }
-window.addEventListener('iap:purchased', checkPro);
-checkPro();
+// إخفاء الإعلان إذا كان المستخدم اشترى no-ads سابقاً
+if (IAPStore.isOwned('no-ads')) document.getElementById('ad-banner').classList.add('hidden');
+window.addEventListener('iap:no-ads', () => document.getElementById('ad-banner').classList.add('hidden'));
 
-function handleStatsClick(){
-  const locked=document.getElementById('stats-section').classList.contains('locked');
-  if(locked) IAPStore.open();
+// إضافة تلميحات عند شراء hint-pack
+window.addEventListener('iap:purchased', e => {
+  if (e.detail.iapId === 'hint-pack') { hints += 10; updateHintCount(); }
+});
+
+// ── Game Logic ───────────────────────────────────────────────
+let cards=[], flipped=[], matched=0, moves=0, secs=0, timer=null, locked=false;
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+function initGame(){
+  clearInterval(timer); secs=0; moves=0; matched=0; flipped=[]; locked=false;
+  const pool = shuffle([...EMOJIS]).slice(0, PAIRS);
+  cards = shuffle([...pool,...pool].map((e,i)=>({id:i,e,flipped:false,matched:false})));
+  renderGrid(); updateHUD();
+  timer = setInterval(()=>{ secs++; updateTime(); }, 1000);
 }
 
-// ── Timer Logic ───────────────────────────────────────────────
-let duration=25*60, remaining=25*60, running=false, interval=null, mode='focus';
-const CIRC=2*Math.PI*96;
-
-function setMode(m,mins,btn){
-  mode=m; duration=mins*60; remaining=mins*60;
-  running=false; clearInterval(interval);
-  document.getElementById('btn-start').textContent='▶ Start';
-  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
+function renderGrid(){
+  document.getElementById('grid').innerHTML = cards.map(c=>`
+    <div class="card${c.flipped?' flipped':''}${c.matched?' matched':''}" id="c${c.id}" onclick="flip(${c.id})">
+      <div class="face back"></div>
+      <div class="face front">${c.e}</div>
+    </div>`).join('');
 }
 
-function toggle(){
-  if(running){ running=false; clearInterval(interval); document.getElementById('btn-start').textContent='▶ Start'; }
-  else { running=true; interval=setInterval(tick,1000); document.getElementById('btn-start').textContent='⏸ Pause'; }
+function flip(id){
+  if(locked) return;
+  const c=cards[id];
+  if(c.flipped||c.matched||flipped.length===2) return;
+  c.flipped=true; document.getElementById('c'+id).classList.add('flipped');
+  flipped.push(id);
+  if(flipped.length===2){
+    moves++; document.getElementById('h-moves').textContent=moves; locked=true;
+    const[a,b]=flipped;
+    if(cards[a].e===cards[b].e){
+      cards[a].matched=cards[b].matched=true;
+      ['c'+a,'c'+b].forEach(id=>document.getElementById(id).classList.add('matched'));
+      matched++; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS;
+      flipped=[]; locked=false;
+      if(matched===PAIRS) setTimeout(showWin,500);
+    } else {
+      setTimeout(()=>{
+        cards[a].flipped=cards[b].flipped=false;
+        ['c'+a,'c'+b].forEach(id=>document.getElementById(id).classList.remove('flipped'));
+        flipped=[]; locked=false;
+      },900);
+    }
+  }
 }
 
-function tick(){
-  if(remaining<=0){ finish(); return; }
-  remaining--; render();
+function useHint(){
+  if(hints<=0){ IAPStore.open(); return; }
+  hints--;
+  updateHintCount();
+  // اكشف زوجاً غير مكتشف لثانية واحدة
+  const hidden = cards.filter(c=>!c.matched&&!c.flipped);
+  if(hidden.length<2) return;
+  const pair = hidden.slice(0,2);
+  pair.forEach(c=>document.getElementById('c'+c.id).classList.add('flipped'));
+  setTimeout(()=>{ pair.forEach(c=>{ if(!c.matched) document.getElementById('c'+c.id).classList.remove('flipped'); }); }, 1000);
 }
 
-function render(){
-  const m=Math.floor(remaining/60),s=remaining%60;
-  document.getElementById('timer-display').textContent=m+':'+(s<10?'0':'')+s;
-  const pct=1-(remaining/duration);
-  document.getElementById('progress-ring').style.strokeDashoffset=CIRC*pct;
+function updateHintCount(){ document.getElementById('hint-count').textContent = hints+' left'; }
+function updateHUD(){ document.getElementById('h-moves').textContent=moves; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS; updateTime(); }
+function updateTime(){ const m=Math.floor(secs/60),s=secs%60; document.getElementById('h-time').textContent=m+':'+(s<10?'0':'')+s; }
+
+function showWin(){
+  clearInterval(timer);
+  const stars = moves<=PAIRS*2?'⭐⭐⭐':moves<=PAIRS*3?'⭐⭐':'⭐';
+  const m=Math.floor(secs/60),s=secs%60;
+  document.getElementById('win-stats').innerHTML=`${stars}<br><strong>${moves}</strong> Moves · <strong>${m}:${s<10?'0':''}${s}</strong>`;
+  document.getElementById('win-overlay').classList.add('show');
 }
 
-function reset(){ running=false; clearInterval(interval); remaining=duration; document.getElementById('btn-start').textContent='▶ Start'; render(); }
-
-function skip(){ finish(); }
-
-function finish(){
-  running=false; clearInterval(interval);
-  document.getElementById('btn-start').textContent='▶ Start';
-  // stats
-  const sessions=parseInt(localStorage.getItem('rt_sessions_aura-weaver')||'0')+1;
-  const minutes=parseInt(localStorage.getItem('rt_minutes_aura-weaver')||'0')+(duration/60|0);
-  localStorage.setItem('rt_sessions_aura-weaver',sessions);
-  localStorage.setItem('rt_minutes_aura-weaver',minutes);
-  document.getElementById('s-sessions').textContent=sessions;
-  document.getElementById('s-minutes').textContent=minutes;
-  remaining=duration; render();
-  if(mode==='focus') alert('✅ Session done!');
-}
-
-// load stats
-document.getElementById('s-sessions').textContent=localStorage.getItem('rt_sessions_aura-weaver')||'0';
-document.getElementById('s-minutes').textContent=localStorage.getItem('rt_minutes_aura-weaver')||'0';
-render();
+initGame();
 </script>
 
 <!-- Social Bar -->

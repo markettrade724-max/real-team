@@ -88,9 +88,9 @@ body::before{content:'';position:fixed;inset:0;
 <body>
 <div class="wrap">
   <div class="g-header">
-    <a href="/" class="g-back">← Zurück</a>
+    <a href="/" class="g-back">← {{BACK_LABEL}}</a>
     <span class="g-emoji">🧩</span>
-    <h1 class="g-title">Neon-Puzzle</h1>
+    <h1 class="g-title">{{GAME_NAME_HTML}}</h1>
     <p class="g-sub">Bilde das Bild zusammen bevor die Zeit abläuft</p>
   </div>
 
@@ -136,10 +136,10 @@ body::before{content:'';position:fixed;inset:0;
 <script src="/iap-modal.js"></script>
 <script>
 // ── Game Config ──────────────────────────────────────────────
-const EMOJIS = ["🧩","🎯","🔮","💎","🌀","⚡","🎪","🎨","🎭","🎬","🎮","🕹️"];
+const EMOJIS = ["🎮","⭐","🌟","💫","✨","🎯","🔮","💎","🌈","🎪","🎨","🎭"];
 const PAIRS  = 8;
 const COLS   = 4;
-let hints    = 2;
+let hints    = 3;
 
 // ── IAP Init ─────────────────────────────────────────────────
 IAPStore.init('neon-puzzle', 'de', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"extra-time","type":"consumable","price":0.99,"emoji":"⏱️","name":{"ar":"5 تمديدات وقت","en":"5 Time Extensions","fr":"5 extensions","es":"5 extensiones","de":"5 Zeitverlängerungen","zh":"5次延时"}},{"id":"theme-cyber","type":"cosmetic","price":1.49,"emoji":"🤖","name":{"ar":"ثيم سايبر","en":"Cyber Theme","fr":"Thème cyber","es":"Tema cyber","de":"Cyber-Theme","zh":"赛博主题"}},{"id":"full-unlock","type":"unlock","price":3.99,"emoji":"⭐","name":{"ar":"المجموعة الكاملة","en":"Full Collection","fr":"Collection complète","es":"Colección completa","de":"Vollständige Sammlung","zh":"完整收藏"}}]);

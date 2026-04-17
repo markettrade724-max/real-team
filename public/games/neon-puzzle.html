@@ -88,9 +88,9 @@ body::before{content:'';position:fixed;inset:0;
 <body>
 <div class="wrap">
   <div class="g-header">
-    <a href="/" class="g-back">← العودة</a>
+    <a href="/" class="g-back">← {{BACK_LABEL}}</a>
     <span class="g-emoji">🧩</span>
-    <h1 class="g-title">لغز النيون</h1>
+    <h1 class="g-title">{{GAME_NAME_HTML}}</h1>
     <p class="g-sub">أعد تركيب الصورة قبل انتهاء الوقت</p>
   </div>
 
@@ -102,7 +102,7 @@ body::before{content:'';position:fixed;inset:0;
 
   <!-- HUD -->
   <div class="hud">
-    <div class="hud-card"><div class="hud-val" id="h-moves">0</div><div class="hud-lbl">حركة</div></div>
+    <div class="hud-card"><div class="hud-val" id="h-moves">0</div><div class="hud-lbl">حركات</div></div>
     <div class="hud-card"><div class="hud-val" id="h-time">0:00</div><div class="hud-lbl">وقت</div></div>
     <div class="hud-card"><div class="hud-val" id="h-pairs">0/8</div><div class="hud-lbl">أزواج</div></div>
   </div>
@@ -128,7 +128,7 @@ body::before{content:'';position:fixed;inset:0;
     <span class="win-emoji">🏆</span>
     <div class="win-title">أحسنت!</div>
     <div class="win-stats" id="win-stats"></div>
-    <button class="btn-main" onclick="initGame();document.getElementById('win-overlay').classList.remove('show')">مجدداً</button>
+    <button class="btn-main" onclick="initGame();document.getElementById('win-overlay').classList.remove('show')">مرة أخرى</button>
   </div>
 </div>
 
@@ -136,10 +136,10 @@ body::before{content:'';position:fixed;inset:0;
 <script src="/iap-modal.js"></script>
 <script>
 // ── Game Config ──────────────────────────────────────────────
-const EMOJIS = ["🧩","🎯","🔮","💎","🌀","⚡","🎪","🎨","🎭","🎬","🎮","🕹️"];
+const EMOJIS = ["🎮","⭐","🌟","💫","✨","🎯","🔮","💎","🌈","🎪","🎨","🎭"];
 const PAIRS  = 8;
 const COLS   = 4;
-let hints    = 2;
+let hints    = 3;
 
 // ── IAP Init ─────────────────────────────────────────────────
 IAPStore.init('neon-puzzle', 'ar', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"extra-time","type":"consumable","price":0.99,"emoji":"⏱️","name":{"ar":"5 تمديدات وقت","en":"5 Time Extensions","fr":"5 extensions","es":"5 extensiones","de":"5 Zeitverlängerungen","zh":"5次延时"}},{"id":"theme-cyber","type":"cosmetic","price":1.49,"emoji":"🤖","name":{"ar":"ثيم سايبر","en":"Cyber Theme","fr":"Thème cyber","es":"Tema cyber","de":"Cyber-Theme","zh":"赛博主题"}},{"id":"full-unlock","type":"unlock","price":3.99,"emoji":"⭐","name":{"ar":"المجموعة الكاملة","en":"Full Collection","fr":"Collection complète","es":"Colección completa","de":"Vollständige Sammlung","zh":"完整收藏"}}]);
@@ -219,7 +219,7 @@ function showWin(){
   clearInterval(timer);
   const stars = moves<=PAIRS*2?'⭐⭐⭐':moves<=PAIRS*3?'⭐⭐':'⭐';
   const m=Math.floor(secs/60),s=secs%60;
-  document.getElementById('win-stats').innerHTML=`${stars}<br><strong>${moves}</strong> حركة · <strong>${m}:${s<10?'0':''}${s}</strong>`;
+  document.getElementById('win-stats').innerHTML=`${stars}<br><strong>${moves}</strong> حركات · <strong>${m}:${s<10?'0':''}${s}</strong>`;
   document.getElementById('win-overlay').classList.add('show');
 }
 
