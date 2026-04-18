@@ -1,26 +1,68 @@
 {
-  "runId": "2026-04-18T2032",
-  "timestamp": "2026-04-18T20:32:48.653Z",
-  "totalDuration": "22.3s",
-  "geminiCalls": "0/6",
+  "runId": "2026-04-18T2046",
+  "timestamp": "2026-04-18T20:48:19.022Z",
+  "totalDuration": "132.9s",
+  "geminiCalls": "6/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.4s",
+      "duration": "1.1s",
       "attempts": 1,
       "error": null
     },
     "idea": {
-      "success": false,
-      "duration": "8.9s",
+      "success": true,
+      "duration": "13.0s",
       "attempts": 1,
-      "error": "Invalid JSON from Gemini"
+      "error": null
+    },
+    "art": {
+      "success": true,
+      "duration": "7.8s",
+      "attempts": 1,
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "8.1s",
+      "attempts": 1,
+      "error": null
+    },
+    "template": {
+      "success": true,
+      "duration": "2ms",
+      "attempts": 1,
+      "error": null
+    },
+    "code": {
+      "success": true,
+      "duration": "36ms",
+      "attempts": 1,
+      "error": null
+    },
+    "story": {
+      "success": true,
+      "duration": "12.5s",
+      "attempts": 1,
+      "error": null
+    },
+    "marketing": {
+      "success": false,
+      "duration": "851ms",
+      "attempts": 1,
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "5.4s",
+      "attempts": 1,
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
+    "total": 9,
+    "passed": 8,
     "failed": 1,
-    "newGame": null
+    "newGame": "vibe-verse"
   }
 }

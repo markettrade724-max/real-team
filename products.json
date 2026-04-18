@@ -1576,5 +1576,166 @@
     "story": null,
     "generated": true,
     "generatedAt": "2026-04-17T11:17:18.905Z"
+  },
+  {
+    "id": "vibe-verse",
+    "slug": "vibe-verse",
+    "type": "AI Ephemeral Art & Sound Generator",
+    "category": "app",
+    "status": "available",
+    "emoji": "✨",
+    "templateFile": "tool-app.html",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [
+      "🎨",
+      "🎶",
+      "✨",
+      "🌌",
+      "💫",
+      "😌",
+      "😮",
+      "💡",
+      "⏳",
+      "🌈",
+      "🎧",
+      "🔮"
+    ],
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "همسات تردّد",
+          "en": "Echoing Whispers"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "أحلام لونية",
+          "en": "Chromatic Dreams"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "آفاق سيمفونية",
+          "en": "Symphonic Horizons"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "نسيج عابر",
+          "en": "Ephemeral Tapestry"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "صدى كوني",
+          "en": "Cosmic Resonance"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "name": {
+      "ar": "كون المشاعر",
+      "en": "Vibe Verse",
+      "fr": "Vibe Verse",
+      "es": "Verso Vibrante",
+      "de": "Stimmungs-Verse",
+      "zh": "心情诗篇"
+    },
+    "desc": {
+      "ar": "انغمس في الفن العابر لـ 'كون المشاعر'! عبر عن شعورك الحالي أو كلمة واحدة، وشاهد كيف يستحضر ذكاؤنا الاصطناعي عالماً صوتياً بصرياً صغيراً فريداً وديناميكياً. شارك إبداعك العابر مع الأصدقاء قبل أن يختفي إلى الأبد، مما يثير الفضول والتواصل.",
+      "en": "Dive into the ephemeral artistry of Vibe Verse! Express your current feeling or a single prompt word, and watch as our AI conjures a unique, dynamic audiovisual mini-world. Share your fleeting creation with friends before it disappears forever, sparking curiosity and connection.",
+      "fr": "Plongez dans l'art éphémère de Vibe Verse ! Exprimez votre sentiment actuel ou un seul mot-clé, et regardez notre IA conjurer un mini-monde audiovisuel unique et dynamique. Partagez votre création éphémère avec vos amis avant qu'elle ne disparaisse à jamais, suscitant curiosité et connexion.",
+      "es": "¡Sumérgete en el arte efímero de Verso Vibrante! Expresa tu sentimiento actual o una sola palabra clave, y observa cómo nuestra IA conjura un mini-mundo audiovisual único y dinámico. Comparte tu creación fugaz con amigos antes de que desaparezca para siempre, despertando curiosidad y conexión.",
+      "de": "Tauchen Sie ein in die ephemere Kunst von Stimmungs-Verse! Drücken Sie Ihr aktuelles Gefühl oder ein einzelnes Stichwort aus und beobachten Sie, wie unsere KI eine einzigartige, dynamische audiovisuelle Mini-Welt heraufbeschwört. Teilen Sie Ihre flüchtige Kreation mit Freunden, bevor sie für immer verschwindet, um Neugier und Verbindung zu wecken.",
+      "zh": "沉浸在《心情诗篇》的转瞬即逝的艺术中！表达您当前的心情或一个提示词，观看我们的人工智能如何创造一个独特、动态的视听迷你世界。在您的短暂创作永远消失之前与朋友分享，激发好奇心和联系。"
+    },
+    "tags": [
+      "AI Art",
+      "Ephemeral",
+      "Social",
+      "Creative"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "generated": true,
+    "generatedAt": "2026-04-18T20:47:24.210Z"
   }
 ]
