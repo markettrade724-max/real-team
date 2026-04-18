@@ -1,20 +1,20 @@
 {
-  "runId": "2026-04-17T1638",
-  "timestamp": "2026-04-17T16:38:54.807Z",
-  "totalDuration": "13.4s",
+  "runId": "2026-04-18T1009",
+  "timestamp": "2026-04-18T10:10:15.604Z",
+  "totalDuration": "22.2s",
   "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "957ms",
+      "duration": "1.3s",
       "attempts": 1,
       "error": null
     },
     "idea": {
       "success": false,
-      "duration": "478ms",
+      "duration": "8.9s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": "Invalid JSON from Gemini"
     }
   },
   "summary": {
