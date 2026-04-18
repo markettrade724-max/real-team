@@ -1,6 +1,5 @@
 /**
- * _gemini.js — دالة Gemini مشتركة مصححة
- * تستخدم @google/genai v0.7+
+ * _gemini.js — دالة Gemini مشتركة مصححة نهائياً
  */
 import { GoogleGenAI } from '@google/genai';
 import { logger }      from '../logger.js';
@@ -13,22 +12,36 @@ export async function askGemini(prompt, temperature = 0.9) {
     contents: prompt,
     config: {
       temperature,
-      maxOutputTokens:  1500,
+      maxOutputTokens:  4096, // ← زيادة من 1500 إلى 4096
       responseMimeType: 'application/json',
     },
   });
 
-  // الطريقة الصحيحة في v0.7+
-  const text = response.text;
+  // دعم كلا الحالتين: method أو property
+  let text = '';
+  try {
+    text = typeof response.text === 'function'
+      ? response.text()
+      : response.text;
+  } catch {
+    text = response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  }
+
   if (!text) throw new Error('Empty response from Gemini');
 
-  // محاولات استخراج JSON
-  try { return JSON.parse(text); } catch {}
-  const match = text.match(/\{[\s\S]*\}/);
-  if (match) { try { return JSON.parse(match[0]); } catch {} }
-  const clean = text.replace(/```json|```/g, '').trim();
-  try { return JSON.parse(clean); } catch {}
+  // تنظيف وتحليل JSON
+  const attempts = [
+    text,
+    text.replace(/```json|```/g, '').trim(),
+    text.match(/\{[\s\S]*\}/)?.[0] || '',
+    text.match(/\[[\s\S]*\]/)?.[0] || '',
+  ];
 
-  logger.error('Cannot parse JSON', { preview: text.slice(0, 100) });
+  for (const attempt of attempts) {
+    if (!attempt) continue;
+    try { return JSON.parse(attempt); } catch {}
+  }
+
+  logger.error('Cannot parse JSON', { preview: text.slice(0, 150) });
   throw new Error('Invalid JSON from Gemini');
 }
