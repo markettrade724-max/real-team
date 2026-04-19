@@ -1,26 +1,63 @@
 {
-  "runId": "2026-04-19T0859",
-  "timestamp": "2026-04-19T09:00:05.583Z",
-  "totalDuration": "14.8s",
-  "geminiCalls": "0/6",
+  "runId": "2026-04-19T1308",
+  "timestamp": "2026-04-19T13:11:14.246Z",
+  "totalDuration": "146.3s",
+  "geminiCalls": "3/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.5s",
+      "duration": "1.3s",
       "attempts": 1,
       "error": null
     },
     "idea": {
+      "success": true,
+      "duration": "14.2s",
+      "attempts": 1,
+      "error": null
+    },
+    "art": {
       "success": false,
-      "duration": "1.3s",
+      "duration": "776ms",
       "attempts": 1,
       "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+    },
+    "template": {
+      "success": true,
+      "duration": "2ms",
+      "attempts": 1,
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "12.9s",
+      "attempts": 1,
+      "error": null
+    },
+    "code": {
+      "success": true,
+      "duration": "48ms",
+      "attempts": 1,
+      "error": null
+    },
+    "marketing": {
+      "success": false,
+      "duration": "37.2s",
+      "attempts": 1,
+      "error": "Invalid JSON from Gemini: {\n  \"twitter\": {\n    \"en\": \"Paint the world with Reality Remix! 🎨 Our groundbreaking AR app l"
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "4.9s",
+      "attempts": 1,
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
-    "failed": 1,
-    "newGame": null
+    "total": 8,
+    "passed": 6,
+    "failed": 2,
+    "newGame": "reality-remix-ar",
+    "template": "tool-app.html"
   }
 }
