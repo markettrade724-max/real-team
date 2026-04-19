@@ -1,7 +1,6 @@
 /**
  * orchestrator.js — مصحح: يمرر template لـ code-agent
  */
-import 'dotenv/config';
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join }  from 'path';
