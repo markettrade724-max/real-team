@@ -2,224 +2,238 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aether Tales — realteam</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{--acc:#818cf8;--bg:#0a0608;--panel:#120e10;--border:rgba(255,200,100,0.2);}
+:root{
+  --bg:#060610; --surface:#0d0d1f; --border:rgba(255,255,255,0.08);
+  --accent:#818cf8; --accentRgb:129,140,248;
+  --text:#f1f5f9; --muted:#64748b;
+}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);font-family:'Tajawal',sans-serif;color:#e8d5b0;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,0.7);border-bottom:1px solid var(--border);flex-shrink:0;}
-.hero-name{font-family:'Cinzel',serif;color:var(--acc);font-size:0.9rem;font-weight:700;}
-.stats{display:flex;gap:12px;align-items:center;}
-.stat{font-size:0.72rem;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:4px;}
-.stat span{color:var(--acc);font-weight:700;}
-.bar-w{width:50px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;display:inline-block;}
-.bar-f{height:100%;border-radius:3px;transition:width 0.4s;}
-.hp-f{background:linear-gradient(90deg,#ff4444,#ff8888);}
-.mp-f{background:linear-gradient(90deg,#4488ff,#88aaff);}
-.scene{flex:1;position:relative;overflow:hidden;min-height:140px;}
-.scene-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity 0.8s;}
-.scene-ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(0,0,0,0.72));}
-.scene-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-.scene-emoji{font-size:clamp(3.5rem,12vw,7rem);filter:drop-shadow(0 0 28px var(--acc));animation:float 3s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.dialogue{flex-shrink:0;background:rgba(10,6,8,0.97);border-top:1px solid var(--border);padding:14px 16px;}
-.speaker{font-family:'Cinzel',serif;color:var(--acc);font-size:0.8rem;margin-bottom:5px;font-weight:700;}
-.text-box{font-size:0.9rem;line-height:1.7;color:#e8d5b0;min-height:52px;margin-bottom:10px;}
-.choices{display:flex;flex-direction:column;gap:7px;}
-.choice-btn{background:rgba(255,200,100,0.07);border:1px solid var(--border);color:#e8d5b0;
-  padding:9px 14px;border-radius:8px;text-align:right;cursor:pointer;
-  font-size:0.85rem;font-family:'Tajawal',sans-serif;transition:0.2s;line-height:1.4;}
-.choice-btn:active{background:rgba(255,200,100,0.2);border-color:var(--acc);color:var(--acc);}
-[dir=ltr] .choice-btn{text-align:left;}
-.combat-view{display:none;position:absolute;inset:0;background:rgba(0,0,0,0.93);
-  flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:14px;}
-.combat-view.active{display:flex;}
-.enemy-disp{text-align:center;}
-.enemy-emoji{font-size:clamp(2.8rem,10vw,5rem);animation:shk 0.6s ease infinite;}
-@keyframes shk{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
-.enemy-name{font-family:'Cinzel',serif;color:#ff4444;font-size:1rem;margin:6px 0 4px;}
-.enemy-hp-txt{font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:4px;}
-.bar-w-big{width:160px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;}
-.combat-btns{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:320px;}
-.c-btn{padding:13px 8px;border-radius:10px;border:none;font-size:0.88rem;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;transition:0.15s;}
-.c-btn:active{transform:scale(0.95);}
-.c-atk{background:linear-gradient(135deg,#cc2200,#ff4422);color:#fff;}
-.c-mag{background:linear-gradient(135deg,#2244cc,#4466ff);color:#fff;}
-.c-def{background:linear-gradient(135deg,#226622,#44aa44);color:#fff;}
-.c-itm{background:linear-gradient(135deg,#664400,#aa7700);color:#fff;}
-.combat-log{font-size:0.8rem;color:#aaa;text-align:center;min-height:28px;}
-.dmg-float{position:absolute;font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;pointer-events:none;animation:dmgUp 1s ease forwards;}
-@keyframes dmgUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-55px)}}
-.notif{position:fixed;top:72px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);border:1px solid var(--acc);padding:8px 18px;border-radius:8px;font-size:0.82rem;color:var(--acc);opacity:0;transition:opacity 0.3s;z-index:20;white-space:nowrap;pointer-events:none;}
-.notif.show{opacity:1;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;padding:20px 16px 100px;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(129,140,248,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(129,140,248,0.03) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;width:100%;max-width:600px;}
+
+/* HEADER */
+.g-header{text-align:center;padding:24px 0 20px;}
+.g-back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:0.82rem;
+  text-decoration:none;margin-bottom:20px;transition:color 0.2s;}
+.g-back:hover{color:var(--text);}
+.g-emoji{font-size:3.5rem;filter:drop-shadow(0 0 24px rgba(129,140,248,0.5));display:block;margin-bottom:12px;}
+.g-title{font-size:1.8rem;font-weight:900;letter-spacing:-1px;}
+.g-title em{font-style:normal;color:var(--accent);}
+.g-sub{color:var(--muted);font-size:0.88rem;margin-top:6px;}
+
+/* AD BANNER (يختفي عند شراء no-ads) */
+#ad-banner{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;
+  padding:10px;text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;}
+#ad-banner.hidden{display:none;}
+.ad-remove-btn{background:rgba(129,140,248,0.15);color:var(--accent);border:none;
+  padding:5px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;font-family:inherit;white-space:nowrap;}
+
+/* HUD */
+.hud{display:flex;justify-content:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+.hud-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 18px;text-align:center;min-width:80px;}
+.hud-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);}
+.hud-lbl{font-size:0.65rem;color:var(--muted);margin-top:2px;letter-spacing:0.05em;}
+
+/* GRID */
+.g-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.card{aspect-ratio:1;border-radius:14px;cursor:pointer;position:relative;
+  transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(.175,.885,.32,1.275);}
+.card.flipped,.card.matched{transform:rotateY(180deg);}
+.card.matched{cursor:default;}
+.face{position:absolute;inset:0;border-radius:14px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;}
+.back{background:var(--surface);border:1px solid var(--border);}
+.back::after{content:'?';font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:rgba(129,140,248,0.3);}
+.front{background:linear-gradient(135deg,var(--surface),rgba(129,140,248,0.15));
+  border:1px solid rgba(129,140,248,0.35);transform:rotateY(180deg);font-size:2rem;}
+.card.matched .front{border-color:var(--accent);box-shadow:0 0 16px rgba(129,140,248,0.35);}
+
+/* HINT (يُشترى) */
+#hint-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;justify-content:center;}
+.hint-btn{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.3);
+  color:var(--accent);padding:8px 16px;border-radius:10px;font-size:0.85rem;cursor:pointer;
+  font-family:inherit;transition:background 0.2s;}
+.hint-btn:hover{background:rgba(129,140,248,0.2);}
+.hint-count{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted);}
+
+/* ACTIONS */
+.g-actions{display:flex;gap:10px;margin-bottom:16px;}
+.btn-main{flex:1;padding:13px;border-radius:12px;background:var(--accent);color:#000;
+  font-weight:700;font-size:0.95rem;font-family:inherit;border:none;cursor:pointer;
+  transition:transform 0.2s,box-shadow 0.2s;}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(129,140,248,0.4);}
+
+/* WIN OVERLAY */
+#win-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(12px);align-items:center;justify-content:center;}
+#win-overlay.show{display:flex;}
+.win-box{background:var(--surface);border:1px solid rgba(129,140,248,0.4);border-radius:24px;
+  padding:40px 32px;text-align:center;max-width:360px;width:90%;
+  box-shadow:0 0 60px rgba(129,140,248,0.2);}
+.win-emoji{font-size:3.5rem;display:block;margin-bottom:14px;}
+.win-title{font-size:1.8rem;font-weight:900;color:var(--accent);margin-bottom:8px;}
+.win-stats{color:var(--muted);font-size:0.88rem;line-height:1.9;margin-bottom:24px;}
+.win-stats strong{color:var(--text);}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="hero-name" id="heroName">Hero</div>
-  <div class="stats">
-    <div class="stat">❤️<div class="bar-w"><div class="bar-f hp-f" id="hpBar" style="width:100%"></div></div><span id="hpVal">100</span></div>
-    <div class="stat">✨<div class="bar-w"><div class="bar-f mp-f" id="mpBar" style="width:100%"></div></div><span id="mpVal">50</span></div>
-    <div class="stat">⚔️Lv.<span id="lvlVal">1</span></div>
+<div class="wrap">
+  <div class="g-header">
+    <a href="/" class="g-back">← {{BACK_LABEL}}</a>
+    <span class="g-emoji">🔮</span>
+    <h1 class="g-title">{{GAME_NAME_HTML}}</h1>
+    <p class="g-sub">Dive into Aether Tales, where your imagination creates the epic. Start with a single prompt, then watch as an unparalleled AI crafts an entire, adaptive world and story around you, responding to every choice and taking you on an adventure unlike any other. Every playthrough is a unique, unrepeatable journey into the unknown, where you are both the protagonist and the ultimate architect of destiny.</p>
+  </div>
+
+  <!-- إعلان (يختفي بعد شراء no-ads) -->
+  <div id="ad-banner">
+    <span>📢 Ads support our team</span>
+    <button class="ad-remove-btn" onclick="IAPStore.open()">Remove $1.99</button>
+  </div>
+
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-card"><div class="hud-val" id="h-moves">0</div><div class="hud-lbl">Moves</div></div>
+    <div class="hud-card"><div class="hud-val" id="h-time">0:00</div><div class="hud-lbl">Time</div></div>
+    <div class="hud-card"><div class="hud-val" id="h-pairs">0/8</div><div class="hud-lbl">Pairs</div></div>
+  </div>
+
+  <!-- GRID -->
+  <div class="g-grid" id="grid"></div>
+
+  <!-- HINT BAR -->
+  <div id="hint-bar">
+    <button class="hint-btn" onclick="useHint()">💡 Hint</button>
+    <span class="hint-count" id="hint-count">{{HINTS_LEFT}} left</span>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="g-actions">
+    <button class="btn-main" onclick="initGame()">🔄 New Game</button>
   </div>
 </div>
-<div class="scene" id="scene">
-  <div class="scene-bg" id="sceneBg"></div>
-  <div class="scene-ov"></div>
-  <div class="scene-art"><div class="scene-emoji" id="sceneEmoji">🌑</div></div>
-  <div class="combat-view" id="combatView">
-    <div class="enemy-disp">
-      <div class="enemy-emoji" id="enemyEmoji">👹</div>
-      <div class="enemy-name" id="enemyName">Enemy</div>
-      <div class="enemy-hp-txt" id="enemyHpTxt">HP: 50/50</div>
-      <div class="bar-w-big"><div class="bar-f hp-f" id="enemyHpBar" style="width:100%"></div></div>
-    </div>
-    <div class="combat-log" id="combatLog">{{COMBAT_START_LBL}}</div>
-    <div class="combat-btns">
-      <button class="c-btn c-atk" onclick="doCombat('attack')">⚔️ Attack</button>
-      <button class="c-btn c-mag" onclick="doCombat('magic')">✨ {{MAGIC_LBL}}</button>
-      <button class="c-btn c-def" onclick="doCombat('defend')">🛡️ {{DEFEND_LBL}}</button>
-      <button class="c-btn c-itm" onclick="doCombat('item')">🧪 Item</button>
-    </div>
+
+<!-- WIN -->
+<div id="win-overlay">
+  <div class="win-box">
+    <span class="win-emoji">🏆</span>
+    <div class="win-title">You Win!</div>
+    <div class="win-stats" id="win-stats"></div>
+    <button class="btn-main" onclick="initGame();document.getElementById('win-overlay').classList.remove('show')">Play Again</button>
   </div>
 </div>
-<div class="dialogue">
-  <div class="speaker" id="speaker">{{NARRATOR_LBL}}</div>
-  <div class="text-box" id="textBox">Dive into Aether Tales, where your imagination creates the epic. Start with a single prompt, then watch as an unparalleled AI crafts an entire, adaptive world and story around you, responding to every choice and taking you on an adventure unlike any other. Every playthrough is a unique, unrepeatable journey into the unknown, where you are both the protagonist and the ultimate architect of destiny.</div>
-  <div class="choices" id="choices"></div>
-</div>
-<div class="notif" id="notif"></div>
+
+<!-- IAP STORE -->
 <script src="/iap-modal.js"></script>
+<script>
+// ── Game Config ──────────────────────────────────────────────
+const EMOJIS = ["🌌","✨","🧠","🤖","📖","💡","🌟","🔮","🧭","🔄","🚀","✍️"];
+const PAIRS  = 8;
+const COLS   = 4;
+let hints    = 3;
+
+// ── IAP Init ─────────────────────────────────────────────────
+IAPStore.init('aether-tales', 'en', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}]);
+
+// إخفاء الإعلان إذا كان المستخدم اشترى no-ads سابقاً
+if (IAPStore.isOwned('no-ads')) document.getElementById('ad-banner').classList.add('hidden');
+window.addEventListener('iap:no-ads', () => document.getElementById('ad-banner').classList.add('hidden'));
+
+// إضافة تلميحات عند شراء hint-pack
+window.addEventListener('iap:purchased', e => {
+  if (e.detail.iapId === 'hint-pack') { hints += 10; updateHintCount(); }
+});
+
+// ── Game Logic ───────────────────────────────────────────────
+let cards=[], flipped=[], matched=0, moves=0, secs=0, timer=null, locked=false;
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+function initGame(){
+  clearInterval(timer); secs=0; moves=0; matched=0; flipped=[]; locked=false;
+  const pool = shuffle([...EMOJIS]).slice(0, PAIRS);
+  cards = shuffle([...pool,...pool].map((e,i)=>({id:i,e,flipped:false,matched:false})));
+  renderGrid(); updateHUD();
+  timer = setInterval(()=>{ secs++; updateTime(); }, 1000);
+}
+
+function renderGrid(){
+  document.getElementById('grid').innerHTML = cards.map(c=>`
+    <div class="card${c.flipped?' flipped':''}${c.matched?' matched':''}" id="c${c.id}" onclick="flip(${c.id})">
+      <div class="face back"></div>
+      <div class="face front">${c.e}</div>
+    </div>`).join('');
+}
+
+function flip(id){
+  if(locked) return;
+  const c=cards[id];
+  if(c.flipped||c.matched||flipped.length===2) return;
+  c.flipped=true; document.getElementById('c'+id).classList.add('flipped');
+  flipped.push(id);
+  if(flipped.length===2){
+    moves++; document.getElementById('h-moves').textContent=moves; locked=true;
+    const[a,b]=flipped;
+    if(cards[a].e===cards[b].e){
+      cards[a].matched=cards[b].matched=true;
+      ['c'+a,'c'+b].forEach(id=>document.getElementById(id).classList.add('matched'));
+      matched++; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS;
+      flipped=[]; locked=false;
+      if(matched===PAIRS) setTimeout(showWin,500);
+    } else {
+      setTimeout(()=>{
+        cards[a].flipped=cards[b].flipped=false;
+        ['c'+a,'c'+b].forEach(id=>document.getElementById(id).classList.remove('flipped'));
+        flipped=[]; locked=false;
+      },900);
+    }
+  }
+}
+
+function useHint(){
+  if(hints<=0){ IAPStore.open(); return; }
+  hints--;
+  updateHintCount();
+  // اكشف زوجاً غير مكتشف لثانية واحدة
+  const hidden = cards.filter(c=>!c.matched&&!c.flipped);
+  if(hidden.length<2) return;
+  const pair = hidden.slice(0,2);
+  pair.forEach(c=>document.getElementById('c'+c.id).classList.add('flipped'));
+  setTimeout(()=>{ pair.forEach(c=>{ if(!c.matched) document.getElementById('c'+c.id).classList.remove('flipped'); }); }, 1000);
+}
+
+function updateHintCount(){ document.getElementById('hint-count').textContent = hints+' left'; }
+function updateHUD(){ document.getElementById('h-moves').textContent=moves; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS; updateTime(); }
+function updateTime(){ const m=Math.floor(secs/60),s=secs%60; document.getElementById('h-time').textContent=m+':'+(s<10?'0':'')+s; }
+
+function showWin(){
+  clearInterval(timer);
+  const stars = moves<=PAIRS*2?'⭐⭐⭐':moves<=PAIRS*3?'⭐⭐':'⭐';
+  const m=Math.floor(secs/60),s=secs%60;
+  document.getElementById('win-stats').innerHTML=`${stars}<br><strong>${moves}</strong> Moves · <strong>${m}:${s<10?'0':''}${s}</strong>`;
+  document.getElementById('win-overlay').classList.add('show');
+}
+
+initGame();
+</script>
+
+<!-- Social Bar -->
 <script src="/social-bar.js"></script>
 <script>
-IAPStore.init('aether-tales','en',[{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}]);
-SocialBar.init({title:'Aether Tales',url:location.href,lang:'en'});
-
-const hero={hp:100,maxHp:100,mp:50,maxMp:50,atk:15,def:5,mag:12,level:1,xp:0,xpNext:100,gold:0,items:{potion:3},flags:{}};
-let curEnemy=null,defending=false,curScene='intro',typeTimer;
-
-const S={
-  intro:{bg:'linear-gradient(135deg,#1a0a0f,#2d1020)',emoji:'🌑',sp:'{{NARRATOR_LBL}}',
-    text:'{{SCENE_INTRO}}',
-    choices:[{t:'{{CHOICE_ENTER}}',n:'village'},{t:'{{CHOICE_CAMP}}',n:'camp'}]},
-  village:{bg:'linear-gradient(135deg,#0a1a0a,#1a3020)',emoji:'🏘️',sp:'{{ELDER_LBL}}',
-    text:'{{SCENE_VILLAGE}}',
-    choices:[{t:'{{CHOICE_ACCEPT}}',n:'forest',reward:{xp:20,gold:10}},{t:'{{CHOICE_SHOP}}',n:'shop'},{t:'{{CHOICE_LEAVE}}',n:'intro'}]},
-  camp:{bg:'linear-gradient(135deg,#0a0a1a,#0f1520)',emoji:'🔥',sp:'{{NARRATOR_LBL}}',
-    text:'{{SCENE_CAMP}}',
-    choices:[{t:'{{CHOICE_REST}}',n:'intro',heal:30}]},
-  shop:{bg:'linear-gradient(135deg,#1a1200,#2a1e00)',emoji:'⚗️',sp:'{{MERCHANT_LBL}}',
-    text:'{{SCENE_SHOP}}',
-    choices:[{t:'{{CHOICE_BUY_POTION}}',n:'village',buy:'potion',cost:15},{t:'{{CHOICE_LEAVE}}',n:'village'}]},
-  forest:{bg:'linear-gradient(135deg,#041008,#081a10)',emoji:'🌲',sp:'{{NARRATOR_LBL}}',
-    text:'{{SCENE_FOREST}}',
-    choices:[
-      {t:'{{CHOICE_FIGHT}}',n:'forest',combat:{name:'🐺 {{ENEMY_WOLF}}',hp:40,atk:12,emoji:'🐺',maxHp:40}},
-      {t:'{{CHOICE_BACK}}',n:'village'}]},
-  dungeon:{bg:'linear-gradient(135deg,#0d0810,#160c1e)',emoji:'🗝️',sp:'{{NARRATOR_LBL}}',
-    text:'{{SCENE_DUNGEON}}',
-    choices:[
-      {t:'{{CHOICE_EXPLORE}}',n:'treasure',reward:{xp:50,gold:30}},
-      {t:'{{CHOICE_BOSS}}',n:'dungeon',combat:{name:'👹 {{ENEMY_BOSS}}',hp:120,atk:22,emoji:'👹',maxHp:120,isBoss:true}}]},
-  treasure:{bg:'linear-gradient(135deg,#1a1000,#2a1800)',emoji:'💎',sp:'{{NARRATOR_LBL}}',
-    text:'{{SCENE_TREASURE}}',
-    choices:[{t:'{{CHOICE_CONTINUE}}',n:'dungeon'}]},
-  victory:{bg:'linear-gradient(135deg,#0a1a00,#182800)',emoji:'🏆',sp:'{{NARRATOR_LBL}}',
-    text:'{{SCENE_VICTORY}}',
-    choices:[{t:'{{CHOICE_RESTART}}',n:'intro',action:'revive'},{t:'🛒 {{SHOP_LBL}}',action:'shop'}]},
-  defeat:{bg:'linear-gradient(135deg,#1a0000,#2a0000)',emoji:'💀',sp:'{{NARRATOR_LBL}}',
-    text:'{{SCENE_DEFEAT}}',
-    choices:[{t:'{{CHOICE_RESTART}}',n:'intro',action:'revive'}]},
-};
-
-function loadScene(k){
-  curScene=k;const s=S[k];if(!s)return;
-  document.getElementById('combatView').classList.remove('active');
-  document.getElementById('sceneBg').style.background=s.bg||'#0a0608';
-  document.getElementById('sceneEmoji').textContent=s.emoji||'🌑';
-  document.getElementById('speaker').textContent=s.sp||'';
-  typeText(s.text||'');
-  const ch=document.getElementById('choices');ch.innerHTML='';
-  (s.choices||[]).forEach(c=>{
-    const b=document.createElement('button');b.className='choice-btn';b.textContent=c.t;
-    b.onclick=()=>pick(c);ch.appendChild(b);
+  SocialBar.init({
+    title: 'Aether Tales — realteam',
+    url:   'https://real-team-production.up.railway.app/games/aether-tales.html',
+    lang:  'en'
   });
-}
-
-function pick(c){
-  if(c.action==='shop'){IAPStore.open();return;}
-  if(c.action==='revive'){hero.hp=Math.floor(hero.maxHp*0.5);updateStats();}
-  if(c.heal){hero.hp=Math.min(hero.maxHp,hero.hp+c.heal);updateStats();notify('❤️ +'+c.heal);}
-  if(c.reward){if(c.reward.xp)gainXP(c.reward.xp);if(c.reward.gold){hero.gold+=c.reward.gold;notify('💰 +'+c.reward.gold);}}
-  if(c.buy){if(hero.gold>=c.cost){hero.gold-=c.cost;hero.items[c.buy]=(hero.items[c.buy]||0)+1;notify('🧪 +1');}else{notify('{{NO_GOLD_LBL}}');return;}}
-  if(c.combat){curEnemy={...c.combat};startCombat();return;}
-  loadScene(c.n);
-}
-
-function startCombat(){
-  defending=false;
-  document.getElementById('combatView').classList.add('active');
-  document.getElementById('enemyEmoji').textContent=curEnemy.emoji;
-  document.getElementById('enemyName').textContent=curEnemy.name;
-  updateEnemyHp();
-  document.getElementById('combatLog').textContent='{{COMBAT_START_LBL}}';
-}
-
-function updateEnemyHp(){
-  const p=(curEnemy.hp/curEnemy.maxHp)*100;
-  document.getElementById('enemyHpBar').style.width=p+'%';
-  document.getElementById('enemyHpTxt').textContent='HP: '+curEnemy.hp+'/'+curEnemy.maxHp;
-}
-
-function doCombat(a){
-  if(!curEnemy)return;let log='';
-  if(a==='attack'){const d=hero.atk+Math.floor(Math.random()*10)-2;curEnemy.hp-=d;log='⚔️ -'+d;showDmg('-'+d,'#ff4444');}
-  else if(a==='magic'){if(hero.mp<10){document.getElementById('combatLog').textContent='{{NO_MP_LBL}}';return;}hero.mp-=10;const d=hero.mag+Math.floor(Math.random()*14);curEnemy.hp-=d;log='✨ -'+d;showDmg('-'+d,'#4488ff');}
-  else if(a==='defend'){defending=true;log='🛡️ {{DEFEND_MSG_LBL}}';}
-  else if(a==='item'){if(!(hero.items.potion>0)){document.getElementById('combatLog').textContent='{{NO_ITEM_LBL}}';return;}hero.items.potion--;hero.hp=Math.min(hero.maxHp,hero.hp+40);log='🧪 +40 HP';}
-  curEnemy.hp=Math.max(0,curEnemy.hp);updateEnemyHp();updateStats();
-  if(curEnemy.hp<=0){
-    const xp=curEnemy.isBoss?200:80,g=curEnemy.isBoss?50:20;gainXP(xp);hero.gold+=g;
-    if(curEnemy.isBoss)hero.flags.boss=true;
-    document.getElementById('combatView').classList.remove('active');curEnemy=null;
-    notify('🏆 +'+xp+' XP +'+g+'💰');
-    loadScene(hero.flags.boss?'victory':'dungeon');return;
-  }
-  setTimeout(()=>{
-    const bd=curEnemy.atk+Math.floor(Math.random()*7);
-    const d=defending?Math.max(1,bd-hero.def-5):Math.max(1,bd-hero.def);
-    hero.hp=Math.max(0,hero.hp-d);defending=false;
-    log+=' | 👹 -'+d;document.getElementById('combatLog').textContent=log;
-    updateStats();if(hero.hp<=0){document.getElementById('combatView').classList.remove('active');loadScene('defeat');}
-  },400);
-}
-
-function showDmg(txt,col){
-  const d=document.createElement('div');d.className='dmg-float';d.textContent=txt;
-  d.style.cssText='color:'+col+';top:38%;left:50%;transform:translateX(-50%);position:absolute;';
-  document.getElementById('combatView').appendChild(d);setTimeout(()=>d.remove(),1000);
-}
-
-function updateStats(){
-  document.getElementById('hpVal').textContent=hero.hp;
-  document.getElementById('mpVal').textContent=hero.mp;
-  document.getElementById('lvlVal').textContent=hero.level;
-  document.getElementById('hpBar').style.width=(hero.hp/hero.maxHp*100)+'%';
-  document.getElementById('mpBar').style.width=(hero.mp/hero.maxMp*100)+'%';
-}
-
-function gainXP(n){
-  hero.xp+=n;if(hero.xp>=hero.xpNext){hero.level++;hero.xp-=hero.xpNext;hero.xpNext=Math.floor(hero.xpNext*1.5);hero.maxHp+=20;hero.hp=hero.maxHp;hero.maxMp+=10;hero.mp=hero.maxMp;hero.atk+=3;hero.def+=2;hero.mag+=3;notify('🆙 LEVEL '+hero.level+'!');}
-  updateStats();
-}
-
-function typeText(t){const el=document.getElementById('textBox');el.textContent='';let i=0;clearInterval(typeTimer);typeTimer=setInterval(()=>{el.textContent+=t[i++]||'';if(i>=t.length)clearInterval(typeTimer);},22);}
-
-function notify(m){const n=document.getElementById('notif');n.textContent=m;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2000);}
-
-loadScene('intro');updateStats();
 </script>
 </body>
 </html>

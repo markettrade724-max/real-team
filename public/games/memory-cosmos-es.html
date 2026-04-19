@@ -88,9 +88,9 @@ body::before{content:'';position:fixed;inset:0;
 <body>
 <div class="wrap">
   <div class="g-header">
-    <a href="/" class="g-back">← Volver</a>
+    <a href="/" class="g-back">← {{BACK_LABEL}}</a>
     <span class="g-emoji">🌌</span>
-    <h1 class="g-title">Memoria Cosmos</h1>
+    <h1 class="g-title">{{GAME_NAME_HTML}}</h1>
     <p class="g-sub">Desafía tu memoria entre las estrellas</p>
   </div>
 
@@ -118,7 +118,7 @@ body::before{content:'';position:fixed;inset:0;
 
   <!-- ACTIONS -->
   <div class="g-actions">
-    <button class="btn-main" onclick="initGame()">🔄 Nuevo Juego</button>
+    <button class="btn-main" onclick="initGame()">🔄 Nuevo juego</button>
   </div>
 </div>
 
@@ -136,7 +136,7 @@ body::before{content:'';position:fixed;inset:0;
 <script src="/iap-modal.js"></script>
 <script>
 // ── Game Config ──────────────────────────────────────────────
-const EMOJIS = ["🌌","⭐","🪐","🌙","☀️","🌠","🌟","🚀","🛸","🌍","💫","🌈"];
+const EMOJIS = ["🎮","⭐","🌟","💫","✨","🎯","🔮","💎","🌈","🎪","🎨","🎭"];
 const PAIRS  = 8;
 const COLS   = 4;
 let hints    = 3;

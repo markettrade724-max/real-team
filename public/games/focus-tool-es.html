@@ -67,7 +67,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </head>
 <body>
 <div class="wrap">
-  <a href="/" class="g-back">← Volver</a>
+  <a href="/" class="g-back">← {{BACK_LABEL}}</a>
 
   <div id="ad-banner">
     <span>📢 Los anuncios apoyan al equipo</span>
@@ -96,7 +96,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </div>
     <div class="timer-controls">
       <button class="btn-ctrl" onclick="reset()">↺</button>
-      <button class="btn-ctrl primary" id="btn-start" onclick="toggle()">▶ Iniciar</button>
+      <button class="btn-ctrl primary" id="btn-start" onclick="toggle()">▶ Jugar</button>
       <button class="btn-ctrl" onclick="skip()">⏭</button>
     </div>
   </div>
@@ -135,14 +135,14 @@ const CIRC=2*Math.PI*96;
 function setMode(m,mins,btn){
   mode=m; duration=mins*60; remaining=mins*60;
   running=false; clearInterval(interval);
-  document.getElementById('btn-start').textContent='▶ Iniciar';
+  document.getElementById('btn-start').textContent='▶ Jugar';
   document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   render();
 }
 
 function toggle(){
-  if(running){ running=false; clearInterval(interval); document.getElementById('btn-start').textContent='▶ Iniciar'; }
+  if(running){ running=false; clearInterval(interval); document.getElementById('btn-start').textContent='▶ Jugar'; }
   else { running=true; interval=setInterval(tick,1000); document.getElementById('btn-start').textContent='⏸ Pausar'; }
 }
 
@@ -158,13 +158,13 @@ function render(){
   document.getElementById('progress-ring').style.strokeDashoffset=CIRC*pct;
 }
 
-function reset(){ running=false; clearInterval(interval); remaining=duration; document.getElementById('btn-start').textContent='▶ Iniciar'; render(); }
+function reset(){ running=false; clearInterval(interval); remaining=duration; document.getElementById('btn-start').textContent='▶ Jugar'; render(); }
 
 function skip(){ finish(); }
 
 function finish(){
   running=false; clearInterval(interval);
-  document.getElementById('btn-start').textContent='▶ Iniciar';
+  document.getElementById('btn-start').textContent='▶ Jugar';
   // stats
   const sessions=parseInt(localStorage.getItem('rt_sessions_focus-tool')||'0')+1;
   const minutes=parseInt(localStorage.getItem('rt_minutes_focus-tool')||'0')+(duration/60|0);
@@ -173,7 +173,7 @@ function finish(){
   document.getElementById('s-sessions').textContent=sessions;
   document.getElementById('s-minutes').textContent=minutes;
   remaining=duration; render();
-  if(mode==='focus') alert('✅ ¡Sesión completada!');
+  if(mode==='focus') alert('✅ ¡Sesión completa!');
 }
 
 // load stats
