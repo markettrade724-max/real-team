@@ -15,10 +15,10 @@ const TEMPLATE_MAP = {
   word:     'memory-game.html',
   quiz:     'memory-game.html',
   // أكشن وإطلاق نار
-  arcade:   'arcade-shooter.html',
-  shooter:  'arcade-shooter.html',
-  action:   'arcade-shooter.html',
-  space:    'arcade-shooter.html',
+  arcade:   'phaser-game.html',
+  shooter:  'phaser-game.html',
+  action:   'phaser-game.html',
+  space:    'phaser-game.html',
   // مغامرات وRPG
   rpg:       'adventure-rpg.html',
   adventure: 'adventure-rpg.html',
