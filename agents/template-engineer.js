@@ -8,7 +8,7 @@
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join }  from 'path';
-import { askGemini }      from './_gemini.js';
+
 import { logger }         from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
