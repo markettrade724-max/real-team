@@ -1,20 +1,20 @@
 {
-  "runId": "2026-04-20T0944",
-  "timestamp": "2026-04-20T09:44:55.281Z",
-  "totalDuration": "34.3s",
+  "runId": "2026-04-20T1003",
+  "timestamp": "2026-04-20T10:03:17.006Z",
+  "totalDuration": "16.8s",
   "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.4s",
+      "duration": "995ms",
       "attempts": 1,
       "error": null
     },
     "idea": {
       "success": false,
-      "duration": "17.9s",
+      "duration": "803ms",
       "attempts": 1,
-      "error": "Missing fields"
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     }
   },
   "summary": {
