@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>{{GAME_NAME}} — realteam</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+<style>
+:root{--acc:{{ACCENT}};--bg:#00000a;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Tajawal',sans-serif;}
+
+/* ── SCREENS ── */
+.screen{display:none;position:fixed;inset:0;flex-direction:column;
+  align-items:center;justify-content:center;z-index:20;
+  background:radial-gradient(ellipse at center,#0d0020 0%,#000005 100%);}
+.screen.on{display:flex;}
+.screen::before{content:'';position:absolute;inset:0;
+  background-image:radial-gradient(rgba({{ACCENT_RGB}},0.15) 1px,transparent 1px);
+  background-size:32px 32px;animation:bgMove 8s linear infinite;}
+@keyframes bgMove{0%{background-position:0 0}100%{background-position:32px 32px}}
+
+.logo{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,6vw,3.2rem);
+  font-weight:900;color:var(--acc);letter-spacing:6px;text-align:center;
+  text-shadow:0 0 30px var(--acc),0 0 60px var(--acc);
+  animation:glow 2s ease-in-out infinite;margin-bottom:8px;padding:0 20px;}
+.tagline{color:rgba(255,255,255,0.45);font-size:0.82rem;text-align:center;
+  letter-spacing:2px;margin-bottom:48px;padding:0 24px;line-height:1.6;}
+@keyframes glow{0%,100%{text-shadow:0 0 30px var(--acc)}50%{text-shadow:0 0 60px var(--acc),0 0 100px var(--acc)}}
+
+.btn{position:relative;overflow:hidden;border:none;cursor:pointer;
+  font-family:'Orbitron',monospace;font-weight:700;letter-spacing:3px;
+  transition:transform 0.15s,box-shadow 0.15s;}
+.btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);
+  transition:background 0.2s;}
+.btn:active::after{background:rgba(255,255,255,0.15);}
+.btn:active{transform:scale(0.96);}
+
+.btn-play{background:var(--acc);color:#000;padding:16px 52px;border-radius:50px;
+  font-size:1rem;box-shadow:0 0 40px var(--acc),0 0 80px rgba({{ACCENT_RGB}},0.3);}
+.btn-play:hover{transform:scale(1.04);box-shadow:0 0 60px var(--acc);}
+.btn-ghost{background:transparent;color:rgba(255,255,255,0.5);
+  border:1px solid rgba(255,255,255,0.15);padding:10px 28px;
+  border-radius:50px;font-size:0.72rem;margin-top:12px;}
+.btn-ghost:hover{border-color:var(--acc);color:var(--acc);}
+
+.best-line{font-size:0.72rem;color:rgba(255,255,255,0.25);
+  margin-top:20px;font-family:'Orbitron',monospace;}
+.best-line span{color:var(--acc);}
+
+/* ── HUD ── */
+#hud{position:fixed;top:0;inset-inline:0;z-index:10;
+  display:none;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:linear-gradient(rgba(0,0,5,0.9),transparent);}
+.hud-block{text-align:center;}
+.hud-val{font-family:'Orbitron',monospace;font-size:1rem;color:var(--acc);
+  text-shadow:0 0 10px var(--acc);}
+.hud-lbl{font-size:0.55rem;color:rgba(255,255,255,0.35);
+  letter-spacing:0.12em;text-transform:uppercase;}
+
+/* ── LEVEL UP ── */
+#lvlup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:15;font-family:'Orbitron',monospace;font-size:clamp(1.5rem,5vw,2.5rem);
+  font-weight:900;color:var(--acc);text-shadow:0 0 40px var(--acc);
+  opacity:0;pointer-events:none;text-align:center;}
+#lvlup.show{animation:lvlPop 1.8s ease forwards;}
+@keyframes lvlPop{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0.5)}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}
+  35%{transform:translate(-50%,-50%) scale(1)}
+  75%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-60%)}
+}
+
+/* ── MOBILE CONTROLS ── */
+#mctrl{position:fixed;bottom:0;inset-inline:0;z-index:10;
+  display:none;justify-content:space-between;align-items:flex-end;padding:14px;}
+.mc{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;user-select:none;-webkit-user-select:none;font-size:1.3rem;
+  transition:background 0.1s;}
+.mc:active,.mc.pressed{background:rgba(255,255,255,0.22);}
+.mc-move{width:56px;height:56px;}
+.mc-fire{width:70px;height:70px;font-size:1.6rem;
+  background:rgba({{ACCENT_RGB}},0.15);border-color:rgba({{ACCENT_RGB}},0.4);}
+.mc-fire:active,.mc-fire.pressed{background:rgba({{ACCENT_RGB}},0.4);}
+.mc-row{display:flex;gap:8px;}
+
+/* ── GAME OVER ── */
+.go-score{font-family:'Orbitron',monospace;font-size:clamp(2rem,8vw,4rem);
+  font-weight:900;color:var(--acc);text-shadow:0 0 30px var(--acc);
+  margin:12px 0;}
+.go-title{font-family:'Orbitron',monospace;font-size:clamp(1rem,4vw,1.6rem);
+  color:#fff;margin-bottom:4px;}
+.go-sub{font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:32px;}
+
+#game-container{width:100%;height:100%;}
+</style>
+</head>
+<body>
+
+<!-- START -->
+<div class="screen on" id="scrStart">
+  <div class="logo">{{GAME_NAME}}</div>
+  <div class="tagline">{{GAME_DESC}}</div>
+  <button class="btn btn-play" id="btnPlay">▶ {{START_LBL}}</button>
+  <button class="btn btn-ghost" onclick="IAPStore.open()">🛒 {{SHOP_LBL}}</button>
+  <div class="best-line">{{BEST_LBL}}: <span id="bestDisp">0</span></div>
+</div>
+
+<!-- GAME OVER -->
+<div class="screen" id="scrOver">
+  <div class="go-title">{{GAMEOVER_LBL}}</div>
+  <div class="go-score" id="finalScore">0</div>
+  <div class="go-sub" id="goSub"></div>
+  <button class="btn btn-play" onclick="restartGame()">↺ {{RETRY_LBL}}</button>
+  <button class="btn btn-ghost" onclick="showStart()">🏠 {{HOME_LBL}}</button>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hud-block">
+    <div class="hud-lbl">{{SCORE_LBL}}</div>
+    <div class="hud-val" id="hudScore">0</div>
+  </div>
+  <div class="hud-block">
+    <div class="hud-lbl">{{LEVEL_LBL}}</div>
+    <div class="hud-val" id="hudLevel">1</div>
+  </div>
+  <div class="hud-block">
+    <div class="hud-lbl">{{LIVES_LBL}}</div>
+    <div class="hud-val" id="hudLives">❤️❤️❤️</div>
+  </div>
+</div>
+
+<!-- LEVEL UP -->
+<div id="lvlup">LEVEL UP!</div>
+
+<!-- MOBILE CONTROLS -->
+<div id="mctrl">
+  <div class="mc-row">
+    <div class="mc mc-move" id="mcLeft">◀</div>
+    <div class="mc mc-move" id="mcRight">▶</div>
+  </div>
+  <div class="mc mc-fire" id="mcFire">🔥</div>
+</div>
+
+<!-- GAME CANVAS -->
+<div id="game-container"></div>
+
+<script src="/iap-modal.js"></script>
+<script src="/social-bar.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════
+const CFG = {
+  ACCENT:    '{{ACCENT}}',
+  ACCENT_N:  0x{{ACCENT}}'.replace('#',''),
+  PROD_ID:   '{{PRODUCT_ID}}',
+  LANG:      '{{LANG}}',
+  IAPS:      {{IAPS_JSON}},
+};
+// Parse hex color for Phaser
+const ACCENT_HEX = parseInt('{{ACCENT}}'.replace('#',''), 16);
+
+IAPStore.init(CFG.PROD_ID, CFG.LANG, CFG.IAPS);
+SocialBar.init({ title:'{{GAME_NAME}}', url:location.href, lang:CFG.LANG });
+
+let bestScore = parseInt(localStorage.getItem('best_'+CFG.PROD_ID)||'0');
+document.getElementById('bestDisp').textContent = bestScore;
+
+// ═══════════════════════════════════════════════════════════════
+// PHASER SCENES
+// ═══════════════════════════════════════════════════════════════
+
+// ── BOOT: génère les assets procéduralement ────────────────────
+class BootScene extends Phaser.Scene {
+  constructor(){ super('Boot'); }
+
+  preload() {
+    // Génération procédurale — pas de fichiers externes nécessaires
+
+    // Player ship
+    const pg = this.make.graphics({x:0,y:0,add:false});
+    pg.fillStyle(ACCENT_HEX,1);
+    pg.fillTriangle(24,0, 48,56, 0,56);
+    pg.fillStyle(ACCENT_HEX,0.6);
+    pg.fillRect(14,20,8,28);
+    pg.fillRect(26,20,8,28);
+    pg.generateTexture('player',48,60);
+    pg.destroy();
+
+    // Enemy basic
+    const eg = this.make.graphics({x:0,y:0,add:false});
+    eg.fillStyle(0xff3355,1);
+    eg.fillTriangle(24,60, 48,4, 0,4);
+    eg.fillStyle(0xffaaaa,0.8);
+    eg.fillCircle(24,28,8);
+    eg.generateTexture('enemy_basic',48,64);
+    eg.destroy();
+
+    // Enemy fast
+    const ef = this.make.graphics({x:0,y:0,add:false});
+    ef.fillStyle(0xff8800,1);
+    ef.fillTriangle(18,48, 36,0, 36,48);
+    ef.generateTexture('enemy_fast',36,52);
+    ef.destroy();
+
+    // Boss
+    const bg = this.make.graphics({x:0,y:0,add:false});
+    bg.fillStyle(0xff0040,1);
+    bg.fillRect(0,20,100,60);
+    bg.fillTriangle(50,0, 100,20, 0,20);
+    bg.fillStyle(0xffaa00,1);
+    bg.fillCircle(50,50,18);
+    bg.fillStyle(0xff0000,0.5);
+    bg.fillRect(20,60,60,8);
+    bg.generateTexture('boss',100,88);
+    bg.destroy();
+
+    // Bullet player
+    const bp = this.make.graphics({x:0,y:0,add:false});
+    bp.fillStyle(ACCENT_HEX,1);
+    bp.fillRect(2,0,4,18);
+    bp.fillStyle(0xffffff,0.7);
+    bp.fillRect(3,0,2,18);
+    bp.generateTexture('bullet_p',8,18);
+    bp.destroy();
+
+    // Bullet enemy
+    const be = this.make.graphics({x:0,y:0,add:false});
+    be.fillStyle(0xff4444,1);
+    be.fillRect(2,0,4,14);
+    be.generateTexture('bullet_e',8,14);
+    be.destroy();
+
+    // Particle
+    const pp = this.make.graphics({x:0,y:0,add:false});
+    pp.fillStyle(0xffffff,1);
+    pp.fillCircle(4,4,4);
+    pp.generateTexture('particle',8,8);
+    pp.destroy();
+
+    // Star
+    const sp = this.make.graphics({x:0,y:0,add:false});
+    sp.fillStyle(0xffffff,1);
+    sp.fillCircle(2,2,2);
+    sp.generateTexture('star',4,4);
+    sp.destroy();
+
+    // Shield
+    const sh = this.make.graphics({x:0,y:0,add:false});
+    sh.lineStyle(3,0x00ffff,0.7);
+    sh.strokeCircle(30,30,28);
+    sh.generateTexture('shield',60,60);
+    sh.destroy();
+
+    // Powerup
+    const pu = this.make.graphics({x:0,y:0,add:false});
+    pu.fillStyle(0x00ff88,1);
+    pu.fillRect(8,0,8,24);
+    pu.fillRect(0,8,24,8);
+    pu.generateTexture('powerup',24,24);
+    pu.destroy();
+  }
+
+  create() { this.scene.start('Game'); }
+}
+
+// ── GAME SCENE ────────────────────────────────────────────────
+class GameScene extends Phaser.Scene {
+  constructor(){ super('Game'); }
+
+  create() {
+    const W = this.scale.width, H = this.scale.height;
+
+    // State
+    this.score  = 0;
+    this.level  = 1;
+    this.lives  = 3;
+    this.defending = false;
+    this.bossAlive = false;
+    this.invincible = false;
+    this.lastBossScore = 0;
+
+    // Background stars
+    this.stars = this.add.group();
+    for(let i=0;i<90;i++){
+      const s = this.add.image(
+        Phaser.Math.Between(0,W),
+        Phaser.Math.Between(0,H),
+        'star'
+      ).setAlpha(Phaser.Math.FloatBetween(0.2,0.9))
+       .setScale(Phaser.Math.FloatBetween(0.5,2));
+      s.speedY = Phaser.Math.FloatBetween(0.5,2.5);
+      this.stars.add(s);
+    }
+
+    // Player
+    this.player = this.physics.add.sprite(W/2, H-90, 'player')
+      .setCollideWorldBounds(true)
+      .setDepth(5);
+
+    // Groups
+    this.bulletGroup  = this.physics.add.group();
+    this.enemyGroup   = this.physics.add.group();
+    this.eBulletGroup = this.physics.add.group();
+    this.powerupGroup = this.physics.add.group();
+
+    // Particles
+    this.particles = this.add.particles(0,0,'particle');
+
+    // Controls
+    this.cursors  = this.input.keyboard.createCursorKeys();
+    this.wasd     = this.input.keyboard.addKeys('W,A,S,D');
+    this.fireKey  = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    // Touch state
+    this.touchLeft  = false;
+    this.touchRight = false;
+    this.touchFire  = false;
+
+    // Timer: shoot
+    this.shootTimer = this.time.addEvent({
+      delay: 220, loop: true,
+      callback: this.shootPlayer, callbackScope: this
+    });
+
+    // Timer: spawn enemies
+    this.spawnTimer = this.time.addEvent({
+      delay: this.getSpawnDelay(), loop: true,
+      callback: this.spawnEnemy, callbackScope: this
+    });
+
+    // Colliders
+    this.physics.add.overlap(this.bulletGroup, this.enemyGroup,
+      this.onBulletHitEnemy, null, this);
+    this.physics.add.overlap(this.player, this.enemyGroup,
+      this.onPlayerHitEnemy, null, this);
+    this.physics.add.overlap(this.player, this.eBulletGroup,
+      this.onPlayerHitBullet, null, this);
+    this.physics.add.overlap(this.player, this.powerupGroup,
+      this.onPowerup, null, this);
+
+    // Canvas touch
+    this.input.on('pointermove', ptr => {
+      if(ptr.isDown) this.player.x = Phaser.Math.Clamp(ptr.x, 24, W-24);
+    });
+
+    this.updateHUD();
+    this.showScreen(null);
+    document.getElementById('hud').style.display = 'flex';
+    document.getElementById('mctrl').style.display = 'flex';
+    this.bindMobileControls();
+
+    // Firing interval
+    this.lastFire = 0;
+
+    // Camera shake reference
+    this.cam = this.cameras.main;
+  }
+
+  getSpawnDelay() {
+    return Math.max(400, 1200 - this.level * 80);
+  }
+
+  shootPlayer() {
+    if(this.invincible) return;
+    const now = this.time.now;
+    const delay = IAPStore.isOwned('rapidfire') ? 150 : 220;
+    if(now - this.lastFire < delay) return;
+
+    if(this.cursors.up.isDown || this.fireKey.isDown ||
+       this.wasd.W.isDown || this.touchFire) {
+      this.lastFire = now;
+      const b = this.bulletGroup.create(this.player.x, this.player.y-36, 'bullet_p')
+        .setDepth(4);
+      b.setVelocityY(-620);
+      this.createMuzzleFlash(this.player.x, this.player.y-40);
+    }
+  }
+
+  createMuzzleFlash(x, y) {
+    this.particles.createEmitter({
+      x, y,
+      speed: {min:50,max:150},
+      angle: {min:250,max:290},
+      scale: {start:0.8,end:0},
+      lifespan: 150,
+      quantity: 4,
+      tint: ACCENT_HEX,
+    }).explode(4, x, y);
+  }
+
+  spawnEnemy() {
+    if(this.bossAlive) return;
+    const W = this.scale.width;
+    const roll = Math.random();
+    const type = roll < 0.25 ? 'fast' : 'basic';
+
+    const e = this.enemyGroup.create(
+      Phaser.Math.Between(30, W-30),
+      -40,
+      'enemy_'+type
+    ).setDepth(3);
+
+    const spd = (120 + this.level * 30) * (type==='fast' ? 1.7 : 1);
+    e.setVelocityY(spd);
+    e.setVelocityX(Phaser.Math.Between(-60,60));
+    e.type = type;
+    e.hp   = type==='fast' ? 1 : 2 + Math.floor(this.level/2);
+    e.maxHp= e.hp;
+
+    // Enemy shoots at level >= 2
+    if(type==='basic' && this.level >= 2) {
+      this.time.addEvent({
+        delay: Phaser.Math.Between(1500,3000),
+        callback: () => {
+          if(!e.active) return;
+          const eb = this.eBulletGroup.create(e.x, e.y+32, 'bullet_e').setDepth(3);
+          eb.setVelocityY(240 + this.level * 20);
+          this.time.addEvent({delay:3000,callback:()=>{if(eb.active)eb.destroy();}});
+        }
+      });
+    }
+
+    // Check boss spawn
+    if(this.score >= this.lastBossScore + 1500 && !this.bossAlive) {
+      this.time.delayedCall(500, this.spawnBoss, [], this);
+    }
+  }
+
+  spawnBoss() {
+    if(this.bossAlive) return;
+    this.bossAlive = true;
+    this.lastBossScore = this.score;
+
+    const W = this.scale.width;
+    const boss = this.enemyGroup.create(W/2, -60, 'boss').setDepth(4).setScale(1);
+    boss.type  = 'boss';
+    boss.hp    = 30 + this.level * 12;
+    boss.maxHp = boss.hp;
+    boss.setVelocityY(80);
+
+    // Boss movement pattern
+    this.time.addEvent({
+      delay: 100, loop: true,
+      callback: () => {
+        if(!boss.active){ return; }
+        if(boss.y > 100 && boss.body) {
+          boss.setVelocityY(0);
+          boss.setVelocityX(boss.body.velocity.x === 0 ? 120 : boss.body.velocity.x);
+          if(boss.x > W-60 || boss.x < 60) boss.setVelocityX(-boss.body.velocity.x);
+        }
+      }
+    });
+
+    // Boss shoots 3-way
+    this.time.addEvent({
+      delay: 900, loop: true,
+      callback: () => {
+        if(!boss.active) return;
+        for(let i=-1;i<=1;i++) {
+          const eb = this.eBulletGroup.create(boss.x+i*24, boss.y+44, 'bullet_e').setDepth(3);
+          eb.setVelocityY(280+this.level*15);
+          eb.setVelocityX(i*80);
+          this.time.addEvent({delay:3000,callback:()=>{if(eb.active)eb.destroy();}});
+        }
+      }
+    });
+
+    // Show boss warning
+    const w = this.add.text(W/2, this.scale.height/2, '⚠️ BOSS INCOMING!', {
+      fontFamily:'Orbitron', fontSize:'24px', color:'#ff0040',
+      stroke:'#000', strokeThickness:4,
+    }).setOrigin(0.5).setDepth(10);
+    this.tweens.add({targets:w, alpha:0, duration:2000, onComplete:()=>w.destroy()});
+    this.cam.shake(500, 0.008);
+  }
+
+  onBulletHitEnemy(bullet, enemy) {
+    bullet.destroy();
+    enemy.hp--;
+
+    // Flash
+    this.tweens.add({targets:enemy,alpha:0.3,duration:60,yoyo:true});
+
+    // Damage particles
+    this.particles.createEmitter({
+      x:enemy.x, y:enemy.y,
+      speed:{min:80,max:200}, angle:{min:0,max:360},
+      scale:{start:0.6,end:0}, lifespan:250, quantity:5,
+      tint:[ACCENT_HEX, 0xffffff],
+    }).explode(5, enemy.x, enemy.y);
+
+    if(enemy.hp <= 0) {
+      this.killEnemy(enemy);
+    }
+  }
+
+  killEnemy(enemy) {
+    const pts = enemy.type==='boss' ? 600+this.level*80
+              : enemy.type==='fast' ? 150 : 100;
+    this.score += pts;
+
+    // Big explosion
+    const n = enemy.type==='boss' ? 40 : 15;
+    this.particles.createEmitter({
+      x:enemy.x, y:enemy.y,
+      speed:{min:60,max:300}, angle:{min:0,max:360},
+      scale:{start:1,end:0}, lifespan:{min:300,max:600},
+      quantity:n, tint:[0xff4444,0xff8800,ACCENT_HEX,0xffffff],
+    }).explode(n, enemy.x, enemy.y);
+
+    if(enemy.type==='boss') {
+      this.bossAlive = false;
+      this.cam.shake(800, 0.015);
+      this.levelUp();
+      // Powerup drop
+      if(Math.random()>0.3) this.spawnPowerup(enemy.x, enemy.y);
+    }
+
+    // Score popup
+    this.showFloatingText(enemy.x, enemy.y, '+'+pts, '#'+CFG.ACCENT.replace('#',''));
+
+    enemy.destroy();
+    this.updateHUD();
+  }
+
+  onPlayerHitEnemy(player, enemy) {
+    if(this.invincible) return;
+    if(IAPStore.isOwned('shield') && !this._shieldUsed) {
+      this._shieldUsed = true;
+      this.showFloatingText(player.x, player.y-40, '🛡️ BLOCKED!', '#00ffff');
+      enemy.destroy();
+      return;
+    }
+    this.hitPlayer(enemy.x, enemy.y);
+    if(enemy.type !== 'boss') enemy.destroy();
+    else { enemy.hp -= 5; if(enemy.hp<=0) this.killEnemy(enemy); }
+  }
+
+  onPlayerHitBullet(player, bullet) {
+    if(this.invincible) return;
+    bullet.destroy();
+    this.hitPlayer(player.x, player.y);
+  }
+
+  hitPlayer(x, y) {
+    if(this.invincible) return;
+    this.invincible = true;
+    this.lives--;
+    this.cam.shake(300, 0.012);
+
+    // Player flash
+    this.tweens.add({
+      targets:this.player, alpha:0.2, duration:120,
+      yoyo:true, repeat:4,
+      onComplete:()=>{ this.player.setAlpha(1); this.invincible=false; }
+    });
+
+    this.particles.createEmitter({
+      x:x, y:y,
+      speed:{min:100,max:280}, scale:{start:1,end:0},
+      lifespan:{min:200,max:500}, quantity:20,
+      tint:[0xff4444,0xff8800,0xffffff],
+    }).explode(20,x,y);
+
+    this.updateHUD();
+    if(this.lives <= 0) this.time.delayedCall(300, this.endGame, [], this);
+  }
+
+  onPowerup(player, pu) {
+    pu.destroy();
+    this.lives = Math.min(5, this.lives+1);
+    this.showFloatingText(player.x, player.y-40, '❤️ +1', '#ff4444');
+    this.updateHUD();
+  }
+
+  spawnPowerup(x, y) {
+    const pu = this.powerupGroup.create(x, y, 'powerup').setDepth(4);
+    pu.setVelocityY(100);
+    this.time.addEvent({delay:6000,callback:()=>{if(pu.active)pu.destroy();}});
+  }
+
+  levelUp() {
+    this.level++;
+    this.updateHUD();
+    this.spawnTimer.delay = this.getSpawnDelay();
+    document.getElementById('lvlup').classList.add('show');
+    setTimeout(()=>document.getElementById('lvlup').classList.remove('show'), 1800);
+  }
+
+  showFloatingText(x, y, text, color='#ffffff') {
+    const t = this.add.text(x, y, text, {
+      fontFamily:'Orbitron', fontSize:'18px', color,
+      stroke:'#000', strokeThickness:3,
+    }).setOrigin(0.5).setDepth(10);
+    this.tweens.add({
+      targets:t, y:y-50, alpha:0, duration:900,
+      onComplete:()=>t.destroy()
+    });
+  }
+
+  updateHUD() {
+    document.getElementById('hudScore').textContent  = this.score;
+    document.getElementById('hudLevel').textContent  = this.level;
+    document.getElementById('hudLives').textContent  = '❤️'.repeat(Math.max(0,this.lives))+'🖤'.repeat(Math.max(0,3-this.lives));
+  }
+
+  endGame() {
+    this.shootTimer.destroy();
+    this.spawnTimer.destroy();
+    this.physics.pause();
+
+    document.getElementById('hud').style.display   = 'none';
+    document.getElementById('mctrl').style.display = 'none';
+    document.getElementById('finalScore').textContent = this.score;
+
+    if(this.score > bestScore) {
+      bestScore = this.score;
+      localStorage.setItem('best_'+CFG.PROD_ID, bestScore);
+      document.getElementById('goSub').textContent = '🏆 {{NEW_BEST_LBL}}!';
+      document.getElementById('bestDisp').textContent = bestScore;
+    } else {
+      document.getElementById('goSub').textContent = '{{BEST_LBL}}: '+bestScore;
+    }
+    document.getElementById('scrOver').classList.add('on');
+  }
+
+  update() {
+    const W = this.scale.width;
+
+    // Stars scroll
+    this.stars.getChildren().forEach(s => {
+      s.y += s.speedY;
+      if(s.y > this.scale.height+4) { s.y=-4; s.x=Phaser.Math.Between(0,W); }
+    });
+
+    // Player movement
+    const spd = 280 + (IAPStore.isOwned('speed') ? 80 : 0);
+    if(this.cursors.left.isDown  || this.wasd.A.isDown || this.touchLeft)
+      this.player.setVelocityX(-spd);
+    else if(this.cursors.right.isDown || this.wasd.D.isDown || this.touchRight)
+      this.player.setVelocityX(spd);
+    else
+      this.player.setVelocityX(0);
+
+    // Clean off-screen bullets and enemies
+    this.bulletGroup.getChildren().forEach(b => {
+      if(b.y < -20) b.destroy();
+    });
+    this.eBulletGroup.getChildren().forEach(b => {
+      if(b.y > this.scale.height+20) b.destroy();
+    });
+    this.enemyGroup.getChildren().forEach(e => {
+      if(e.y > this.scale.height+60) e.destroy();
+    });
+  }
+
+  bindMobileControls() {
+    const bind = (id, onStart, onEnd) => {
+      const el = document.getElementById(id);
+      el.addEventListener('touchstart',e=>{e.preventDefault();onStart();el.classList.add('pressed');},{passive:false});
+      el.addEventListener('touchend',  e=>{e.preventDefault();onEnd();  el.classList.remove('pressed');},{passive:false});
+    };
+    bind('mcLeft',  ()=>this.touchLeft=true,  ()=>this.touchLeft=false);
+    bind('mcRight', ()=>this.touchRight=true, ()=>this.touchRight=false);
+    bind('mcFire',  ()=>this.touchFire=true,  ()=>this.touchFire=false);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PHASER CONFIG
+// ═══════════════════════════════════════════════════════════════
+const phaserConfig = {
+  type: Phaser.AUTO,
+  parent: 'game-container',
+  width:  window.innerWidth,
+  height: window.innerHeight,
+  backgroundColor: '#00000a',
+  physics: {
+    default: 'arcade',
+    arcade: { gravity:{y:0}, debug:false }
+  },
+  scene: [BootScene, GameScene],
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+};
+
+let game = null;
+
+// ═══════════════════════════════════════════════════════════════
+// APP LOGIC
+// ═══════════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  if(id) document.getElementById(id).classList.add('on');
+}
+
+function startGame() {
+  showScreen(null);
+  document.getElementById('hud').style.display   = 'flex';
+  document.getElementById('mctrl').style.display = 'flex';
+
+  if(!game) {
+    game = new Phaser.Game(phaserConfig);
+  } else {
+    game.scene.stop('Game');
+    game.scene.start('Game');
+  }
+}
+
+function restartGame() {
+  showScreen(null);
+  document.getElementById('hud').style.display   = 'flex';
+  document.getElementById('mctrl').style.display = 'flex';
+  if(game) { game.scene.stop('Game'); game.scene.start('Game'); }
+  else startGame();
+}
+
+function showStart() {
+  if(game) { game.scene.stop('Game'); }
+  document.getElementById('hud').style.display   = 'none';
+  document.getElementById('mctrl').style.display = 'none';
+  showScreen('scrStart');
+}
+
+document.getElementById('btnPlay').addEventListener('click', startGame);
+
+// Resize
+window.addEventListener('resize', () => {
+  if(game) game.scale.resize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
