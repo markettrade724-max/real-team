@@ -32,4 +32,4 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add public/games/
-          git diff --staged --quiet && echo "⏭ No changes" || (git commit -m "🎮 Auto-generate games [skip ci]" && git push)
+          git diff --staged --quiet && echo "No changes" || (git commit -m "🎮 Auto-generate games [skip ci]" && git push)
