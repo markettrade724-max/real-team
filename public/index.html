@@ -272,7 +272,7 @@ function renderGrid(t){
     const av=p.status==='available';
     const isNew=p.generatedAt&&(Date.now()-new Date(p.generatedAt))/864e5<7;
     const iapCount=p.iap?.length||0;
-    return `<div class="card reveal" ${av?`onclick="location.href='/games/${p.slug}.html'"`:''}style="${av?'':'opacity:.6;cursor:default'}">
+    return `<div class="card reveal" ${av?`onclick="location.href=getGameUrl(p.slug)'"`:''}style="${av?'':'opacity:.6;cursor:default'}">
       <div class="card-img" style="background:linear-gradient(${p.gradient})">
         ${isNew?'<span style="position:absolute;top:10px;right:10px;background:#facc15;color:#000;font-size:0.6rem;font-weight:900;padding:2px 8px;border-radius:20px;font-family:monospace;letter-spacing:1px;z-index:2">NEW</span>':''}
         <span style="position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(${p.accentRgb},.5))">${p.emoji}</span>
