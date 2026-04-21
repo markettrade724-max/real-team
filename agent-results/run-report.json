@@ -1,8 +1,8 @@
 {
-  "runId": "2026-04-21T0944",
-  "timestamp": "2026-04-21T09:46:29.583Z",
-  "totalDuration": "124.9s",
-  "geminiCalls": "3/6",
+  "runId": "2026-04-21T1504",
+  "timestamp": "2026-04-21T15:04:46.161Z",
+  "totalDuration": "17.5s",
+  "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": true,
@@ -11,53 +11,17 @@
       "error": null
     },
     "idea": {
-      "success": true,
-      "duration": "15.7s",
-      "attempts": 1,
-      "error": null
-    },
-    "art": {
       "success": false,
-      "duration": "11.3s",
+      "duration": "1.2s",
       "attempts": 1,
       "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
-    },
-    "template": {
-      "success": true,
-      "duration": "2ms",
-      "attempts": 1,
-      "error": null
-    },
-    "levels": {
-      "success": false,
-      "duration": "903ms",
-      "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
-    },
-    "code": {
-      "success": true,
-      "duration": "45ms",
-      "attempts": 1,
-      "error": null
-    },
-    "marketing": {
-      "success": true,
-      "duration": "13.3s",
-      "attempts": 1,
-      "error": null
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "7.2s",
-      "attempts": 1,
-      "error": null
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 6,
-    "failed": 2,
-    "newGame": "paradox-pixel-playground",
-    "template": "memory-game.html"
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "newGame": null,
+    "template": null
   }
 }
