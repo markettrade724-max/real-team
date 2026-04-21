@@ -159,7 +159,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 // ═══════════════════════════════════════════════════════════════
 const CFG = {
   ACCENT:    '{{ACCENT}}',
-  ACCENT_N:  0x{{ACCENT}}'.replace('#',''),
+  ACCENT_N:  parseInt('{{ACCENT}}'.replace('#',''), 16),
   PROD_ID:   '{{PRODUCT_ID}}',
   LANG:      '{{LANG}}',
   IAPS:      {{IAPS_JSON}},
