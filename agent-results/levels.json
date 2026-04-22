@@ -1,110 +1,71 @@
 {
-  "gameId": "reality-remix-ar",
+  "gameId": "anima-architect-ai",
   "totalLevels": 5,
   "emojis": [
-    "🎨",
+    "🧠",
+    "💭",
     "✨",
-    "🖌️",
-    "📐",
-    "💡",
-    "🔊",
-    "🌐",
-    "🤝",
-    "⚙️",
     "🤖",
     "🌌",
-    "🗺️"
+    "📖",
+    "👁️",
+    "🎨",
+    "🔮",
+    "🗝️",
+    "🌠",
+    "🖋️"
   ],
   "levels": [
     {
       "number": 1,
       "name": {
-        "ar": "الضربات الأولى",
-        "en": "First Strokes"
+        "ar": "همسات اللاوعي",
+        "en": "Whispers of the Subconscious"
       },
       "difficulty": "easy",
-      "unlockedFeatures": [
-        "Basic Brush Tool",
-        "Simple 3D Shapes (Sphere, Cube)",
-        "Primary Color Palette",
-        "AR Object Placement"
-      ],
-      "objectiveDescription": "Create a simple AR doodle or sculpture in your immediate environment. Place at least 3 distinct digital elements.",
-      "collaborationType": "none",
-      "arInteractionLevel": "basic-placement"
+      "pairs": 4,
+      "timeLimit": 60
     },
     {
       "number": 2,
       "name": {
-        "ar": "الأبعاد الديناميكية",
-        "en": "Dynamic Dimensions"
+        "ar": "نول حائك الأحلام",
+        "en": "Dream Weaver's Loom"
       },
       "difficulty": "medium",
-      "unlockedFeatures": [
-        "Advanced Brushes (Glow, Particle)",
-        "Basic Animations (Pulse, Spin)",
-        "Material Textures (Wood, Metal)",
-        "Full Color Picker",
-        "Basic Physics (Gravity for placed objects)"
-      ],
-      "objectiveDescription": "Animate an AR creation and make it interact slightly with a real-world object (e.g., a glowing sphere orbiting a lamp).",
-      "collaborationType": "none",
-      "arInteractionLevel": "object-attachment"
+      "pairs": 6,
+      "timeLimit": 50
     },
     {
       "number": 3,
       "name": {
-        "ar": "النحات المكاني",
-        "en": "Spatial Sculptor"
+        "ar": "أصداء من الهو",
+        "en": "Echoes from the Id"
       },
       "difficulty": "medium",
-      "unlockedFeatures": [
-        "Advanced 3D Modeling Tools (Extrude, Deform)",
-        "Environmental Effects (Fog, Rain)",
-        "Audio Integration",
-        "Scene Saving and Sharing",
-        "Occlusion (Digital objects behind real ones)"
-      ],
-      "objectiveDescription": "Transform a larger real-world area (e.g., a room corner) into an AR art installation with integrated sound.",
-      "collaborationType": "shared-session",
-      "arInteractionLevel": "environmental-understanding"
+      "pairs": 8,
+      "timeLimit": 45
     },
     {
       "number": 4,
       "name": {
-        "ar": "ناسج الواقع",
-        "en": "Reality Weaver"
+        "ar": "مهندس الواقع",
+        "en": "Architect of Reality"
       },
       "difficulty": "hard",
-      "unlockedFeatures": [
-        "Programmable Behaviors (Simple Scripting)",
-        "Advanced Particle Systems",
-        "Complex Physics (Collisions, Forces)",
-        "User-Generated Content Upload (Textures, Models)",
-        "Persistent AR Anchors"
-      ],
-      "objectiveDescription": "Create an interactive AR experience or 'game' where users trigger events by moving around or touching objects in their real space.",
-      "collaborationType": "persistent-world",
-      "arInteractionLevel": "semantic-mapping"
+      "pairs": 10,
+      "timeLimit": 40
     },
     {
       "number": 5,
       "name": {
-        "ar": "سيد اللوحة اللامتناهية",
-        "en": "Infinite Canvas Master"
+        "ar": "مسبك الوعي الكوني",
+        "en": "Cosmic Consciousness Forge"
       },
       "difficulty": "expert",
-      "unlockedFeatures": [
-        "AI-Assisted Creation Tools",
-        "Advanced Real-Time Rendering",
-        "Cross-Platform Publishing",
-        "Integration with External APIs",
-        "Community Challenge Access"
-      ],
-      "objectiveDescription": "Contribute to a large-scale, public, persistent AR art project, building upon or transforming existing global AR artworks.",
-      "collaborationType": "massive-multiplayer",
-      "arInteractionLevel": "dynamic-adaptation"
+      "pairs": 12,
+      "timeLimit": 35
     }
   ],
-  "generatedAt": "2026-04-19T13:10:02.071Z"
+  "generatedAt": "2026-04-22T20:19:52.136Z"
 }

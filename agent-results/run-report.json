@@ -1,27 +1,63 @@
 {
-  "runId": "2026-04-22T1504",
-  "timestamp": "2026-04-22T15:04:50.939Z",
-  "totalDuration": "21.8s",
-  "geminiCalls": "0/6",
+  "runId": "2026-04-22T2018",
+  "timestamp": "2026-04-22T20:20:42.507Z",
+  "totalDuration": "120.9s",
+  "geminiCalls": "5/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.4s",
+      "duration": "1.2s",
       "attempts": 1,
       "error": null
     },
     "idea": {
-      "success": false,
-      "duration": "5.4s",
+      "success": true,
+      "duration": "14.1s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": null
+    },
+    "art": {
+      "success": true,
+      "duration": "4.7s",
+      "attempts": 1,
+      "error": null
+    },
+    "template": {
+      "success": true,
+      "duration": "2ms",
+      "attempts": 1,
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "5.5s",
+      "attempts": 1,
+      "error": null
+    },
+    "code": {
+      "success": true,
+      "duration": "48ms",
+      "attempts": 1,
+      "error": null
+    },
+    "marketing": {
+      "success": true,
+      "duration": "12.7s",
+      "attempts": 1,
+      "error": null
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "7.6s",
+      "attempts": 1,
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
-    "failed": 1,
-    "newGame": null,
-    "template": null
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "newGame": "anima-architect-ai",
+    "template": "adventure-rpg.html"
   }
 }
