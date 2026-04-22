@@ -167,7 +167,13 @@ footer a{color:var(--acc);text-decoration:none;}
 .reveal.vis{opacity:1;transform:translateY(0);}
 @media(max-width:600px){nav{padding:10px 14px;}.grid{grid-template-columns:1fr;}.hero{padding:90px 14px 60px;}}
 </style>
-<script src="/lang-router.js"></script>
+<script>
+window.getGameUrl=function(slug){
+  var lang=localStorage.getItem('rt_lang')||'ar';
+  if(lang==='ar') return '/games/'+slug+'.html';
+  return '/games/'+slug+'-'+lang+'.html';
+};
+</script>
 </head>
 <body>
 <nav class="z">
