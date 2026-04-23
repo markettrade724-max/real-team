@@ -2334,5 +2334,189 @@
     },
     "iap": [],
     "templateFile": "memory-game.html"
+  },
+  {
+    "id": "pixel-punchline-arena",
+    "slug": "pixel-punchline-arena",
+    "type": "AI-Powered Content Creation Battle Game",
+    "category": "game",
+    "status": "available",
+    "emoji": "💥",
+    "templateFile": "action-shooter.html",
+    "accent": "#f472b6",
+    "accentRgb": "244,114,182",
+    "gradient": "135deg,#1a0533,#831843",
+    "emojis": [
+      "👾",
+      "🤖",
+      "👽",
+      "🦠",
+      "💀"
+    ],
+    "name": {
+      "ar": "لكمة البكسل",
+      "en": "Pixel Punchline",
+      "fr": "Punchline Pixel",
+      "es": "Punchline Píxel",
+      "de": "Pixel-Punchline",
+      "zh": "像素妙语"
+    },
+    "desc": {
+      "ar": "صمم مقاطع فيديو قصيرة مضحكة، صادمة، أو مؤثرة باستخدام الذكاء الاصطناعي المتطور. تنافس في 'حروب التريند' اليومية لترى إبداعاتك تنتشر عالمياً وتتوج نفسك ملك المحتوى الأوحد!",
+      "en": "Craft hilarious, shocking, or heartwarming short videos using cutting-edge AI. Compete in daily 'Trend Wars' to see your creations go globally viral and crown yourself the ultimate content king!",
+      "fr": "Créez des vidéos courtes hilarantes, choquantes ou émouvantes à l'aide d'une IA de pointe. Participez aux 'Trend Wars' quotidiennes pour voir vos créations devenir virales mondialement et vous couronner roi du contenu ultime !",
+      "es": "Crea vídeos cortos hilarantes, impactantes o conmovedores utilizando IA de vanguardia. ¡Compite en 'Guerras de Tendencias' diarias para ver tus creaciones volverse virales globalmente y coronarte como el rey definitivo del contenido!",
+      "de": "Erstelle urkomische, schockierende oder herzerwärmende Kurzvideos mit modernster KI. Nimm an täglichen 'Trend Wars' teil, um deine Kreationen weltweit viral gehen zu sehen und dich zum ultimativen Content-König zu krönen!",
+      "zh": "使用尖端AI制作搞笑、震撼或感人的短视频。在每日'潮流大战'中竞争，让你的创作风靡全球，加冕自己为终极内容之王！"
+    },
+    "tags": [
+      "AI Creativity",
+      "Meme Game",
+      "Social Battle",
+      "Viral Content"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "enemyCount": 8,
+        "enemySpeed": 1.3,
+        "enemyHealth": 1,
+        "bulletSpeed": 6,
+        "spawnInterval": 90,
+        "emojis": [
+          "👾",
+          "🤖",
+          "👽",
+          "🦠",
+          "💀"
+        ],
+        "winMessage": "Level 1 cleared!",
+        "loseMessage": "Mission failed!"
+      },
+      {
+        "enemyCount": 11,
+        "enemySpeed": 1.6,
+        "enemyHealth": 1,
+        "bulletSpeed": 6,
+        "spawnInterval": 80,
+        "emojis": [
+          "👾",
+          "🤖",
+          "👽",
+          "🦠",
+          "💀"
+        ],
+        "winMessage": "Level 2 cleared!",
+        "loseMessage": "Mission failed!"
+      },
+      {
+        "enemyCount": 14,
+        "enemySpeed": 1.9,
+        "enemyHealth": 2,
+        "bulletSpeed": 6,
+        "spawnInterval": 70,
+        "emojis": [
+          "👾",
+          "🤖",
+          "👽",
+          "🦠",
+          "💀"
+        ],
+        "winMessage": "Level 3 cleared!",
+        "loseMessage": "Mission failed!"
+      },
+      {
+        "enemyCount": 17,
+        "enemySpeed": 2.2,
+        "enemyHealth": 2,
+        "bulletSpeed": 6,
+        "spawnInterval": 60,
+        "emojis": [
+          "👾",
+          "🤖",
+          "👽",
+          "🦠",
+          "💀"
+        ],
+        "winMessage": "Level 4 cleared!",
+        "loseMessage": "Mission failed!"
+      },
+      {
+        "enemyCount": 20,
+        "enemySpeed": 2.5,
+        "enemyHealth": 3,
+        "bulletSpeed": 6,
+        "spawnInterval": 50,
+        "emojis": [
+          "👾",
+          "🤖",
+          "👽",
+          "🦠",
+          "💀"
+        ],
+        "winMessage": "Level 5 cleared!",
+        "loseMessage": "Mission failed!"
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-23T15:31:02.804Z"
   }
 ]

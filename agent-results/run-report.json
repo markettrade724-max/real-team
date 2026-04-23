@@ -1,26 +1,26 @@
 {
-  "runId": "2026-04-23T0948",
-  "timestamp": "2026-04-23T09:50:14.229Z",
-  "totalDuration": "103.3s",
-  "geminiCalls": "1/6",
+  "runId": "2026-04-23T1529",
+  "timestamp": "2026-04-23T15:31:40.003Z",
+  "totalDuration": "113.9s",
+  "geminiCalls": "4/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.2s",
+      "duration": "1.3s",
       "attempts": 1,
       "error": null
     },
     "idea": {
       "success": true,
-      "duration": "21.3s",
+      "duration": "18.4s",
       "attempts": 1,
       "error": null
     },
     "art": {
-      "success": false,
-      "duration": "2.3s",
+      "success": true,
+      "duration": "5.6s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": null
     },
     "template": {
       "success": true,
@@ -29,35 +29,35 @@
       "error": null
     },
     "levels": {
-      "success": false,
-      "duration": "2.0s",
+      "success": true,
+      "duration": "6.3s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": null
     },
     "code": {
       "success": true,
-      "duration": "47ms",
+      "duration": "50ms",
       "attempts": 1,
       "error": null
     },
     "marketing": {
       "success": false,
-      "duration": "559ms",
+      "duration": "523ms",
       "attempts": 1,
       "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     },
     "roadmap": {
-      "success": false,
-      "duration": "712ms",
+      "success": true,
+      "duration": "6.6s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": null
     }
   },
   "summary": {
     "total": 8,
-    "passed": 4,
-    "failed": 4,
-    "newGame": "moment-verse",
-    "template": "tool-app.html"
+    "passed": 7,
+    "failed": 1,
+    "newGame": "pixel-punchline-arena",
+    "template": "action-shooter.html"
   }
 }
