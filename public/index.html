@@ -3,177 +3,145 @@
 <head>
   <script src="/lang-router.js"></script>
   <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WLZFTJJ2');</script>
-<!-- End Google Tag Manager -->
-  <!-- ══ Google Analytics — ضع هذا في <head> لكل صفحة ══ -->
-<!-- 
-  خطوات التفعيل:
-  1. اذهب إلى analytics.google.com
-  2. أنشئ Property جديد
-  3. احصل على Measurement ID (G-XXXXXXXXXX)
-  4. استبدل G-XXXXXXXXXX بمعرّفك
--->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WLZFTJJ2');</script>
+  <!-- End Google Tag Manager -->
 
-  // تتبع أحداث مخصصة
-  window.trackEvent = function(action, category, label) {
-    gtag('event', action, {
-      event_category: category,
-      event_label:    label,
-    });
+  <!-- ✅ Google Analytics — معرّف واحد فقط -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-578HP461SJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-578HP461SJ');
+
+    window.trackEvent = function(action, category, label) {
+      gtag('event', action, {
+        event_category: category,
+        event_label:    label,
+      });
+    };
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>realteam — ألعاب · تطبيقات · إبداع</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+  <style>
+  :root{--bg:#060610;--s:#0d0d1f;--b:rgba(255,255,255,0.07);--acc:#facc15;--acc2:#818cf8;--txt:#f1f5f9;--mut:#64748b;}
+  *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+  body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;z-index:0;
+    background-image:linear-gradient(rgba(99,102,241,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.035) 1px,transparent 1px);
+    background-size:48px 48px;pointer-events:none;}
+  .z{position:relative;z-index:1;}
+
+  /* NAV */
+  nav{position:fixed;top:0;inset-inline:0;z-index:100;padding:14px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+    background:rgba(6,6,16,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--b);}
+  .logo{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--acc);letter-spacing:-0.5px;}
+  .logo b{color:var(--acc2);font-weight:700;}
+  .nav-r{display:flex;align-items:center;gap:10px;}
+  .lang-sel{background:rgba(255,255,255,0.05);border:1px solid var(--b);color:var(--txt);
+    padding:6px 10px;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:'Tajawal',sans-serif;}
+
+  /* HERO */
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:120px 20px 80px;position:relative;}
+  .hero-pill{display:inline-flex;align-items:center;gap:8px;
+    background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);
+    color:var(--acc);padding:5px 14px;border-radius:100px;
+    font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:28px;
+    animation:up .6s ease both;}
+  .hero h1{font-size:clamp(2.6rem,7vw,5.5rem);font-weight:900;line-height:1.05;
+    letter-spacing:-2px;animation:up .6s .1s ease both;}
+  .hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--acc),var(--acc2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero-p{color:var(--mut);font-size:clamp(.95rem,2vw,1.15rem);max-width:520px;
+    margin:18px auto 36px;line-height:1.75;animation:up .6s .2s ease both;}
+  .hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:up .6s .3s ease both;}
+  .btn{padding:12px 26px;border-radius:10px;font-weight:700;font-size:.95rem;
+    font-family:'Tajawal',sans-serif;text-decoration:none;border:none;cursor:pointer;
+    display:inline-flex;align-items:center;gap:7px;transition:transform .2s,box-shadow .2s;}
+  .btn-y{background:var(--acc);color:#000;box-shadow:0 0 28px rgba(250,204,21,.25);}
+  .btn-y:hover{transform:translateY(-3px);box-shadow:0 0 40px rgba(250,204,21,.45);}
+  .btn-g{background:transparent;border:1px solid var(--b);color:var(--txt);}
+  .btn-g:hover{background:rgba(255,255,255,.05);transform:translateY(-3px);}
+  .scroll-cue{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--mut);
+    font-size:.68rem;font-family:'Space Mono',monospace;animation:up 1s .8s ease both;}
+  .arr{width:18px;height:18px;border-right:1.5px solid var(--mut);border-bottom:1.5px solid var(--mut);
+    transform:rotate(45deg);animation:bounce 1.6s infinite;}
+
+  /* SECTION */
+  .sec{padding:72px 0;}.wrap{max-width:1200px;margin:0 auto;padding:0 20px;}
+  .sec-lbl{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--acc);
+    letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;}
+  .sec-h{font-size:clamp(1.7rem,3.5vw,2.6rem);font-weight:900;letter-spacing:-1px;margin-bottom:40px;}
+
+  /* FILTER */
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
+  .filter-btn{background:var(--s);border:1px solid var(--b);color:var(--mut);
+    padding:7px 16px;border-radius:100px;font-size:.8rem;cursor:pointer;
+    font-family:'Tajawal',sans-serif;transition:.2s;}
+  .filter-btn.active,.filter-btn:hover{border-color:rgba(250,204,21,.4);color:var(--acc);background:rgba(250,204,21,.06);}
+
+  /* GRID */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;}
+  .card{background:var(--s);border:1px solid var(--b);border-radius:18px;overflow:hidden;
+    transition:transform .3s,border-color .3s,box-shadow .3s;cursor:pointer;}
+  .card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.14);box-shadow:0 20px 40px rgba(0,0,0,.4);}
+  .card-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:3.8rem;position:relative;overflow:hidden;}
+  .card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,var(--s));}
+  .card-body{padding:18px 20px 20px;}
+  .card-tags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+  .tag{font-family:'Space Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:4px;letter-spacing:.08em;}
+  .tag-type{background:rgba(250,204,21,.1);color:var(--acc);}
+  .tag-cat{background:rgba(129,140,248,.1);color:var(--acc2);}
+  .tag-soon{background:rgba(100,116,139,.15);color:var(--mut);}
+  .card-title{font-size:1.3rem;font-weight:900;letter-spacing:-.5px;margin-bottom:6px;}
+  .card-desc{color:var(--mut);font-size:.85rem;line-height:1.6;margin-bottom:18px;}
+  .card-footer{display:flex;align-items:center;justify-content:space-between;}
+  .card-iap{font-size:.75rem;color:var(--mut);}
+  .card-iap strong{color:var(--acc);font-family:'Space Mono',monospace;}
+  .btn-play{background:var(--acc);color:#000;padding:9px 18px;border-radius:9px;
+    font-weight:700;font-size:.85rem;text-decoration:none;font-family:'Tajawal',sans-serif;
+    transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:5px;}
+  .btn-play:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(250,204,21,.4);}
+  .btn-soon{background:rgba(255,255,255,.05);color:var(--mut);padding:9px 18px;border-radius:9px;
+    font-size:.8rem;font-family:'Space Mono',monospace;border:1px solid var(--b);}
+
+  /* HOW */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:40px;}
+  .step{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:24px 20px;position:relative;}
+  .step-n{font-family:'Space Mono',monospace;font-size:2.8rem;font-weight:700;
+    color:rgba(250,204,21,.08);position:absolute;top:14px;right:16px;line-height:1;}
+  [dir=ltr] .step-n{right:auto;left:16px;}
+  .step-i{font-size:1.8rem;margin-bottom:10px;}
+  .step h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .step p{color:var(--mut);font-size:.82rem;line-height:1.6;}
+
+  footer{border-top:1px solid var(--b);padding:36px 0;text-align:center;color:var(--mut);font-size:.82rem;}
+  footer a{color:var(--acc);text-decoration:none;}
+
+  /* ANIM */
+  @keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(5px)}}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s;}
+  .reveal.vis{opacity:1;transform:translateY(0);}
+  @media(max-width:600px){nav{padding:10px 14px;}.grid{grid-template-columns:1fr;}.hero{padding:90px 14px 60px;}}
+  </style>
+  <script>
+  window.getGameUrl=function(slug){
+    var lang=localStorage.getItem('rt_lang')||'ar';
+    if(lang==='ar') return '/games/'+slug+'.html';
+    return '/games/'+slug+'-'+lang+'.html';
   };
-</script>
-<!-- ══ نهاية Google Analytics ══ -->
-
-<!-- 
-  أحداث يجب تتبعها — أضفها في الكود:
-  
-  عند فتح المتجر:
-  trackEvent('open_store', 'IAP', productId);
-  
-  عند الشراء:
-  trackEvent('purchase', 'IAP', iapId);
-  
-  عند إزالة الإعلانات:
-  trackEvent('remove_ads', 'IAP', productId);
-  
-  عند انتهاء اللعبة:
-  trackEvent('game_complete', 'Game', gameId);
--->
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-578HP461SJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-578HP461SJ');
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>realteam — ألعاب · تطبيقات · إبداع</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#060610;--s:#0d0d1f;--b:rgba(255,255,255,0.07);--acc:#facc15;--acc2:#818cf8;--txt:#f1f5f9;--mut:#64748b;}
-*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;
-  background-image:linear-gradient(rgba(99,102,241,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.035) 1px,transparent 1px);
-  background-size:48px 48px;pointer-events:none;}
-.z{position:relative;z-index:1;}
-
-/* NAV */
-nav{position:fixed;top:0;inset-inline:0;z-index:100;padding:14px 28px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:rgba(6,6,16,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--b);}
-.logo{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--acc);letter-spacing:-0.5px;}
-.logo b{color:var(--acc2);font-weight:700;}
-.nav-r{display:flex;align-items:center;gap:10px;}
-.lang-sel{background:rgba(255,255,255,0.05);border:1px solid var(--b);color:var(--txt);
-  padding:6px 10px;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:'Tajawal',sans-serif;}
-
-/* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;text-align:center;padding:120px 20px 80px;position:relative;}
-.hero-pill{display:inline-flex;align-items:center;gap:8px;
-  background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);
-  color:var(--acc);padding:5px 14px;border-radius:100px;
-  font-size:0.75rem;font-family:'Space Mono',monospace;margin-bottom:28px;
-  animation:up .6s ease both;}
-.hero h1{font-size:clamp(2.6rem,7vw,5.5rem);font-weight:900;line-height:1.05;
-  letter-spacing:-2px;animation:up .6s .1s ease both;}
-.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--acc),var(--acc2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-p{color:var(--mut);font-size:clamp(.95rem,2vw,1.15rem);max-width:520px;
-  margin:18px auto 36px;line-height:1.75;animation:up .6s .2s ease both;}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:up .6s .3s ease both;}
-.btn{padding:12px 26px;border-radius:10px;font-weight:700;font-size:.95rem;
-  font-family:'Tajawal',sans-serif;text-decoration:none;border:none;cursor:pointer;
-  display:inline-flex;align-items:center;gap:7px;transition:transform .2s,box-shadow .2s;}
-.btn-y{background:var(--acc);color:#000;box-shadow:0 0 28px rgba(250,204,21,.25);}
-.btn-y:hover{transform:translateY(-3px);box-shadow:0 0 40px rgba(250,204,21,.45);}
-.btn-g{background:transparent;border:1px solid var(--b);color:var(--txt);}
-.btn-g:hover{background:rgba(255,255,255,.05);transform:translateY(-3px);}
-.scroll-cue{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--mut);
-  font-size:.68rem;font-family:'Space Mono',monospace;animation:up 1s .8s ease both;}
-.arr{width:18px;height:18px;border-right:1.5px solid var(--mut);border-bottom:1.5px solid var(--mut);
-  transform:rotate(45deg);animation:bounce 1.6s infinite;}
-
-/* SECTION */
-.sec{padding:72px 0;}.wrap{max-width:1200px;margin:0 auto;padding:0 20px;}
-.sec-lbl{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--acc);
-  letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;}
-.sec-h{font-size:clamp(1.7rem,3.5vw,2.6rem);font-weight:900;letter-spacing:-1px;margin-bottom:40px;}
-
-/* FILTER */
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
-.filter-btn{background:var(--s);border:1px solid var(--b);color:var(--mut);
-  padding:7px 16px;border-radius:100px;font-size:.8rem;cursor:pointer;
-  font-family:'Tajawal',sans-serif;transition:.2s;}
-.filter-btn.active,.filter-btn:hover{border-color:rgba(250,204,21,.4);color:var(--acc);background:rgba(250,204,21,.06);}
-
-/* GRID */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;}
-.card{background:var(--s);border:1px solid var(--b);border-radius:18px;overflow:hidden;
-  transition:transform .3s,border-color .3s,box-shadow .3s;cursor:pointer;}
-.card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.14);box-shadow:0 20px 40px rgba(0,0,0,.4);}
-.card-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:3.8rem;position:relative;overflow:hidden;}
-.card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,var(--s));}
-.card-body{padding:18px 20px 20px;}
-.card-tags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
-.tag{font-family:'Space Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:4px;letter-spacing:.08em;}
-.tag-type{background:rgba(250,204,21,.1);color:var(--acc);}
-.tag-cat{background:rgba(129,140,248,.1);color:var(--acc2);}
-.tag-soon{background:rgba(100,116,139,.15);color:var(--mut);}
-.card-title{font-size:1.3rem;font-weight:900;letter-spacing:-.5px;margin-bottom:6px;}
-.card-desc{color:var(--mut);font-size:.85rem;line-height:1.6;margin-bottom:18px;}
-.card-footer{display:flex;align-items:center;justify-content:space-between;}
-.card-iap{font-size:.75rem;color:var(--mut);}
-.card-iap strong{color:var(--acc);font-family:'Space Mono',monospace;}
-.btn-play{background:var(--acc);color:#000;padding:9px 18px;border-radius:9px;
-  font-weight:700;font-size:.85rem;text-decoration:none;font-family:'Tajawal',sans-serif;
-  transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:5px;}
-.btn-play:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(250,204,21,.4);}
-.btn-soon{background:rgba(255,255,255,.05);color:var(--mut);padding:9px 18px;border-radius:9px;
-  font-size:.8rem;font-family:'Space Mono',monospace;border:1px solid var(--b);}
-
-/* HOW */
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:40px;}
-.step{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:24px 20px;position:relative;}
-.step-n{font-family:'Space Mono',monospace;font-size:2.8rem;font-weight:700;
-  color:rgba(250,204,21,.08);position:absolute;top:14px;right:16px;line-height:1;}
-[dir=ltr] .step-n{right:auto;left:16px;}
-.step-i{font-size:1.8rem;margin-bottom:10px;}
-.step h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
-.step p{color:var(--mut);font-size:.82rem;line-height:1.6;}
-
-footer{border-top:1px solid var(--b);padding:36px 0;text-align:center;color:var(--mut);font-size:.82rem;}
-footer a{color:var(--acc);text-decoration:none;}
-
-/* ANIM */
-@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-@keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(5px)}}
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s;}
-.reveal.vis{opacity:1;transform:translateY(0);}
-@media(max-width:600px){nav{padding:10px 14px;}.grid{grid-template-columns:1fr;}.hero{padding:90px 14px 60px;}}
-</style>
-<script>
-window.getGameUrl=function(slug){
-  var lang=localStorage.getItem('rt_lang')||'ar';
-  if(lang==='ar') return '/games/'+slug+'.html';
-  return '/games/'+slug+'-'+lang+'.html';
-};
-</script>
+  </script>
 </head>
 <body>
 <nav class="z">
@@ -279,7 +247,8 @@ function renderGrid(t){
     const av=p.status==='available';
     const isNew=p.generatedAt&&(Date.now()-new Date(p.generatedAt))/864e5<7;
     const iapCount=p.iap?.length||0;
-    return `<div class="card reveal" ${av?`onclick="location.href=getGameUrl(p.slug)"`:''}style="${av?'':'opacity:.6;cursor:default'}">
+    // ✅ إصلاح: slug محاط بـ quotes، و onclick واحد فقط على زر اللعب
+    return `<div class="card reveal" ${av?`onclick="location.href=getGameUrl('${p.slug}')"`:''}style="${av?'':'opacity:.6;cursor:default'}">
       <div class="card-img" style="background:linear-gradient(${p.gradient})">
         ${isNew?'<span style="position:absolute;top:10px;right:10px;background:#facc15;color:#000;font-size:0.6rem;font-weight:900;padding:2px 8px;border-radius:20px;font-family:monospace;letter-spacing:1px;z-index:2">NEW</span>':''}
         <span style="position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(${p.accentRgb},.5))">${p.emoji}</span>
@@ -294,7 +263,10 @@ function renderGrid(t){
         <div class="card-desc">${desc}</div>
         <div class="card-footer">
           <div class="card-iap"><strong>${t.free}</strong> ${iapCount>0?'· '+t.iapCount.replace('{{n}}',iapCount):''}</div>
-          ${av?`<a href="javascript:void(0)" onclick="location.href=getGameUrl(p.slug)" class="btn-play" onclick="event.stopPropagation()">${t.play} →</a>`:`<span class="btn-soon">${t.soon}</span>`}
+          ${av
+            ? `<a href="javascript:void(0)" onclick="event.stopPropagation(); location.href=getGameUrl('${p.slug}')" class="btn-play">${t.play} →</a>`
+            : `<span class="btn-soon">${t.soon}</span>`
+          }
         </div>
       </div>
     </div>`;
