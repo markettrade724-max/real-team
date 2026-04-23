@@ -1,8 +1,8 @@
 {
-  "runId": "2026-04-22T2018",
-  "timestamp": "2026-04-22T20:20:42.507Z",
-  "totalDuration": "120.9s",
-  "geminiCalls": "5/6",
+  "runId": "2026-04-23T0948",
+  "timestamp": "2026-04-23T09:50:14.229Z",
+  "totalDuration": "103.3s",
+  "geminiCalls": "1/6",
   "agents": {
     "analytics": {
       "success": true,
@@ -12,15 +12,15 @@
     },
     "idea": {
       "success": true,
-      "duration": "14.1s",
+      "duration": "21.3s",
       "attempts": 1,
       "error": null
     },
     "art": {
-      "success": true,
-      "duration": "4.7s",
+      "success": false,
+      "duration": "2.3s",
       "attempts": 1,
-      "error": null
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     },
     "template": {
       "success": true,
@@ -29,35 +29,35 @@
       "error": null
     },
     "levels": {
-      "success": true,
-      "duration": "5.5s",
+      "success": false,
+      "duration": "2.0s",
       "attempts": 1,
-      "error": null
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     },
     "code": {
       "success": true,
-      "duration": "48ms",
+      "duration": "47ms",
       "attempts": 1,
       "error": null
     },
     "marketing": {
-      "success": true,
-      "duration": "12.7s",
+      "success": false,
+      "duration": "559ms",
       "attempts": 1,
-      "error": null
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     },
     "roadmap": {
-      "success": true,
-      "duration": "7.6s",
+      "success": false,
+      "duration": "712ms",
       "attempts": 1,
-      "error": null
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     }
   },
   "summary": {
     "total": 8,
-    "passed": 8,
-    "failed": 0,
-    "newGame": "anima-architect-ai",
-    "template": "adventure-rpg.html"
+    "passed": 4,
+    "failed": 4,
+    "newGame": "moment-verse",
+    "template": "tool-app.html"
   }
 }
