@@ -37,8 +37,6 @@ const TEMPLATE_MAP = {
   app:       'tool-app.html',
   timer:     'tool-app.html',
   focus:     'tool-app.html',
-  // افتراضي → سباقات
-  default:   'racing-game.html',
 };
 
 // ── الترجمات ──────────────────────────────────────────────────
@@ -347,13 +345,19 @@ function ensureLang(obj, fallbackOrder = ['en','ar']) {
 
 // ── توليد لعبة واحدة ──────────────────────────────────────────
 function generate(product) {
-  const tplName = TEMPLATE_MAP[product.type] || TEMPLATE_MAP.default;
-  const tplPath = join(__dirname, 'templates', tplName);
+  const tplName = TEMPLATE_MAP[product.type];
+  if (!tplName) {
+    console.error(`❌ Unknown type: "${product.type}" (slug: ${product.slug})`);
+    console.error(`   Available types: ${Object.keys(TEMPLATE_MAP).join(', ')}`);
+    return false;
+  }
 
+  const tplPath = join(__dirname, 'templates', tplName);
   let tpl;
   try { tpl = readFileSync(tplPath, 'utf8'); }
   catch(e) {
-    console.error(`❌ Template not found: ${tplName} for type: ${product.type}`);
+    console.error(`❌ Template file missing: ${tplName}`);
+    console.error(`   Expected at: templates/${tplName}`);
     return false;
   }
 
