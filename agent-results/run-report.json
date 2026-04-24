@@ -1,63 +1,27 @@
 {
-  "runId": "2026-04-23T1529",
-  "timestamp": "2026-04-23T15:31:40.003Z",
-  "totalDuration": "113.9s",
-  "geminiCalls": "4/6",
+  "runId": "2026-04-24T0948",
+  "timestamp": "2026-04-24T09:48:52.989Z",
+  "totalDuration": "21.5s",
+  "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.3s",
+      "duration": "1.4s",
       "attempts": 1,
       "error": null
     },
     "idea": {
-      "success": true,
-      "duration": "18.4s",
-      "attempts": 1,
-      "error": null
-    },
-    "art": {
-      "success": true,
-      "duration": "5.6s",
-      "attempts": 1,
-      "error": null
-    },
-    "template": {
-      "success": true,
-      "duration": "2ms",
-      "attempts": 1,
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "6.3s",
-      "attempts": 1,
-      "error": null
-    },
-    "code": {
-      "success": true,
-      "duration": "50ms",
-      "attempts": 1,
-      "error": null
-    },
-    "marketing": {
       "success": false,
-      "duration": "523ms",
+      "duration": "5.2s",
       "attempts": 1,
       "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "6.6s",
-      "attempts": 1,
-      "error": null
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 7,
+    "total": 2,
+    "passed": 1,
     "failed": 1,
-    "newGame": "pixel-punchline-arena",
-    "template": "action-shooter.html"
+    "newGame": null,
+    "template": null
   }
 }
