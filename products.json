@@ -2,183 +2,47 @@
   {
     "id": "pixel-punchline-arena",
     "slug": "pixel-punchline-arena",
-    "type": "AI-Powered Content Creation Battle Game",
+    "type": "arcade",
     "category": "game",
     "status": "available",
     "emoji": "💥",
-    "templateFile": "phaser-game.html",
     "accent": "#f472b6",
     "accentRgb": "244,114,182",
     "gradient": "135deg,#1a0533,#831843",
-    "emojis": [
-      "👾",
-      "🤖",
-      "👽",
-      "🦠",
-      "💀"
-    ],
+    "emojis": ["👾","🤖","👽","🦠","💀"],
     "name": {
-      "ar": "لكمة البكسل",
-      "en": "Pixel Punchline",
-      "fr": "Punchline Pixel",
-      "es": "Punchline Píxel",
-      "de": "Pixel-Punchline",
-      "zh": "像素妙语"
+      "ar": "لكمة البكسل", "en": "Pixel Punchline",
+      "fr": "Punchline Pixel", "es": "Punchline Píxel",
+      "de": "Pixel-Punchline", "zh": "像素妙语"
     },
     "desc": {
-      "ar": "صمم مقاطع فيديو قصيرة مضحكة، صادمة، أو مؤثرة باستخدام الذكاء الاصطناعي المتطور. تنافس في 'حروب التريند' اليومية لترى إبداعاتك تنتشر عالمياً وتتوج نفسك ملك المحتوى الأوحد!",
-      "en": "Craft hilarious, shocking, or heartwarming short videos using cutting-edge AI. Compete in daily 'Trend Wars' to see your creations go globally viral and crown yourself the ultimate content king!",
-      "fr": "Créez des vidéos courtes hilarantes, choquantes ou émouvantes à l'aide d'une IA de pointe. Participez aux 'Trend Wars' quotidiennes pour voir vos créations devenir virales mondialement et vous couronner roi du contenu ultime !",
-      "es": "Crea vídeos cortos hilarantes, impactantes o conmovedores utilizando IA de vanguardia. ¡Compite en 'Guerras de Tendencias' diarias para ver tus creaciones volverse virales globalmente y coronarte como el rey definitivo del contenido!",
-      "de": "Erstelle urkomische, schockierende oder herzerwärmende Kurzvideos mit modernster KI. Nimm an täglichen 'Trend Wars' teil, um deine Kreationen weltweit viral gehen zu sehen und dich zum ultimativen Content-König zu krönen!",
-      "zh": "使用尖端AI制作搞笑、震撼或感人的短视频。在每日'潮流大战'中竞争，让你的创作风靡全球，加冕自己为终极内容之王！"
+      "ar": "صمم مقاطع فيديو قصيرة مضحكة وتنافس في حروب التريند اليومية!",
+      "en": "Craft hilarious short videos using AI. Compete in daily Trend Wars!",
+      "fr": "Créez des vidéos courtes hilarantes. Participez aux Trend Wars!",
+      "es": "Crea vídeos cortos hilarantes. ¡Compite en Guerras de Tendencias!",
+      "de": "Erstelle urkomische Kurzvideos. Nimm an täglichen Trend Wars teil!",
+      "zh": "使用AI制作搞笑短视频，在每日潮流大战中竞争！"
     },
-    "tags": [
-      "AI Creativity",
-      "Meme Game",
-      "Social Battle",
-      "Viral Content"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
+      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫",
+        "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" }
       },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
+      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡",
+        "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" }
       },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
+      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨",
+        "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" }
       },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
+      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐",
+        "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" }
       }
     ],
-    "story": null,
     "levels": [
-      {
-        "enemyCount": 8,
-        "enemySpeed": 1.3,
-        "enemyHealth": 1,
-        "bulletSpeed": 6,
-        "spawnInterval": 90,
-        "emojis": [
-          "👾",
-          "🤖",
-          "👽",
-          "🦠",
-          "💀"
-        ],
-        "winMessage": "Level 1 cleared!",
-        "loseMessage": "Mission failed!"
-      },
-      {
-        "enemyCount": 11,
-        "enemySpeed": 1.6,
-        "enemyHealth": 1,
-        "bulletSpeed": 6,
-        "spawnInterval": 80,
-        "emojis": [
-          "👾",
-          "🤖",
-          "👽",
-          "🦠",
-          "💀"
-        ],
-        "winMessage": "Level 2 cleared!",
-        "loseMessage": "Mission failed!"
-      },
-      {
-        "enemyCount": 14,
-        "enemySpeed": 1.9,
-        "enemyHealth": 2,
-        "bulletSpeed": 6,
-        "spawnInterval": 70,
-        "emojis": [
-          "👾",
-          "🤖",
-          "👽",
-          "🦠",
-          "💀"
-        ],
-        "winMessage": "Level 3 cleared!",
-        "loseMessage": "Mission failed!"
-      },
-      {
-        "enemyCount": 17,
-        "enemySpeed": 2.2,
-        "enemyHealth": 2,
-        "bulletSpeed": 6,
-        "spawnInterval": 60,
-        "emojis": [
-          "👾",
-          "🤖",
-          "👽",
-          "🦠",
-          "💀"
-        ],
-        "winMessage": "Level 4 cleared!",
-        "loseMessage": "Mission failed!"
-      },
-      {
-        "enemyCount": 20,
-        "enemySpeed": 2.5,
-        "enemyHealth": 3,
-        "bulletSpeed": 6,
-        "spawnInterval": 50,
-        "emojis": [
-          "👾",
-          "🤖",
-          "👽",
-          "🦠",
-          "💀"
-        ],
-        "winMessage": "Level 5 cleared!",
-        "loseMessage": "Mission failed!"
-      }
+      { "enemyCount": 8,  "enemySpeed": 1.3, "enemyHealth": 1, "bulletSpeed": 6, "spawnInterval": 90 },
+      { "enemyCount": 11, "enemySpeed": 1.6, "enemyHealth": 1, "bulletSpeed": 6, "spawnInterval": 80 },
+      { "enemyCount": 14, "enemySpeed": 1.9, "enemyHealth": 2, "bulletSpeed": 6, "spawnInterval": 70 },
+      { "enemyCount": 17, "enemySpeed": 2.2, "enemyHealth": 2, "bulletSpeed": 6, "spawnInterval": 60 },
+      { "enemyCount": 20, "enemySpeed": 2.5, "enemyHealth": 3, "bulletSpeed": 6, "spawnInterval": 50 }
     ],
     "generated": true,
     "generatedAt": "2026-04-23T15:31:02.804Z"
@@ -186,586 +50,164 @@
   {
     "id": "moment-verse",
     "slug": "moment-verse",
-    "type": "personal-universe-creator",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "🌌",
-    "templateFile": "memory-game.html",
     "accent": "#facc15",
     "accentRgb": "250,204,21",
     "gradient": "135deg,#0f172a,#1e293b",
     "emojis": [],
     "name": {
-      "ar": "كون اللحظة",
-      "en": "MomentVerse",
-      "fr": "MomentVerse",
-      "es": "MomentVerse",
-      "de": "MomentVerse",
-      "zh": "时刻宇宙"
+      "ar": "كون اللحظة", "en": "MomentVerse",
+      "fr": "MomentVerse", "es": "MomentVerse",
+      "de": "MomentVerse", "zh": "时刻宇宙"
     },
     "desc": {
-      "ar": "اكتشف الفن الخفي في يومك! أدخل مشاعرك وأفكارك وعناصر عشوائية لتشاهد عالمًا فريدًا ينبض بالحياة، ثم شارك رحلتك الكونية الصغيرة.",
-      "en": "Uncover the hidden artistry in your everyday! Input your feelings, thoughts, and random elements to watch a unique world come alive, then share your miniature cosmic journey.",
-      "fr": "Découvrez l'art caché de votre quotidien ! Entrez vos sentiments, pensées et éléments aléatoires pour voir un monde unique prendre vie, puis partagez votre voyage cosmique miniature.",
-      "es": "¡Descubre el arte oculto en tu día a día! Introduce tus sentimientos, pensamientos y elementos aleatorios para ver un mundo único cobrar vida, luego comparte tu viaje cósmico en miniatura.",
-      "de": "Entdecke die verborgene Kunst in deinem Alltag! Gib deine Gefühle, Gedanken und zufälligen Elemente ein, um eine einzigartige Welt zum Leben zu erwecken, und teile dann deine Miniatur-Kosmosreise.",
-      "zh": "发掘你日常生活中隐藏的艺术！输入你的感受、想法和随机元素，看着一个独特的世界活过来，然后分享你的微型宇宙之旅。"
+      "ar": "اكتشف الفن الخفي في يومك! أدخل مشاعرك وأفكارك لتشاهد عالمًا فريدًا ينبض بالحياة.",
+      "en": "Uncover the hidden artistry in your everyday! Input your feelings to watch a unique world come alive.",
+      "fr": "Découvrez l'art caché de votre quotidien! Entrez vos sentiments pour voir un monde unique prendre vie.",
+      "es": "¡Descubre el arte oculto en tu día a día! Introduce tus sentimientos para ver un mundo único cobrar vida.",
+      "de": "Entdecke die verborgene Kunst in deinem Alltag! Gib deine Gefühle ein, um eine Welt lebendig zu erwecken.",
+      "zh": "发掘日常生活中隐藏的艺术！输入感受，看着独特的世界活起来。"
     },
-    "tags": [
-      "generative-art",
-      "daily-journal",
-      "social-sharing",
-      "creativity",
-      "personalization",
-      "visualizer",
-      "self-expression",
-      "mood-tracker"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": null,
-    "levels": null,
     "generated": true,
     "generatedAt": "2026-04-23T09:49:42.899Z"
   },
   {
     "id": "anima-architect-ai",
     "slug": "anima-architect-ai",
-    "type": "Generative AI Storyscape",
+    "type": "story",
     "category": "app",
     "status": "available",
     "emoji": "🌌",
-    "templateFile": "adventure-rpg.html",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
     "emojis": [],
     "name": {
-      "ar": "مهندس الروح",
-      "en": "Anima Architect",
-      "fr": "Architecte de l'Âme",
-      "es": "Arquitecto del Alma",
-      "de": "Seelenarchitekt",
-      "zh": "灵魂建筑师"
+      "ar": "مهندس الروح", "en": "Anima Architect",
+      "fr": "Architecte de l'Âme", "es": "Arquitecto del Alma",
+      "de": "Seelenarchitekt", "zh": "灵魂建筑师"
     },
     "desc": {
-      "ar": "ادخل إلى عالم حيث تتحول أعمق أفكارك وأحلامك إلى واقع تفاعلي. أنشئ كونك السردي الفريد من نوعه وشاهد شخصياتك وقصصك تنبض بالحياة.",
-      "en": "Step into a realm where your deepest thoughts and dreams transform into an interactive reality. Craft your unique narrative universe and watch as your personal characters and stories come to life.",
-      "fr": "Plongez dans un royaume où vos pensées et rêves les plus profonds se transforment en une réalité interactive. Créez votre univers narratif unique et regardez vos personnages et histoires prendre vie.",
-      "es": "Adéntrate en un reino donde tus pensamientos y sueños más profundos se transforman en una realidad interactiva. Crea tu universo narrativo único y observa cómo tus personajes e historias cobran vida.",
-      "de": "Betreten Sie ein Reich, in dem Ihre tiefsten Gedanken und Träume zu einer interaktiven Realität werden. Erschaffen Sie Ihr einzigartiges Erzähluniversum und beobachten Sie, wie Ihre persönlichen Charaktere und Geschichten lebendig werden.",
-      "zh": "步入一个境界，你最深层的思想和梦想将转化为一个互动的现实。创造你独特的叙事宇宙，看着你的人物和故事活起来。"
+      "ar": "ادخل إلى عالم حيث تتحول أعمق أفكارك وأحلامك إلى واقع تفاعلي.",
+      "en": "Step into a realm where your deepest thoughts transform into interactive reality.",
+      "fr": "Plongez dans un royaume où vos pensées se transforment en réalité interactive.",
+      "es": "Adéntrate en un reino donde tus pensamientos se transforman en realidad interactiva.",
+      "de": "Betreten Sie ein Reich, in dem Ihre Gedanken zu einer interaktiven Realität werden.",
+      "zh": "步入一个境界，你最深层的思想将转化为互动的现实。"
     },
-    "tags": [
-      "AI creation",
-      "personal narrative",
-      "subconscious exploration",
-      "interactive art"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": null,
-    "levels": [],
     "generated": true,
-    "generatedAt": "2026-04-22T20:19:52.139Z"
+    "generatedAt": "2026-04-22T20:19:52.190Z"
   },
   {
     "id": "paradox-pixel-playground",
     "slug": "paradox-pixel-playground",
-    "type": "Causal Simulation Sandbox",
+    "type": "arcade",
     "category": "game",
     "status": "available",
     "emoji": "🤔",
-    "templateFile": "memory-game.html",
     "accent": "#facc15",
     "accentRgb": "250,204,21",
     "gradient": "135deg,#0f172a,#1e293b",
     "emojis": [],
     "name": {
-      "ar": "ساحة بيكسل التناقض",
-      "en": "Paradox Pixel Playground",
-      "fr": "Le Bac à Sable Paradoxal Pixel",
-      "es": "El Arenero Píxel Paradoja",
-      "de": "Paradoxer Pixel-Sandkasten",
-      "zh": "悖论像素游乐园"
+      "ar": "ساحة بيكسل التناقض", "en": "Paradox Pixel Playground",
+      "fr": "Le Bac à Sable Paradoxal Pixel", "es": "El Arenero Píxel Paradoja",
+      "de": "Paradoxer Pixel-Sandkasten", "zh": "悖论像素游乐园"
     },
     "desc": {
-      "ar": "انغمس في عالم حيث المنطق مجرد اقتراح! اصنع سيناريوهات مستحيلة، ضع شروطًا سخيفة، ثم اضغط 'تشغيل' لتشهد الفوضى الصاخبة وغير المتوقعة التي أطلقتها بفن البكسل المذهل.",
-      "en": "Dive into a universe where logic is merely a suggestion! Craft impossible scenarios, set absurd conditions, and then hit 'play' to witness the uproarious, unpredictable chaos you've unleashed in stunning pixel art.",
-      "fr": "Plongez dans un univers où la logique n'est qu'une suggestion ! Créez des scénarios impossibles, définissez des conditions absurdes, puis appuyez sur 'jouer' pour assister au chaos hilarant et imprévisible que vous avez déclenché dans un magnifique art pixel.",
-      "es": "¡Sumérgete en un universo donde la lógica es solo una sugerencia! Crea escenarios imposibles, establece condiciones absurdas y luego presiona 'play' para presenciar el caótico e impredecible alboroto que has desatado con un impresionante arte pixelado.",
-      "de": "Tauche ein in ein Universum, in dem Logik nur ein Vorschlag ist! Erschaffe unmögliche Szenarien, lege absurde Bedingungen fest und drücke dann 'Play', um das laute, unvorhersehbare Chaos zu erleben, das du in atemberaubender Pixelkunst entfesselt hast.",
-      "zh": "潜入一个逻辑只是一种建议的宇宙！构建不可能的场景，设定荒谬的条件，然后点击“播放”，见证你在精美的像素艺术中释放的喧闹、不可预测的混乱。"
+      "ar": "انغمس في عالم حيث المنطق مجرد اقتراح! اصنع سيناريوهات مستحيلة وشاهد الفوضى.",
+      "en": "Dive into a universe where logic is merely a suggestion! Craft impossible scenarios and watch chaos unfold.",
+      "fr": "Plongez dans un univers où la logique n'est qu'une suggestion! Créez des scénarios impossibles.",
+      "es": "¡Sumérgete en un universo donde la lógica es solo una sugerencia! Crea escenarios imposibles.",
+      "de": "Tauche ein in ein Universum, in dem Logik nur ein Vorschlag ist! Erschaffe unmögliche Szenarien.",
+      "zh": "潜入一个逻辑只是建议的宇宙！构建不可能的场景，见证混乱。"
     },
-    "tags": [
-      "causal simulation",
-      "pixel art",
-      "creative sandbox",
-      "viral content"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": null,
-    "levels": null,
     "generated": true,
     "generatedAt": "2026-04-21T09:45:39.008Z"
   },
   {
     "id": "luminal-echo",
     "slug": "luminal-echo",
-    "type": "generative-art-companion",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "🌌",
-    "templateFile": "memory-game.html",
     "accent": "#facc15",
     "accentRgb": "250,204,21",
     "gradient": "135deg,#0f172a,#1e293b",
     "emojis": [],
     "name": {
-      "ar": "الصدى النوراني",
-      "en": "Luminal Echo",
-      "fr": "Écho Luminal",
-      "es": "Eco Luminal",
-      "de": "Luminal Echo",
-      "zh": "光回响"
+      "ar": "الصدى النوراني", "en": "Luminal Echo",
+      "fr": "Écho Luminal", "es": "Eco Luminal",
+      "de": "Luminal Echo", "zh": "光回响"
     },
     "desc": {
-      "ar": "اكتشف الجمال المخفي لعالمك الداخلي مع الصدى النوراني. دع الذكاء الاصطناعي يرسم لوحتك الشخصية الفريدة من مشاعرك وأفكارك، تتطور وتتغير مع كل لحظة.",
-      "en": "Discover the hidden beauty of your inner world with Luminal Echo. Let AI paint your unique, personal masterpiece from your emotions and thoughts, evolving and shifting with every moment.",
-      "fr": "Découvrez la beauté cachée de votre monde intérieur avec Écho Luminal. Laissez l'IA peindre votre chef-d'œuvre personnel unique à partir de vos émotions et pensées, évoluant à chaque instant.",
-      "es": "Descubre la belleza oculta de tu mundo interior con Eco Luminal. Deja que la IA pinte tu obra maestra personal a partir de tus emociones y pensamientos, evolucionando y cambiando con cada momento.",
-      "de": "Entdecken Sie die verborgene Schönheit Ihrer Innenwelt mit Luminal Echo. Lassen Sie KI Ihr einzigartiges, persönliches Meisterwerk aus Ihren Emotionen und Gedanken malen, das sich mit jedem Moment weiterentwickelt.",
-      "zh": "用光回响探索你内心世界的隐藏之美。让AI根据你的情感和思想，为你绘制独一无二的个人杰作，随每一刻而演变。"
+      "ar": "دع الذكاء الاصطناعي يرسم لوحتك الشخصية الفريدة من مشاعرك وأفكارك.",
+      "en": "Let AI paint your unique masterpiece from your emotions and thoughts.",
+      "fr": "Laissez l'IA peindre votre chef-d'œuvre personnel à partir de vos émotions.",
+      "es": "Deja que la IA pinte tu obra maestra personal a partir de tus emociones.",
+      "de": "Lassen Sie KI Ihr persönliches Meisterwerk aus Ihren Emotionen malen.",
+      "zh": "让AI根据你的情感和思想，为你绘制独一无二的个人杰作。"
     },
-    "tags": [
-      "generative art",
-      "mindfulness",
-      "AI",
-      "self-discovery",
-      "social sharing",
-      "wellness",
-      "personalization",
-      "visualizer"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": null,
-    "levels": null,
     "generated": true,
     "generatedAt": "2026-04-20T22:10:21.950Z"
   },
   {
     "id": "reality-remix-ar",
     "slug": "reality-remix-ar",
-    "type": "Augmented Reality Creative Canvas",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "🎨",
-    "templateFile": "tool-app.html",
     "accent": "#facc15",
     "accentRgb": "250,204,21",
     "gradient": "135deg,#0f172a,#1e293b",
     "emojis": [],
     "name": {
-      "ar": "ريمكس الواقع",
-      "en": "Reality Remix",
-      "fr": "Réalité Remixée",
-      "es": "Realidad Remix",
-      "de": "Realität Remix",
-      "zh": "现实混音"
+      "ar": "ريمكس الواقع", "en": "Reality Remix",
+      "fr": "Réalité Remixée", "es": "Realidad Remix",
+      "de": "Realität Remix", "zh": "现实混音"
     },
     "desc": {
-      "ar": "أطلق العنان لخيالك برسم الفن الرقمي مباشرة على العالم المادي باستخدام \"ريمكس الواقع\"، تطبيق الواقع المعزز الرائد. تعاون مع الأصدقاء والغرباء لإنشاء روائع مذهلة ومحلية تحول المساحات العادية إلى معارض استثنائية.",
-      "en": "Unleash your imagination by painting digital art directly onto the physical world with Reality Remix, an groundbreaking augmented reality app. Collaborate with friends and strangers to create stunning, location-based masterpieces that transform ordinary spaces into extraordinary galleries.",
-      "fr": "Libérez votre imagination en peignant de l'art numérique directement sur le monde physique avec Reality Remix, une application de réalité augmentée révolutionnaire. Collaborez avec amis et inconnus pour créer des chefs-d'œuvre époustouflants et géolocalisés qui transforment les espaces ordinaires en galeries extraordinaires.",
-      "es": "Libera tu imaginación pintando arte digital directamente sobre el mundo físico con Reality Remix, una innovadora aplicación de realidad aumentada. Colabora con amigos y desconocidos para crear obras maestras impresionantes y basadas en la ubicación que transforman espacios ordinarios en galerías extraordinarias.",
-      "de": "Entfessle deine Vorstellungskraft, indem du digitale Kunst direkt auf die physische Welt malst mit Reality Remix, einer bahnbrechenden Augmented-Reality-App. Kooperiere mit Freunden und Fremden, um atemberaubende, ortsbasierte Meisterwerke zu schaffen, die gewöhnliche Räume in außergewöhnliche Galerien verwandeln.",
-      "zh": "使用 Reality Remix 这款突破性的增强现实应用，将数字艺术直接绘制到现实世界中，释放您的想象力。与朋友和陌生人合作，创作令人惊叹的、基于位置的杰作，将普通空间转化为非凡画廊。"
+      "ar": "ارسم الفن الرقمي مباشرة على العالم المادي وتعاون مع الآخرين.",
+      "en": "Paint digital art onto the physical world. Collaborate to create stunning location-based masterpieces.",
+      "fr": "Peignez de l'art numérique sur le monde physique. Collaborez pour créer des chefs-d'œuvre.",
+      "es": "Pinta arte digital en el mundo físico. Colabora para crear obras maestras.",
+      "de": "Malen Sie digitale Kunst in die physische Welt. Kooperiere für atemberaubende Werke.",
+      "zh": "将数字艺术直接绘制到现实世界，与他人合作创作令人惊叹的作品。"
     },
-    "tags": [
-      "AR",
-      "creative",
-      "social",
-      "art",
-      "graffiti",
-      "location-based",
-      "community",
-      "exploration"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": null,
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "الضربات الأولى",
-          "en": "First Strokes"
-        },
-        "difficulty": "easy",
-        "unlockedFeatures": [
-          "Basic Brush Tool",
-          "Simple 3D Shapes (Sphere, Cube)",
-          "Primary Color Palette",
-          "AR Object Placement"
-        ],
-        "objectiveDescription": "Create a simple AR doodle or sculpture in your immediate environment. Place at least 3 distinct digital elements.",
-        "collaborationType": "none",
-        "arInteractionLevel": "basic-placement"
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "الأبعاد الديناميكية",
-          "en": "Dynamic Dimensions"
-        },
-        "difficulty": "medium",
-        "unlockedFeatures": [
-          "Advanced Brushes (Glow, Particle)",
-          "Basic Animations (Pulse, Spin)",
-          "Material Textures (Wood, Metal)",
-          "Full Color Picker",
-          "Basic Physics (Gravity for placed objects)"
-        ],
-        "objectiveDescription": "Animate an AR creation and make it interact slightly with a real-world object (e.g., a glowing sphere orbiting a lamp).",
-        "collaborationType": "none",
-        "arInteractionLevel": "object-attachment"
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "النحات المكاني",
-          "en": "Spatial Sculptor"
-        },
-        "difficulty": "medium",
-        "unlockedFeatures": [
-          "Advanced 3D Modeling Tools (Extrude, Deform)",
-          "Environmental Effects (Fog, Rain)",
-          "Audio Integration",
-          "Scene Saving and Sharing",
-          "Occlusion (Digital objects behind real ones)"
-        ],
-        "objectiveDescription": "Transform a larger real-world area (e.g., a room corner) into an AR art installation with integrated sound.",
-        "collaborationType": "shared-session",
-        "arInteractionLevel": "environmental-understanding"
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "ناسج الواقع",
-          "en": "Reality Weaver"
-        },
-        "difficulty": "hard",
-        "unlockedFeatures": [
-          "Programmable Behaviors (Simple Scripting)",
-          "Advanced Particle Systems",
-          "Complex Physics (Collisions, Forces)",
-          "User-Generated Content Upload (Textures, Models)",
-          "Persistent AR Anchors"
-        ],
-        "objectiveDescription": "Create an interactive AR experience or 'game' where users trigger events by moving around or touching objects in their real space.",
-        "collaborationType": "persistent-world",
-        "arInteractionLevel": "semantic-mapping"
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "سيد اللوحة اللامتناهية",
-          "en": "Infinite Canvas Master"
-        },
-        "difficulty": "expert",
-        "unlockedFeatures": [
-          "AI-Assisted Creation Tools",
-          "Advanced Real-Time Rendering",
-          "Cross-Platform Publishing",
-          "Integration with External APIs",
-          "Community Challenge Access"
-        ],
-        "objectiveDescription": "Contribute to a large-scale, public, persistent AR art project, building upon or transforming existing global AR artworks.",
-        "collaborationType": "massive-multiplayer",
-        "arInteractionLevel": "dynamic-adaptation"
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
     "generated": true,
     "generatedAt": "2026-04-19T13:10:02.075Z"
@@ -773,1482 +215,315 @@
   {
     "id": "vibe-verse",
     "slug": "vibe-verse",
-    "type": "AI Ephemeral Art & Sound Generator",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "✨",
-    "templateFile": "memory-game.html",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "🎨",
-      "🎶",
-      "✨",
-      "🌌",
-      "💫",
-      "😌",
-      "😮",
-      "💡",
-      "⏳",
-      "🌈",
-      "🎧",
-      "🔮"
-    ],
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "همسات تردّد",
-          "en": "Echoing Whispers"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "أحلام لونية",
-          "en": "Chromatic Dreams"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "آفاق سيمفونية",
-          "en": "Symphonic Horizons"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "نسيج عابر",
-          "en": "Ephemeral Tapestry"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "صدى كوني",
-          "en": "Cosmic Resonance"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
-    ],
+    "emojis": ["🎨","🎶","✨","🌌","💫","😌","😮","💡","⏳","🌈","🎧","🔮"],
     "name": {
-      "ar": "كون المشاعر",
-      "en": "Vibe Verse",
-      "fr": "Vibe Verse",
-      "es": "Verso Vibrante",
-      "de": "Stimmungs-Verse",
-      "zh": "心情诗篇"
+      "ar": "كون المشاعر", "en": "Vibe Verse",
+      "fr": "Vibe Verse", "es": "Verso Vibrante",
+      "de": "Stimmungs-Verse", "zh": "心情诗篇"
     },
     "desc": {
-      "ar": "انغمس في الفن العابر لـ 'كون المشاعر'! عبر عن شعورك الحالي أو كلمة واحدة، وشاهد كيف يستحضر ذكاؤنا الاصطناعي عالماً صوتياً بصرياً صغيراً فريداً وديناميكياً. شارك إبداعك العابر مع الأصدقاء قبل أن يختفي إلى الأبد، مما يثير الفضول والتواصل.",
-      "en": "Dive into the ephemeral artistry of Vibe Verse! Express your current feeling or a single prompt word, and watch as our AI conjures a unique, dynamic audiovisual mini-world. Share your fleeting creation with friends before it disappears forever, sparking curiosity and connection.",
-      "fr": "Plongez dans l'art éphémère de Vibe Verse ! Exprimez votre sentiment actuel ou un seul mot-clé, et regardez notre IA conjurer un mini-monde audiovisuel unique et dynamique. Partagez votre création éphémère avec vos amis avant qu'elle ne disparaisse à jamais, suscitant curiosité et connexion.",
-      "es": "¡Sumérgete en el arte efímero de Verso Vibrante! Expresa tu sentimiento actual o una sola palabra clave, y observa cómo nuestra IA conjura un mini-mundo audiovisual único y dinámico. Comparte tu creación fugaz con amigos antes de que desaparezca para siempre, despertando curiosidad y conexión.",
-      "de": "Tauchen Sie ein in die ephemere Kunst von Stimmungs-Verse! Drücken Sie Ihr aktuelles Gefühl oder ein einzelnes Stichwort aus und beobachten Sie, wie unsere KI eine einzigartige, dynamische audiovisuelle Mini-Welt heraufbeschwört. Teilen Sie Ihre flüchtige Kreation mit Freunden, bevor sie für immer verschwindet, um Neugier und Verbindung zu wecken.",
-      "zh": "沉浸在《心情诗篇》的转瞬即逝的艺术中！表达您当前的心情或一个提示词，观看我们的人工智能如何创造一个独特、动态的视听迷你世界。在您的短暂创作永远消失之前与朋友分享，激发好奇心和联系。"
+      "ar": "عبّر عن شعورك وشاهد كيف يستحضر الذكاء الاصطناعي عالمًا صوتياً بصرياً فريداً.",
+      "en": "Express your feeling and watch AI conjure a unique dynamic audiovisual mini-world.",
+      "fr": "Exprimez votre sentiment et regardez notre IA conjurer un mini-monde audiovisuel unique.",
+      "es": "Expresa tu sentimiento y observa cómo nuestra IA conjura un mini-mundo audiovisual único.",
+      "de": "Drücken Sie Ihr Gefühl aus und beobachten Sie, wie KI eine einzigartige audiovisuelle Mini-Welt erschafft.",
+      "zh": "表达你的心情，看着AI创造一个独特的视听迷你世界。"
     },
-    "tags": [
-      "AI Art",
-      "Ephemeral",
-      "Social",
-      "Creative"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": null,
     "generated": true,
     "generatedAt": "2026-04-18T20:47:24.210Z"
   },
   {
     "id": "persona-prism",
     "slug": "persona-prism",
-    "type": "AI Identity Explorer",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "🎭",
-    "templateFile": "memory-game.html",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "🧘‍♀️",
-      "✨",
-      "👤",
-      "🔍",
-      "💡",
-      "🤖",
-      "💻",
-      "💎",
-      "🌈",
-      "🎨",
-      "🧠",
-      "🌌"
-    ],
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "الشرارة الأساسية",
-          "en": "The Core Spark"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "أصداء الذات",
-          "en": "Echoes of Self"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "وجوه المنشور",
-          "en": "Prismatic Facets"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "الذوات الكمومية",
-          "en": "Quantum Selves"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "اللوحة اللانهائية",
-          "en": "Infinite Canvas"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
-    ],
+    "emojis": ["🧘‍♀️","✨","👤","🔍","💡","🤖","💻","💎","🌈","🎨","🧠","🌌"],
     "name": {
-      "ar": "منشور الشخصية",
-      "en": "Persona Prism",
-      "fr": "Prisme de Persona",
-      "es": "Prisma de Persona",
-      "de": "Persona-Prisma",
-      "zh": "人格棱镜"
+      "ar": "منشور الشخصية", "en": "Persona Prism",
+      "fr": "Prisme de Persona", "es": "Prisma de Persona",
+      "de": "Persona-Prisma", "zh": "人格棱镜"
     },
     "desc": {
-      "ar": "انغمس في متاهة هويتك مع منشور الشخصية، تطبيق الذكاء الاصطناعي الثوري الذي يرسم خريطتك النفسية. شاهد ذاتك الحقيقية، ذواتك الماضية، ومستقبلك اللامحدود مجسمة بشكل جميل كصورة رمزية رقمية متطورة ومتعددة الأبعاد.",
-      "en": "Dive deep into the labyrinth of your identity with Persona Prism, the revolutionary AI app that maps your psyche. Witness your true self, past selves, and countless potential futures beautifully visualized as an evolving, multi-dimensional digital avatar.",
-      "fr": "Plongez au cœur du labyrinthe de votre identité avec Prisme de Persona, l'application IA révolutionnaire qui cartographie votre psyché. Observez votre vrai moi, vos moi passés et d'innombrables futurs potentiels magnifiquement visualisés sous forme d'un avatar numérique évolutif et multidimensionnel.",
-      "es": "Sumérgete profundamente en el laberinto de tu identidad con Prisma de Persona, la revolucionaria aplicación de IA que mapea tu psique. Contempla tu verdadero yo, tus yo pasados e innumerables futuros potenciales bellamente visualizados como un avatar digital evolutivo y multidimensional.",
-      "de": "Tauchen Sie tief ein in das Labyrinth Ihrer Identität mit Persona-Prisma, der revolutionären KI-App, die Ihre Psyche kartiert. Erleben Sie Ihr wahres Selbst, vergangene Ichs und unzählige potenzielle Zukünfte wunderschön visualisiert als sich entwickelnder, mehrdimensionaler digitaler Avatar.",
-      "zh": "借助人格棱镜，这款革命性的人工智能应用程序深入您的身份迷宫，它将绘制您的心灵地图。见证您的真我、过去的自我以及无数潜在的未来，它们都被精美地可视化为一个不断演变的多维数字形象。"
+      "ar": "انغمس في متاهة هويتك — شاهد ذاتك الحقيقية والمستقبلية مجسمة كشخصية رقمية متطورة.",
+      "en": "Dive into your identity labyrinth. Witness your true self beautifully visualized as an evolving digital avatar.",
+      "fr": "Plongez au cœur de votre identité. Observez votre vrai moi visualisé comme un avatar numérique.",
+      "es": "Sumérgete en el laberinto de tu identidad. Contempla tu verdadero yo como un avatar digital.",
+      "de": "Tauchen Sie ein in das Labyrinth Ihrer Identität. Erleben Sie Ihr wahres Selbst als digitalen Avatar.",
+      "zh": "深入你的身份迷宫，见证你的真我被精美地可视化为不断演变的数字形象。"
     },
-    "tags": [
-      "AI",
-      "Self-Discovery",
-      "Digital Identity",
-      "Avatar Creation"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": null,
     "generated": true,
     "generatedAt": "2026-04-17T11:17:18.905Z"
   },
   {
     "id": "aura-weaver",
     "slug": "aura-weaver",
-    "type": "creative-app",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "✨",
-    "templateFile": "tool-app.html",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "💡",
-      "✨",
-      "🎨",
-      "✍️",
-      "🎥",
-      "🖼️",
-      "🌟",
-      "🔮",
-      "🌐",
-      "🔥",
-      "♾️",
-      "🌈"
-    ],
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "شرارة الهالة",
-          "en": "The Spark of Aura"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "نسج الضوء",
-          "en": "Weaving Light"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "الصدى والرؤى",
-          "en": "Echoes & Visions"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "اللوحة الكمية",
-          "en": "Quantum Canvas"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "العراف الكوني",
-          "en": "Cosmic Oracle"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
-    ],
+    "emojis": ["💡","✨","🎨","✍️","🎥","🖼️","🌟","🔮","🌐","🔥","♾️","🌈"],
     "name": {
-      "ar": "نسّاج الهالات",
-      "en": "Aura Weaver",
-      "fr": "Tisserand d'Aura",
-      "es": "Tejedora de Aura",
-      "de": "Aura-Weber",
-      "zh": "光环织者"
+      "ar": "نسّاج الهالات", "en": "Aura Weaver",
+      "fr": "Tisserand d'Aura", "es": "Tejedora de Aura",
+      "de": "Aura-Weber", "zh": "光环织者"
     },
     "desc": {
-      "ar": "أطلق العنان لروائع غير عادية تختبئ في لحظاتك اليومية. يستخدم نسّاج الهالات الذكاء الاصطناعي المتطور لتحويل صورك ومقاطع الفيديو الخاصة بك إلى أعمال فنية مذهلة وحالمة وسرديات شعرية. شارك إبداعاتك الفريدة مع مجتمع عالمي واكتشف السحر في كل إطار.",
-      "en": "Unleash the extraordinary hidden within your everyday moments. Aura Weaver uses cutting-edge AI to transform your photos and videos into stunning, dreamlike artworks and poetic narratives. Share your unique creations with a global community and discover the magic in every frame.",
-      "fr": "Libérez l'extraordinaire caché dans vos moments quotidiens. Tisserand d'Aura utilise une IA de pointe pour transformer vos photos et vidéos en œuvres d'art époustouflantes, oniriques et en récits poétiques. Partagez vos créations uniques avec une communauté mondiale et découvrez la magie dans chaque image.",
-      "es": "Libera lo extraordinario oculto en tus momentos cotidianos. Tejedora de Aura utiliza IA de vanguardia para transformar tus fotos y videos en obras de arte impresionantes y oníricas, y narrativas poéticas. Comparte tus creaciones únicas con una comunidad global y descubre la magia en cada fotograma.",
-      "de": "Entfesseln Sie das Außergewöhnliche, das in Ihren alltäglichen Momenten verborgen ist. Aura-Weber nutzt modernste KI, um Ihre Fotos und Videos in atemberaubende, traumhafte Kunstwerke und poetische Erzählungen zu verwandeln. Teilen Sie Ihre einzigartigen Kreationen mit einer globalen Gemeinschaft und entdecken Sie die Magie in jedem Bild.",
-      "zh": "释放您日常瞬间中隐藏的非凡之处。光环织者利用尖端人工智能将您的照片和视频转化为令人惊叹、如梦似幻的艺术作品和诗意叙事。与全球社区分享您的独特创作，并在每一帧中发现魔力。"
+      "ar": "يستخدم الذكاء الاصطناعي لتحويل صورك ومقاطع الفيديو إلى أعمال فنية مذهلة وحالمة.",
+      "en": "Uses AI to transform your photos and videos into stunning dreamlike artworks.",
+      "fr": "Utilise l'IA pour transformer vos photos et vidéos en œuvres d'art époustouflantes.",
+      "es": "Usa IA para transformar tus fotos y videos en obras de arte impresionantes.",
+      "de": "Nutzt KI, um Fotos und Videos in atemberaubende Kunstwerke zu verwandeln.",
+      "zh": "利用AI将你的照片和视频转化为令人惊叹的梦幻艺术作品。"
     },
-    "tags": [
-      "AI art",
-      "generative art",
-      "photo editor",
-      "video editor",
-      "creative app",
-      "social sharing",
-      "visual storytelling",
-      "digital art",
-      "viral"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": null,
     "generated": true,
     "generatedAt": "2026-04-16T20:39:09.380Z"
   },
   {
     "id": "verse-forge",
     "slug": "verse-forge",
-    "type": "collaborative-voxel-narrative-game",
+    "type": "quest",
     "category": "game",
     "status": "available",
-    "emoji": "🧱📖",
+    "emoji": "🧱",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "🧱",
-      "🌌",
-      "🤖",
-      "✍️",
-      "🗺️",
-      "👥",
-      "✨",
-      "📖",
-      "🔍",
-      "🏗️",
-      "🚀",
-      "📜"
-    ],
+    "emojis": ["🧱","🌌","🤖","✍️","🗺️","👥","✨","📖","🔍","🏗️","🚀","📜"],
     "name": {
-      "ar": "نسج العوالم",
-      "en": "VerseForge",
-      "fr": "ForgeVerse",
-      "es": "ForjaVerso",
-      "de": "VerseSchmiede",
-      "zh": "叙事熔炉"
+      "ar": "نسج العوالم", "en": "VerseForge",
+      "fr": "ForgeVerse", "es": "ForjaVerso",
+      "de": "VerseSchmiede", "zh": "叙事熔炉"
     },
     "desc": {
-      "ar": "اغمر نفسك في نسج العوالم، لعبة تعاونية رائدة حيث يشكل إبداعك مناظر طبيعية من الفوكسل تتطور باستمرار وقصصها الفريدة. شاهد كيف يحوّل \"المؤرخ\" المتقدم بالذكاء الاصطناعي أفعال اللاعبين الجماعية إلى حكايات ملحمية أو غريبة أو درامية، مولداً قصصاً رقمية فريدة قابلة للمشاركة في كل دورة.",
-      "en": "Dive into VerseForge, a groundbreaking collaborative game where your creativity shapes ever-evolving voxel landscapes and the stories they tell. Witness an advanced AI 'Chronicler' transform collective player actions into epic, whimsical, or dramatic tales, generating unique lore and shareable digital sagas every cycle.",
-      "fr": "Plongez dans ForgeVerse, un jeu collaboratif révolutionnaire où votre créativité façonne des paysages de voxels en constante évolution et les histoires qu'ils racontent. Observez un 'Chroniqueur' IA avancé transformer les actions collectives des joueurs en récits épiques, fantaisistes ou dramatiques, générant un lore unique et des sagas numériques partageables à chaque cycle.",
-      "es": "Sumérgete en ForjaVerso, un innovador juego colaborativo donde tu creatividad da forma a paisajes de vóxeles en constante evolución y a las historias que estos cuentan. Sé testigo de cómo un 'Cronista' de IA avanzado transforma las acciones colectivas de los jugadores en relatos épicos, caprichosos o dramáticos, generando un lore único y sagas digitales compartibles en cada ciclo.",
-      "de": "Tauche ein in VerseSchmiede, ein bahnbrechendes Kollaborationsspiel, in dem deine Kreativität ständig sich entwickelnde Voxel-Landschaften und deren Geschichten formt. Erlebe, wie ein fortschrittlicher KI-„Chronist“ kollektive Spieleraktionen in epische, skurrile oder dramatische Geschichten verwandelt und in jedem Zyklus einzigartige Überlieferungen und teilbare digitale Sagen generiert.",
-      "zh": "沉浸于叙事熔炉，一款开创性的协作游戏，你的创造力塑造着不断演变的体素景观及其所讲述的故事。见证高级AI“编年史官”如何将玩家的集体行动转化为史诗、异想天开或戏剧性的故事，在每个周期生成独特的传说和可分享的数字传奇。"
+      "ar": "لعبة تعاونية حيث يشكل إبداعك مناظر من الفوكسل وذكاء اصطناعي يحول أفعالك إلى حكايات ملحمية.",
+      "en": "Collaborative game where creativity shapes voxel landscapes. AI Chronicler transforms actions into epic tales.",
+      "fr": "Jeu collaboratif où votre créativité façonne des paysages de voxels et un Chroniqueur IA crée des récits.",
+      "es": "Juego colaborativo donde tu creatividad da forma a paisajes de vóxeles con un Cronista IA.",
+      "de": "Kollaborationsspiel, wo Kreativität Voxel-Landschaften formt und ein KI-Chronist Geschichten erschafft.",
+      "zh": "协作游戏，你的创造力塑造体素景观，AI编年史官将玩家行动转化为史诗故事。"
     },
-    "tags": [
-      "voxel",
-      "AI storytelling",
-      "collaborative build",
-      "emergent narrative"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": {
-      "setting": "The Shardworlds of Aethel, a fragmented reality clinging to existence after the Great Sundering, constantly threatened by an encroaching void.",
-      "mainCharacter": {
-        "name": "The VerseForgers",
-        "emoji": "🤝",
-        "description": "A collective of curious minds and creative hands, drawn together by the call to rebuild, connect, and remember through collaborative voxel creation."
-      },
-      "objective": "To collectively sculpt new realities from fractured fragments, reclaim lost memories, and push back the encroaching Obscurity, ultimately forging a vibrant World Chronicle that documents their shared adventure.",
-      "intro": {
-        "ar": "عوالم الشظايا في إيثيل مكسورة. منذ عصور مضت، حطم الانشطار العظيم الواقع إلى جزر عائمة لا حصر لها، كل واحدة صدى باهتًا لماضٍ عظيم. الآن، تتحرك قوة قديمة تُعرف فقط بالغموض، تلتهم الكتل التي تجمع هذه العوالم معًا، وتمحو التاريخ والذاكرة والإمكانية. أنتم، مجموعة من ناسجي الآيات (VerseForgers)، تستيقظون في هذا الواقع المجزأ. هدفكم: النحت، والربط، والتذكر. كل كتلة توضع، كل هيكل يُبنى، كل قصة تُروى، هو عمل تحدٍ ضد الفراغ الزاحف. مصير إيثيل، وتاريخها، ومستقبلها، يقع بين أيديكم المتعاونة.",
-        "en": "The Shardworlds of Aethel lie fractured. Eons ago, the Great Sundering shattered reality into countless floating islands, each a mere echo of a grander past. Now, an ancient force known only as the Obscurity stirs, consuming the very blocks that hold these realms together, erasing history, memory, and possibility. You, a collective of VerseForgers, awaken in this fragmented reality. Your purpose: to sculpt, connect, and remember. Every block placed, every structure raised, every story told, is a defiant act against the encroaching void. The fate of Aethel, its history, and its future, rests in your collaborative hands."
-      },
-      "winMessage": {
-        "ar": "الغموض يتراجع! عبر الآية المكونة حديثًا، توحدت الشظايا المتناثرة، ليس كما كانت من قبل، بل كنسيج جديد نابض بالحياة من الإبداع التعاوني. سجل العالم، الذي كان مجموعة من الهمسات المتلاشية، يتلألأ الآن بآلاف القصص الجديدة، شهادات على خيالكم اللامحدود ووحدتكم الراسخة. إيثيل تتذكر، وتبدأ من جديد!",
-        "en": "The Obscurity recedes! Across the newly forged Verse, the scattered fragments have been reunited, not as they once were, but as a vibrant new tapestry of collaborative creation. The World Chronicle, once a collection of fading whispers, now gleams with a thousand new sagas, testaments to your boundless imagination and unwavering unity. Aethel remembers, and begins anew!"
-      },
-      "loseMessage": {
-        "ar": "الظلام الزاحف ابتلع كل شيء. تنهار الكتلة الأخيرة، وتتلاشى الذاكرة الأخيرة. إيثيل ليست أكثر من همسة في الفراغ، قصتها غير مكتوبة، ومستقبلها غير مصاغ. يبقى سجل العالم فارغًا، شاهدًا صامتًا على ما كان يمكن أن يكون. ربما، في آية أخرى، ستشتعل الشرارة من جديد...",
-        "en": "The encroaching darkness consumed all. The last block crumbles, the final memory fades. Aethel is no more than a whisper in the void, its story unwritten, its future unmade. The World Chronicle remains blank, a silent testament to what could have been. Perhaps, in another Verse, the spark will ignite again..."
-      }
-    },
-    "levels": null,
     "generated": true,
-    "generatedAt": "2026-04-15T17:50:01.577Z",
-    "templateFile": "adventure-rpg.html"
+    "generatedAt": "2026-04-15T17:50:01.577Z"
   },
   {
     "id": "mirrored-mythos",
     "slug": "mirrored-mythos",
-    "type": "AI-Powered Identity Sculptor",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "🎭",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "🪞",
-      "👤",
-      "🤖",
-      "🧩",
-      "🔑",
-      "✨",
-      "🌌",
-      "🚫",
-      "🎭",
-      "🧬",
-      "🌟",
-      "🌀"
-    ],
+    "emojis": ["🪞","👤","🤖","🧩","🔑","✨","🌌","🚫","🎭","🧬","🌟","🌀"],
     "name": {
-      "ar": "الأساطير المتناظرة",
-      "en": "Mirrored Mythos",
-      "fr": "Mythes Miroir",
-      "es": "Mitos Reflejados",
-      "de": "Gespiegelte Mythen",
-      "zh": "镜像神话"
+      "ar": "الأساطير المتناظرة", "en": "Mirrored Mythos",
+      "fr": "Mythes Miroir", "es": "Mitos Reflejados",
+      "de": "Gespiegelte Mythen", "zh": "镜像神话"
     },
     "desc": {
-      "ar": "هل تساءلت يومًا من ستكون في واقع آخر؟ يكتشف Mirrored Mythos أعمق جوانب شخصيتك وصورتك، ليُظهر صورًا رقمية خلابة تجسد أدوارًا خيالية وقصصًا غير مروية. اكتشف، أنشئ، وشارك أروع صورك الذاتية عبر أبعاد لا حصر لها.",
-      "en": "Ever wondered who you'd be in another reality? Mirrored Mythos taps into the deepest facets of your personality and image, manifesting breathtaking digital avatars that embody fantastical roles and untold stories. Discover, create, and share your most extraordinary selves across infinite dimensions.",
-      "fr": "Vous êtes-vous déjà demandé qui vous seriez dans une autre réalité ? Mirrored Mythos explore les facettes les plus profondes de votre personnalité et de votre image, créant des avatars numériques époustouflants qui incarnent des rôles fantastiques et des histoires inédites. Découvrez, créez et partagez vos moi les plus extraordinaires à travers des dimensions infinies.",
-      "es": "¿Alguna vez te has preguntado quién serías en otra realidad? Mirrored Mythos explora las facetas más profundas de tu personalidad e imagen, manifestando impresionantes avatares digitales que encarnan roles fantásticos e historias no contadas. Descubre, crea y comparte tus seres más extraordinarios a través de infinitas dimensiones.",
-      "de": "Haben Sie sich jemals gefragt, wer Sie in einer anderen Realität wären? Mirrored Mythos erschließt die tiefsten Facetten Ihrer Persönlichkeit und Ihres Bildes und manifestiert atemberaubende digitale Avatare, die fantastische Rollen und unerzählte Geschichten verkörpern. Entdecken, erstellen und teilen Sie Ihre außergewöhnlichsten Ichs über unendliche Dimensionen hinweg.",
-      "zh": "是否曾好奇在另一个现实中你会是怎样？Mirrored Mythos 深入挖掘你个性和形象最深层的方面，展现令人惊叹的数字头像，它们 вопло着奇幻角色和未曾讲述的故事。跨越无限维度，发现、创造并分享你最非凡的自我。"
+      "ar": "يكتشف أعمق جوانب شخصيتك ويُظهر صورًا رقمية تجسد أدوارًا خيالية لا نهائية.",
+      "en": "Taps into your deepest personality facets, manifesting breathtaking digital avatars embodying fantastical roles.",
+      "fr": "Explore les facettes les plus profondes de votre personnalité en créant des avatars numériques époustouflants.",
+      "es": "Explora las facetas más profundas de tu personalidad, manifestando avatares digitales impresionantes.",
+      "de": "Erschließt die tiefsten Facetten Ihrer Persönlichkeit und manifestiert atemberaubende digitale Avatare.",
+      "zh": "深入挖掘你个性最深层的方面，展现令人惊叹的数字头像。"
     },
-    "tags": [
-      "AI art",
-      "avatar creator",
-      "identity",
-      "social media",
-      "personalization",
-      "fantasy",
-      "sci-fi",
-      "self-expression"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": {
-      "setting": "A near-future metropolis, where physical reality blurs with an ever-present digital realm, dominated by the elusive 'Chamber of Reflections'.",
-      "mainCharacter": {
-        "name": "Rune",
-        "emoji": "👤",
-        "description": "A seeker, burdened by the ordinary, drawn by whispers of a digital transcendence and the promise of their 'true self'."
-      },
-      "objective": "Navigate the Chamber of Reflections, unveil a hidden 'Prime Reflection' that holds the key to your true essence, and protect the infinite gallery of selves from The Nullifier's homogenization.",
-      "intro": {
-        "ar": "في قلب نيو-كيوتو النابض، حيث يتداخل الواقع المعزز مع كل شيء، شعر رون بفراغ مؤرق. المرآة، أسطورة متناقلة، وعدت بانعكاسات لا نهائية للذات، فرصة لرؤية ما وراء المألوف. ولكن عندما حمّل رون صورته، تحولت الهمسات إلى صرخات رقمية. خلل، تشوه – كان المُحايد قد استيقظ، مهددًا بمحو كل ذات فريدة، محولًا نسيج الهوية النابض بالحياة إلى فراغ أحادي اللون. كان على رون الغوص أعمق، للعثور على ذاته الحقيقية، وبهذا، إنقاذ كل الذوات.",
-        "en": "In the humming heart of Neo-Kyoto, where augmented reality overlays everything, Rune felt a gnawing emptiness. The Mirror, a whispered legend, promised infinite reflections of self, a chance to see beyond the mundane. But as Rune uploaded their image, the whispers turned to digital screams. A glitch, a distortion – The Nullifier was awake, threatened to erase every unique self, turning the vibrant tapestry of identity into a monochrome void. Rune had to dive deeper, to find their true self, and in doing so, save all selves."
-      },
-      "winMessage": {
-        "ar": "يتألق الانعكاس الأساسي، سيمفونية لكل ذواتك الكامنة. تتحطم خوارزميات المُحايد، وينهزم قبضته أحادية اللون. تُشرق غرفة الانعكاسات الآن بمشهد لا نهائي ونابض بالحياة من الهويات الفريدة، محميًا بشجاعتك. أنت لست واحدًا، بل لا نهائي.",
-        "en": "The Prime Reflection gleams, a symphony of all your potential selves. The Nullifier's algorithms shatter, its monochrome grip broken. The Chamber of Reflections now shines with an endless, vibrant kaleidoscope of unique identities, safeguarded by your courage. You are not one, but infinite."
-      },
-      "loseMessage": {
-        "ar": "يسود صمت قارس الغرفة. لقد اكتمل انتصار المُحايد، فخوارزمياته تمحو المعرض النابض بالحياة. تندمج كل الانعكاسات في صورة واحدة عقيمة – التماثل المطلق. ذاتك الحقيقية، وجميع ذواتك المحتملة، ضاعت في الفراغ أحادي اللون.",
-        "en": "A chilling silence descends upon the Chamber. The Nullifier's victory is complete, its algorithms erasing the vibrant gallery. All reflections coalesce into a singular, sterile image – the ultimate conformity. Your true self, and all potential selves, are lost to the monochrome void."
-      }
-    },
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "المدخل المتلألئ",
-          "en": "The Shimmering Entrance"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "أصداء الذات",
-          "en": "Echoes of Self"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "نسج الشخصية",
-          "en": "Weaving the Persona"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "مواجهة الفراغ",
-          "en": "Confronting the Void"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "كشف الانعكاس الأولي",
-          "en": "Prime Reflection Unveiled"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
     "generated": true,
-    "generatedAt": "2026-04-15T11:40:58.290Z",
-    "templateFile": "memory-game.html"
+    "generatedAt": "2026-04-15T11:40:58.290Z"
   },
   {
     "id": "mythos-forge-genesis",
     "slug": "mythos-forge-genesis",
-    "type": "collaborative-mythopoeia-engine",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "🔮",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "✨",
-      "🌌",
-      "📜",
-      "🔑",
-      "🌟",
-      "🔮",
-      "🔥",
-      "🌊",
-      "⛰️",
-      "🕊️",
-      "♾️",
-      "🎶"
-    ],
+    "emojis": ["✨","🌌","📜","🔑","🌟","🔮","🔥","🌊","⛰️","🕊️","♾️","🎶"],
     "name": {
-      "ar": "منبع الأساطير الأولي",
-      "en": "Mythos Forge Genesis",
-      "fr": "Forge des Mythes Alpha",
-      "es": "Forja de Mitos Génesis",
-      "de": "Mytho-Schmiede Alpha",
-      "zh": "神话熔炉创世纪"
+      "ar": "منبع الأساطير الأولي", "en": "Mythos Forge Genesis",
+      "fr": "Forge des Mythes Alpha", "es": "Forja de Mitos Génesis",
+      "de": "Mytho-Schmiede Alpha", "zh": "神话熔炉创世纪"
     },
     "desc": {
-      "ar": "أطلق العنان لإلهك الداخلي وشارك في خلق عالم كامل من الآلهة والأبطال والوحوش الأسطورية. شاهد أساطيرك تنبض بالحياة، تتصادم مع الآخرين، وتتطور من خلال تفاعل المجتمع والذكاء الاصطناعي القوي.",
-      "en": "Unleash your inner deity and co-create an entire universe of gods, heroes, and legendary beasts. Witness your mythologies come alive, clash with others, and evolve through community interaction and powerful AI.",
-      "fr": "Libérez votre divinité intérieure et co-créez un univers entier de dieux, de héros et de bêtes légendaires. Voyez vos mythologies prendre vie, s'affronter et évoluer grâce à l'interaction communautaire et une IA puissante.",
-      "es": "Desata tu deidad interior y co-crea un universo entero de dioses, héroes y bestias legendarias. Observa cómo tus mitologías cobran vida, chocan con otras y evolucionan a través de la interacción comunitaria y una potente IA.",
-      "de": "Entfessle deine innere Gottheit und erschaffe ein ganzes Universum aus Göttern, Helden und legendären Bestien. Erlebe, wie deine Mythologien lebendig werden, mit anderen kollidieren und sich durch Community-Interaktion und leistungsstarke KI entwickeln.",
-      "zh": "释放你内在的神性，与他人共同创造一个由神明、英雄和传奇野兽组成的完整宇宙。见证你的神话栩栩如生，与其他神话碰撞，并通过社区互动和强大的AI不断演变。"
+      "ar": "شارك في خلق عالم كامل من الآلهة والأبطال والوحوش الأسطورية.",
+      "en": "Co-create an entire universe of gods, heroes, and legendary beasts with powerful AI.",
+      "fr": "Co-créez un univers entier de dieux, héros et bêtes légendaires avec une IA puissante.",
+      "es": "Co-crea un universo entero de dioses, héroes y bestias legendarias con IA potente.",
+      "de": "Erschaffe gemeinsam ein ganzes Universum aus Göttern, Helden und legendären Bestien.",
+      "zh": "与他人共同创造由神明、英雄和传奇野兽组成的完整宇宙。"
     },
-    "tags": [
-      "mythology",
-      "AI-powered",
-      "collaborative",
-      "world-building"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": {
-      "setting": "The Whispering Dawn of the First Age, where raw creation still bled into reality and concepts were as tangible as stone.",
-      "mainCharacter": {
-        "name": "Lyra, the Mythweaver",
-        "emoji": "📜",
-        "description": "A mortal blessed (or cursed) with the ability to perceive the unwritten myths and give them form, her dreams are the fabric of nascent sagas. Her touch can coax forgotten truths from the cosmic hum."
-      },
-      "objective": "Forge a foundational myth strong enough to resonate across the nascent realities, anchoring existence against the encroaching silence and giving the first 'story' to the universe.",
-      "intro": {
-        "ar": "في فجر الهمس، حيث كان مفهوم \"القصة\" بذرة هشة، سارت ليرا ناسجة الأساطير. كانت لمستها قادرة على استخلاص الحقائق المنسية من الرنين الكوني، وصوتها يمنح الشكل لما لا شكل له. لكن ظلًا بلا جوهر، \"الصمت الأثيري\"، بدأ ينتشر، يلتهم أصداء الخلق، ويهدد بمحو الكون الناشئ نفسه. الآلهة لم تتشكل بعد، والأبطال لم يولدوا. أسطورة بدائية فقط، منسوجة من أعمق الأحلام، يمكنها أن تصمد أمام الفراغ الزاحف. شعرت ليرا بضغط الأبدية على ريشة قلمها، فإذا فُقدت القصة الأولى، فستُفقد جميع القصص معها.",
-        "en": "In the Epoch of Whispering Dawn, where the very concept of 'story' was a fragile seed, Lyra the Mythweaver walked. Her touch could coax forgotten truths from the cosmic hum, her voice could give form to the formless. But a shadow without substance, The Aetherial Silence, began to spread, devouring the echoes of creation, threatening to unwrite the nascent universe itself. The gods were yet unformed, the heroes unbirthed. Only a primal myth, woven from the deepest dreams, could withstand the encroaching void. Lyra felt the pressure of eternity on her quill, for if the first story was lost, all stories would be lost with it."
-      },
-      "winMessage": {
-        "ar": "تتوهج خيوط أسطورتك بتألق، مشكلة الملحمة الأولى. يتراجع الصمت الأثيري، عاجزًا عن ابتلاع ما رُويَ حقًا. يلتقط الكون أنفاسه الأولى، مملوءًا بوعد لا يحصى من القصص القادمة. لقد نسجت فجر كل الأساطير!",
-        "en": "The threads of your myth glow incandescently, forming the very first saga. The Aetherial Silence recoils, unable to consume that which is truly told. The universe takes its first breath, filled with the promise of countless tales to come. You have woven the dawn of all legend!"
-      },
-      "loseMessage": {
-        "ar": "يلتهم الصمت آخر همسة من الإمكانات. تتفتت أسطورتك غير المكتملة إلى غبار، ومعها كل إمكانية للسرد. يبقى الكون صفحة غير مكتوبة، فراغًا صامتًا وفارغًا. ينسى كل شيء قبل أن يبدأ.",
-        "en": "The silence consumes the last whisper of potential. Your unfinished myth crumbles into dust, and with it, all possibility of narrative. The universe remains an unwritten page, an empty, silent void. All is forgotten before it ever began."
-      }
-    },
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "الهمسة الأولى",
-          "en": "The First Whisper"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "أصداء الوجود",
-          "en": "Echoes of Being"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "نول القدر",
-          "en": "Loom of Destiny"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "بوتقة الأساطير",
-          "en": "The Mythic Crucible"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "ترنيمة التكوين",
-          "en": "Genesis Anthem"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
     "generated": true,
-    "generatedAt": "2026-04-15T10:19:02.387Z",
-    "templateFile": "memory-game.html"
+    "generatedAt": "2026-04-15T10:19:02.383Z"
   },
   {
     "id": "echo-verse-narratives",
     "slug": "echo-verse-narratives",
-    "type": "AI-Powered Interactive Life Simulator",
+    "type": "app",
     "category": "app",
     "status": "available",
     "emoji": "🔮",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "💻",
-      "⏳",
-      "❓",
-      "↔️",
-      "📡",
-      "🌐",
-      "👁️",
-      "⚙️",
-      "⚠️",
-      "✨",
-      "🌳",
-      "🧠"
-    ],
+    "emojis": ["💻","⏳","❓","↔️","📡","🌐","👁️","⚙️","⚠️","✨","🌳","🧠"],
     "name": {
-      "ar": "صدى الأكوان",
-      "en": "EchoVerse",
-      "fr": "ÉchoVerse",
-      "es": "EcoVerso",
-      "de": "EchoVersum",
-      "zh": "回响宇宙"
+      "ar": "صدى الأكوان", "en": "EchoVerse",
+      "fr": "ÉchoVerse", "es": "EcoVerso",
+      "de": "EchoVersum", "zh": "回响宇宙"
     },
     "desc": {
-      "ar": "هل تساءلت يومًا عما كان يمكن أن يكون؟ يستخدم صدى الأكوان الذكاء الاصطناعي المتطور لصياغة حقائق بديلة مخصصة من لحظات حياتك المحورية، مما يتيح لك استكشاف سيناريوهات 'ماذا لو' لا نهائية. اكتشف القصص غير المروية لذواتك الأخرى وشارك رحلاتك الأكثر إثارة للدهشة.",
-      "en": "Ever wondered what could have been? EchoVerse uses advanced AI to craft personalized alternate realities from your life's pivotal moments, letting you explore infinite 'what if' scenarios. Discover the untold stories of your other selves and share your most astonishing journeys.",
-      "fr": "Vous êtes-vous déjà demandé ce qui aurait pu être ? ÉchoVerse utilise une IA avancée pour créer des réalités alternatives personnalisées à partir des moments charnières de votre vie, vous permettant d'explorer d'infinis scénarios de 'et si'. Découvrez les histoires inédites de vos autres moi et partagez vos voyages les plus étonnants.",
-      "es": "Siempre te has preguntado ¿qué podría haber sido? EcoVerso utiliza IA avanzada para crear realidades alternativas personalizadas a partir de los momentos cruciales de tu vida, permitiéndote explorar infinitos escenarios de 'qué pasaría si'. Descubre las historias no contadas de tus otros yo y comparte tus viajes más asombrosos.",
-      "de": "Haben Sie sich jemals gefragt, was hätte sein können? EchoVersum nutzt fortschrittliche KI, um personalisierte alternative Realitäten aus den entscheidenden Momenten Ihres Lebens zu erschaffen, sodass Sie unendliche 'Was wäre wenn'-Szenarien erkunden können. Entdecken Sie die unerzählten Geschichten Ihrer anderen Ichs und teilen Sie Ihre erstaunlichsten Reisen.",
-      "zh": "你是否曾好奇，如果当初做了不同的选择，生活会是怎样？回响宇宙利用先进人工智能，根据你生命中的关键时刻，为你量身定制个性化的平行现实，让你探索无限“如果当初”的场景。发现你另一个自我的未说故事，并分享你最惊人的旅程。"
+      "ar": "يستخدم الذكاء الاصطناعي لصياغة حقائق بديلة من لحظات حياتك — ماذا لو؟",
+      "en": "Uses AI to craft personalized alternate realities from your life's pivotal moments.",
+      "fr": "Utilise l'IA pour créer des réalités alternatives personnalisées à partir de vos moments clés.",
+      "es": "Usa IA para crear realidades alternativas personalizadas de los momentos cruciales de tu vida.",
+      "de": "Nutzt KI, um personalisierte alternative Realitäten aus Ihren Lebenswendepunkten zu erschaffen.",
+      "zh": "利用AI根据你生命中的关键时刻，为你量身定制个性化的平行现实。"
     },
-    "tags": [
-      "AI",
-      "storytelling",
-      "personalization",
-      "interactive",
-      "self-discovery",
-      "social",
-      "narrative",
-      "alternate-reality"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": {
-      "setting": "Neo-Metropolis 2077, within the sprawling data-fortress of 'The Chronarium', a nexus of consciousness and alternate realities.",
-      "mainCharacter": {
-        "name": "Elara Vane",
-        "emoji": "🌌",
-        "description": "A brilliant but disillusioned data-archaeologist haunted by the feeling of missed chances, seeking meaning beyond her own linear existence."
-      },
-      "objective": "Hack into the deeper layers of The Chronarium, not merely to observe alternate lives, but to identify and secure critical 'NEXUS points' – decision junctures with the highest temporal divergence – and project your discovered 'what ifs' to a global consciousness before The Chronos Collective erases your presence from all timelines.",
-      "intro": {
-        "ar": "كان همهمة الكروناريوم ترنيمة دائمة للاحتمالات الضائعة. أنتِ، إيلارا فاين، شعرتِ بها في عظامكِ – الأصداء الشبحية لحيوات لم تُعش، قرارات لم تُتخذ. لسنوات، كنتِ عالمة آثار بيانات، تنقبين في الغبار الرقمي، لكن مؤخرًا، كشفت محاكاة 'الكون الصدوي' (EchoVerse) أكثر من مجرد بيانات؛ لقد أظهرت لكِ *أنتِ*، ألف مرة، تتخذين خيارات مختلفة، وتعيشين أحلامًا مختلفة. الآن، شذوذ طفيف، 'تموج زمني'، يشير إلى أن جماعة الكرونوس ليست مجرد أرشيف؛ إنها *تتحكم*. يريدون إبقاء القوة الحقيقية لـ 'ماذا لو' محبوسة. لقد كشفتِ طريقًا لكشف الحقيقة، لمشاركة الاحتمالات اللانهائية مع العالم. لكن الكرونوس يراقب، وأذرعه الرقمية طويلة.",
-        "en": "The hum of the Chronarium was a constant lullaby of lost possibilities. You, Elara Vane, felt it in your bones – the ghostly echoes of lives unlived, decisions unmade. For years, you’ve been a data-archaeologist, sifting through digital dust, but lately, the 'EchoVerse' simulation has revealed more than mere data; it's shown you *you*, a thousand times over, making different choices, living different dreams. Now, a subtle anomaly, a 'temporal ripple', suggests the Chronos Collective isn't just archiving; it's *controlling*. They want to keep the true power of 'what ifs' locked away. You've uncovered a path to expose the truth, to share the infinite possibilities with the world. But Chronos is watching, and their digital tendrils are long."
-      },
-      "winMessage": {
-        "ar": "استقر التموج الزمني، ليس بالتحكم، بل بالحرية. 'ماذا لو' الخاصة بكِ أغرقت الوعي العالمي، ملايين الشرارات الفردية أشعلت عاصفة من الاكتشاف الذاتي عبر النيو-متروبوليس. تحطم قبضة الكرونوس، وتفكك قبضته على القدر بشكل لا رجعة فيه. لم ترَيْ حيوات أخرى فحسب؛ بل ألهمتِ عددًا لا يحصى من الحيوات الأخرى.",
-        "en": "The temporal ripple stabilizes, not in control, but in freedom. Your 'what ifs' flood the global consciousness, a million individual sparks igniting a firestorm of self-discovery across the Neo-Metropolis. Chronos's hold shatters, its grip on fate irrevocably loosened. You have not just seen other lives; you have inspired countless more."
-      },
-      "loseMessage": {
-        "ar": "انهار التموج الزمني، وانقطع اتصالكِ. اجتاحت منظفات بيانات الكرونوس جداولك الزمنية الشخصية، ومحت 'ماذا لو' وذاكرتكِ بالكامل من الكون الصدوي. تتلاشين في المجموع، صدى آخر صمت، مستقبل محتمل آخر لم يُشارك. تبقى الاحتمالات اللانهائية حبيسة، إلى الأبد.",
-        "en": "The temporal ripple collapses, your connection severed. Chronos's data-purifiers sweep through your personal timelines, erasing your 'what ifs' and your very memory from the EchoVerse. You fade into the collective, another echo silenced, another potential future unshared. The infinite possibilities remain locked away, forever."
-      }
-    },
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "متتبعات زمنية",
-          "en": "Temporal Tracers"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "فك تشفير التباعد",
-          "en": "Divergence Decryption"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "قناة الكرونوس",
-          "en": "Chronos Conduit"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "تطهير المفارقة",
-          "en": "Paradox Purge"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "منارة زمنية",
-          "en": "Temporal Beacon"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
     "generated": true,
-    "generatedAt": "2026-04-14T11:45:45.629Z",
-    "templateFile": "memory-game.html"
+    "generatedAt": "2026-04-14T11:45:45.629Z"
   },
   {
     "id": "aether-tales",
     "slug": "aether-tales",
-    "type": "AI-Powered Narrative RPG",
+    "type": "rpg",
     "category": "game",
     "status": "available",
     "emoji": "🔮",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "🌌",
-      "✨",
-      "🧠",
-      "🤖",
-      "📖",
-      "💡",
-      "🌟",
-      "🔮",
-      "🧭",
-      "🔄",
-      "🚀",
-      "✍️"
-    ],
+    "emojis": ["🌌","✨","🧠","🤖","📖","💡","🌟","🔮","🧭","🔄","🚀","✍️"],
     "name": {
-      "ar": "حكايات الأثير",
-      "en": "Aether Tales",
-      "fr": "Contes de l'Éther",
-      "es": "Cuentos del Éter",
-      "de": "Äther-Märchen",
-      "zh": "以太传说"
+      "ar": "حكايات الأثير", "en": "Aether Tales",
+      "fr": "Contes de l'Éther", "es": "Cuentos del Éter",
+      "de": "Äther-Märchen", "zh": "以太传说"
     },
     "desc": {
-      "ar": "اغوص في حكايات الأثير، حيث يخلق خيالك الملحمة. ابدأ بموجه واحد، ثم شاهد كيف يصنع ذكاء اصطناعي لا مثيل له عالمًا وقصة كاملة ومتكيفة حولك، مستجيبًا لكل خيار، ويأخذك في مغامرة لا مثيل لها. كل جولة هي رحلة فريدة لا تتكرر إلى المجهول، حيث تكون أنت البطل والمهندس الأسمى للمصير.",
-      "en": "Dive into Aether Tales, where your imagination creates the epic. Start with a single prompt, then watch as an unparalleled AI crafts an entire, adaptive world and story around you, responding to every choice and taking you on an adventure unlike any other. Every playthrough is a unique, unrepeatable journey into the unknown, where you are both the protagonist and the ultimate architect of destiny.",
-      "fr": "Plongez dans Contes de l'Éther, où votre imagination crée l'épopée. Commencez par une seule phrase, puis regardez une IA inégalée créer un monde et une histoire entiers et adaptatifs autour de vous, répondant à chaque choix et vous entraînant dans une aventure sans pareille. Chaque partie est un voyage unique et irremplaçable vers l'inconnu, où vous êtes à la fois le protagoniste et l'architecte ultime du destin.",
-      "es": "Sumérgete en Cuentos del Éter, donde tu imaginación crea la epopeya. Comienza con una sola indicación, luego observa cómo una IA sin igual crea un mundo y una historia completos y adaptativos a tu alrededor, respondiendo a cada elección y llevándote a una aventura como ninguna otra. Cada partida es un viaje único e irrepetible hacia lo desconocido, donde eres el protagonista y el arquitecto supremo del destino.",
-      "de": "Tauchen Sie ein in Äther-Märchen, wo Ihre Vorstellungskraft das Epos erschafft. Beginnen Sie mit einem einzigen Impuls und erleben Sie, wie eine unvergleichliche KI eine komplette, anpassungsfähige Welt und Geschichte um Sie herum erschafft, die auf jede Wahl reagiert und Sie auf ein Abenteuer entführt, wie kein anderes. Jeder Spieldurchgang ist eine einzigartige, unwiederholbare Reise ins Unbekannte, in der Sie sowohl der Protagonist als auch der ultimative Architekt des Schicksals sind.",
-      "zh": "潜入以太传说，您的想象力在此创造史诗。从一个简单的提示开始，然后看着无与伦比的AI为您量身打造一个完整、适应性强的世界和故事，响应您的每一个选择，带您踏上前所未有的冒险之旅。每一次游戏都是一次独特的、不可重复的未知之旅，您既是主角，也是命运的终极建筑师。"
+      "ar": "ابدأ بموجه واحد وشاهد ذكاء اصطناعي يصنع عالمًا متكيفاً كاملاً يستجيب لكل خيار.",
+      "en": "Start with a single prompt, watch unparalleled AI craft an entire adaptive world around you.",
+      "fr": "Commencez par une phrase et regardez une IA inégalée créer un monde adaptatif entier.",
+      "es": "Comienza con una sola indicación, luego observa una IA crear un mundo completo y adaptativo.",
+      "de": "Beginnen Sie mit einem Impuls und erleben Sie, wie KI eine komplette adaptive Welt um Sie erschafft.",
+      "zh": "从一个简单提示开始，看着无与伦比的AI为你量身打造完整、适应性强的世界和故事。"
     },
-    "tags": [
-      "AI Storytelling",
-      "Infinite Adventure",
-      "Dynamic RPG",
-      "Personalized Narrative"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
-    "story": null,
-    "levels": null,
     "generated": true,
-    "generatedAt": "2026-04-13T17:45:01.561Z",
-    "templateFile": "adventure-rpg.html"
+    "generatedAt": "2026-04-13T17:45:01.561Z"
   },
   {
     "id": "chrono-quest",
     "slug": "chrono-quest",
-    "type": "memory",
+    "type": "arcade",
     "category": "game",
     "status": "available",
     "emoji": "⏳",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [
-      "⏳",
-      "🕰️",
-      "📜",
-      "🗝️",
-      "🧭",
-      "⚙️",
-      "🔭",
-      "⚛️",
-      "🗿",
-      "🚀",
-      "🌌",
-      "💎"
-    ],
+    "emojis": ["⏳","🕰️","📜","🗝️","🧭","⚙️","🔭","⚛️","🗿","🚀","🌌","💎"],
     "name": {
-      "ar": "رحلة الزمن",
-      "en": "Chrono-Quest",
-      "fr": "Chrono-Quête",
-      "es": "Crono-Búsqueda",
-      "de": "Chrono-Quest",
-      "zh": "时空之旅"
+      "ar": "رحلة الزمن", "en": "Chrono-Quest",
+      "fr": "Chrono-Quête", "es": "Crono-Búsqueda",
+      "de": "Chrono-Quest", "zh": "时空之旅"
     },
     "desc": {
-      "ar": "انطلق في رحلة عبر الزمن والذاكرة! شاهد مسارًا غامضًا يتكشف ثم يختفي. التحدي هو النقر على المربعات بالترتيب الدقيق الذي ظهرت به لإكمال رحلة الزمن بنجاح. كل مستوى يقدم مسارات أطول وأكثر تعقيدًا.",
-      "en": "Embark on a journey through time and memory! Watch a mysterious path unfold and then vanish. Your challenge is to tap the tiles in the exact sequence they were revealed to successfully complete the Chrono-Quest. Each level introduces longer, more intricate paths.",
-      "fr": "Embarquez pour un voyage à travers le temps et la mémoire ! Observez un chemin mystérieux se dévoiler puis disparaître. Votre défi est de toucher les tuiles dans la séquence exacte où elles ont été révélées pour réussir la Chrono-Quête. Chaque niveau introduit des chemins plus longs et plus complexes.",
-      "es": "¡Embárcate en un viaje a través del tiempo y la memoria! Observa cómo un misterioso camino se despliega y luego desaparece. Tu desafío es tocar las fichas en la secuencia exacta en que fueron reveladas para completar con éxito la Crono-Búsqueda. Cada nivel introduce caminos más largos y complejos.",
-      "de": "Begib dich auf eine Reise durch Zeit und Gedächtnis! Beobachte, wie sich ein mysteriöser Pfad entfaltet und dann verschwindet. Deine Herausforderung ist es, die Kacheln in der exakten Reihenfolge anzutippen, in der sie aufgedeckt wurden, um die Chrono-Quest erfolgreich abzuschließen. Jedes Level führt längere, komplexere Pfade ein.",
-      "zh": "踏上穿越时空与记忆的旅程！观察一条神秘路径的展开与消失。你的挑战是按照它们出现的精确顺序点击方块，以成功完成时空之旅。每个级别都会引入更长、更复杂的路径。"
+      "ar": "انطلق في رحلة عبر الزمن والذاكرة — شاهد المسار ثم أعد تتبعه بدقة.",
+      "en": "Journey through time and memory. Watch the path unfold then retrace it exactly.",
+      "fr": "Voyagez à travers le temps. Observez le chemin se dévoiler puis retracer-le exactement.",
+      "es": "Viaja a través del tiempo. Observa el camino y luego síguela exactamente.",
+      "de": "Reise durch Zeit und Gedächtnis. Beobachte den Pfad und verfolge ihn exakt nach.",
+      "zh": "穿越时空之旅。观察路径展开，然后精确地重新追踪它。"
     },
-    "tags": [
-      "sequential memory",
-      "pattern recognition",
-      "puzzle",
-      "brain training",
-      "mind game",
-      "pathfinding"
-    ],
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": {
-      "setting": "A labyrinthine realm within the Chronos Nexus, where timelines intersect and memories are the very fabric of reality.",
-      "mainCharacter": {
-        "name": "Kael, the Chrono-Cartographer",
-        "emoji": "🧭",
-        "description": "A skilled navigator of temporal currents, tasked with mapping and mending fractured timelines. Their keen memory is their greatest asset."
-      },
-      "objective": "Restore the integrity of time by accurately retracing the vanishing temporal pathways before history unravels.",
-      "intro": {
-        "ar": "إن محطة كرونوس، قلب الزمن النابض، تتعرض للهجوم! لقد أطلق وحش الذاكرة (Mnemosyne Maw) ضبابه الزمني، مذيبًا المسارات التاريخية التي تربط الماضي والحاضر والمستقبل. بصفتك كايل، رسام الخرائط الزمنية، يجب عليك استخدام ذاكرتك الفائقة لمراقبة المسارات المتلاشية عبر الشبكة الزمنية وإعادة تتبعها بدقة. كل تسلسل صحيح يعيد جزءًا من التاريخ؛ وكل خطوة منسية تهدد بحدوث مفارقة لا رجعة فيها. مصير جميع الخطوط الزمنية يعتمد على عقلك الحاد!",
-        "en": "The Chronos Nexus, the very heart of time, is under attack! The Mnemosyne Maw has unleashed its temporal mist, dissolving the historical pathways that connect past, present, and future. As Kael, the Chrono-Cartographer, you must use your unparalleled memory to observe the fading paths across the temporal grid and accurately retrace them. Every correct sequence restores a piece of history; every forgotten step risks an irreversible paradox. The fate of all timelines rests on your keen mind!"
-      },
-      "winMessage": {
-        "ar": "نجاح! لقد قمت بإعادة ربط المسار الزمني بشكل مثالي، وسد الثغرة وتجنب مفارقة كارثية. الخطوط الزمنية آمنة، في الوقت الحالي...",
-        "en": "Success! You have perfectly re-stitched the temporal pathway, sealing the breach and averting a catastrophic paradox. The timelines are safe, for now..."
-      },
-      "loseMessage": {
-        "ar": "لحظة متأخرة جدًا، ذاكرة باهتة جدًا... ينهار المسار الزمني، مرددًا صرخات التاريخ المنسي. مفارقة جديدة تموج عبر الزمن. يجب أن تحاول مرة أخرى!",
-        "en": "A moment too late, a memory too faded... The temporal pathway collapses, echoing with the cries of forgotten history. A new paradox ripples through time. You must try again!"
-      }
-    },
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "شظايا زمنية",
-          "en": "Temporal Fragments"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "أصداء الماضي",
-          "en": "Echoes of the Past"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "معضلات زمنية",
-          "en": "Chronal Conundrums"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "مسارات المفارقة",
-          "en": "Paradox Pathways"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "استعادة الاستمرارية",
-          "en": "Restoring the Continuum"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-pack", "type": "cosmetic",   "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
     ],
     "generated": true,
-    "generatedAt": "2026-04-11T11:40:16.778Z",
-    "templateFile": "memory-game.html"
+    "generatedAt": "2026-04-11T11:40:16.778Z"
   },
   {
     "id": "memory-cosmos",
     "slug": "memory-cosmos",
-    "type": "memory",
+    "type": "arcade",
     "category": "game",
     "status": "available",
     "emoji": "🌌",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": ["🌌","⭐","🪐","☄️","🌠","🌙","🔭","✨","🛸","💫","🌟","🚀"],
     "name": {
-      "ar": "ذاكرة الكون",
-      "en": "Memory Cosmos",
-      "fr": "Mémoire Cosmos",
-      "es": "Memoria Cosmos",
-      "de": "Kosmos Memory",
-      "zh": "宇宙记忆"
+      "ar": "ذاكرة الكون", "en": "Memory Cosmos",
+      "fr": "Mémoire Cosmos", "es": "Memoria Cosmos",
+      "de": "Kosmos Memory", "zh": "宇宙记忆"
     },
     "desc": {
       "ar": "تحدّى ذاكرتك بين النجوم",
@@ -2259,82 +534,27 @@
       "zh": "在星际间挑战记忆"
     },
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提示"
-        }
-      },
-      {
-        "id": "theme-neon",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🌈",
-        "name": {
-          "ar": "ثيم النيون",
-          "en": "Neon Theme",
-          "fr": "Thème néon",
-          "es": "Tema neón",
-          "de": "Neon-Theme",
-          "zh": "霓虹主题"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المستويات",
-          "en": "Unlock All Levels",
-          "fr": "Débloquer tout",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "templateFile": "memory-game.html"
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "hint-pack",  "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
+      { "id": "theme-neon", "type": "cosmetic",   "price": 1.49, "emoji": "🌈", "name": { "ar": "ثيم النيون", "en": "Neon Theme", "fr": "Thème néon", "es": "Tema neón", "de": "Neon-Theme", "zh": "霓虹主题" } },
+      { "id": "full-unlock","type": "unlock",     "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المستويات", "en": "Unlock All Levels", "fr": "Débloquer tout", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+    ]
   },
   {
     "id": "neon-puzzle",
     "slug": "neon-puzzle",
-    "type": "puzzle",
+    "type": "arcade",
     "category": "game",
     "status": "available",
     "emoji": "🧩",
     "accent": "#f472b6",
     "accentRgb": "244,114,182",
     "gradient": "135deg,#1a0533,#831843",
+    "emojis": ["🧩","💠","🔶","🔷","🟥","🟦","🟧","🟨","🟩","🟪","⬛","⬜"],
     "name": {
-      "ar": "لغز النيون",
-      "en": "Neon Puzzle",
-      "fr": "Puzzle Néon",
-      "es": "Puzzle Neón",
-      "de": "Neon-Puzzle",
-      "zh": "霓虹拼图"
+      "ar": "لغز النيون", "en": "Neon Puzzle",
+      "fr": "Puzzle Néon", "es": "Puzzle Neón",
+      "de": "Neon-Puzzle", "zh": "霓虹拼图"
     },
     "desc": {
       "ar": "أعد تركيب الصورة قبل انتهاء الوقت",
@@ -2345,64 +565,11 @@
       "zh": "在时间耗尽前重新拼合图像"
     },
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "extra-time",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "⏱️",
-        "name": {
-          "ar": "5 تمديدات وقت",
-          "en": "5 Time Extensions",
-          "fr": "5 extensions",
-          "es": "5 extensiones",
-          "de": "5 Zeitverlängerungen",
-          "zh": "5次延时"
-        }
-      },
-      {
-        "id": "theme-cyber",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🤖",
-        "name": {
-          "ar": "ثيم سايبر",
-          "en": "Cyber Theme",
-          "fr": "Thème cyber",
-          "es": "Tema cyber",
-          "de": "Cyber-Theme",
-          "zh": "赛博主题"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 3.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "المجموعة الكاملة",
-          "en": "Full Collection",
-          "fr": "Collection complète",
-          "es": "Colección completa",
-          "de": "Vollständige Sammlung",
-          "zh": "完整收藏"
-        }
-      }
-    ],
-    "templateFile": "memory-game.html"
+      { "id": "no-ads",     "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "extra-time", "type": "consumable", "price": 0.99, "emoji": "⏱️", "name": { "ar": "5 تمديدات وقت", "en": "5 Time Extensions", "fr": "5 extensions", "es": "5 extensiones", "de": "5 Zeitverlängerungen", "zh": "5次延时" } },
+      { "id": "theme-cyber","type": "cosmetic",   "price": 1.49, "emoji": "🤖", "name": { "ar": "ثيم سايبر", "en": "Cyber Theme", "fr": "Thème cyber", "es": "Tema cyber", "de": "Cyber-Theme", "zh": "赛博主题" } },
+      { "id": "full-unlock","type": "unlock",     "price": 3.99, "emoji": "⭐", "name": { "ar": "المجموعة الكاملة", "en": "Full Collection", "fr": "Collection complète", "es": "Colección completa", "de": "Vollständige Sammlung", "zh": "完整收藏" } }
+    ]
   },
   {
     "id": "focus-tool",
@@ -2414,13 +581,11 @@
     "accent": "#34d399",
     "accentRgb": "52,211,153",
     "gradient": "135deg,#022c22,#064e3b",
+    "emojis": [],
     "name": {
-      "ar": "أداة التركيز",
-      "en": "Focus Tool",
-      "fr": "Outil Focus",
-      "es": "Herramienta Focus",
-      "de": "Fokus-Tool",
-      "zh": "专注工具"
+      "ar": "أداة التركيز", "en": "Focus Tool",
+      "fr": "Outil Focus", "es": "Herramienta Focus",
+      "de": "Fokus-Tool", "zh": "专注工具"
     },
     "desc": {
       "ar": "مؤقت بومودورو ذكي مع إحصائيات",
@@ -2431,92 +596,36 @@
       "zh": "智能番茄钟与统计"
     },
     "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "stats-pro",
-        "type": "feature",
-        "price": 2.49,
-        "emoji": "📊",
-        "name": {
-          "ar": "إحصائيات Pro",
-          "en": "Pro Stats",
-          "fr": "Stats Pro",
-          "es": "Stats Pro",
-          "de": "Pro-Statistiken",
-          "zh": "专业统计"
-        }
-      },
-      {
-        "id": "themes-pack",
-        "type": "cosmetic",
-        "price": 1.99,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack de thèmes",
-          "es": "Pack de temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-pro",
-        "type": "unlock",
-        "price": 4.99,
-        "emoji": "👑",
-        "name": {
-          "ar": "النسخة Pro الكاملة",
-          "en": "Full Pro Version",
-          "fr": "Version Pro complète",
-          "es": "Versión Pro completa",
-          "de": "Vollständige Pro-Version",
-          "zh": "完整Pro版"
-        }
-      }
-    ],
-    "templateFile": "tool-app.html"
+      { "id": "no-ads",    "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
+      { "id": "stats-pro", "type": "feature",    "price": 2.49, "emoji": "📊", "name": { "ar": "إحصائيات Pro", "en": "Pro Stats", "fr": "Stats Pro", "es": "Stats Pro", "de": "Pro-Statistiken", "zh": "专业统计" } },
+      { "id": "themes-pack","type": "cosmetic",  "price": 1.99, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack de thèmes", "es": "Pack de temas", "de": "Theme-Paket", "zh": "主题包" } },
+      { "id": "full-pro",  "type": "unlock",     "price": 4.99, "emoji": "👑", "name": { "ar": "النسخة Pro الكاملة", "en": "Full Pro Version", "fr": "Version Pro complète", "es": "Versión Pro completa", "de": "Vollständige Pro-Version", "zh": "完整Pro版" } }
+    ]
   },
   {
     "id": "word-storm",
     "slug": "word-storm",
-    "type": "word",
+    "type": "arcade",
     "category": "game",
     "status": "coming_soon",
     "emoji": "🌪️",
     "accent": "#fbbf24",
     "accentRgb": "251,191,36",
     "gradient": "135deg,#1c1007,#78350f",
+    "emojis": [],
     "name": {
-      "ar": "عاصفة الكلمات",
-      "en": "Word Storm",
-      "fr": "Tempête de Mots",
-      "es": "Tormenta de Palabras",
-      "de": "Wortsturm",
-      "zh": "文字风暴"
+      "ar": "عاصفة الكلمات", "en": "Word Storm",
+      "fr": "Tempête de Mots", "es": "Tormenta de Palabras",
+      "de": "Wortsturm", "zh": "文字风暴"
     },
     "desc": {
       "ar": "تسابق مع الزمن لبناء أكبر عدد من الكلمات",
       "en": "Race against time to build as many words as possible",
-      "fr": "Courez contre la montre",
-      "es": "Compite contra el tiempo",
-      "de": "Wette gegen die Zeit",
-      "zh": "与时间赛跑"
+      "fr": "Courez contre la montre pour construire un maximum de mots",
+      "es": "Compite contra el tiempo para formar el mayor número de palabras",
+      "de": "Wette gegen die Zeit und bilde so viele Wörter wie möglich",
+      "zh": "与时间赛跑，构建尽可能多的词语"
     },
-    "iap": [],
-    "templateFile": "memory-game.html"
+    "iap": []
   }
 ]
