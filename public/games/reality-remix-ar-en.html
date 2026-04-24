@@ -171,7 +171,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 // ─── CONFIG ────────────────────────────────────────────────────
 const CFG = {
   pid:   'reality-remix-ar',
-  type:  '{{PRODUCT_TYPE}}',
+  type:  'app',
   lang:  'en',
   acc:   '#facc15',
   emoji: '🎨',
@@ -349,17 +349,17 @@ function buildArt(root){
     <canvas id="artCanvas" style="display:block"></canvas>
     <div class="inp-wrap">
       <textarea id="artPrompt" rows="3"
-        placeholder="{{ART_PLACEHOLDER}}"></textarea>
+        placeholder="Describe your mood..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn btn-p" onclick="genArt()">✨ {{ART_GEN_BTN}}</button>
+      <button class="btn btn-p" onclick="genArt()">✨ ✨ Generate</button>
       <button class="btn btn-s btn-sm" onclick="saveArt()" title="Save">💾</button>
     </div>
     <div id="loadWrap" style="display:none">
-      <div class="spinner"></div><span>{{ART_LOADING}}</span>
+      <div class="spinner"></div><span>Creating...</span>
     </div>
     <div id="resultCard" style="display:none">
-      <div class="rc-label">✨ {{ART_RESULT_LBL}}</div>
+      <div class="rc-label">✨ Your Creation</div>
       <div class="rc-text" id="artDesc"></div>
       <div class="rc-meta" id="artTags"></div>
     </div>`;
@@ -497,14 +497,14 @@ function buildStory(root){
       gap:10px;max-height:45vh;overflow-y:auto;padding-right:4px"></div>
     <div class="inp-wrap">
       <textarea id="storyInput" rows="2"
-        placeholder="{{STORY_PLACEHOLDER}}"></textarea>
+        placeholder="What do you do?"></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn btn-p" onclick="sendStory()">🚀 {{STORY_SEND_BTN}}</button>
+      <button class="btn btn-p" onclick="sendStory()">🚀 Send</button>
       <button class="btn btn-s btn-sm" onclick="resetStory()" title="Reset">↺</button>
     </div>
     <div id="loadWrap" style="display:none;margin-top:4px">
-      <div class="spinner"></div><span>{{STORY_THINKING}}</span>
+      <div class="spinner"></div><span>Narrating...</span>
     </div>`;
 
   function addMessage(role, text, isNew = true){
@@ -596,16 +596,16 @@ Reply in language: en. Always end with a choice or question.`;
 // ═══════════════════════════════════════════════════════════════
 function buildIdentity(root){
   const questions = [
-    { key:'color',  q:'{{ID_Q1}}', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light'] },
-    { key:'power',  q:'{{ID_Q2}}', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind'] },
-    { key:'world',  q:'{{ID_Q3}}', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City'] },
-    { key:'value',  q:'{{ID_Q4}}', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love'] },
+    { key:'color',  q:'Which color speaks to you?', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light'] },
+    { key:'power',  q:'Your inner power?', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind'] },
+    { key:'world',  q:'Your world?', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City'] },
+    { key:'value',  q:'What you value most?', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love'] },
   ];
   let step = 0, answers = {};
 
   root.innerHTML = `
     <div id="idProgress" class="prog-wrap" style="width:100%">
-      <div class="prog-lbl"><span>{{ID_PROGRESS_LBL}}</span><span id="idStep">1/${questions.length}</span></div>
+      <div class="prog-lbl"><span>Discovery</span><span id="idStep">1/${questions.length}</span></div>
       <div class="prog-bar"><div class="prog-fill" id="idFill" style="width:0%"></div></div>
     </div>
     <div id="idQuestion" style="width:100%;background:var(--s);border:1px solid var(--b);
@@ -621,7 +621,7 @@ function buildIdentity(root){
       flex-direction:column;align-items:center">
       <div style="font-size:1.4rem;font-weight:900;color:var(--acc)" id="idTitle"></div>
       <div style="color:var(--mut);font-size:.85rem;line-height:1.6" id="idDesc"></div>
-      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ {{ID_RETRY_LBL}}</button>
+      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ Try Again</button>
     </div>`;
 
   const emojis = ['✨','🌟','💫','🔮','🌀','⚡','🎭','🌌'];
@@ -696,10 +696,10 @@ function buildIdentity(root){
 
     // Title based on answers
     const titles = [
-      '{{ID_TITLE_1}}','{{ID_TITLE_2}}','{{ID_TITLE_3}}','{{ID_TITLE_4}}'
+      '🌟 The Visionary','⚡ The Catalyst','🌊 The Dreamer','🔮 The Sage'
     ];
     const descs = [
-      '{{ID_DESC_1}}','{{ID_DESC_2}}','{{ID_DESC_3}}','{{ID_DESC_4}}'
+      'You see what others miss.','You ignite change wherever you go.','Your imagination knows no limits.','Ancient wisdom flows through you.'
     ];
     const idx = Object.values(answers).length % titles.length;
     document.getElementById('idTitle').textContent = titles[idx];
@@ -723,11 +723,11 @@ function buildCreative(root){
       <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">Paint digital art onto the physical world. Collaborate to create stunning location-based masterpieces.</div>
     </div>
     <div class="inp-wrap">
-      <textarea id="creInput" rows="3" placeholder="{{CREATIVE_PLACEHOLDER}}"></textarea>
+      <textarea id="creInput" rows="3" placeholder="Enter your idea..."></textarea>
     </div>
-    <button class="btn btn-p" onclick="runCreative()">✨ {{CREATIVE_BTN}}</button>
+    <button class="btn btn-p" onclick="runCreative()">✨ Create</button>
     <div id="loadWrap" style="display:none">
-      <div class="spinner"></div><span>{{CREATIVE_LOADING}}</span>
+      <div class="spinner"></div><span>Generating...</span>
     </div>
     <div id="resultCard" style="display:none">
       <div class="rc-label">Reality Remix</div>
