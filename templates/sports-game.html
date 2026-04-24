@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>{{GAME_NAME}}</title>
+<style>
+:root{--acc:{{ACCENT}};--bg:#080f14;--field:#166534;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:#f1f5f9;
+  font-family:'Segoe UI',Tajawal,sans-serif;
+  display:flex;flex-direction:column;align-items:center;}
+
+/* ── SCREENS ── */
+.scr{display:none;flex-direction:column;align-items:center;
+  justify-content:center;width:100%;max-width:420px;
+  padding:28px 20px;gap:14px;min-height:100dvh;text-align:center;}
+.scr.on{display:flex;}
+.g-emoji{font-size:5rem;line-height:1;}
+.g-title{font-size:2rem;font-weight:900;color:var(--acc);}
+.g-desc{color:#64748b;font-size:.9rem;line-height:1.6;max-width:300px;}
+
+/* ── SCOREBOARD (start) ── */
+.board{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px 24px;display:flex;gap:32px;align-items:center;}
+.board .t{font-size:.68rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.board .s{font-size:2.4rem;font-weight:900;font-family:monospace;}
+.board .sep{font-size:1.8rem;color:#334155;font-weight:900;}
+
+/* ── BUTTONS ── */
+.btn{padding:13px 0;border-radius:12px;font-size:.95rem;font-weight:700;
+  border:none;cursor:pointer;font-family:inherit;width:100%;max-width:300px;
+  transition:transform .12s;display:inline-flex;align-items:center;
+  justify-content:center;gap:7px;}
+.btn:active{transform:scale(.96);}
+.btn-p{background:var(--acc);color:#000;box-shadow:0 0 24px rgba({{ACCENT_RGB}},.3);}
+.btn-s{background:rgba(255,255,255,.06);color:#f1f5f9;
+  border:1px solid rgba(255,255,255,.1);}
+a.btn-home{color:#64748b;font-size:.82rem;text-decoration:none;margin-top:-4px;}
+
+/* ── HUD ── */
+#hud{position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:420px;display:none;
+  align-items:center;justify-content:space-between;
+  padding:8px 16px;background:rgba(0,0,0,.8);
+  backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);z-index:20;}
+.hi .l{font-size:.58rem;color:#64748b;text-transform:uppercase;letter-spacing:.1em;}
+.hi .v{font-size:1rem;font-weight:900;color:var(--acc);font-family:monospace;}
+#hudScore{font-size:1.3rem;font-weight:900;color:#fff;font-family:monospace;
+  background:rgba(255,255,255,.06);padding:4px 16px;border-radius:8px;}
+
+/* ── CANVAS ── */
+canvas{display:none;position:fixed;top:0;}
+
+/* ── GOAL FLASH ── */
+#goalFlash{position:fixed;inset:0;background:rgba(250,204,21,.15);
+  display:none;align-items:center;justify-content:center;
+  font-size:4rem;font-weight:900;color:var(--acc);z-index:25;
+  pointer-events:none;letter-spacing:.05em;}
+
+/* ── MOBILE CONTROLS ── */
+#ctrl{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:420px;display:none;gap:8px;
+  padding:8px 16px 18px;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(10px);z-index:20;}
+.cb{flex:1;height:52px;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  font-size:1.4rem;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;user-select:none;-webkit-user-select:none;}
+.cb:active,.cb.pressed{background:rgba(255,255,255,.2);}
+.cb-sh{flex:.9;background:rgba(250,204,21,.12);
+  border-color:rgba(250,204,21,.3);font-size:.7rem;
+  font-weight:900;color:var(--acc);letter-spacing:.05em;}
+
+/* ── END OVERLAY ── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.9);
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;z-index:30;
+  text-align:center;padding:24px;}
+.ov.on{display:flex;}
+.ov h2{font-size:2rem;font-weight:900;}
+.fin-score{display:flex;gap:32px;align-items:center;margin:4px 0;}
+.fin-score .fs{font-size:3rem;font-weight:900;font-family:monospace;}
+.fin-score .fl{font-size:.68rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
+.fin-score .sep{font-size:2.5rem;color:#334155;}
+
+/* ── SHOP ── */
+#shopOv{position:fixed;inset:0;background:rgba(0,0,0,.93);
+  display:none;flex-direction:column;align-items:center;
+  gap:12px;justify-content:center;z-index:40;padding:24px;}
+#shopOv.on{display:flex;}
+.si{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:14px 18px;display:flex;align-items:center;
+  justify-content:space-between;width:100%;max-width:340px;gap:12px;}
+.si-n{font-weight:700;font-size:.92rem;}
+.si-d{color:#64748b;font-size:.75rem;margin:2px 0;}
+.si-p{color:var(--acc);font-size:.78rem;font-family:monospace;}
+.bb{background:var(--acc);color:#000;padding:8px 14px;border-radius:8px;
+  border:none;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap;}
+.bb.own{background:rgba(255,255,255,.08);color:#64748b;}
+
+/* ── AD ── */
+#ad{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:420px;display:flex;align-items:center;
+  justify-content:space-between;padding:8px 16px;
+  background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.07);
+  font-size:.74rem;color:#64748b;z-index:10;}
+
+/* ── HALF TIME ── */
+#halfOv{position:fixed;inset:0;background:rgba(0,0,0,.82);
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;gap:12px;z-index:28;}
+#halfOv.on{display:flex;}
+#halfOv h3{font-size:1.6rem;font-weight:900;color:var(--acc);}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     START SCREEN
+════════════════════════════════════════════ -->
+<div class="scr on" id="scr-start">
+  <div class="g-emoji">{{EMOJI}}</div>
+  <div class="g-title">{{GAME_NAME}}</div>
+  <div class="g-desc">{{GAME_DESC}}</div>
+  <div class="board">
+    <div>
+      <div class="t">{{SCORE_HOME_LBL}}</div>
+      <div class="s" id="bestHome" style="color:var(--acc)">W</div>
+    </div>
+    <div class="sep">—</div>
+    <div>
+      <div class="t">{{SCORE_AWAY_LBL}}</div>
+      <div class="s" id="bestAway">L</div>
+    </div>
+  </div>
+  <div style="color:#64748b;font-size:.75rem">{{BEST_LBL}}</div>
+  <button class="btn btn-p" onclick="initGame()">⚽ {{START_LBL}}</button>
+  <button class="btn btn-s" onclick="openShop()">🛒 {{SHOP_LBL}}</button>
+  <a class="btn-home" href="/">← {{HOME_LBL}}</a>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hi"><div class="l">{{HALF_LBL}}</div><div class="v" id="hHalf">1</div></div>
+  <div id="hudScore">0 — 0</div>
+  <div class="hi"><div class="l">{{TIME_LBL}}</div><div class="v" id="hTime">0:00</div></div>
+</div>
+
+<!-- CANVAS -->
+<canvas id="cv"></canvas>
+
+<!-- GOAL FLASH -->
+<div id="goalFlash">⚽ {{GOAL_LBL}}</div>
+
+<!-- HALF TIME -->
+<div id="halfOv">
+  <div style="font-size:2.5rem">🕐</div>
+  <h3>{{HALF_LBL}} 2</h3>
+  <div id="halfScore" style="font-size:2rem;font-weight:900;font-family:monospace"></div>
+  <button class="btn btn-p" style="max-width:220px" onclick="startSecondHalf()">▶ {{START_LBL2}}</button>
+</div>
+
+<!-- MOBILE CONTROLS -->
+<div id="ctrl">
+  <div class="cb" id="bL">◀</div>
+  <div class="cb" id="bU">▲</div>
+  <div class="cb cb-sh" id="bSH">⚽ {{GOAL_LBL}}</div>
+  <div class="cb" id="bD">▼</div>
+  <div class="cb" id="bR">▶</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MATCH OVER OVERLAY
+════════════════════════════════════════════ -->
+<div class="ov" id="ov-end">
+  <div style="font-size:2.8rem" id="endEmoji">🏆</div>
+  <h2 id="endTitle" style="color:var(--acc)">{{MATCH_OVER_LBL}}</h2>
+  <div class="fin-score">
+    <div>
+      <div class="fl">{{SCORE_HOME_LBL}}</div>
+      <div class="fs" id="endHome" style="color:var(--acc)">0</div>
+    </div>
+    <div class="sep">—</div>
+    <div>
+      <div class="fl">{{SCORE_AWAY_LBL}}</div>
+      <div class="fs" id="endAway">0</div>
+    </div>
+  </div>
+  <button class="btn btn-p" onclick="initGame()">🔄 {{RETRY_LBL}}</button>
+  <button class="btn btn-s" onclick="goHome()">🏠 {{HOME_LBL}}</button>
+</div>
+
+<!-- SHOP -->
+<div id="shopOv">
+  <h2 style="font-size:1.6rem;font-weight:900">🛒 {{SHOP_LBL}}</h2>
+  <div id="shopList"
+    style="width:100%;max-width:360px;display:flex;flex-direction:column;
+           gap:10px;max-height:55vh;overflow-y:auto"></div>
+  <button class="btn btn-s" style="max-width:220px" onclick="closeShop()">
+    ✕ {{BACK_LBL}}
+  </button>
+</div>
+
+<!-- AD -->
+<div id="ad">
+  <span>📢 {{AD_LABEL}}</span>
+  <button class="bb" onclick="buyRemoveAds()">{{AD_REMOVE_LABEL}}</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPT
+════════════════════════════════════════════ -->
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────
+const PRODUCT_ID    = '{{PRODUCT_ID}}';
+const MATCH_DUR     = Number('{{MATCH_DURATION}}') || 90;  // seconds per half
+const IAPS          = {{IAPS_JSON}};
+const LANG          = '{{LANG}}';
+const ACC           = '{{ACCENT}}';
+
+// ─── SAVE ──────────────────────────────────────────────────────
+const SKEY = 'rt_' + PRODUCT_ID;
+const S    = () => JSON.parse(localStorage.getItem(SKEY) || '{}');
+const save = d  => localStorage.setItem(SKEY, JSON.stringify({...S(), ...d}));
+
+// ─── CANVAS LAYOUT ─────────────────────────────────────────────
+const cv  = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let W, H, ctrlH;
+
+function layout() {
+  W = Math.min(window.innerWidth, 420);
+  H = window.innerHeight;
+  ctrlH = mobile() ? 78 : 0;
+  cv.width  = W; cv.height = H;
+  cv.style.width  = W + 'px';
+  cv.style.height = H + 'px';
+  cv.style.left   = ((window.innerWidth - W) / 2) + 'px';
+}
+
+function mobile() { return 'ontouchstart' in window; }
+
+// ─── FIELD DIMENSIONS ──────────────────────────────────────────
+const HUD_H = 44;
+const PAD   = 14;
+let fX, fY, fW, fH;   // field rect inside canvas
+let goalW, goalH;      // goal size
+
+function fieldLayout() {
+  fX   = PAD;
+  fY   = HUD_H + PAD;
+  fW   = W - PAD * 2;
+  fH   = H - HUD_H - ctrlH - PAD * 2;
+  goalW = fW * .25;
+  goalH = fH * .14;
+}
+
+// ─── STATE ─────────────────────────────────────────────────────
+const K = { L:false, R:false, U:false, D:false, SH:false };
+let raf, player, ball, opponents;
+let scoreHome, scoreAway, half, matchTimer, prevT;
+let goalCooldown = 0;
+const HALF_DUR = MATCH_DUR;   // seconds each half
+
+function resetState() {
+  layout(); fieldLayout();
+  player = { x: fX + fW/2, y: fY + fH * .65, r: 14, spd: 3.8 };
+  ball   = { x: fX + fW/2, y: fY + fH/2, r: 9, vx: 0, vy: 0 };
+  opponents = Array.from({length: 3}, (_, i) => ({
+    x: fX + fW * (.25 + i * .25),
+    y: fY + fH * .28,
+    r: 13, spd: 1.8 + i * .3,
+    tx: 0, ty: 0
+  }));
+  scoreHome   = 0;
+  scoreAway   = 0;
+  half        = 1;
+  matchTimer  = 0;
+  prevT       = 0;
+  goalCooldown= 0;
+  updateHUD();
+}
+
+// ─── DRAW ──────────────────────────────────────────────────────
+function drawField() {
+  ctx.clearRect(0, 0, W, H);
+
+  // background
+  ctx.fillStyle = '#0a0f1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // grass
+  const grd = ctx.createLinearGradient(fX, fY, fX, fY + fH);
+  grd.addColorStop(0,   '#14532d');
+  grd.addColorStop(.5,  '#166534');
+  grd.addColorStop(1,   '#14532d');
+  ctx.fillStyle = grd;
+  roundRect(ctx, fX, fY, fW, fH, 10);
+  ctx.fill();
+
+  // grass stripes
+  ctx.globalAlpha = .07;
+  ctx.fillStyle   = '#000';
+  const sw = fW / 8;
+  for (let i = 0; i < 8; i += 2) {
+    ctx.fillRect(fX + i * sw, fY, sw, fH);
+  }
+  ctx.globalAlpha = 1;
+
+  // boundary
+  ctx.strokeStyle = 'rgba(255,255,255,.5)';
+  ctx.lineWidth   = 2;
+  roundRect(ctx, fX + 4, fY + 4, fW - 8, fH - 8, 8);
+  ctx.stroke();
+
+  // centre circle
+  ctx.beginPath();
+  ctx.arc(fX + fW/2, fY + fH/2, fH * .12, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(fX + 4, fY + fH/2);
+  ctx.lineTo(fX + fW - 4, fY + fH/2);
+  ctx.stroke();
+
+  // penalty boxes
+  const pbW = fW * .45, pbH = fH * .2;
+  ctx.strokeRect(fX + (fW - pbW)/2, fY + 4,          pbW, pbH);  // top
+  ctx.strokeRect(fX + (fW - pbW)/2, fY + fH - pbH - 4, pbW, pbH); // bottom
+
+  // goals
+  ctx.fillStyle   = 'rgba(255,255,255,.12)';
+  ctx.strokeStyle = 'rgba(255,255,255,.7)';
+  ctx.lineWidth   = 2.5;
+  // top goal (opponent)
+  const gX = fX + (fW - goalW) / 2;
+  ctx.fillRect(gX, fY - goalH, goalW, goalH);
+  ctx.strokeRect(gX, fY - goalH, goalW, goalH);
+  // bottom goal (player)
+  ctx.fillRect(gX, fY + fH, goalW, goalH);
+  ctx.strokeRect(gX, fY + fH, goalW, goalH);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawCircle(x, y, r, fill, stroke) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  if (fill)   { ctx.fillStyle   = fill;   ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+}
+
+function drawAll() {
+  drawField();
+  // opponents
+  opponents.forEach(o => {
+    drawCircle(o.x, o.y, o.r, '#ef4444', 'rgba(255,255,255,.3)');
+    ctx.font = '14px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('👕', o.x, o.y);
+  });
+  // ball shadow
+  ctx.fillStyle = 'rgba(0,0,0,.3)';
+  ctx.beginPath();
+  ctx.ellipse(ball.x, ball.y + ball.r + 2, ball.r * .9, ball.r * .35, 0, 0, Math.PI*2);
+  ctx.fill();
+  // ball
+  ctx.font = (ball.r * 2.2) + 'px serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('⚽', ball.x, ball.y);
+  // player shadow
+  ctx.fillStyle = 'rgba(0,0,0,.3)';
+  ctx.beginPath();
+  ctx.ellipse(player.x, player.y + player.r + 2, player.r * .9, player.r * .35, 0, 0, Math.PI*2);
+  ctx.fill();
+  // player
+  drawCircle(player.x, player.y, player.r, ACC, 'rgba(255,255,255,.6)');
+  ctx.font = (player.r * 1.6) + 'px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('🧑', player.x, player.y);
+}
+
+// ─── UPDATE ────────────────────────────────────────────────────
+const FRICTION = 0.88;
+const SHOOT_SPEED = 7.5;
+const KICK_DIST   = 24;
+
+function update(dt) {
+  matchTimer += dt;
+  if (matchTimer >= HALF_DUR) { endHalf(); return; }
+
+  goalCooldown = Math.max(0, goalCooldown - dt);
+
+  // player move
+  const spd = player.spd;
+  if (K.L) player.x -= spd;
+  if (K.R) player.x += spd;
+  if (K.U) player.y -= spd;
+  if (K.D) player.y += spd;
+  player.x = Math.max(fX + player.r, Math.min(fX + fW - player.r, player.x));
+  player.y = Math.max(fY + player.r, Math.min(fY + fH - player.r, player.y));
+
+  // kick ball
+  const bdx = ball.x - player.x, bdy = ball.y - player.y;
+  const bd   = Math.sqrt(bdx*bdx + bdy*bdy);
+  if (K.SH && bd < KICK_DIST + 8) {
+    const len  = Math.sqrt(bdx*bdx + bdy*bdy) || 1;
+    // shoot toward opponent goal (top)
+    const tx   = fX + fW/2, ty = fY;
+    const dx   = tx - ball.x, dy = ty - ball.y;
+    const dlen = Math.sqrt(dx*dx + dy*dy) || 1;
+    ball.vx = dx / dlen * SHOOT_SPEED;
+    ball.vy = dy / dlen * SHOOT_SPEED;
+  } else if (bd < KICK_DIST) {
+    const push = (KICK_DIST - bd) * .25;
+    ball.vx += bdx / (bd||1) * push;
+    ball.vy += bdy / (bd||1) * push;
+  }
+
+  // ball physics
+  ball.x += ball.vx;
+  ball.y += ball.vy;
+  ball.vx *= FRICTION;
+  ball.vy *= FRICTION;
+
+  // ball wall bounce
+  if (ball.x < fX + ball.r)       { ball.x = fX + ball.r;       ball.vx *= -0.7; }
+  if (ball.x > fX + fW - ball.r)  { ball.x = fX + fW - ball.r;  ball.vx *= -0.7; }
+  // top: check goal
+  if (ball.y < fY - goalH + ball.r) {
+    // missed top goal
+    ball.y = fY - goalH + ball.r; ball.vy *= -0.7;
+  }
+  if (ball.y < fY + ball.r && goalCooldown <= 0) {
+    const gX = fX + (fW - goalW) / 2;
+    if (ball.x > gX && ball.x < gX + goalW) {
+      // GOAL for home (player)
+      scoreHome++;
+      flashGoal();
+      resetBall();
+      return;
+    }
+  }
+  // bottom: check goal
+  if (ball.y > fY + fH + goalH - ball.r) {
+    ball.y = fY + fH + goalH - ball.r; ball.vy *= -0.7;
+  }
+  if (ball.y > fY + fH - ball.r && goalCooldown <= 0) {
+    const gX = fX + (fW - goalW) / 2;
+    if (ball.x > gX && ball.x < gX + goalW) {
+      // GOAL for away (opponent)
+      scoreAway++;
+      flashGoal(false);
+      resetBall();
+      return;
+    }
+    ball.y = fY + fH - ball.r; ball.vy *= -0.7;
+  }
+
+  // opponents chase ball
+  opponents.forEach(o => {
+    const ox = ball.x - o.x, oy = ball.y - o.y;
+    const od = Math.sqrt(ox*ox + oy*oy) || 1;
+    o.x += (ox / od) * o.spd * (1 + matchTimer / HALF_DUR * .8);
+    o.y += (oy / od) * o.spd * (1 + matchTimer / HALF_DUR * .8);
+    // opponent kick
+    if (od < 20) {
+      // kick toward player goal (bottom)
+      const tx = fX + fW/2, ty = fY + fH;
+      const dx = tx - ball.x, dy = ty - ball.y;
+      const dl = Math.sqrt(dx*dx + dy*dy) || 1;
+      ball.vx += dx / dl * 4.5;
+      ball.vy += dy / dl * 4.5;
+    }
+  });
+
+  updateHUD();
+}
+
+function resetBall() {
+  ball = { x: fX + fW/2, y: fY + fH/2, r: 9, vx: 0, vy: 0 };
+  player.x = fX + fW/2; player.y = fY + fH * .65;
+  goalCooldown = 1.8;
+}
+
+function flashGoal(home = true) {
+  const el = document.getElementById('goalFlash');
+  el.style.display = 'flex';
+  el.style.color   = home ? ACC : '#ef4444';
+  setTimeout(() => el.style.display = 'none', 900);
+}
+
+function updateHUD() {
+  document.getElementById('hHalf').textContent    = half;
+  document.getElementById('hudScore').textContent = scoreHome + ' — ' + scoreAway;
+  const rem = Math.max(0, HALF_DUR - matchTimer);
+  const m   = Math.floor(rem / 60), s = Math.floor(rem % 60);
+  document.getElementById('hTime').textContent    = m + ':' + String(s).padStart(2,'0');
+}
+
+// ─── GAME LOOP ──────────────────────────────────────────────────
+function loop(ts) {
+  const dt = Math.min((ts - prevT) / 1000, .05);
+  prevT = ts;
+  update(dt);
+  drawAll();
+  raf = requestAnimationFrame(loop);
+}
+
+// ─── HALF / END ────────────────────────────────────────────────
+function endHalf() {
+  cancelAnimationFrame(raf);
+  if (half === 1) {
+    half = 2;
+    matchTimer = 0;
+    resetBall();
+    document.getElementById('halfScore').textContent = scoreHome + ' — ' + scoreAway;
+    document.getElementById('halfOv').classList.add('on');
+  } else {
+    endMatch();
+  }
+}
+
+function startSecondHalf() {
+  document.getElementById('halfOv').classList.remove('on');
+  prevT = 0;
+  raf = requestAnimationFrame(loop);
+}
+
+function endMatch() {
+  cancelAnimationFrame(raf);
+  cv.style.display = 'none';
+  ['hud','ctrl'].forEach(id => document.getElementById(id).style.display = 'none');
+
+  const result = scoreHome > scoreAway ? 'win'
+               : scoreHome < scoreAway ? 'lose' : 'draw';
+  document.getElementById('endTitle').textContent =
+    result === 'win'  ? '{{WIN_MATCH_LBL}}'  :
+    result === 'draw' ? '{{DRAW_LBL}}'        : '{{LOSE_MATCH_LBL}}';
+  document.getElementById('endEmoji').textContent =
+    result === 'win' ? '🏆' : result === 'draw' ? '🤝' : '😔';
+  document.getElementById('endHome').textContent = scoreHome;
+  document.getElementById('endAway').textContent = scoreAway;
+
+  // save best
+  const cur = S();
+  if (!cur.bestHome || scoreHome > cur.bestHome) save({ bestHome: scoreHome, bestAway: scoreAway });
+
+  document.getElementById('ov-end').className = 'ov on';
+  if (!S().adsRemoved) document.getElementById('ad').style.display = 'flex';
+}
+
+// ─── INIT / HOME ───────────────────────────────────────────────
+function initGame() {
+  document.getElementById('scr-start').className = 'scr';
+  document.getElementById('ov-end').className    = 'ov';
+  document.getElementById('halfOv').classList.remove('on');
+  cv.style.display = 'block';
+  document.getElementById('hud').style.display = 'flex';
+  document.getElementById('ad').style.display  = S().adsRemoved ? 'none' : 'flex';
+  if (mobile()) document.getElementById('ctrl').style.display = 'flex';
+
+  cancelAnimationFrame(raf);
+  resetState();
+  prevT = 0;
+  raf = requestAnimationFrame(loop);
+}
+
+function goHome() {
+  cancelAnimationFrame(raf);
+  cv.style.display = 'none';
+  ['hud','ctrl'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('ov-end').className    = 'ov';
+  document.getElementById('ad').style.display   = S().adsRemoved ? 'none' : 'flex';
+  document.getElementById('scr-start').className = 'scr on';
+  const cur = S();
+  if (cur.bestHome !== undefined) {
+    document.getElementById('bestHome').textContent = cur.bestHome;
+    document.getElementById('bestAway').textContent = cur.bestAway;
+  }
+}
+
+// ─── INPUT ─────────────────────────────────────────────────────
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft'  || e.key === 'a') K.L = true;
+  if (e.key === 'ArrowRight' || e.key === 'd') K.R = true;
+  if (e.key === 'ArrowUp'    || e.key === 'w') { e.preventDefault(); K.U = true; }
+  if (e.key === 'ArrowDown'  || e.key === 's') K.D = true;
+  if (e.key === ' ') { e.preventDefault(); K.SH = true; }
+});
+window.addEventListener('keyup', e => {
+  if (e.key === 'ArrowLeft'  || e.key === 'a') K.L = false;
+  if (e.key === 'ArrowRight' || e.key === 'd') K.R = false;
+  if (e.key === 'ArrowUp'    || e.key === 'w') K.U = false;
+  if (e.key === 'ArrowDown'  || e.key === 's') K.D = false;
+  if (e.key === ' ') K.SH = false;
+});
+
+function wire(id, down, up) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('touchstart', e => { e.preventDefault(); el.classList.add('pressed'); down(); }, { passive:false });
+  el.addEventListener('touchend',   e => { e.preventDefault(); el.classList.remove('pressed'); up(); },  { passive:false });
+  el.addEventListener('touchcancel',e => { e.preventDefault(); el.classList.remove('pressed'); up(); },  { passive:false });
+}
+wire('bL',  () => K.L  = true,  () => K.L  = false);
+wire('bR',  () => K.R  = true,  () => K.R  = false);
+wire('bU',  () => K.U  = true,  () => K.U  = false);
+wire('bD',  () => K.D  = true,  () => K.D  = false);
+wire('bSH', () => K.SH = true,  () => K.SH = false);
+
+// ─── SHOP ──────────────────────────────────────────────────────
+function openShop() {
+  const cur  = S();
+  const list = document.getElementById('shopList');
+  list.innerHTML = '';
+  IAPS.forEach(item => {
+    const owned = !!cur['own_' + item.id];
+    const name  = (item.name && (item.name[LANG] || item.name.en)) || item.id;
+    const desc  = (item.desc && (item.desc[LANG] || item.desc.en)) || '';
+    const div   = document.createElement('div');
+    div.className = 'si';
+    div.innerHTML =
+      `<div><div class="si-n">${name}</div><div class="si-d">${desc}</div><div class="si-p">${item.price||'$0.99'}</div></div>` +
+      `<button class="bb${owned?' own':''}" ${owned?'disabled':''} onclick="buy('${item.id}')">` +
+      `${owned ? '✓' : '{{SHOP_LBL}}'}</button>`;
+    list.appendChild(div);
+  });
+  if (!cur.adsRemoved) {
+    const div = document.createElement('div');
+    div.className = 'si';
+    div.innerHTML =
+      `<div><div class="si-n">🚫 {{AD_LABEL}}</div><div class="si-p">{{AD_REMOVE_LABEL}}</div></div>` +
+      `<button class="bb" onclick="buyRemoveAds()">{{SHOP_LBL}}</button>`;
+    list.appendChild(div);
+  }
+  if (!list.children.length)
+    list.innerHTML = '<p style="color:#64748b;padding:20px;font-size:.85rem">—</p>';
+  document.getElementById('shopOv').classList.add('on');
+}
+function closeShop()    { document.getElementById('shopOv').classList.remove('on'); }
+function buy(id)        { save({ ['own_' + id]: true }); openShop(); }
+function buyRemoveAds() {
+  save({ adsRemoved: true });
+  document.getElementById('ad').style.display = 'none';
+  if (document.getElementById('shopOv').classList.contains('on')) openShop();
+}
+
+// ─── BOOTSTRAP ─────────────────────────────────────────────────
+(function bootstrap() {
+  const cur = S();
+  if (cur.adsRemoved) document.getElementById('ad').style.display = 'none';
+  if (cur.bestHome !== undefined) {
+    document.getElementById('bestHome').textContent = cur.bestHome;
+    document.getElementById('bestAway').textContent = cur.bestAway;
+  }
+})();
+
+window.addEventListener('resize', () => { if (cv.style.display !== 'none') { layout(); fieldLayout(); } });
+</script>
+</body>
+</html>
