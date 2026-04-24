@@ -378,6 +378,8 @@ function generate(product) {
     let out = tpl;
 
     const vars = {
+      LEVELS_JSON:  JSON.stringify(product.levels || []),
+      LEVELS_COUNT: (product.levels || []).length || 5,
       LANG:        lang,
       DIR:         lbl.dir,
       PRODUCT_ID:  product.id,
