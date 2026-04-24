@@ -378,6 +378,38 @@ function generate(product) {
     let out = tpl;
 
     const vars = {
+      PRODUCT_TYPE: product.type,
+
+// Art mode
+ART_PLACEHOLDER:  lbl.ART_PLACEHOLDER  || 'Describe your mood...',
+ART_GEN_BTN:      lbl.ART_GEN_BTN      || '✨ Generate',
+ART_LOADING:      lbl.ART_LOADING      || 'Creating...',
+ART_RESULT_LBL:   lbl.ART_RESULT_LBL   || 'Your Creation',
+
+// Story mode
+STORY_PLACEHOLDER: lbl.STORY_PLACEHOLDER || 'What do you do?',
+STORY_SEND_BTN:    lbl.STORY_SEND_BTN    || 'Send',
+STORY_THINKING:    lbl.STORY_THINKING    || 'Narrating...',
+PLAYER_LBL:        lbl.PLAYER_LBL        || 'You',
+
+// Identity mode
+ID_Q1:           lbl.ID_Q1           || 'Which color speaks to you?',
+ID_Q2:           lbl.ID_Q2           || 'Your inner power?',
+ID_Q3:           lbl.ID_Q3           || 'Your world?',
+ID_Q4:           lbl.ID_Q4           || 'What you value most?',
+ID_PROGRESS_LBL: lbl.ID_PROGRESS_LBL || 'Discovery',
+ID_RETRY_LBL:    lbl.ID_RETRY_LBL    || 'Try Again',
+ID_TITLE_1: '🌟 The Visionary',  ID_TITLE_2: '⚡ The Catalyst',
+ID_TITLE_3: '🌊 The Dreamer',    ID_TITLE_4: '🔮 The Sage',
+ID_DESC_1: 'You see what others miss.',
+ID_DESC_2: 'You ignite change wherever you go.',
+ID_DESC_3: 'Your imagination knows no limits.',
+ID_DESC_4: 'Ancient wisdom flows through you.',
+
+// Creative mode
+CREATIVE_PLACEHOLDER: lbl.CREATIVE_PLACEHOLDER || 'Enter your idea...',
+CREATIVE_BTN:         lbl.CREATIVE_BTN         || 'Create',
+CREATIVE_LOADING:     lbl.CREATIVE_LOADING      || 'Generating...',
       LEVELS_JSON:  JSON.stringify(product.levels || []),
       LEVELS_COUNT: (product.levels || []).length || 5,
       LANG:        lang,
