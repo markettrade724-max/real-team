@@ -3,560 +3,223 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>VerseForge</title>
+<title>VerseForge — realteam</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--acc:#818cf8;--bg:#08080f;--road:#1c1c2e;}
+:root{--acc:#818cf8;--bg:#0a0608;--panel:#120e10;--border:rgba(255,200,100,0.2);}
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;overflow:hidden;}
-body{background:var(--bg);color:#f1f5f9;
-  font-family:'Segoe UI',Tajawal,sans-serif;
-  display:flex;flex-direction:column;align-items:center;}
-
-/* ── SCREENS ── */
-.scr{display:none;flex-direction:column;align-items:center;
-  justify-content:center;width:100%;max-width:420px;
-  padding:28px 20px;gap:14px;min-height:100dvh;text-align:center;}
-.scr.on{display:flex;}
-.g-emoji{font-size:5rem;line-height:1;}
-.g-title{font-size:2rem;font-weight:900;color:var(--acc);}
-.g-desc{color:#64748b;font-size:.9rem;line-height:1.6;max-width:300px;}
-.stats{display:flex;gap:24px;margin:4px 0;}
-.stat .v{font-size:1.5rem;font-weight:900;color:var(--acc);font-family:monospace;}
-.stat .l{font-size:.65rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em;}
-
-/* ── BUTTONS ── */
-.btn{padding:13px 0;border-radius:12px;font-size:.95rem;font-weight:700;
-  border:none;cursor:pointer;font-family:inherit;width:100%;max-width:300px;
-  transition:transform .12s;display:inline-flex;align-items:center;
-  justify-content:center;gap:7px;}
-.btn:active{transform:scale(.96);}
-.btn-p{background:var(--acc);color:#000;box-shadow:0 0 24px rgba(129,140,248,.3);}
-.btn-s{background:rgba(255,255,255,.06);color:#f1f5f9;
-  border:1px solid rgba(255,255,255,.1);}
-a.btn-home{color:#64748b;font-size:.82rem;text-decoration:none;margin-top:-4px;}
-
-/* ── HUD ── */
-#hud{position:fixed;top:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:420px;display:none;
-  justify-content:space-between;padding:10px 16px;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(10px);
-  border-bottom:1px solid rgba(255,255,255,.06);z-index:20;}
-.hi .l{font-size:.58rem;color:#64748b;text-transform:uppercase;letter-spacing:.1em;}
-.hi .v{font-size:1.05rem;font-weight:900;color:var(--acc);font-family:monospace;}
-
-/* ── NITRO BAR ── */
-#nbar{position:fixed;bottom:68px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 32px);max-width:388px;height:6px;
-  background:rgba(255,255,255,.08);border-radius:3px;display:none;z-index:20;}
-#nfill{height:100%;background:linear-gradient(90deg,#60a5fa,#818cf8);
-  border-radius:3px;transition:width .1s;width:100%;}
-
-/* ── MOBILE CONTROLS ── */
-#ctrl{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:420px;display:none;gap:8px;
-  padding:8px 16px 18px;
-  background:rgba(0,0,0,.6);backdrop-filter:blur(10px);z-index:20;}
-.cb{flex:1;height:50px;background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.1);border-radius:10px;
-  font-size:1.3rem;cursor:pointer;display:flex;align-items:center;
-  justify-content:center;user-select:none;-webkit-user-select:none;}
-.cb:active,.cb.pressed{background:rgba(255,255,255,.18);}
-.cb-n{flex:.9;background:rgba(129,140,248,.14);
-  border-color:rgba(129,140,248,.3);font-size:.7rem;
-  font-weight:800;color:#818cf8;letter-spacing:.05em;}
-
-/* ── OVERLAY ── */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.88);
-  display:none;flex-direction:column;align-items:center;
-  justify-content:center;gap:14px;z-index:30;
-  text-align:center;padding:24px;}
-.ov.on{display:flex;}
-.ov h2{font-size:1.9rem;font-weight:900;}
-.res-stats{display:flex;gap:28px;}
-
-/* ── SHOP ── */
-#shopOv{position:fixed;inset:0;background:rgba(0,0,0,.93);
-  display:none;flex-direction:column;align-items:center;
-  gap:12px;justify-content:center;z-index:40;padding:24px;}
-#shopOv.on{display:flex;}
-.si{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-  border-radius:14px;padding:14px 18px;display:flex;align-items:center;
-  justify-content:space-between;width:100%;max-width:340px;gap:12px;}
-.si-n{font-weight:700;font-size:.92rem;}
-.si-d{color:#64748b;font-size:.75rem;margin:2px 0;}
-.si-p{color:var(--acc);font-size:.78rem;font-family:monospace;}
-.bb{background:var(--acc);color:#000;padding:8px 14px;border-radius:8px;
-  border:none;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap;}
-.bb.own{background:rgba(255,255,255,.08);color:#64748b;}
-
-/* ── AD BANNER ── */
-#ad{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:420px;display:flex;align-items:center;
-  justify-content:space-between;padding:8px 16px;
-  background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.07);
-  font-size:.74rem;color:#64748b;z-index:10;}
-
-/* ── COUNTDOWN ── */
-#cdOv{position:fixed;inset:0;background:rgba(0,0,0,.82);
-  display:none;align-items:center;justify-content:center;
-  flex-direction:column;gap:10px;z-index:35;}
-#cdOv.on{display:flex;}
-#cdNum{font-size:7rem;font-weight:900;color:var(--acc);line-height:1;
-  text-shadow:0 0 48px rgba(129,140,248,.7);}
-#cdSub{color:#94a3b8;font-size:1rem;}
+body{background:var(--bg);font-family:'Tajawal',sans-serif;color:#e8d5b0;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,0.7);border-bottom:1px solid var(--border);flex-shrink:0;}
+.hero-name{font-family:'Cinzel',serif;color:var(--acc);font-size:0.9rem;font-weight:700;}
+.stats{display:flex;gap:12px;align-items:center;}
+.stat{font-size:0.72rem;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:4px;}
+.stat span{color:var(--acc);font-weight:700;}
+.bar-w{width:50px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;display:inline-block;}
+.bar-f{height:100%;border-radius:3px;transition:width 0.4s;}
+.hp-f{background:linear-gradient(90deg,#ff4444,#ff8888);}
+.mp-f{background:linear-gradient(90deg,#4488ff,#88aaff);}
+.scene{flex:1;position:relative;overflow:hidden;min-height:140px;}
+.scene-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity 0.8s;}
+.scene-ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(0,0,0,0.72));}
+.scene-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.scene-emoji{font-size:clamp(3.5rem,12vw,7rem);filter:drop-shadow(0 0 28px var(--acc));animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.dialogue{flex-shrink:0;background:rgba(10,6,8,0.97);border-top:1px solid var(--border);padding:14px 16px;}
+.speaker{font-family:'Cinzel',serif;color:var(--acc);font-size:0.8rem;margin-bottom:5px;font-weight:700;}
+.text-box{font-size:0.9rem;line-height:1.7;color:#e8d5b0;min-height:52px;margin-bottom:10px;}
+.choices{display:flex;flex-direction:column;gap:7px;}
+.choice-btn{background:rgba(255,200,100,0.07);border:1px solid var(--border);color:#e8d5b0;
+  padding:9px 14px;border-radius:8px;text-align:right;cursor:pointer;
+  font-size:0.85rem;font-family:'Tajawal',sans-serif;transition:0.2s;line-height:1.4;}
+.choice-btn:active{background:rgba(255,200,100,0.2);border-color:var(--acc);color:var(--acc);}
+[dir=ltr] .choice-btn{text-align:left;}
+.combat-view{display:none;position:absolute;inset:0;background:rgba(0,0,0,0.93);
+  flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:14px;}
+.combat-view.active{display:flex;}
+.enemy-disp{text-align:center;}
+.enemy-emoji{font-size:clamp(2.8rem,10vw,5rem);animation:shk 0.6s ease infinite;}
+@keyframes shk{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.enemy-name{font-family:'Cinzel',serif;color:#ff4444;font-size:1rem;margin:6px 0 4px;}
+.enemy-hp-txt{font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:4px;}
+.bar-w-big{width:160px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;}
+.combat-btns{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:320px;}
+.c-btn{padding:13px 8px;border-radius:10px;border:none;font-size:0.88rem;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;transition:0.15s;}
+.c-btn:active{transform:scale(0.95);}
+.c-atk{background:linear-gradient(135deg,#cc2200,#ff4422);color:#fff;}
+.c-mag{background:linear-gradient(135deg,#2244cc,#4466ff);color:#fff;}
+.c-def{background:linear-gradient(135deg,#226622,#44aa44);color:#fff;}
+.c-itm{background:linear-gradient(135deg,#664400,#aa7700);color:#fff;}
+.combat-log{font-size:0.8rem;color:#aaa;text-align:center;min-height:28px;}
+.dmg-float{position:absolute;font-family:'Cinzel',serif;font-size:1.4rem;font-weight:900;pointer-events:none;animation:dmgUp 1s ease forwards;}
+@keyframes dmgUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-55px)}}
+.notif{position:fixed;top:72px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);border:1px solid var(--acc);padding:8px 18px;border-radius:8px;font-size:0.82rem;color:var(--acc);opacity:0;transition:opacity 0.3s;z-index:20;white-space:nowrap;pointer-events:none;}
+.notif.show{opacity:1;}
 </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════════════
-     START SCREEN
-════════════════════════════════════════════ -->
-<div class="scr on" id="scr-start">
-  <div class="g-emoji">🧱📖</div>
-  <div class="g-title">VerseForge</div>
-  <div class="g-desc">Dive into VerseForge, a groundbreaking collaborative game where your creativity shapes ever-evolving voxel landscapes and the stories they tell. Witness an advanced AI 'Chronicler' transform collective player actions into epic, whimsical, or dramatic tales, generating unique lore and shareable digital sagas every cycle.</div>
+<div class="topbar">
+  <div class="hero-name" id="heroName">Hero</div>
   <div class="stats">
-    <div class="stat">
-      <div class="v" id="bestDisp">--:--</div>
-      <div class="l">Best Time</div>
+    <div class="stat">❤️<div class="bar-w"><div class="bar-f hp-f" id="hpBar" style="width:100%"></div></div><span id="hpVal">100</span></div>
+    <div class="stat">✨<div class="bar-w"><div class="bar-f mp-f" id="mpBar" style="width:100%"></div></div><span id="mpVal">50</span></div>
+    <div class="stat">⚔️Lv.<span id="lvlVal">1</span></div>
+  </div>
+</div>
+<div class="scene" id="scene">
+  <div class="scene-bg" id="sceneBg"></div>
+  <div class="scene-ov"></div>
+  <div class="scene-art"><div class="scene-emoji" id="sceneEmoji">🌑</div></div>
+  <div class="combat-view" id="combatView">
+    <div class="enemy-disp">
+      <div class="enemy-emoji" id="enemyEmoji">👹</div>
+      <div class="enemy-name" id="enemyName">Enemy</div>
+      <div class="enemy-hp-txt" id="enemyHpTxt">HP: 50/50</div>
+      <div class="bar-w-big"><div class="bar-f hp-f" id="enemyHpBar" style="width:100%"></div></div>
     </div>
-    <div class="stat">
-      <div class="v">3</div>
-      <div class="l">Laps</div>
-    </div>
-    <div class="stat">
-      <div class="v">320</div>
-      <div class="l">km/h</div>
+    <div class="combat-log" id="combatLog">Battle begins!</div>
+    <div class="combat-btns">
+      <button class="c-btn c-atk" onclick="doCombat('attack')">⚔️ Attack</button>
+      <button class="c-btn c-mag" onclick="doCombat('magic')">✨ Magic</button>
+      <button class="c-btn c-def" onclick="doCombat('defend')">🛡️ Defend</button>
+      <button class="c-btn c-itm" onclick="doCombat('item')">🧪 Item</button>
     </div>
   </div>
-  <button class="btn btn-p" onclick="initGame()">🏁 Play Now</button>
-  <button class="btn btn-s" onclick="openShop()">🛒 Shop</button>
-  <a class="btn-home" href="/">← Home</a>
 </div>
-
-<!-- HUD -->
-<div id="hud">
-  <div class="hi"><div class="l">Lap</div><div class="v" id="hLap">1/3</div></div>
-  <div class="hi"><div class="l">Position</div><div class="v" id="hPos">P1</div></div>
-  <div class="hi"><div class="l">Time</div><div class="v" id="hTime">0:00</div></div>
-  <div class="hi"><div class="l">Speed</div><div class="v" id="hSpd">0</div></div>
+<div class="dialogue">
+  <div class="speaker" id="speaker">Narrator</div>
+  <div class="text-box" id="textBox">Collaborative game where creativity shapes voxel landscapes. AI Chronicler transforms actions into epic tales.</div>
+  <div class="choices" id="choices"></div>
 </div>
-
-<!-- CANVAS -->
-<canvas id="cv" style="display:none;position:fixed;top:0;"></canvas>
-
-<!-- NITRO BAR -->
-<div id="nbar"><div id="nfill"></div></div>
-
-<!-- MOBILE CONTROLS -->
-<div id="ctrl">
-  <div class="cb" id="bL">◀</div>
-  <div class="cb cb-n" id="bN">⚡ Nitro</div>
-  <div class="cb" id="bR">▶</div>
-</div>
-
-<!-- COUNTDOWN -->
-<div id="cdOv">
-  <div id="cdNum">3</div>
-  <div id="cdSub">Get Ready</div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     RACE OVER OVERLAY
-════════════════════════════════════════════ -->
-<div class="ov" id="ov-end">
-  <div style="font-size:2.8rem">🏁</div>
-  <h2 id="endTitle" style="color:var(--acc)">Race Over</h2>
-  <div class="res-stats">
-    <div class="stat"><div class="v" id="endTime">0:00</div><div class="l">Time</div></div>
-    <div class="stat"><div class="v" id="endPos">P1</div><div class="l">Position</div></div>
-  </div>
-  <div id="newBest" style="color:var(--acc);font-weight:700;font-size:.9rem;display:none">
-    ⭐ New Record
-  </div>
-  <button class="btn btn-p" onclick="initGame()">🔄 Try Again</button>
-  <button class="btn btn-s" onclick="goHome()">🏠 Home</button>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     SHOP OVERLAY
-════════════════════════════════════════════ -->
-<div id="shopOv">
-  <h2 style="font-size:1.6rem;font-weight:900">🛒 Shop</h2>
-  <div id="shopList"
-    style="width:100%;max-width:360px;display:flex;flex-direction:column;
-           gap:10px;max-height:55vh;overflow-y:auto"></div>
-  <button class="btn btn-s" style="max-width:220px" onclick="closeShop()">
-    ✕ Back
-  </button>
-</div>
-
-<!-- AD BANNER -->
-<div id="ad">
-  <span>📢 Ads support our team</span>
-  <button class="bb" onclick="buyRemoveAds()">Remove $1.99</button>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     SCRIPT
-════════════════════════════════════════════ -->
+<div class="notif" id="notif"></div>
+<script src="/iap-modal.js"></script>
+<script src="/social-bar.js"></script>
 <script>
-// ─── CONFIG (replaced by generator) ───────────────────────────
-const PRODUCT_ID = 'verse-forge';
-const TOTAL_LAPS = Number('3')     || 3;
-const MAX_SPD    = Number('320')      || 280;
-const OPP_N      = Number('3') || 3;
-const IAPS       = [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}];
-const LANG       = 'en';
+IAPStore.init('verse-forge','en',[{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}]);
+SocialBar.init({title:'VerseForge',url:location.href,lang:'en'});
 
-// ─── SAVE / LOAD ───────────────────────────────────────────────
-const SKEY = 'rt_' + PRODUCT_ID;
-const S    = () => JSON.parse(localStorage.getItem(SKEY) || '{}');
-const save = d  => localStorage.setItem(SKEY, JSON.stringify({...S(), ...d}));
+const hero={hp:100,maxHp:100,mp:50,maxMp:50,atk:15,def:5,mag:12,level:1,xp:0,xpNext:100,gold:0,items:{potion:3},flags:{}};
+let curEnemy=null,defending=false,curScene='intro',typeTimer;
 
-// ─── CANVAS ────────────────────────────────────────────────────
-const cv  = document.getElementById('cv');
-const ctx = cv.getContext('2d');
-const ACC = '#818cf8';
+const S={
+  intro:{bg:'linear-gradient(135deg,#1a0a0f,#2d1020)',emoji:'🌑',sp:'Narrator',
+    text:'On a dark night, you find yourself at the gates of an abandoned kingdom.',
+    choices:[{t:'Enter the village',n:'village'},{t:'Set up camp',n:'camp'}]},
+  village:{bg:'linear-gradient(135deg,#0a1a0a,#1a3020)',emoji:'🏘️',sp:'Elder',
+    text:'Hero, our kingdom suffers. Will you help us?',
+    choices:[{t:'Accept the quest',n:'forest',reward:{xp:20,gold:10}},{t:'Visit the shop',n:'shop'},{t:'Leave',n:'intro'}]},
+  camp:{bg:'linear-gradient(135deg,#0a0a1a,#0f1520)',emoji:'🔥',sp:'Narrator',
+    text:'The fire warms you. This place is safe for rest.',
+    choices:[{t:'Rest (restore 30 HP)',n:'intro',heal:30}]},
+  shop:{bg:'linear-gradient(135deg,#1a1200,#2a1e00)',emoji:'⚗️',sp:'Merchant',
+    text:'Welcome hero! I have healing potions and rare weapons.',
+    choices:[{t:'Buy potion (15 gold)',n:'village',buy:'potion',cost:15},{t:'Leave',n:'village'}]},
+  forest:{bg:'linear-gradient(135deg,#041008,#081a10)',emoji:'🌲',sp:'Narrator',
+    text:'The dense forest is full of dangers. You hear wolves howling.',
+    choices:[
+      {t:'Fight',n:'forest',combat:{name:'🐺 Wild Wolf',hp:40,atk:12,emoji:'🐺',maxHp:40}},
+      {t:'Go back',n:'village'}]},
+  dungeon:{bg:'linear-gradient(135deg,#0d0810,#160c1e)',emoji:'🗝️',sp:'Narrator',
+    text:'You have reached the ancient dungeon. The air is heavy.',
+    choices:[
+      {t:'Explore the dungeon',n:'treasure',reward:{xp:50,gold:30}},
+      {t:'Face the king',n:'dungeon',combat:{name:'👹 Dark King',hp:120,atk:22,emoji:'👹',maxHp:120,isBoss:true}}]},
+  treasure:{bg:'linear-gradient(135deg,#1a1000,#2a1800)',emoji:'💎',sp:'Narrator',
+    text:'You found a chamber full of gold and jewels!',
+    choices:[{t:'Continue',n:'dungeon'}]},
+  victory:{bg:'linear-gradient(135deg,#0a1a00,#182800)',emoji:'🏆',sp:'Narrator',
+    text:'You defeated the Dark King and saved the kingdom!',
+    choices:[{t:'Start over',n:'intro',action:'revive'},{t:'🛒 Shop',action:'shop'}]},
+  defeat:{bg:'linear-gradient(135deg,#1a0000,#2a0000)',emoji:'💀',sp:'Narrator',
+    text:'You fell in battle... Rise and try again!',
+    choices:[{t:'Start over',n:'intro',action:'revive'}]},
+};
 
-const LANES = 3;
-let W, H, roadX, roadW, laneW;
-
-function layout() {
-  W = Math.min(window.innerWidth, 420);
-  H = window.innerHeight;
-  cv.width  = W;
-  cv.height = H;
-  cv.style.width  = W + 'px';
-  cv.style.height = H + 'px';
-  cv.style.left   = ((window.innerWidth - W) / 2) + 'px';
-  roadW = Math.round(W * 0.70);
-  roadX = (W - roadW) / 2;
-  laneW = roadW / LANES;
-}
-
-// ─── STATE ─────────────────────────────────────────────────────
-const K = { L: false, R: false, N: false };
-let raf, car, opps, barriers;
-let roadOff, dist, lap, pos, nitro, nitroOn;
-let raceStart, elapsed;
-let prevT = 0, barrierT = 0;
-
-const LAP_DIST = 3500;
-
-function resetState() {
-  layout();
-  const ctrlH = mobile() ? 76 : 0;
-  car = {
-    lane: 1,
-    x: roadX + laneW * 1 + laneW / 2,
-    y: H - ctrlH - 110
-  };
-  opps = Array.from({ length: OPP_N }, (_, i) => ({
-    lane: i % LANES,
-    x: 0, y: -100 - i * 200,
-    eLap: 0,
-    spd: 1.3 + Math.random() * 1.1
-  }));
-  barriers  = [];
-  roadOff   = 0;
-  dist      = 0;
-  lap       = 0;
-  pos       = 1;
-  nitro     = 100;
-  nitroOn   = false;
-  elapsed   = 0;
-  prevT     = 0;
-  barrierT  = 0;
-  updateHUD();
-}
-
-// ─── HELPERS ───────────────────────────────────────────────────
-function mobile()   { return 'ontouchstart' in window; }
-function fmt(ms)    {
-  const s = Math.floor(ms / 1000);
-  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
-}
-
-function updateHUD() {
-  document.getElementById('hLap').textContent  = (lap + 1) + '/' + TOTAL_LAPS;
-  document.getElementById('hPos').textContent  = 'P' + pos;
-  document.getElementById('hTime').textContent = fmt(elapsed);
-  const spd = Math.min(MAX_SPD, Math.round(80 + lap * 50 + (nitroOn ? 90 : 0)));
-  document.getElementById('hSpd').textContent  = spd;
-  document.getElementById('nfill').style.width = nitro + '%';
-}
-
-// ─── DRAW ──────────────────────────────────────────────────────
-const OPP_CARS = ['🚗', '🚙', '🚕'];
-const BAR_EMJS = ['🚧', '🪨', '⛽', '🛞'];
-
-function drawRoad() {
-  ctx.fillStyle = '#111827';
-  ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#1e2133';
-  ctx.fillRect(roadX, 0, roadW, H);
-
-  // scrolling lane dashes
-  ctx.setLineDash([34, 26]);
-  ctx.strokeStyle = 'rgba(255,255,255,.12)';
-  ctx.lineWidth = 2;
-  for (let i = 1; i < LANES; i++) {
-    const lx = roadX + i * laneW;
-    ctx.beginPath();
-    ctx.moveTo(lx, (roadOff % 60) - 60);
-    ctx.lineTo(lx, H);
-    ctx.stroke();
-  }
-  ctx.setLineDash([]);
-
-  // road edges
-  ctx.strokeStyle = ACC;
-  ctx.lineWidth = 3;
-  [roadX, roadX + roadW].forEach(lx => {
-    ctx.beginPath(); ctx.moveTo(lx, 0); ctx.lineTo(lx, H); ctx.stroke();
+function loadScene(k){
+  curScene=k;const s=S[k];if(!s)return;
+  document.getElementById('combatView').classList.remove('active');
+  document.getElementById('sceneBg').style.background=s.bg||'#0a0608';
+  document.getElementById('sceneEmoji').textContent=s.emoji||'🌑';
+  document.getElementById('speaker').textContent=s.sp||'';
+  typeText(s.text||'');
+  const ch=document.getElementById('choices');ch.innerHTML='';
+  (s.choices||[]).forEach(c=>{
+    const b=document.createElement('button');b.className='choice-btn';b.textContent=c.t;
+    b.onclick=()=>pick(c);ch.appendChild(b);
   });
 }
 
-function em(emoji, x, y, sz = 36) {
-  ctx.font = sz + 'px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(emoji, x, y);
+function pick(c){
+  if(c.action==='shop'){IAPStore.open();return;}
+  if(c.action==='revive'){hero.hp=Math.floor(hero.maxHp*0.5);updateStats();}
+  if(c.heal){hero.hp=Math.min(hero.maxHp,hero.hp+c.heal);updateStats();notify('❤️ +'+c.heal);}
+  if(c.reward){if(c.reward.xp)gainXP(c.reward.xp);if(c.reward.gold){hero.gold+=c.reward.gold;notify('💰 +'+c.reward.gold);}}
+  if(c.buy){if(hero.gold>=c.cost){hero.gold-=c.cost;hero.items[c.buy]=(hero.items[c.buy]||0)+1;notify('🧪 +1');}else{notify('Not enough gold');return;}}
+  if(c.combat){curEnemy={...c.combat};startCombat();return;}
+  loadScene(c.n);
 }
 
-// ─── UPDATE ────────────────────────────────────────────────────
-function update(dt) {
-  const base = Math.min(3.5 + lap * 0.7, 8.5);
-  const spd  = nitroOn ? base * 1.75 : base;
+function startCombat(){
+  defending=false;
+  document.getElementById('combatView').classList.add('active');
+  document.getElementById('enemyEmoji').textContent=curEnemy.emoji;
+  document.getElementById('enemyName').textContent=curEnemy.name;
+  updateEnemyHp();
+  document.getElementById('combatLog').textContent='Battle begins!';
+}
 
-  roadOff += spd * dt * 60;
-  dist    += spd * dt * 60;
+function updateEnemyHp(){
+  const p=(curEnemy.hp/curEnemy.maxHp)*100;
+  document.getElementById('enemyHpBar').style.width=p+'%';
+  document.getElementById('enemyHpTxt').textContent='HP: '+curEnemy.hp+'/'+curEnemy.maxHp;
+}
 
-  // lap check
-  if (dist >= LAP_DIST) {
-    dist = 0;
-    lap++;
-    if (lap >= TOTAL_LAPS) { endRace(); return; }
+function doCombat(a){
+  if(!curEnemy)return;let log='';
+  if(a==='attack'){const d=hero.atk+Math.floor(Math.random()*10)-2;curEnemy.hp-=d;log='⚔️ -'+d;showDmg('-'+d,'#ff4444');}
+  else if(a==='magic'){if(hero.mp<10){document.getElementById('combatLog').textContent='Not enough MP';return;}hero.mp-=10;const d=hero.mag+Math.floor(Math.random()*14);curEnemy.hp-=d;log='✨ -'+d;showDmg('-'+d,'#4488ff');}
+  else if(a==='defend'){defending=true;log='🛡️ You are defending';}
+  else if(a==='item'){if(!(hero.items.potion>0)){document.getElementById('combatLog').textContent='No items left';return;}hero.items.potion--;hero.hp=Math.min(hero.maxHp,hero.hp+40);log='🧪 +40 HP';}
+  curEnemy.hp=Math.max(0,curEnemy.hp);updateEnemyHp();updateStats();
+  if(curEnemy.hp<=0){
+    const xp=curEnemy.isBoss?200:80,g=curEnemy.isBoss?50:20;gainXP(xp);hero.gold+=g;
+    if(curEnemy.isBoss)hero.flags.boss=true;
+    document.getElementById('combatView').classList.remove('active');curEnemy=null;
+    notify('🏆 +'+xp+' XP +'+g+'💰');
+    loadScene(hero.flags.boss?'victory':'dungeon');return;
   }
-
-  // player drift toward lane centre
-  const tX    = roadX + laneW * car.lane + laneW / 2;
-  const shift = K.L ? -laneW * .55 : K.R ? laneW * .55 : 0;
-  car.x += (tX + shift - car.x) * .16;
-
-  // nitro
-  if (nitroOn) { nitro = Math.max(0, nitro - dt * 35); if (!nitro) nitroOn = false; }
-  else         { nitro = Math.min(100, nitro + dt * 9); }
-
-  // opponents
-  let ahead = 0;
-  opps.forEach(o => {
-    o.y += spd * dt * 60 * (o.spd / base);
-    o.x  = roadX + laneW * o.lane + laneW / 2;
-    if (o.y > H + 80) {
-      o.y   = -80 - Math.random() * 120;
-      o.lane = Math.floor(Math.random() * LANES);
-      o.eLap++;
-    }
-    if (o.eLap > lap || (o.eLap === lap && o.y > car.y)) ahead++;
-    // light bump
-    if (Math.abs(o.x - car.x) < 26 && Math.abs(o.y - car.y) < 38)
-      dist = Math.max(0, dist - 180);
-  });
-  pos = ahead + 1;
-
-  // barriers
-  barrierT += dt;
-  if (barrierT > Math.max(2.5 - lap * 0.2, 1.2)) {
-    barriers.push({
-      lane: Math.floor(Math.random() * LANES),
-      y: -50,
-      e: BAR_EMJS[Math.floor(Math.random() * BAR_EMJS.length)]
-    });
-    barrierT = 0;
-  }
-  barriers = barriers.filter(b => { b.y += spd * dt * 60 * .65; return b.y < H + 60; });
-
-  elapsed = Date.now() - raceStart;
-  updateHUD();
+  setTimeout(()=>{
+    const bd=curEnemy.atk+Math.floor(Math.random()*7);
+    const d=defending?Math.max(1,bd-hero.def-5):Math.max(1,bd-hero.def);
+    hero.hp=Math.max(0,hero.hp-d);defending=false;
+    log+=' | 👹 -'+d;document.getElementById('combatLog').textContent=log;
+    updateStats();if(hero.hp<=0){document.getElementById('combatView').classList.remove('active');loadScene('defeat');}
+  },400);
 }
 
-// ─── GAME LOOP ─────────────────────────────────────────────────
-function loop(ts) {
-  const dt = Math.min((ts - prevT) / 1000, .05);
-  prevT = ts;
-  update(dt);
-  ctx.clearRect(0, 0, W, H);
-  drawRoad();
-  barriers.forEach(b => em(b.e, roadX + laneW * b.lane + laneW / 2, b.y, 26));
-  opps.forEach((o, i) => em(OPP_CARS[i % OPP_CARS.length], o.x, o.y, 32));
-  // player car with optional nitro glow
-  if (nitroOn) { ctx.shadowColor = ACC; ctx.shadowBlur = 26; }
-  em('🏎️', car.x, car.y, 38);
-  ctx.shadowBlur = 0;
-  raf = requestAnimationFrame(loop);
+function showDmg(txt,col){
+  const d=document.createElement('div');d.className='dmg-float';d.textContent=txt;
+  d.style.cssText='color:'+col+';top:38%;left:50%;transform:translateX(-50%);position:absolute;';
+  document.getElementById('combatView').appendChild(d);setTimeout(()=>d.remove(),1000);
 }
 
-// ─── COUNTDOWN ─────────────────────────────────────────────────
-function countdown(cb) {
-  const ov = document.getElementById('cdOv');
-  const el = document.getElementById('cdNum');
-  ov.className = 'on';
-  let n = 3;
-  el.textContent = n;
-  const t = setInterval(() => {
-    n--;
-    if (n <= 0) {
-      el.textContent = 'Go!';
-      clearInterval(t);
-      setTimeout(() => { ov.className = ''; cb(); }, 350);
-    } else {
-      el.textContent = n;
-    }
-  }, 800);
+function updateStats(){
+  document.getElementById('hpVal').textContent=hero.hp;
+  document.getElementById('mpVal').textContent=hero.mp;
+  document.getElementById('lvlVal').textContent=hero.level;
+  document.getElementById('hpBar').style.width=(hero.hp/hero.maxHp*100)+'%';
+  document.getElementById('mpBar').style.width=(hero.mp/hero.maxMp*100)+'%';
 }
 
-// ─── INIT / END / HOME ─────────────────────────────────────────
-function initGame() {
-  document.getElementById('scr-start').className = 'scr';
-  document.getElementById('ov-end').className    = 'ov';
-  cv.style.display = 'block';
-  document.getElementById('hud').style.display  = 'flex';
-  document.getElementById('nbar').style.display = 'block';
-  document.getElementById('ad').style.display   = S().adsRemoved ? 'none' : 'flex';
-  if (mobile()) document.getElementById('ctrl').style.display = 'flex';
-
-  cancelAnimationFrame(raf);
-  resetState();
-
-  countdown(() => {
-    raceStart = Date.now();
-    raf = requestAnimationFrame(loop);
-  });
+function gainXP(n){
+  hero.xp+=n;if(hero.xp>=hero.xpNext){hero.level++;hero.xp-=hero.xpNext;hero.xpNext=Math.floor(hero.xpNext*1.5);hero.maxHp+=20;hero.hp=hero.maxHp;hero.maxMp+=10;hero.mp=hero.maxMp;hero.atk+=3;hero.def+=2;hero.mag+=3;notify('🆙 LEVEL '+hero.level+'!');}
+  updateStats();
 }
 
-function endRace() {
-  cancelAnimationFrame(raf);
-  cv.style.display = 'none';
-  ['hud', 'nbar', 'ctrl'].forEach(id =>
-    document.getElementById(id).style.display = 'none');
+function typeText(t){const el=document.getElementById('textBox');el.textContent='';let i=0;clearInterval(typeTimer);typeTimer=setInterval(()=>{el.textContent+=t[i++]||'';if(i>=t.length)clearInterval(typeTimer);},22);}
 
-  document.getElementById('endTime').textContent  = fmt(elapsed);
-  document.getElementById('endPos').textContent   = 'P' + pos;
-  document.getElementById('endTitle').textContent =
-    pos === 1 ? 'You won the race!' : 'Better luck next time';
+function notify(m){const n=document.getElementById('notif');n.textContent=m;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),2000);}
 
-  const isNew = pos === 1 && (!S().bestTime || elapsed < S().bestTime);
-  document.getElementById('newBest').style.display = isNew ? 'block' : 'none';
-  if (isNew) save({ bestTime: elapsed });
-
-  document.getElementById('ov-end').className = 'ov on';
-  if (!S().adsRemoved) document.getElementById('ad').style.display = 'flex';
-}
-
-function goHome() {
-  cancelAnimationFrame(raf);
-  cv.style.display = 'none';
-  ['hud', 'nbar', 'ctrl'].forEach(id =>
-    document.getElementById(id).style.display = 'none');
-  document.getElementById('ov-end').className    = 'ov';
-  document.getElementById('ad').style.display   = S().adsRemoved ? 'none' : 'flex';
-  document.getElementById('scr-start').className = 'scr on';
-  const cur = S();
-  if (cur.bestTime) document.getElementById('bestDisp').textContent = fmt(cur.bestTime);
-}
-
-// ─── INPUT ─────────────────────────────────────────────────────
-// Keyboard
-window.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft'  || e.key === 'a') K.L = true;
-  if (e.key === 'ArrowRight' || e.key === 'd') K.R = true;
-  if (e.key === ' ' || e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (nitro > 15) nitroOn = true;
-  }
-});
-window.addEventListener('keyup', e => {
-  if (e.key === 'ArrowLeft'  || e.key === 'a') K.L = false;
-  if (e.key === 'ArrowRight' || e.key === 'd') K.R = false;
-  if (e.key === ' ' || e.key === 'ArrowUp') nitroOn = false;
-});
-
-// Swipe on canvas
-let _tx = 0;
-cv.addEventListener('touchstart', e => { _tx = e.touches[0].clientX; }, { passive: true });
-cv.addEventListener('touchend',   e => {
-  const dx = e.changedTouches[0].clientX - _tx;
-  if (Math.abs(dx) > 28) {
-    car.lane = dx < 0
-      ? Math.max(0, car.lane - 1)
-      : Math.min(LANES - 1, car.lane + 1);
-  }
-}, { passive: true });
-
-// Mobile buttons
-function wire(id, down, up) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.addEventListener('touchstart', e => { e.preventDefault(); down(); }, { passive: false });
-  el.addEventListener('touchend',   e => { e.preventDefault(); up(); },   { passive: false });
-  el.addEventListener('touchcancel',e => { e.preventDefault(); up(); },   { passive: false });
-}
-wire('bL', () => K.L = true,  () => K.L = false);
-wire('bR', () => K.R = true,  () => K.R = false);
-wire('bN', () => { if (nitro > 15) nitroOn = true; }, () => nitroOn = false);
-
-// ─── SHOP ──────────────────────────────────────────────────────
-function openShop() {
-  const cur  = S();
-  const list = document.getElementById('shopList');
-  list.innerHTML = '';
-
-  IAPS.forEach(item => {
-    const owned = !!cur['own_' + item.id];
-    const name  = (item.name && (item.name[LANG] || item.name.en)) || item.id;
-    const desc  = (item.desc && (item.desc[LANG] || item.desc.en)) || '';
-    const div   = document.createElement('div');
-    div.className = 'si';
-    div.innerHTML =
-      `<div><div class="si-n">${name}</div><div class="si-d">${desc}</div><div class="si-p">${item.price || '$0.99'}</div></div>` +
-      `<button class="bb${owned ? ' own' : ''}" ${owned ? 'disabled' : ''} onclick="buy('${item.id}')">` +
-      `${owned ? '✓' : 'Shop'}</button>`;
-    list.appendChild(div);
-  });
-
-  if (!cur.adsRemoved) {
-    const div = document.createElement('div');
-    div.className = 'si';
-    div.innerHTML =
-      `<div><div class="si-n">🚫 Ads support our team</div><div class="si-p">Remove $1.99</div></div>` +
-      `<button class="bb" onclick="buyRemoveAds()">Shop</button>`;
-    list.appendChild(div);
-  }
-
-  if (!list.children.length)
-    list.innerHTML = '<p style="color:#64748b;padding:20px;font-size:.85rem">—</p>';
-
-  document.getElementById('shopOv').classList.add('on');
-}
-
-function closeShop()  { document.getElementById('shopOv').classList.remove('on'); }
-function buy(id)      { save({ ['own_' + id]: true }); openShop(); }
-function buyRemoveAds() {
-  save({ adsRemoved: true });
-  document.getElementById('ad').style.display = 'none';
-  if (document.getElementById('shopOv').classList.contains('on')) openShop();
-}
-
-// ─── INIT STATE FROM SAVE ──────────────────────────────────────
-(function bootstrap() {
-  const cur = S();
-  if (cur.adsRemoved) document.getElementById('ad').style.display = 'none';
-  if (cur.bestTime)   document.getElementById('bestDisp').textContent = fmt(cur.bestTime);
-})();
-
-window.addEventListener('resize', () => { if (cv.style.display !== 'none') layout(); });
+loadScene('intro');updateStats();
 </script>
 </body>
 </html>

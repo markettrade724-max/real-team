@@ -2,561 +2,194 @@
 <html lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Écho Luminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Écho Luminal — realteam</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{--acc:#facc15;--bg:#08080f;--road:#1c1c2e;}
+:root{
+  --bg:#060610;--surface:#0d0d1f;--border:rgba(255,255,255,0.08);
+  --accent:#facc15;--accentRgb:250,204,21;
+  --text:#f1f5f9;--muted:#64748b;
+}
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;overflow:hidden;}
-body{background:var(--bg);color:#f1f5f9;
-  font-family:'Segoe UI',Tajawal,sans-serif;
-  display:flex;flex-direction:column;align-items:center;}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 100px;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(250,204,21,0.06),transparent);}
+.wrap{position:relative;z-index:1;width:100%;max-width:480px;}
 
-/* ── SCREENS ── */
-.scr{display:none;flex-direction:column;align-items:center;
-  justify-content:center;width:100%;max-width:420px;
-  padding:28px 20px;gap:14px;min-height:100dvh;text-align:center;}
-.scr.on{display:flex;}
-.g-emoji{font-size:5rem;line-height:1;}
-.g-title{font-size:2rem;font-weight:900;color:var(--acc);}
-.g-desc{color:#64748b;font-size:.9rem;line-height:1.6;max-width:300px;}
-.stats{display:flex;gap:24px;margin:4px 0;}
-.stat .v{font-size:1.5rem;font-weight:900;color:var(--acc);font-family:monospace;}
-.stat .l{font-size:.65rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em;}
+.g-back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:0.82rem;
+  text-decoration:none;margin-bottom:24px;margin-top:8px;transition:color 0.2s;}
+.g-back:hover{color:var(--text);}
 
-/* ── BUTTONS ── */
-.btn{padding:13px 0;border-radius:12px;font-size:.95rem;font-weight:700;
-  border:none;cursor:pointer;font-family:inherit;width:100%;max-width:300px;
-  transition:transform .12s;display:inline-flex;align-items:center;
-  justify-content:center;gap:7px;}
-.btn:active{transform:scale(.96);}
-.btn-p{background:var(--acc);color:#000;box-shadow:0 0 24px rgba(250,204,21,.3);}
-.btn-s{background:rgba(255,255,255,.06);color:#f1f5f9;
-  border:1px solid rgba(255,255,255,.1);}
-a.btn-home{color:#64748b;font-size:.82rem;text-decoration:none;margin-top:-4px;}
+/* AD */
+#ad-banner{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;
+  padding:9px 14px;text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;}
+#ad-banner.hidden{display:none;}
+.ad-remove-btn{background:rgba(250,204,21,0.15);color:var(--accent);border:none;padding:4px 10px;border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:inherit;}
 
-/* ── HUD ── */
-#hud{position:fixed;top:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:420px;display:none;
-  justify-content:space-between;padding:10px 16px;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(10px);
-  border-bottom:1px solid rgba(255,255,255,.06);z-index:20;}
-.hi .l{font-size:.58rem;color:#64748b;text-transform:uppercase;letter-spacing:.1em;}
-.hi .v{font-size:1.05rem;font-weight:900;color:var(--acc);font-family:monospace;}
+/* TIMER */
+.timer-wrap{text-align:center;margin-bottom:32px;}
+.timer-ring{position:relative;width:220px;height:220px;margin:0 auto 20px;}
+.timer-ring svg{transform:rotate(-90deg);}
+.timer-ring circle{fill:none;stroke:var(--surface);stroke-width:8;}
+.timer-ring .progress{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+.timer-display{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.timer-time{font-family:'Space Mono',monospace;font-size:2.6rem;font-weight:700;color:var(--text);}
+.timer-mode{font-size:0.8rem;color:var(--muted);margin-top:4px;}
+.timer-controls{display:flex;gap:12px;justify-content:center;}
+.btn-ctrl{background:var(--surface);border:1px solid var(--border);color:var(--text);
+  padding:10px 24px;border-radius:12px;font-size:0.9rem;cursor:pointer;font-family:inherit;
+  transition:border-color 0.2s,background 0.2s;}
+.btn-ctrl:hover{border-color:rgba(250,204,21,0.4);background:rgba(250,204,21,0.06);}
+.btn-ctrl.primary{background:var(--accent);color:#000;font-weight:700;border-color:var(--accent);}
+.btn-ctrl.primary:hover{box-shadow:0 0 20px rgba(250,204,21,0.4);}
 
-/* ── NITRO BAR ── */
-#nbar{position:fixed;bottom:68px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 32px);max-width:388px;height:6px;
-  background:rgba(255,255,255,.08);border-radius:3px;display:none;z-index:20;}
-#nfill{height:100%;background:linear-gradient(90deg,#60a5fa,#818cf8);
-  border-radius:3px;transition:width .1s;width:100%;}
+/* MODE SELECTOR */
+.modes{display:flex;gap:8px;margin-bottom:28px;}
+.mode-btn{flex:1;padding:10px 8px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);color:var(--muted);font-size:0.82rem;cursor:pointer;
+  font-family:inherit;text-align:center;transition:0.2s;}
+.mode-btn.active{border-color:rgba(250,204,21,0.5);background:rgba(250,204,21,0.1);color:var(--accent);font-weight:700;}
 
-/* ── MOBILE CONTROLS ── */
-#ctrl{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:420px;display:none;gap:8px;
-  padding:8px 16px 18px;
-  background:rgba(0,0,0,.6);backdrop-filter:blur(10px);z-index:20;}
-.cb{flex:1;height:50px;background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.1);border-radius:10px;
-  font-size:1.3rem;cursor:pointer;display:flex;align-items:center;
-  justify-content:center;user-select:none;-webkit-user-select:none;}
-.cb:active,.cb.pressed{background:rgba(255,255,255,.18);}
-.cb-n{flex:.9;background:rgba(129,140,248,.14);
-  border-color:rgba(129,140,248,.3);font-size:.7rem;
-  font-weight:800;color:#818cf8;letter-spacing:.05em;}
-
-/* ── OVERLAY ── */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.88);
-  display:none;flex-direction:column;align-items:center;
-  justify-content:center;gap:14px;z-index:30;
-  text-align:center;padding:24px;}
-.ov.on{display:flex;}
-.ov h2{font-size:1.9rem;font-weight:900;}
-.res-stats{display:flex;gap:28px;}
-
-/* ── SHOP ── */
-#shopOv{position:fixed;inset:0;background:rgba(0,0,0,.93);
-  display:none;flex-direction:column;align-items:center;
-  gap:12px;justify-content:center;z-index:40;padding:24px;}
-#shopOv.on{display:flex;}
-.si{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-  border-radius:14px;padding:14px 18px;display:flex;align-items:center;
-  justify-content:space-between;width:100%;max-width:340px;gap:12px;}
-.si-n{font-weight:700;font-size:.92rem;}
-.si-d{color:#64748b;font-size:.75rem;margin:2px 0;}
-.si-p{color:var(--acc);font-size:.78rem;font-family:monospace;}
-.bb{background:var(--acc);color:#000;padding:8px 14px;border-radius:8px;
-  border:none;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap;}
-.bb.own{background:rgba(255,255,255,.08);color:#64748b;}
-
-/* ── AD BANNER ── */
-#ad{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:420px;display:flex;align-items:center;
-  justify-content:space-between;padding:8px 16px;
-  background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.07);
-  font-size:.74rem;color:#64748b;z-index:10;}
-
-/* ── COUNTDOWN ── */
-#cdOv{position:fixed;inset:0;background:rgba(0,0,0,.82);
-  display:none;align-items:center;justify-content:center;
-  flex-direction:column;gap:10px;z-index:35;}
-#cdOv.on{display:flex;}
-#cdNum{font-size:7rem;font-weight:900;color:var(--acc);line-height:1;
-  text-shadow:0 0 48px rgba(250,204,21,.7);}
-#cdSub{color:#94a3b8;font-size:1rem;}
+/* STATS (Pro feature) */
+.stats-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;position:relative;}
+.stats-section.locked::after{content:'🔒 Pro';position:absolute;inset:0;background:rgba(6,6,16,0.7);
+  border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:700;color:var(--muted);cursor:pointer;}
+.section-title{font-size:0.85rem;font-weight:700;color:var(--muted);margin-bottom:14px;font-family:'Space Mono',monospace;letter-spacing:0.08em;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat-item{text-align:center;}
+.stat-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);}
+.stat-lbl{font-size:0.7rem;color:var(--muted);margin-top:2px;}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <a href="/" class="g-back">← {{BACK_LABEL}}</a>
 
-<!-- ═══════════════════════════════════════════
-     START SCREEN
-════════════════════════════════════════════ -->
-<div class="scr on" id="scr-start">
-  <div class="g-emoji">🌌</div>
-  <div class="g-title">Écho Luminal</div>
-  <div class="g-desc">Découvrez la beauté cachée de votre monde intérieur avec Écho Luminal. Laissez l'IA peindre votre chef-d'œuvre personnel unique à partir de vos émotions et pensées, évoluant à chaque instant.</div>
-  <div class="stats">
-    <div class="stat">
-      <div class="v" id="bestDisp">--:--</div>
-      <div class="l">Meilleur temps</div>
+  <div id="ad-banner">
+    <span>📢 Les pubs soutiennent l'équipe</span>
+    <button class="ad-remove-btn" onclick="IAPStore.open()">Supprimer 1,99$</button>
+  </div>
+
+  <!-- MODE -->
+  <div class="modes">
+    <button class="mode-btn active" onclick="setMode('focus',25,this)">🧘 Focus<br><small>25 min</small></button>
+    <button class="mode-btn" onclick="setMode('short',5,this)">☕ Pause courte<br><small>5 min</small></button>
+    <button class="mode-btn" onclick="setMode('long',15,this)">🌿 Pause longue<br><small>15 min</small></button>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer-wrap">
+    <div class="timer-ring">
+      <svg width="220" height="220" viewBox="0 0 220 220">
+        <circle cx="110" cy="110" r="96"/>
+        <circle class="progress" id="progress-ring" cx="110" cy="110" r="96"
+          stroke-dasharray="603" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-display">
+        <div class="timer-time" id="timer-display">25:00</div>
+        <div class="timer-mode" id="mode-label">Focus</div>
+      </div>
     </div>
-    <div class="stat">
-      <div class="v">3</div>
-      <div class="l">Tours</div>
-    </div>
-    <div class="stat">
-      <div class="v">320</div>
-      <div class="l">km/h</div>
+    <div class="timer-controls">
+      <button class="btn-ctrl" onclick="reset()">↺</button>
+      <button class="btn-ctrl primary" id="btn-start" onclick="toggle()">▶ Jouer</button>
+      <button class="btn-ctrl" onclick="skip()">⏭</button>
     </div>
   </div>
-  <button class="btn btn-p" onclick="initGame()">🏁 Jouer</button>
-  <button class="btn btn-s" onclick="openShop()">🛒 Boutique</button>
-  <a class="btn-home" href="/">← Accueil</a>
-</div>
 
-<!-- HUD -->
-<div id="hud">
-  <div class="hi"><div class="l">Tour</div><div class="v" id="hLap">1/3</div></div>
-  <div class="hi"><div class="l">Position</div><div class="v" id="hPos">P1</div></div>
-  <div class="hi"><div class="l">Temps</div><div class="v" id="hTime">0:00</div></div>
-  <div class="hi"><div class="l">Vitesse</div><div class="v" id="hSpd">0</div></div>
-</div>
-
-<!-- CANVAS -->
-<canvas id="cv" style="display:none;position:fixed;top:0;"></canvas>
-
-<!-- NITRO BAR -->
-<div id="nbar"><div id="nfill"></div></div>
-
-<!-- MOBILE CONTROLS -->
-<div id="ctrl">
-  <div class="cb" id="bL">◀</div>
-  <div class="cb cb-n" id="bN">⚡ Nitro</div>
-  <div class="cb" id="bR">▶</div>
-</div>
-
-<!-- COUNTDOWN -->
-<div id="cdOv">
-  <div id="cdNum">3</div>
-  <div id="cdSub">Prêt</div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     RACE OVER OVERLAY
-════════════════════════════════════════════ -->
-<div class="ov" id="ov-end">
-  <div style="font-size:2.8rem">🏁</div>
-  <h2 id="endTitle" style="color:var(--acc)">Course terminée</h2>
-  <div class="res-stats">
-    <div class="stat"><div class="v" id="endTime">0:00</div><div class="l">Temps</div></div>
-    <div class="stat"><div class="v" id="endPos">P1</div><div class="l">Position</div></div>
+  <!-- STATS (locked until Pro) -->
+  <div class="stats-section" id="stats-section" onclick="handleStatsClick()">
+    <div class="section-title">STATS</div>
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-val" id="s-sessions">0</div><div class="stat-lbl">Sessions</div></div>
+      <div class="stat-item"><div class="stat-val" id="s-minutes">0</div><div class="stat-lbl">Minutes</div></div>
+      <div class="stat-item"><div class="stat-val" id="s-streak">0</div><div class="stat-lbl">Série</div></div>
+    </div>
   </div>
-  <div id="newBest" style="color:var(--acc);font-weight:700;font-size:.9rem;display:none">
-    ⭐ Nouveau record
-  </div>
-  <button class="btn btn-p" onclick="initGame()">🔄 Réessayer</button>
-  <button class="btn btn-s" onclick="goHome()">🏠 Accueil</button>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     SHOP OVERLAY
-════════════════════════════════════════════ -->
-<div id="shopOv">
-  <h2 style="font-size:1.6rem;font-weight:900">🛒 Boutique</h2>
-  <div id="shopList"
-    style="width:100%;max-width:360px;display:flex;flex-direction:column;
-           gap:10px;max-height:55vh;overflow-y:auto"></div>
-  <button class="btn btn-s" style="max-width:220px" onclick="closeShop()">
-    ✕ Retour
-  </button>
-</div>
-
-<!-- AD BANNER -->
-<div id="ad">
-  <span>📢 Les pubs soutiennent l'équipe</span>
-  <button class="bb" onclick="buyRemoveAds()">Supprimer 1,99$</button>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     SCRIPT
-════════════════════════════════════════════ -->
+<script src="/iap-modal.js"></script>
 <script>
-// ─── CONFIG (replaced by generator) ───────────────────────────
-const PRODUCT_ID = 'luminal-echo';
-const TOTAL_LAPS = Number('3')     || 3;
-const MAX_SPD    = Number('320')      || 280;
-const OPP_N      = Number('3') || 3;
-const IAPS       = [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提ش示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}];
-const LANG       = 'fr';
+IAPStore.init('luminal-echo', 'fr', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}]);
+if(IAPStore.isOwned('no-ads')) document.getElementById('ad-banner').classList.add('hidden');
+window.addEventListener('iap:no-ads', ()=>document.getElementById('ad-banner').classList.add('hidden'));
 
-// ─── SAVE / LOAD ───────────────────────────────────────────────
-const SKEY = 'rt_' + PRODUCT_ID;
-const S    = () => JSON.parse(localStorage.getItem(SKEY) || '{}');
-const save = d  => localStorage.setItem(SKEY, JSON.stringify({...S(), ...d}));
+// unlock stats on purchase
+function checkPro(){ document.getElementById('stats-section').classList.toggle('locked',!IAPStore.isOwned('stats-pro')&&!IAPStore.isOwned('full-pro')); }
+window.addEventListener('iap:purchased', checkPro);
+checkPro();
 
-// ─── CANVAS ────────────────────────────────────────────────────
-const cv  = document.getElementById('cv');
-const ctx = cv.getContext('2d');
-const ACC = '#facc15';
-
-const LANES = 3;
-let W, H, roadX, roadW, laneW;
-
-function layout() {
-  W = Math.min(window.innerWidth, 420);
-  H = window.innerHeight;
-  cv.width  = W;
-  cv.height = H;
-  cv.style.width  = W + 'px';
-  cv.style.height = H + 'px';
-  cv.style.left   = ((window.innerWidth - W) / 2) + 'px';
-  roadW = Math.round(W * 0.70);
-  roadX = (W - roadW) / 2;
-  laneW = roadW / LANES;
+function handleStatsClick(){
+  const locked=document.getElementById('stats-section').classList.contains('locked');
+  if(locked) IAPStore.open();
 }
 
-// ─── STATE ─────────────────────────────────────────────────────
-const K = { L: false, R: false, N: false };
-let raf, car, opps, barriers;
-let roadOff, dist, lap, pos, nitro, nitroOn;
-let raceStart, elapsed;
-let prevT = 0, barrierT = 0;
+// ── Timer Logic ───────────────────────────────────────────────
+let duration=25*60, remaining=25*60, running=false, interval=null, mode='focus';
+const CIRC=2*Math.PI*96;
 
-const LAP_DIST = 3500;
-
-function resetState() {
-  layout();
-  const ctrlH = mobile() ? 76 : 0;
-  car = {
-    lane: 1,
-    x: roadX + laneW * 1 + laneW / 2,
-    y: H - ctrlH - 110
-  };
-  opps = Array.from({ length: OPP_N }, (_, i) => ({
-    lane: i % LANES,
-    x: 0, y: -100 - i * 200,
-    eLap: 0,
-    spd: 1.3 + Math.random() * 1.1
-  }));
-  barriers  = [];
-  roadOff   = 0;
-  dist      = 0;
-  lap       = 0;
-  pos       = 1;
-  nitro     = 100;
-  nitroOn   = false;
-  elapsed   = 0;
-  prevT     = 0;
-  barrierT  = 0;
-  updateHUD();
+function setMode(m,mins,btn){
+  mode=m; duration=mins*60; remaining=mins*60;
+  running=false; clearInterval(interval);
+  document.getElementById('btn-start').textContent='▶ Jouer';
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
 }
 
-// ─── HELPERS ───────────────────────────────────────────────────
-function mobile()   { return 'ontouchstart' in window; }
-function fmt(ms)    {
-  const s = Math.floor(ms / 1000);
-  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+function toggle(){
+  if(running){ running=false; clearInterval(interval); document.getElementById('btn-start').textContent='▶ Jouer'; }
+  else { running=true; interval=setInterval(tick,1000); document.getElementById('btn-start').textContent='⏸ Pause'; }
 }
 
-function updateHUD() {
-  document.getElementById('hLap').textContent  = (lap + 1) + '/' + TOTAL_LAPS;
-  document.getElementById('hPos').textContent  = 'P' + pos;
-  document.getElementById('hTime').textContent = fmt(elapsed);
-  const spd = Math.min(MAX_SPD, Math.round(80 + lap * 50 + (nitroOn ? 90 : 0)));
-  document.getElementById('hSpd').textContent  = spd;
-  document.getElementById('nfill').style.width = nitro + '%';
+function tick(){
+  if(remaining<=0){ finish(); return; }
+  remaining--; render();
 }
 
-// ─── DRAW ──────────────────────────────────────────────────────
-const OPP_CARS = ['🚗', '🚙', '🚕'];
-const BAR_EMJS = ['🚧', '🪨', '⛽', '🛞'];
+function render(){
+  const m=Math.floor(remaining/60),s=remaining%60;
+  document.getElementById('timer-display').textContent=m+':'+(s<10?'0':'')+s;
+  const pct=1-(remaining/duration);
+  document.getElementById('progress-ring').style.strokeDashoffset=CIRC*pct;
+}
 
-function drawRoad() {
-  ctx.fillStyle = '#111827';
-  ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#1e2133';
-  ctx.fillRect(roadX, 0, roadW, H);
+function reset(){ running=false; clearInterval(interval); remaining=duration; document.getElementById('btn-start').textContent='▶ Jouer'; render(); }
 
-  // scrolling lane dashes
-  ctx.setLineDash([34, 26]);
-  ctx.strokeStyle = 'rgba(255,255,255,.12)';
-  ctx.lineWidth = 2;
-  for (let i = 1; i < LANES; i++) {
-    const lx = roadX + i * laneW;
-    ctx.beginPath();
-    ctx.moveTo(lx, (roadOff % 60) - 60);
-    ctx.lineTo(lx, H);
-    ctx.stroke();
-  }
-  ctx.setLineDash([]);
+function skip(){ finish(); }
 
-  // road edges
-  ctx.strokeStyle = ACC;
-  ctx.lineWidth = 3;
-  [roadX, roadX + roadW].forEach(lx => {
-    ctx.beginPath(); ctx.moveTo(lx, 0); ctx.lineTo(lx, H); ctx.stroke();
+function finish(){
+  running=false; clearInterval(interval);
+  document.getElementById('btn-start').textContent='▶ Jouer';
+  // stats
+  const sessions=parseInt(localStorage.getItem('rt_sessions_luminal-echo')||'0')+1;
+  const minutes=parseInt(localStorage.getItem('rt_minutes_luminal-echo')||'0')+(duration/60|0);
+  localStorage.setItem('rt_sessions_luminal-echo',sessions);
+  localStorage.setItem('rt_minutes_luminal-echo',minutes);
+  document.getElementById('s-sessions').textContent=sessions;
+  document.getElementById('s-minutes').textContent=minutes;
+  remaining=duration; render();
+  if(mode==='focus') alert('✅ Session terminée!');
+}
+
+// load stats
+document.getElementById('s-sessions').textContent=localStorage.getItem('rt_sessions_luminal-echo')||'0';
+document.getElementById('s-minutes').textContent=localStorage.getItem('rt_minutes_luminal-echo')||'0';
+render();
+</script>
+
+<!-- Social Bar -->
+<script src="/social-bar.js"></script>
+<script>
+  SocialBar.init({
+    title: 'Écho Luminal — realteam',
+    url:   'https://real-team-production.up.railway.app/games/luminal-echo.html',
+    lang:  'fr'
   });
-}
-
-function em(emoji, x, y, sz = 36) {
-  ctx.font = sz + 'px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(emoji, x, y);
-}
-
-// ─── UPDATE ────────────────────────────────────────────────────
-function update(dt) {
-  const base = Math.min(3.5 + lap * 0.7, 8.5);
-  const spd  = nitroOn ? base * 1.75 : base;
-
-  roadOff += spd * dt * 60;
-  dist    += spd * dt * 60;
-
-  // lap check
-  if (dist >= LAP_DIST) {
-    dist = 0;
-    lap++;
-    if (lap >= TOTAL_LAPS) { endRace(); return; }
-  }
-
-  // player drift toward lane centre
-  const tX    = roadX + laneW * car.lane + laneW / 2;
-  const shift = K.L ? -laneW * .55 : K.R ? laneW * .55 : 0;
-  car.x += (tX + shift - car.x) * .16;
-
-  // nitro
-  if (nitroOn) { nitro = Math.max(0, nitro - dt * 35); if (!nitro) nitroOn = false; }
-  else         { nitro = Math.min(100, nitro + dt * 9); }
-
-  // opponents
-  let ahead = 0;
-  opps.forEach(o => {
-    o.y += spd * dt * 60 * (o.spd / base);
-    o.x  = roadX + laneW * o.lane + laneW / 2;
-    if (o.y > H + 80) {
-      o.y   = -80 - Math.random() * 120;
-      o.lane = Math.floor(Math.random() * LANES);
-      o.eLap++;
-    }
-    if (o.eLap > lap || (o.eLap === lap && o.y > car.y)) ahead++;
-    // light bump
-    if (Math.abs(o.x - car.x) < 26 && Math.abs(o.y - car.y) < 38)
-      dist = Math.max(0, dist - 180);
-  });
-  pos = ahead + 1;
-
-  // barriers
-  barrierT += dt;
-  if (barrierT > Math.max(2.5 - lap * 0.2, 1.2)) {
-    barriers.push({
-      lane: Math.floor(Math.random() * LANES),
-      y: -50,
-      e: BAR_EMJS[Math.floor(Math.random() * BAR_EMJS.length)]
-    });
-    barrierT = 0;
-  }
-  barriers = barriers.filter(b => { b.y += spd * dt * 60 * .65; return b.y < H + 60; });
-
-  elapsed = Date.now() - raceStart;
-  updateHUD();
-}
-
-// ─── GAME LOOP ─────────────────────────────────────────────────
-function loop(ts) {
-  const dt = Math.min((ts - prevT) / 1000, .05);
-  prevT = ts;
-  update(dt);
-  ctx.clearRect(0, 0, W, H);
-  drawRoad();
-  barriers.forEach(b => em(b.e, roadX + laneW * b.lane + laneW / 2, b.y, 26));
-  opps.forEach((o, i) => em(OPP_CARS[i % OPP_CARS.length], o.x, o.y, 32));
-  // player car with optional nitro glow
-  if (nitroOn) { ctx.shadowColor = ACC; ctx.shadowBlur = 26; }
-  em('🏎️', car.x, car.y, 38);
-  ctx.shadowBlur = 0;
-  raf = requestAnimationFrame(loop);
-}
-
-// ─── COUNTDOWN ─────────────────────────────────────────────────
-function countdown(cb) {
-  const ov = document.getElementById('cdOv');
-  const el = document.getElementById('cdNum');
-  ov.className = 'on';
-  let n = 3;
-  el.textContent = n;
-  const t = setInterval(() => {
-    n--;
-    if (n <= 0) {
-      el.textContent = 'Partez!';
-      clearInterval(t);
-      setTimeout(() => { ov.className = ''; cb(); }, 350);
-    } else {
-      el.textContent = n;
-    }
-  }, 800);
-}
-
-// ─── INIT / END / HOME ─────────────────────────────────────────
-function initGame() {
-  document.getElementById('scr-start').className = 'scr';
-  document.getElementById('ov-end').className    = 'ov';
-  cv.style.display = 'block';
-  document.getElementById('hud').style.display  = 'flex';
-  document.getElementById('nbar').style.display = 'block';
-  document.getElementById('ad').style.display   = S().adsRemoved ? 'none' : 'flex';
-  if (mobile()) document.getElementById('ctrl').style.display = 'flex';
-
-  cancelAnimationFrame(raf);
-  resetState();
-
-  countdown(() => {
-    raceStart = Date.now();
-    raf = requestAnimationFrame(loop);
-  });
-}
-
-function endRace() {
-  cancelAnimationFrame(raf);
-  cv.style.display = 'none';
-  ['hud', 'nbar', 'ctrl'].forEach(id =>
-    document.getElementById(id).style.display = 'none');
-
-  document.getElementById('endTime').textContent  = fmt(elapsed);
-  document.getElementById('endPos').textContent   = 'P' + pos;
-  document.getElementById('endTitle').textContent =
-    pos === 1 ? 'Vous avez gagné la course!' : 'Meilleure chance la prochaine fois';
-
-  const isNew = pos === 1 && (!S().bestTime || elapsed < S().bestTime);
-  document.getElementById('newBest').style.display = isNew ? 'block' : 'none';
-  if (isNew) save({ bestTime: elapsed });
-
-  document.getElementById('ov-end').className = 'ov on';
-  if (!S().adsRemoved) document.getElementById('ad').style.display = 'flex';
-}
-
-function goHome() {
-  cancelAnimationFrame(raf);
-  cv.style.display = 'none';
-  ['hud', 'nbar', 'ctrl'].forEach(id =>
-    document.getElementById(id).style.display = 'none');
-  document.getElementById('ov-end').className    = 'ov';
-  document.getElementById('ad').style.display   = S().adsRemoved ? 'none' : 'flex';
-  document.getElementById('scr-start').className = 'scr on';
-  const cur = S();
-  if (cur.bestTime) document.getElementById('bestDisp').textContent = fmt(cur.bestTime);
-}
-
-// ─── INPUT ─────────────────────────────────────────────────────
-// Keyboard
-window.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft'  || e.key === 'a') K.L = true;
-  if (e.key === 'ArrowRight' || e.key === 'd') K.R = true;
-  if (e.key === ' ' || e.key === 'ArrowUp') {
-    e.preventDefault();
-    if (nitro > 15) nitroOn = true;
-  }
-});
-window.addEventListener('keyup', e => {
-  if (e.key === 'ArrowLeft'  || e.key === 'a') K.L = false;
-  if (e.key === 'ArrowRight' || e.key === 'd') K.R = false;
-  if (e.key === ' ' || e.key === 'ArrowUp') nitroOn = false;
-});
-
-// Swipe on canvas
-let _tx = 0;
-cv.addEventListener('touchstart', e => { _tx = e.touches[0].clientX; }, { passive: true });
-cv.addEventListener('touchend',   e => {
-  const dx = e.changedTouches[0].clientX - _tx;
-  if (Math.abs(dx) > 28) {
-    car.lane = dx < 0
-      ? Math.max(0, car.lane - 1)
-      : Math.min(LANES - 1, car.lane + 1);
-  }
-}, { passive: true });
-
-// Mobile buttons
-function wire(id, down, up) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.addEventListener('touchstart', e => { e.preventDefault(); down(); }, { passive: false });
-  el.addEventListener('touchend',   e => { e.preventDefault(); up(); },   { passive: false });
-  el.addEventListener('touchcancel',e => { e.preventDefault(); up(); },   { passive: false });
-}
-wire('bL', () => K.L = true,  () => K.L = false);
-wire('bR', () => K.R = true,  () => K.R = false);
-wire('bN', () => { if (nitro > 15) nitroOn = true; }, () => nitroOn = false);
-
-// ─── SHOP ──────────────────────────────────────────────────────
-function openShop() {
-  const cur  = S();
-  const list = document.getElementById('shopList');
-  list.innerHTML = '';
-
-  IAPS.forEach(item => {
-    const owned = !!cur['own_' + item.id];
-    const name  = (item.name && (item.name[LANG] || item.name.en)) || item.id;
-    const desc  = (item.desc && (item.desc[LANG] || item.desc.en)) || '';
-    const div   = document.createElement('div');
-    div.className = 'si';
-    div.innerHTML =
-      `<div><div class="si-n">${name}</div><div class="si-d">${desc}</div><div class="si-p">${item.price || '$0.99'}</div></div>` +
-      `<button class="bb${owned ? ' own' : ''}" ${owned ? 'disabled' : ''} onclick="buy('${item.id}')">` +
-      `${owned ? '✓' : 'Boutique'}</button>`;
-    list.appendChild(div);
-  });
-
-  if (!cur.adsRemoved) {
-    const div = document.createElement('div');
-    div.className = 'si';
-    div.innerHTML =
-      `<div><div class="si-n">🚫 Les pubs soutiennent l'équipe</div><div class="si-p">Supprimer 1,99$</div></div>` +
-      `<button class="bb" onclick="buyRemoveAds()">Boutique</button>`;
-    list.appendChild(div);
-  }
-
-  if (!list.children.length)
-    list.innerHTML = '<p style="color:#64748b;padding:20px;font-size:.85rem">—</p>';
-
-  document.getElementById('shopOv').classList.add('on');
-}
-
-function closeShop()  { document.getElementById('shopOv').classList.remove('on'); }
-function buy(id)      { save({ ['own_' + id]: true }); openShop(); }
-function buyRemoveAds() {
-  save({ adsRemoved: true });
-  document.getElementById('ad').style.display = 'none';
-  if (document.getElementById('shopOv').classList.contains('on')) openShop();
-}
-
-// ─── INIT STATE FROM SAVE ──────────────────────────────────────
-(function bootstrap() {
-  const cur = S();
-  if (cur.adsRemoved) document.getElementById('ad').style.display = 'none';
-  if (cur.bestTime)   document.getElementById('bestDisp').textContent = fmt(cur.bestTime);
-})();
-
-window.addEventListener('resize', () => { if (cv.style.display !== 'none') layout(); });
 </script>
 </body>
 </html>
