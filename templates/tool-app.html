@@ -170,14 +170,33 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────
 const CFG = {
-  pid:   '{{PRODUCT_ID}}',
-  type:  '{{PRODUCT_TYPE}}',
-  lang:  '{{LANG}}',
-  acc:   '{{ACCENT}}',
-  emoji: '{{EMOJI}}',
-  iaps:  {{IAPS_JSON}},
-  name:  '{{GAME_NAME}}',
+  pid:    '{{PRODUCT_ID}}',
+  type:   '{{PRODUCT_TYPE}}',
+  lang:   '{{LANG}}',
+  acc:    '{{ACCENT}}',
+  emoji:  '{{EMOJI}}',
+  iaps:   {{IAPS_JSON}},
+  name:   '{{GAME_NAME}}',
+  gemini: '{{GEMINI_KEY}}',
 };
+
+// ─── GEMINI HELPER ─────────────────────────────────────────────
+async function gemini(prompt, systemHint = '') {
+  const full = systemHint ? `${systemHint}\n\n${prompt}` : prompt;
+  const res  = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${CFG.gemini}`,
+    {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: full }] }],
+        generationConfig: { maxOutputTokens: 300, temperature: 0.9 },
+      })
+    }
+  );
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+}
 
 // ─── SAVE ──────────────────────────────────────────────────────
 const SK = 'rt_' + CFG.pid;
@@ -545,31 +564,18 @@ function buildStory(root){
     try {
       const sys = `You are a narrator for "{{GAME_NAME}}": {{GAME_DESC}}.
 Keep responses under 80 words. Be immersive and poetic.
-Reply in language: {{LANG}}. Always end with a choice or question.`;
+Reply in language: {{LANG}}. Always end with a choice or question.
+Conversation so far: ${history.slice(-4).map(m=>m.role+': '+m.content).join(' | ')}`;
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 200,
-          system: sys,
-          messages: history.slice(-6),
-        })
-      });
-      const data = await res.json();
-      const reply = data.content?.[0]?.text || '...';
+      const reply = await gemini(`Player says: "${txt}"`, sys) || '...';
       history.push({ role: 'assistant', content: reply });
       document.getElementById('loadWrap').style.display = 'none';
       addMessage('ai', reply);
     } catch(e) {
       document.getElementById('loadWrap').style.display = 'none';
-      // Fallback offline responses
       const fallbacks = [
-        '{{SCENE_VILLAGE}}',
-        '{{SCENE_FOREST}}',
-        '{{SCENE_CAMP}}',
-        '{{SCENE_DUNGEON}}',
+        '{{SCENE_VILLAGE}}','{{SCENE_FOREST}}',
+        '{{SCENE_CAMP}}','{{SCENE_DUNGEON}}',
       ];
       const fb = fallbacks[Math.floor(Math.random() * fallbacks.length)];
       history.push({ role: 'assistant', content: fb });
@@ -744,20 +750,9 @@ function buildCreative(root){
     document.getElementById('resultCard').style.display = 'none';
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 300,
-          messages: [{
-            role: 'user',
-            content: `App: "{{GAME_NAME}}" — {{GAME_DESC}}\nUser input: "${txt}"\nRespond creatively in language {{LANG}}. Keep under 120 words.`
-          }]
-        })
-      });
-      const data = await res.json();
-      const reply = data.content?.[0]?.text || '';
+      const reply = await gemini(
+        `App: "{{GAME_NAME}}" — {{GAME_DESC}}\nUser: "${txt}"\nReply creatively in language {{LANG}}. Max 120 words.`
+      );
       document.getElementById('creResult').textContent = reply;
     } catch(e) {
       document.getElementById('creResult').textContent = '{{SCENE_INTRO}}';
