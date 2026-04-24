@@ -1810,5 +1810,158 @@
     },
     "iap": [],
     "templateFile": "phaser-game.html"
+  },
+  {
+    "id": "absurd-auteur-ai",
+    "slug": "absurd-auteur-ai",
+    "type": "AI Short-form Video Generator",
+    "category": "app",
+    "status": "available",
+    "emoji": "🎭",
+    "templateFile": "tool-app.html",
+    "accent": "#f472b6",
+    "accentRgb": "244,114,182",
+    "gradient": "135deg,#1a0533,#831843",
+    "emojis": [],
+    "name": {
+      "ar": "مؤلف العبث بالذكاء الاصطناعي",
+      "en": "Absurd Auteur AI",
+      "fr": "Auteur Absurde IA",
+      "es": "Autor Absurdo IA",
+      "de": "Absurder Autor KI",
+      "zh": "荒诞作者AI"
+    },
+    "desc": {
+      "ar": "كن مخرج عالمك الكوميدي الفوضوي. اكتب وصفًا، اختر شخصية، وشاهد كيف يُنشئ ذكاؤنا الاصطناعي مقاطع فيديو قصيرة سريالية ومضحكة مثالية للمشاركة.",
+      "en": "Become the director of your own chaotic comedy universe. Type a prompt, choose a character, and watch as our AI conjures hilariously surreal short videos perfect for sharing.",
+      "fr": "Devenez le réalisateur de votre propre univers comique chaotique. Tapez une invite, choisissez un personnage, et regardez notre IA créer des vidéos courtes hilarantes et surréalistes, parfaites pour le partage.",
+      "es": "Conviértete en el director de tu propio universo de comedia caótica. Escribe un aviso, elige un personaje y observa cómo nuestra IA conjura videos cortos hilarantemente surrealistas perfectos para compartir.",
+      "de": "Werden Sie zum Regisseur Ihres eigenen chaotischen Comedy-Universums. Geben Sie eine Anweisung ein, wählen Sie einen Charakter und sehen Sie zu, wie unsere KI urkomisch surreale Kurzvideos für das Teilen generiert.",
+      "zh": "成为你自己的混沌喜剧宇宙的导演。输入提示，选择角色，观看我们的AI如何创造出适合分享的搞笑超现实短视频。"
+    },
+    "tags": [
+      "AI",
+      "video generator",
+      "comedy",
+      "social media",
+      "viral",
+      "UGC",
+      "deepfake",
+      "entertainment",
+      "creativity"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "متدرب الموجهات",
+          "en": "Prompt Apprentice"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "مبتدئ المقاطع",
+          "en": "Skit Starter"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "مهندس السخافة",
+          "en": "Absurd Architect"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "عبقري الفيديوهات الفيروسية",
+          "en": "Viral Virtuoso"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "المؤلف الصاعد",
+          "en": "Auteur Ascendant"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-24T18:18:01.665Z"
   }
 ]
