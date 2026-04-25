@@ -343,7 +343,9 @@ function ensureLang(obj, fallbackOrder = ['en','ar']) {
   return result;
 }
 
-// ── توليد لعبة واحدة ──────────────────────────────────────────
+// ── توليد لعبة واحدة// احذف كل الملفات القديمة قبل إعادة التوليد
+import { rmSync } from 'fs';
+rmSync(join(__dirname, 'public', 'games'), { recursive: true, force: true }); ──────────────────────────────────────────
 function generate(product) {
   const tplName = TEMPLATE_MAP[product.type];
   if (!tplName) {
