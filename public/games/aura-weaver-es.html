@@ -368,17 +368,17 @@ function buildArt(root){
     <canvas id="artCanvas" style="display:block"></canvas>
     <div class="inp-wrap">
       <textarea id="artPrompt" rows="3"
-        placeholder="Describe your mood..."></textarea>
+        placeholder="Describe tu humor o idea..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn btn-p" onclick="genArt()">✨ ✨ Generate</button>
+      <button class="btn btn-p" onclick="genArt()">✨ ✨ Generar</button>
       <button class="btn btn-s btn-sm" onclick="saveArt()" title="Save">💾</button>
     </div>
     <div id="loadWrap" style="display:none">
-      <div class="spinner"></div><span>Creating...</span>
+      <div class="spinner"></div><span>Creando...</span>
     </div>
     <div id="resultCard" style="display:none">
-      <div class="rc-label">✨ Your Creation</div>
+      <div class="rc-label">✨ Tu Creación</div>
       <div class="rc-text" id="artDesc"></div>
       <div class="rc-meta" id="artTags"></div>
     </div>`;
@@ -516,14 +516,14 @@ function buildStory(root){
       gap:10px;max-height:45vh;overflow-y:auto;padding-right:4px"></div>
     <div class="inp-wrap">
       <textarea id="storyInput" rows="2"
-        placeholder="What do you do?"></textarea>
+        placeholder="¿Qué haces?"></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn btn-p" onclick="sendStory()">🚀 Send</button>
+      <button class="btn btn-p" onclick="sendStory()">🚀 Enviar</button>
       <button class="btn btn-s btn-sm" onclick="resetStory()" title="Reset">↺</button>
     </div>
     <div id="loadWrap" style="display:none;margin-top:4px">
-      <div class="spinner"></div><span>Narrating...</span>
+      <div class="spinner"></div><span>El narrador piensa...</span>
     </div>`;
 
   function addMessage(role, text, isNew = true){
@@ -537,7 +537,7 @@ function buildStory(root){
       border-radius:12px;padding:10px 14px;
       ${isUser ? 'border-bottom-right-radius:4px' : 'border-bottom-left-radius:4px'};
       ${isNew ? 'animation:fadeUp .3s ease' : ''};`;
-    const label = isUser ? '🧑 Jugador' : `🌌 Narrador`;
+    const label = isUser ? '🧑 Tú' : `🌌 Narrador`;
     d.innerHTML = `<div style="font-size:.6rem;color:var(--acc);font-family:monospace;
       letter-spacing:.1em;margin-bottom:4px">${label}</div>
       <div style="font-size:.87rem;line-height:1.65">${text}</div>`;
@@ -602,16 +602,16 @@ Conversation so far: ${history.slice(-4).map(m=>m.role+': '+m.content).join(' | 
 // ═══════════════════════════════════════════════════════════════
 function buildIdentity(root){
   const questions = [
-    { key:'color',  q:'Which color speaks to you?', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light'] },
-    { key:'power',  q:'Your inner power?', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind'] },
-    { key:'world',  q:'Your world?', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City'] },
-    { key:'value',  q:'What you value most?', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love'] },
+    { key:'color',  q:'¿Qué color te habla?', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light'] },
+    { key:'power',  q:'¿Tu poder interior?', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind'] },
+    { key:'world',  q:'¿Tu mundo?', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City'] },
+    { key:'value',  q:'¿Qué valoras más?', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love'] },
   ];
   let step = 0, answers = {};
 
   root.innerHTML = `
     <div id="idProgress" class="prog-wrap" style="width:100%">
-      <div class="prog-lbl"><span>Discovery</span><span id="idStep">1/${questions.length}</span></div>
+      <div class="prog-lbl"><span>Descubrimiento</span><span id="idStep">1/${questions.length}</span></div>
       <div class="prog-bar"><div class="prog-fill" id="idFill" style="width:0%"></div></div>
     </div>
     <div id="idQuestion" style="width:100%;background:var(--s);border:1px solid var(--b);
@@ -627,7 +627,7 @@ function buildIdentity(root){
       flex-direction:column;align-items:center">
       <div style="font-size:1.4rem;font-weight:900;color:var(--acc)" id="idTitle"></div>
       <div style="color:var(--mut);font-size:.85rem;line-height:1.6" id="idDesc"></div>
-      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ Try Again</button>
+      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ Intentar de nuevo</button>
     </div>`;
 
   const emojis = ['✨','🌟','💫','🔮','🌀','⚡','🎭','🌌'];
@@ -702,10 +702,10 @@ function buildIdentity(root){
 
     // Title based on answers
     const titles = [
-      '🌟 The Visionary','⚡ The Catalyst','🌊 The Dreamer','🔮 The Sage'
+      '🌟 El Visionario','⚡ El Catalizador','🌊 El Soñador','🔮 El Sabio'
     ];
     const descs = [
-      'You see what others miss.','You ignite change wherever you go.','Your imagination knows no limits.','Ancient wisdom flows through you.'
+      'Ves lo que otros pierden.','Enciendes el cambio donde vayas.','Tu imaginación no tiene límites.','La sabiduría antigua fluye en ti.'
     ];
     const idx = Object.values(answers).length % titles.length;
     document.getElementById('idTitle').textContent = titles[idx];
@@ -729,11 +729,11 @@ function buildCreative(root){
       <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">Usa IA para transformar tus fotos y videos en obras de arte impresionantes.</div>
     </div>
     <div class="inp-wrap">
-      <textarea id="creInput" rows="3" placeholder="Enter your idea..."></textarea>
+      <textarea id="creInput" rows="3" placeholder="Ingresa tu idea..."></textarea>
     </div>
-    <button class="btn btn-p" onclick="runCreative()">✨ Create</button>
+    <button class="btn btn-p" onclick="runCreative()">✨ Crear</button>
     <div id="loadWrap" style="display:none">
-      <div class="spinner"></div><span>Generating...</span>
+      <div class="spinner"></div><span>Generando...</span>
     </div>
     <div id="resultCard" style="display:none">
       <div class="rc-label">Tejedora de Aura</div>

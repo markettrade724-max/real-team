@@ -368,17 +368,17 @@ function buildArt(root){
     <canvas id="artCanvas" style="display:block"></canvas>
     <div class="inp-wrap">
       <textarea id="artPrompt" rows="3"
-        placeholder="Describe your mood..."></textarea>
+        placeholder="描述你的心情或想法..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn btn-p" onclick="genArt()">✨ ✨ Generate</button>
+      <button class="btn btn-p" onclick="genArt()">✨ ✨ 生成</button>
       <button class="btn btn-s btn-sm" onclick="saveArt()" title="Save">💾</button>
     </div>
     <div id="loadWrap" style="display:none">
-      <div class="spinner"></div><span>Creating...</span>
+      <div class="spinner"></div><span>创作中...</span>
     </div>
     <div id="resultCard" style="display:none">
-      <div class="rc-label">✨ Your Creation</div>
+      <div class="rc-label">✨ 你的创作</div>
       <div class="rc-text" id="artDesc"></div>
       <div class="rc-meta" id="artTags"></div>
     </div>`;
@@ -516,14 +516,14 @@ function buildStory(root){
       gap:10px;max-height:45vh;overflow-y:auto;padding-right:4px"></div>
     <div class="inp-wrap">
       <textarea id="storyInput" rows="2"
-        placeholder="What do you do?"></textarea>
+        placeholder="你做什么？"></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn btn-p" onclick="sendStory()">🚀 Send</button>
+      <button class="btn btn-p" onclick="sendStory()">🚀 发送</button>
       <button class="btn btn-s btn-sm" onclick="resetStory()" title="Reset">↺</button>
     </div>
     <div id="loadWrap" style="display:none;margin-top:4px">
-      <div class="spinner"></div><span>Narrating...</span>
+      <div class="spinner"></div><span>叙述者思考中...</span>
     </div>`;
 
   function addMessage(role, text, isNew = true){
@@ -537,7 +537,7 @@ function buildStory(root){
       border-radius:12px;padding:10px 14px;
       ${isUser ? 'border-bottom-right-radius:4px' : 'border-bottom-left-radius:4px'};
       ${isNew ? 'animation:fadeUp .3s ease' : ''};`;
-    const label = isUser ? '🧑 球员' : `🌌 旁白`;
+    const label = isUser ? '🧑 你' : `🌌 旁白`;
     d.innerHTML = `<div style="font-size:.6rem;color:var(--acc);font-family:monospace;
       letter-spacing:.1em;margin-bottom:4px">${label}</div>
       <div style="font-size:.87rem;line-height:1.65">${text}</div>`;
@@ -602,16 +602,16 @@ Conversation so far: ${history.slice(-4).map(m=>m.role+': '+m.content).join(' | 
 // ═══════════════════════════════════════════════════════════════
 function buildIdentity(root){
   const questions = [
-    { key:'color',  q:'Which color speaks to you?', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light'] },
-    { key:'power',  q:'Your inner power?', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind'] },
-    { key:'world',  q:'Your world?', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City'] },
-    { key:'value',  q:'What you value most?', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love'] },
+    { key:'color',  q:'哪种颜色代表你？', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light'] },
+    { key:'power',  q:'你的内在力量？', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind'] },
+    { key:'world',  q:'你的世界？', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City'] },
+    { key:'value',  q:'你最重视什么？', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love'] },
   ];
   let step = 0, answers = {};
 
   root.innerHTML = `
     <div id="idProgress" class="prog-wrap" style="width:100%">
-      <div class="prog-lbl"><span>Discovery</span><span id="idStep">1/${questions.length}</span></div>
+      <div class="prog-lbl"><span>发现</span><span id="idStep">1/${questions.length}</span></div>
       <div class="prog-bar"><div class="prog-fill" id="idFill" style="width:0%"></div></div>
     </div>
     <div id="idQuestion" style="width:100%;background:var(--s);border:1px solid var(--b);
@@ -627,7 +627,7 @@ function buildIdentity(root){
       flex-direction:column;align-items:center">
       <div style="font-size:1.4rem;font-weight:900;color:var(--acc)" id="idTitle"></div>
       <div style="color:var(--mut);font-size:.85rem;line-height:1.6" id="idDesc"></div>
-      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ Try Again</button>
+      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ 再试一次</button>
     </div>`;
 
   const emojis = ['✨','🌟','💫','🔮','🌀','⚡','🎭','🌌'];
@@ -702,10 +702,10 @@ function buildIdentity(root){
 
     // Title based on answers
     const titles = [
-      '🌟 The Visionary','⚡ The Catalyst','🌊 The Dreamer','🔮 The Sage'
+      '🌟 远见者','⚡ 催化者','🌊 梦想家','🔮 智者'
     ];
     const descs = [
-      'You see what others miss.','You ignite change wherever you go.','Your imagination knows no limits.','Ancient wisdom flows through you.'
+      '你看到别人错过的东西。','你点燃所到之处的变革。','你的想象力没有界限。','古老的智慧在你身上流淌。'
     ];
     const idx = Object.values(answers).length % titles.length;
     document.getElementById('idTitle').textContent = titles[idx];
@@ -729,11 +729,11 @@ function buildCreative(root){
       <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">将数字艺术直接绘制到现实世界，与他人合作创作令人惊叹的作品。</div>
     </div>
     <div class="inp-wrap">
-      <textarea id="creInput" rows="3" placeholder="Enter your idea..."></textarea>
+      <textarea id="creInput" rows="3" placeholder="输入你的想法..."></textarea>
     </div>
-    <button class="btn btn-p" onclick="runCreative()">✨ Create</button>
+    <button class="btn btn-p" onclick="runCreative()">✨ 创建</button>
     <div id="loadWrap" style="display:none">
-      <div class="spinner"></div><span>Generating...</span>
+      <div class="spinner"></div><span>生成中...</span>
     </div>
     <div id="resultCard" style="display:none">
       <div class="rc-label">现实混音</div>
