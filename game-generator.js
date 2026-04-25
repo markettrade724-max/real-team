@@ -543,3 +543,13 @@ console.log('🗑️  Cleaned old games directory');
 let ok = 0;
 list.forEach(p => { if (generate(p)) ok++; });
 console.log(`\n🎮 Generated: ${ok}/${list.length} × 6 languages = ${ok*6} files`);
+const skipped = products.filter(p =>
+  p.status === 'available' && !TEMPLATE_MAP[p.type]
+);
+if (skipped.length) {
+  console.warn('\n⚠️  Skipped products (unknown type):');
+  skipped.forEach(p =>
+    console.warn(`   • ${p.slug} → type: "${p.type}"`)
+  );
+}
+
