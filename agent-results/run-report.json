@@ -1,54 +1,54 @@
 {
-  "runId": "2026-04-24T1816",
-  "timestamp": "2026-04-24T18:18:54.754Z",
-  "totalDuration": "124.3s",
+  "runId": "2026-04-25T0859",
+  "timestamp": "2026-04-25T09:01:25.819Z",
+  "totalDuration": "135.1s",
   "geminiCalls": "4/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.3s",
+      "duration": "1.2s",
       "attempts": 1,
       "error": null
     },
     "idea": {
       "success": true,
-      "duration": "12.1s",
+      "duration": "19.1s",
       "attempts": 1,
       "error": null
     },
     "art": {
       "success": true,
-      "duration": "5.9s",
+      "duration": "7.7s",
       "attempts": 1,
       "error": null
     },
     "template": {
       "success": true,
-      "duration": "1ms",
+      "duration": "3ms",
       "attempts": 1,
       "error": null
     },
     "levels": {
       "success": true,
-      "duration": "6.9s",
+      "duration": "6.7s",
       "attempts": 1,
       "error": null
     },
     "code": {
       "success": true,
-      "duration": "36ms",
+      "duration": "43ms",
       "attempts": 1,
       "error": null
     },
     "marketing": {
       "success": false,
-      "duration": "19.2s",
+      "duration": "19.7s",
       "attempts": 1,
-      "error": "Invalid JSON from Gemini: {\n  \"twitter\": {\n    \"en\": \"Direct your own chaotic comedy! 🎭 Absurd Auteur AI: prompt, pick "
+      "error": "Invalid JSON from Gemini: {\n  \"twitter\": {\n    \"en\": \"Your daily life holds a legend! ✨ Persona Arcana uses AI to weave "
     },
     "roadmap": {
       "success": true,
-      "duration": "3.8s",
+      "duration": "5.5s",
       "attempts": 1,
       "error": null
     }
@@ -57,7 +57,7 @@
     "total": 8,
     "passed": 7,
     "failed": 1,
-    "newGame": "absurd-auteur-ai",
-    "template": "tool-app.html"
+    "newGame": "persona-arcana",
+    "template": "adventure-rpg.html"
   }
 }
