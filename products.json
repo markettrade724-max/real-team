@@ -1,5 +1,261 @@
 [
   {
+    "id": "mischief-masterpiece",
+    "slug": "mischief-masterpiece",
+    "type": "social-creation-game",
+    "category": "game",
+    "status": "available",
+    "emoji": "😂",
+    "templateFile": "memory-game.html",
+    "accent": "#f472b6",
+    "accentRgb": "244,114,182",
+    "gradient": "135deg,#1a0533,#831843",
+    "emojis": [],
+    "name": {
+      "ar": "تحفة الفوضى",
+      "en": "Mischief Masterpiece",
+      "fr": "Chef-d'œuvre du Chahut",
+      "es": "Obra Maestra del Caos",
+      "de": "Meisterwerk des Schabernacks",
+      "zh": "恶作剧杰作"
+    },
+    "desc": {
+      "ar": "انغمس في لعبة بناء اجتماعية فريدة حيث تعمل الفرق على مشاريع عظيمة، ولكن احذر: هناك مخربون سريون يتربصون، يحولون رؤيتكم الجماعية بخفاء إلى فوضى مرحة. شاهد النتائج المذهلة التي يولدها الذكاء الاصطناعي، ثم شارك اللوم والضحكات عندما يتحول تصميمك الكبير حتمًا إلى ضجة فيروسية من الأخطاء الفادحة.",
+      "en": "Dive into a unique social creation game where teams build magnificent projects, but beware: hidden saboteurs lurk, secretly twisting your collective vision into chaotic hilarity. Witness AI-generated, jaw-dropping results, then share the blame and the laughs as your grand design inevitably spirals into a viral sensation of magnificent blunders.",
+      "fr": "Plongez dans un jeu de création sociale unique où des équipes bâtissent des projets magnifiques, mais attention : des saboteurs cachés rôdent, tordant secrètement votre vision collective en une hilarité chaotique. Assistez à des résultats époustouflants générés par l'IA, puis partagez les blâmes et les rires alors que votre grand projet vire inévitablement à une sensation virale de bévues grandioses.",
+      "es": "Sumérgete en un juego de creación social único donde los equipos construyen magníficos proyectos, pero ten cuidado: saboteadores ocultos acechan, retorciendo secretamente tu visión colectiva en una hilaridad caótica. Sé testigo de resultados asombrosos generados por IA, luego comparte la culpa y las risas mientras tu gran diseño se convierte inevitablemente en una sensación viral de magníficos errores.",
+      "de": "Tauchen Sie ein in ein einzigartiges soziales Kreationsspiel, in dem Teams großartige Projekte bauen, aber Vorsicht: Versteckte Saboteure lauern und verdrehen heimlich Ihre kollektive Vision zu chaotischer Heiterkeit. Erleben Sie KI-generierte, atemberaubende Ergebnisse und teilen Sie dann die Schuld und das Gelächter, wenn Ihr großes Design unweigerlich zu einer viralen Sensation grandioser Missgeschicke wird.",
+      "zh": "潜入一个独特的社交创作游戏，团队在其中构建宏伟的项目，但请注意：隐藏的破坏者潜伏其中，秘密地将你们的集体愿景扭曲成混乱的笑料。见证AI生成的令人瞠目结舌的结果，然后分享责备和欢笑，因为你们的宏伟设计不可避免地演变成一场宏伟失误的病毒式轰动。"
+    },
+    "tags": [
+      "social",
+      "multiplayer",
+      "creative",
+      "humor",
+      "viral",
+      "AI",
+      "party-game",
+      "strategy",
+      "collaborative-chaos"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "",
+          "en": "Petty Prankster"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "",
+          "en": "Subtle Subversions"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "",
+          "en": "Integrated Impertinence"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "",
+          "en": "The Grand Deception"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "",
+          "en": "Masterpiece Mutation"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-25T14:37:09.965Z"
+  },
+  {
+    "id": "persona-arcana",
+    "slug": "persona-arcana",
+    "type": "AI Personality Saga",
+    "category": "app",
+    "status": "available",
+    "emoji": "🔮",
+    "templateFile": "adventure-rpg.html",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [],
+    "name": {
+      "ar": "أركانا الشخصية",
+      "en": "Persona Arcana",
+      "fr": "Arcanes Personnelles",
+      "es": "Arcana Personal",
+      "de": "Persona Arkana",
+      "zh": "人格奥秘"
+    },
+    "desc": {
+      "ar": "هل تساءلت يوماً عن الأسطورة الملحمية التي تختبئ داخل روتينك اليومي وغرائبك السرية؟ أركانا الشخصية تستخدم الذكاء الاصطناعي لنسج جوهرك الفريد في ملحمة أسطورية مذهلة، مكتملة بملف شخصي وقصة. اكتشف بطلك أو شريرك الداخلي الحقيقي وشارك أركاناك الخلابة مع العالم.",
+      "en": "Ever wondered what epic legend hides within your daily routines and secret quirks? Persona Arcana uses AI to weave your unique essence into a stunning mythical saga, complete with a character profile and lore. Discover your true inner hero or villain and share your breathtaking Arcana with the world.",
+      "fr": "Vous êtes-tu déjà demandé quelle légende épique se cache derrière tes routines quotidiennes et tes bizarreries secrètes ? Persona Arcana utilise l'IA pour tisser ton essence unique en une saga mythique époustouflante, avec un profil de personnage et son histoire. Découvre ton véritable héros ou vilain intérieur et partage ton Arcane à couper le souffle avec le monde.",
+      "es": "¿Alguna vez te has preguntado qué leyenda épica se esconde en tus rutinas diarias y peculiaridades secretas? Arcana Personal utiliza la IA para tejer tu esencia única en una saga mítica impresionante, completa con un perfil de personaje y su historia. Descubre tu verdadero héroe o villano interior y comparte tu asombrosa Arcana con el mundo.",
+      "de": "Haben Sie sich jemals gefragt, welche epische Legende sich in Ihren täglichen Routinen und geheimen Eigenheiten verbirgt? Persona Arkana nutzt KI, um Ihre einzigartige Essenz in eine atemberaubende mythische Saga zu weben, komplett mit Charakterprofil und Hintergrundgeschichte. Entdecken Sie Ihren wahren inneren Helden oder Schurken und teilen Sie Ihre atemberaubende Arkana mit der Welt.",
+      "zh": "你是否曾好奇，日常习惯和秘密怪癖中隐藏着怎样的史诗传奇？人格奥秘利用AI将你的独特精髓编织成令人惊叹的神话史诗，完整呈现角色档案和背景故事。发现你内心真正的英雄或反派，并将你惊艳的奥秘分享给世界。"
+    },
+    "tags": [
+      "AI",
+      "personality",
+      "mythology",
+      "storytelling",
+      "self-discovery",
+      "creative",
+      "shareable",
+      "quirky",
+      "rpg",
+      "character-generator"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [],
+    "generated": true,
+    "generatedAt": "2026-04-25T09:00:30.480Z"
+  },
+  {
     "id": "absurd-auteur-ai",
     "slug": "absurd-auteur-ai",
     "type": "AI Short-form Video Generator",
@@ -1963,261 +2219,5 @@
     },
     "iap": [],
     "templateFile": "phaser-game.html"
-  },
-  {
-    "id": "persona-arcana",
-    "slug": "persona-arcana",
-    "type": "AI Personality Saga",
-    "category": "app",
-    "status": "available",
-    "emoji": "🔮",
-    "templateFile": "adventure-rpg.html",
-    "accent": "#818cf8",
-    "accentRgb": "129,140,248",
-    "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [],
-    "name": {
-      "ar": "أركانا الشخصية",
-      "en": "Persona Arcana",
-      "fr": "Arcanes Personnelles",
-      "es": "Arcana Personal",
-      "de": "Persona Arkana",
-      "zh": "人格奥秘"
-    },
-    "desc": {
-      "ar": "هل تساءلت يوماً عن الأسطورة الملحمية التي تختبئ داخل روتينك اليومي وغرائبك السرية؟ أركانا الشخصية تستخدم الذكاء الاصطناعي لنسج جوهرك الفريد في ملحمة أسطورية مذهلة، مكتملة بملف شخصي وقصة. اكتشف بطلك أو شريرك الداخلي الحقيقي وشارك أركاناك الخلابة مع العالم.",
-      "en": "Ever wondered what epic legend hides within your daily routines and secret quirks? Persona Arcana uses AI to weave your unique essence into a stunning mythical saga, complete with a character profile and lore. Discover your true inner hero or villain and share your breathtaking Arcana with the world.",
-      "fr": "Vous êtes-tu déjà demandé quelle légende épique se cache derrière tes routines quotidiennes et tes bizarreries secrètes ? Persona Arcana utilise l'IA pour tisser ton essence unique en une saga mythique époustouflante, avec un profil de personnage et son histoire. Découvre ton véritable héros ou vilain intérieur et partage ton Arcane à couper le souffle avec le monde.",
-      "es": "¿Alguna vez te has preguntado qué leyenda épica se esconde en tus rutinas diarias y peculiaridades secretas? Arcana Personal utiliza la IA para tejer tu esencia única en una saga mítica impresionante, completa con un perfil de personaje y su historia. Descubre tu verdadero héroe o villano interior y comparte tu asombrosa Arcana con el mundo.",
-      "de": "Haben Sie sich jemals gefragt, welche epische Legende sich in Ihren täglichen Routinen und geheimen Eigenheiten verbirgt? Persona Arkana nutzt KI, um Ihre einzigartige Essenz in eine atemberaubende mythische Saga zu weben, komplett mit Charakterprofil und Hintergrundgeschichte. Entdecken Sie Ihren wahren inneren Helden oder Schurken und teilen Sie Ihre atemberaubende Arkana mit der Welt.",
-      "zh": "你是否曾好奇，日常习惯和秘密怪癖中隐藏着怎样的史诗传奇？人格奥秘利用AI将你的独特精髓编织成令人惊叹的神话史诗，完整呈现角色档案和背景故事。发现你内心真正的英雄或反派，并将你惊艳的奥秘分享给世界。"
-    },
-    "tags": [
-      "AI",
-      "personality",
-      "mythology",
-      "storytelling",
-      "self-discovery",
-      "creative",
-      "shareable",
-      "quirky",
-      "rpg",
-      "character-generator"
-    ],
-    "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": null,
-    "levels": [],
-    "generated": true,
-    "generatedAt": "2026-04-25T09:00:30.480Z"
-  },
-  {
-    "id": "mischief-masterpiece",
-    "slug": "mischief-masterpiece",
-    "type": "social-creation-game",
-    "category": "game",
-    "status": "available",
-    "emoji": "😂",
-    "templateFile": "memory-game.html",
-    "accent": "#f472b6",
-    "accentRgb": "244,114,182",
-    "gradient": "135deg,#1a0533,#831843",
-    "emojis": [],
-    "name": {
-      "ar": "تحفة الفوضى",
-      "en": "Mischief Masterpiece",
-      "fr": "Chef-d'œuvre du Chahut",
-      "es": "Obra Maestra del Caos",
-      "de": "Meisterwerk des Schabernacks",
-      "zh": "恶作剧杰作"
-    },
-    "desc": {
-      "ar": "انغمس في لعبة بناء اجتماعية فريدة حيث تعمل الفرق على مشاريع عظيمة، ولكن احذر: هناك مخربون سريون يتربصون، يحولون رؤيتكم الجماعية بخفاء إلى فوضى مرحة. شاهد النتائج المذهلة التي يولدها الذكاء الاصطناعي، ثم شارك اللوم والضحكات عندما يتحول تصميمك الكبير حتمًا إلى ضجة فيروسية من الأخطاء الفادحة.",
-      "en": "Dive into a unique social creation game where teams build magnificent projects, but beware: hidden saboteurs lurk, secretly twisting your collective vision into chaotic hilarity. Witness AI-generated, jaw-dropping results, then share the blame and the laughs as your grand design inevitably spirals into a viral sensation of magnificent blunders.",
-      "fr": "Plongez dans un jeu de création sociale unique où des équipes bâtissent des projets magnifiques, mais attention : des saboteurs cachés rôdent, tordant secrètement votre vision collective en une hilarité chaotique. Assistez à des résultats époustouflants générés par l'IA, puis partagez les blâmes et les rires alors que votre grand projet vire inévitablement à une sensation virale de bévues grandioses.",
-      "es": "Sumérgete en un juego de creación social único donde los equipos construyen magníficos proyectos, pero ten cuidado: saboteadores ocultos acechan, retorciendo secretamente tu visión colectiva en una hilaridad caótica. Sé testigo de resultados asombrosos generados por IA, luego comparte la culpa y las risas mientras tu gran diseño se convierte inevitablemente en una sensación viral de magníficos errores.",
-      "de": "Tauchen Sie ein in ein einzigartiges soziales Kreationsspiel, in dem Teams großartige Projekte bauen, aber Vorsicht: Versteckte Saboteure lauern und verdrehen heimlich Ihre kollektive Vision zu chaotischer Heiterkeit. Erleben Sie KI-generierte, atemberaubende Ergebnisse und teilen Sie dann die Schuld und das Gelächter, wenn Ihr großes Design unweigerlich zu einer viralen Sensation grandioser Missgeschicke wird.",
-      "zh": "潜入一个独特的社交创作游戏，团队在其中构建宏伟的项目，但请注意：隐藏的破坏者潜伏其中，秘密地将你们的集体愿景扭曲成混乱的笑料。见证AI生成的令人瞠目结舌的结果，然后分享责备和欢笑，因为你们的宏伟设计不可避免地演变成一场宏伟失误的病毒式轰动。"
-    },
-    "tags": [
-      "social",
-      "multiplayer",
-      "creative",
-      "humor",
-      "viral",
-      "AI",
-      "party-game",
-      "strategy",
-      "collaborative-chaos"
-    ],
-    "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": null,
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "",
-          "en": "Petty Prankster"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "",
-          "en": "Subtle Subversions"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "",
-          "en": "Integrated Impertinence"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "",
-          "en": "The Grand Deception"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "",
-          "en": "Masterpiece Mutation"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
-    ],
-    "generated": true,
-    "generatedAt": "2026-04-25T14:37:09.965Z"
   }
 ]
