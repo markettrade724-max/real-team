@@ -377,7 +377,9 @@ function generate(product) {
 
     let out = tpl;
 
-    const vars = {
+    const vars = {PRODUCT_TYPE: product.type,
+GEMINI_KEY:   process.env.GEMINI_KEY || '',
+      
       PRODUCT_TYPE: product.type,
 
 // Art mode
