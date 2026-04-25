@@ -342,10 +342,6 @@ function ensureLang(obj, fallbackOrder = ['en','ar']) {
   });
   return result;
 }
-// احذف كل الملفات القديمة قبل إعادة التوليد
-import { rmSync } from 'fs';
-rmSync(join(__dirname, 'public', 'games')،
-
 
 
 
