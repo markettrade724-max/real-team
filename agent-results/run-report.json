@@ -1,63 +1,63 @@
 {
-  "runId": "2026-04-25T0859",
-  "timestamp": "2026-04-25T09:01:25.819Z",
-  "totalDuration": "135.1s",
-  "geminiCalls": "4/6",
+  "runId": "2026-04-25T1435",
+  "timestamp": "2026-04-25T14:37:59.281Z",
+  "totalDuration": "124.7s",
+  "geminiCalls": "5/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.2s",
+      "duration": "1.3s",
       "attempts": 1,
       "error": null
     },
     "idea": {
       "success": true,
-      "duration": "19.1s",
+      "duration": "13.0s",
       "attempts": 1,
       "error": null
     },
     "art": {
       "success": true,
-      "duration": "7.7s",
+      "duration": "8.3s",
       "attempts": 1,
       "error": null
     },
     "template": {
       "success": true,
-      "duration": "3ms",
+      "duration": "2ms",
       "attempts": 1,
       "error": null
     },
     "levels": {
       "success": true,
-      "duration": "6.7s",
+      "duration": "7.8s",
       "attempts": 1,
       "error": null
     },
     "code": {
       "success": true,
-      "duration": "43ms",
+      "duration": "36ms",
       "attempts": 1,
       "error": null
     },
     "marketing": {
-      "success": false,
-      "duration": "19.7s",
+      "success": true,
+      "duration": "14.9s",
       "attempts": 1,
-      "error": "Invalid JSON from Gemini: {\n  \"twitter\": {\n    \"en\": \"Your daily life holds a legend! ✨ Persona Arcana uses AI to weave "
+      "error": null
     },
     "roadmap": {
       "success": true,
-      "duration": "5.5s",
+      "duration": "4.3s",
       "attempts": 1,
       "error": null
     }
   },
   "summary": {
     "total": 8,
-    "passed": 7,
-    "failed": 1,
-    "newGame": "persona-arcana",
-    "template": "adventure-rpg.html"
+    "passed": 8,
+    "failed": 0,
+    "newGame": "mischief-masterpiece",
+    "template": "memory-game.html"
   }
 }
