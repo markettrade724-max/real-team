@@ -524,8 +524,8 @@ class Game extends Phaser.Scene {
       });
     }
 
-    // Wave cleared?
-    if(allDead && this.enemies.getLength() === 0){
+    // Wave cleared? (only after wave has started = at least 1 kill)
+    if(this.killed > 0 && allDead && this.enemies.getLength() === 0){
       this.active = false;
       this.thruster.stop();
       setTimeout(() => this._nextLevel(), 800);
