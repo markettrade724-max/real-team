@@ -1,5 +1,153 @@
 [
   {
+    "id": "genres-shift-ai",
+    "slug": "genres-shift-ai",
+    "type": "AI-Powered Creative Tool",
+    "category": "app",
+    "status": "available",
+    "emoji": "🎬",
+    "templateFile": "tool-app.html",
+    "accent": "#f472b6",
+    "accentRgb": "244,114,182",
+    "gradient": "135deg,#1a0533,#831843",
+    "emojis": [],
+    "name": {
+      "ar": "محول الأنواع بالذكاء الاصطناعي",
+      "en": "GenreShift AI",
+      "fr": "GenreShift IA",
+      "es": "GenreShift IA",
+      "de": "GenreShift KI",
+      "zh": "风格转换AI"
+    },
+    "desc": {
+      "ar": "هل تمنيت يومًا أن يكون تنقلاتك الصباحية ملحمة خيال علمي، أو تصبح حركات حيوانك الأليف فيلم رعب؟ يحول GenreShift AI حياتك اليومية إلى روائع سينمائية بنقرة واحدة، وينشئ مقاطع دعائية كاملة مع موسيقى درامية وتعليقات صوتية. أطلق العنان لمخرجك الداخلي وشارك واقعك الملحمي المضحك مع العالم!",
+      "en": "Ever wish your morning commute was a sci-fi epic, or your pet's antics a horror film? GenreShift AI turns your everyday life into cinematic masterpieces with a single tap, generating full trailers complete with dramatic music and voiceovers. Unleash your inner director and share your hilariously epic reality with the world!",
+      "fr": "Avez-vous déjà souhaité que votre trajet matinal soit une épopée de science-fiction, ou les facéties de votre animal de compagnie un film d'horreur ? GenreShift IA transforme votre quotidien en chefs-d'œuvre cinématographiques d'un simple toucher, générant des bandes-annonces complètes avec musique dramatique et voix off. Libérez le réalisateur qui sommeille en vous et partagez votre réalité hilarante et épique avec le monde !",
+      "es": "¿Alguna vez deseaste que tu viaje matutino fuera una epopeya de ciencia ficción, o las travesuras de tu mascota una película de terror? GenreShift IA convierte tu vida diaria en obras maestras cinematográficas con un solo toque, generando tráilers completos con música dramática y voces en off. ¡Libera a tu director interior y comparte tu hilarante y épica realidad con el mundo!",
+      "de": "Hast du dir jemals gewünscht, dein Morgenpendel wäre ein Science-Fiction-Epos oder die Streiche deines Haustiers ein Horrorfilm? GenreShift KI verwandelt dein Alltagsleben mit einem einzigen Tippen in filmische Meisterwerke und generiert vollständige Trailer mit dramatischer Musik und Voiceovers. Entfessle deinen inneren Regisseur und teile deine urkomisch-epische Realität mit der Welt!",
+      "zh": "你是否曾希望你的早晨通勤是一部科幻史诗，或是你宠物的滑稽动作是一部恐怖片？GenreShift AI 只需轻轻一点，就能将你的日常生活变成电影杰作，生成包含戏剧性音乐和旁白的完整预告片。释放你内心的导演才能，与世界分享你滑稽又史诗般的现实！"
+    },
+    "tags": [
+      "AI video",
+      "viral humor",
+      "social sharing",
+      "creative tool"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "التحول اليومي",
+          "en": "The Mundane Metamorphosis"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "خلط الأنواع",
+          "en": "Genre Jumble"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "محرك السخافة",
+          "en": "Absurdity Engine"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "مهندس الإعلانات الملحمية",
+          "en": "Epic Trailer Architect"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "إعادة كتابة الواقع",
+          "en": "Reality Rewritten"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-26T09:08:02.221Z"
+  },
+  {
     "id": "mischief-masterpiece",
     "slug": "mischief-masterpiece",
     "type": "arcade",
@@ -2085,153 +2233,5 @@
     },
     "iap": [],
     "templateFile": "phaser-game.html"
-  },
-  {
-    "id": "genres-shift-ai",
-    "slug": "genres-shift-ai",
-    "type": "AI-Powered Creative Tool",
-    "category": "app",
-    "status": "available",
-    "emoji": "🎬",
-    "templateFile": "tool-app.html",
-    "accent": "#f472b6",
-    "accentRgb": "244,114,182",
-    "gradient": "135deg,#1a0533,#831843",
-    "emojis": [],
-    "name": {
-      "ar": "محول الأنواع بالذكاء الاصطناعي",
-      "en": "GenreShift AI",
-      "fr": "GenreShift IA",
-      "es": "GenreShift IA",
-      "de": "GenreShift KI",
-      "zh": "风格转换AI"
-    },
-    "desc": {
-      "ar": "هل تمنيت يومًا أن يكون تنقلاتك الصباحية ملحمة خيال علمي، أو تصبح حركات حيوانك الأليف فيلم رعب؟ يحول GenreShift AI حياتك اليومية إلى روائع سينمائية بنقرة واحدة، وينشئ مقاطع دعائية كاملة مع موسيقى درامية وتعليقات صوتية. أطلق العنان لمخرجك الداخلي وشارك واقعك الملحمي المضحك مع العالم!",
-      "en": "Ever wish your morning commute was a sci-fi epic, or your pet's antics a horror film? GenreShift AI turns your everyday life into cinematic masterpieces with a single tap, generating full trailers complete with dramatic music and voiceovers. Unleash your inner director and share your hilariously epic reality with the world!",
-      "fr": "Avez-vous déjà souhaité que votre trajet matinal soit une épopée de science-fiction, ou les facéties de votre animal de compagnie un film d'horreur ? GenreShift IA transforme votre quotidien en chefs-d'œuvre cinématographiques d'un simple toucher, générant des bandes-annonces complètes avec musique dramatique et voix off. Libérez le réalisateur qui sommeille en vous et partagez votre réalité hilarante et épique avec le monde !",
-      "es": "¿Alguna vez deseaste que tu viaje matutino fuera una epopeya de ciencia ficción, o las travesuras de tu mascota una película de terror? GenreShift IA convierte tu vida diaria en obras maestras cinematográficas con un solo toque, generando tráilers completos con música dramática y voces en off. ¡Libera a tu director interior y comparte tu hilarante y épica realidad con el mundo!",
-      "de": "Hast du dir jemals gewünscht, dein Morgenpendel wäre ein Science-Fiction-Epos oder die Streiche deines Haustiers ein Horrorfilm? GenreShift KI verwandelt dein Alltagsleben mit einem einzigen Tippen in filmische Meisterwerke und generiert vollständige Trailer mit dramatischer Musik und Voiceovers. Entfessle deinen inneren Regisseur und teile deine urkomisch-epische Realität mit der Welt!",
-      "zh": "你是否曾希望你的早晨通勤是一部科幻史诗，或是你宠物的滑稽动作是一部恐怖片？GenreShift AI 只需轻轻一点，就能将你的日常生活变成电影杰作，生成包含戏剧性音乐和旁白的完整预告片。释放你内心的导演才能，与世界分享你滑稽又史诗般的现实！"
-    },
-    "tags": [
-      "AI video",
-      "viral humor",
-      "social sharing",
-      "creative tool"
-    ],
-    "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": null,
-    "levels": [
-      {
-        "number": 1,
-        "name": {
-          "ar": "التحول اليومي",
-          "en": "The Mundane Metamorphosis"
-        },
-        "difficulty": "easy",
-        "pairs": 4,
-        "timeLimit": 60
-      },
-      {
-        "number": 2,
-        "name": {
-          "ar": "خلط الأنواع",
-          "en": "Genre Jumble"
-        },
-        "difficulty": "medium",
-        "pairs": 6,
-        "timeLimit": 50
-      },
-      {
-        "number": 3,
-        "name": {
-          "ar": "محرك السخافة",
-          "en": "Absurdity Engine"
-        },
-        "difficulty": "medium",
-        "pairs": 8,
-        "timeLimit": 45
-      },
-      {
-        "number": 4,
-        "name": {
-          "ar": "مهندس الإعلانات الملحمية",
-          "en": "Epic Trailer Architect"
-        },
-        "difficulty": "hard",
-        "pairs": 10,
-        "timeLimit": 40
-      },
-      {
-        "number": 5,
-        "name": {
-          "ar": "إعادة كتابة الواقع",
-          "en": "Reality Rewritten"
-        },
-        "difficulty": "expert",
-        "pairs": 12,
-        "timeLimit": 35
-      }
-    ],
-    "generated": true,
-    "generatedAt": "2026-04-26T09:08:02.221Z"
   }
 ]
