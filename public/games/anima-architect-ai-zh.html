@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>灵魂建筑师</title>
+<style>
+:root{--acc:#818cf8;--acc-rgb:129,140,248;
+  --bg:#07070f;--s:#0e0e1e;--b:rgba(255,255,255,.07);
+  --txt:#f1f5f9;--mut:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
+#app{display:flex;flex-direction:column;width:100%;max-width:420px;
+  height:100dvh;margin:0 auto;position:relative;overflow:hidden;}
+
+/* ── HUD ── */
+#hud{flex-shrink:0;display:flex;align-items:center;gap:8px;
+  padding:8px 14px;background:rgba(0,0,0,.6);
+  border-bottom:1px solid var(--b);backdrop-filter:blur(10px);}
+.hud-name{font-size:.72rem;font-weight:900;color:var(--acc);
+  font-family:monospace;letter-spacing:.05em;flex-shrink:0;}
+.bar-wrap{flex:1;display:flex;flex-direction:column;gap:3px;}
+.bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+.bar-hp{background:linear-gradient(90deg,#ef4444,#f97316);}
+.bar-mp{background:linear-gradient(90deg,#3b82f6,#818cf8);}
+.hud-r{font-size:.65rem;color:var(--mut);text-align:right;
+  font-family:monospace;flex-shrink:0;}
+
+/* ── SCENE ── */
+#scene{flex:1;position:relative;overflow:hidden;min-height:0;}
+#sceneBg{position:absolute;inset:0;background:var(--bg);transition:background 1s;}
+#sceneCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+#sceneEmoji{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);
+  font-size:6rem;filter:drop-shadow(0 0 40px var(--acc));
+  animation:float 3s ease-in-out infinite;pointer-events:none;z-index:2;}
+#enemyEmoji{position:absolute;right:15%;top:25%;transform:translateY(-50%);
+  font-size:4rem;display:none;z-index:2;
+  animation:shake 0.4s ease-in-out infinite alternate;}
+#playerEmoji{position:absolute;left:15%;top:60%;transform:translateY(-50%);
+  font-size:3.5rem;z-index:2;}
+
+/* ── COMBAT BARS ── */
+#combatBars{position:absolute;top:8px;left:8px;right:8px;display:none;z-index:3;gap:6px;flex-direction:column;}
+.cbar-row{display:flex;align-items:center;gap:8px;
+  background:rgba(0,0,0,.65);border-radius:8px;padding:5px 10px;}
+.cbar-lbl{font-size:.6rem;font-family:monospace;width:52px;flex-shrink:0;}
+.cbar{flex:1;height:7px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;}
+.cbar-fill{height:100%;border-radius:4px;transition:width .4s;}
+.cbar-val{font-size:.62rem;font-family:monospace;width:28px;text-align:right;flex-shrink:0;}
+
+/* ── DAMAGE FLOAT ── */
+.dmg-float{position:absolute;font-weight:900;font-family:monospace;
+  font-size:1.4rem;pointer-events:none;z-index:10;
+  animation:floatUp .9s ease forwards;}
+@keyframes floatUp{
+  0%{opacity:1;transform:translateY(0) scale(1.2);}
+  100%{opacity:0;transform:translateY(-70px) scale(.8);}
+}
+
+/* ── LOG ── */
+#log{flex-shrink:0;height:80px;overflow-y:auto;
+  background:rgba(0,0,0,.4);border-top:1px solid var(--b);
+  padding:6px 14px;display:flex;flex-direction:column;gap:3px;}
+.log-line{font-size:.74rem;line-height:1.4;color:var(--mut);}
+.log-line.hi{color:var(--txt);}
+.log-line.acc{color:var(--acc);}
+.log-line.red{color:#f87171;}
+.log-line.blue{color:#60a5fa;}
+
+/* ── DIALOG / CHOICES ── */
+#dialog{flex-shrink:0;background:rgba(5,5,18,.95);
+  border-top:1px solid rgba(var(--acc-rgb),.2);
+  padding:10px 14px 12px;}
+#speaker{font-size:.6rem;color:var(--acc);font-family:monospace;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;}
+#dialogText{font-size:.85rem;line-height:1.6;margin-bottom:10px;
+  min-height:38px;}
+#choices{display:flex;flex-direction:column;gap:6px;}
+.choice{background:rgba(255,255,255,.05);border:1px solid var(--b);
+  border-radius:10px;padding:9px 14px;font-size:.82rem;
+  text-align:start;cursor:pointer;font-family:inherit;color:var(--txt);
+  transition:.18s;display:flex;align-items:center;gap:8px;}
+.choice:active{transform:scale(.97);}
+.choice:hover{background:rgba(var(--acc-rgb),.1);
+  border-color:rgba(var(--acc-rgb),.35);}
+.choice.combat{border-color:rgba(239,68,68,.3);
+  background:rgba(239,68,68,.06);}
+.choice.magic{border-color:rgba(129,140,248,.35);
+  background:rgba(129,140,248,.06);}
+.choice-icon{font-size:1rem;flex-shrink:0;}
+
+/* ── COMBAT ACTIONS ── */
+#combatActions{display:none;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+.ca{padding:10px;border-radius:10px;font-size:.8rem;font-weight:700;
+  border:none;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:transform .12s;}
+.ca:active{transform:scale(.95);}
+.ca-atk{background:rgba(239,68,68,.18);color:#fca5a5;border:1px solid rgba(239,68,68,.3);}
+.ca-mgc{background:rgba(129,140,248,.18);color:#a5b4fc;border:1px solid rgba(129,140,248,.3);}
+.ca-def{background:rgba(52,211,153,.14);color:#6ee7b7;border:1px solid rgba(52,211,153,.25);}
+.ca-itm{background:rgba(250,204,21,.12);color:#fde68a;border:1px solid rgba(250,204,21,.25);}
+
+/* ── SHOP / AD ── */
+#shopOv{position:absolute;inset:0;background:rgba(0,0,0,.96);display:none;
+  flex-direction:column;align-items:center;gap:12px;justify-content:center;
+  z-index:60;padding:24px;}
+#shopOv.on{display:flex;}
+.si{background:rgba(255,255,255,.05);border:1px solid var(--b);
+  border-radius:14px;padding:14px 18px;display:flex;align-items:center;
+  justify-content:space-between;width:100%;max-width:340px;gap:12px;}
+.si-n{font-weight:700;font-size:.9rem;}
+.si-d{color:var(--mut);font-size:.74rem;margin:2px 0;}
+.si-p{color:var(--acc);font-size:.76rem;font-family:monospace;}
+.bb{background:var(--acc);color:#000;padding:8px 14px;border-radius:8px;
+  border:none;font-weight:700;font-size:.76rem;cursor:pointer;white-space:nowrap;}
+.bb.own{background:rgba(255,255,255,.08);color:var(--mut);}
+#ad{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+  padding:7px 14px;background:rgba(255,255,255,.03);
+  border-top:1px solid var(--b);font-size:.72rem;color:var(--mut);}
+
+/* ── ANIMATIONS ── */
+@keyframes float{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-14px)}}
+@keyframes shake{0%{transform:translateY(-50%) rotate(-3deg)}100%{transform:translateY(-50%) rotate(3deg)}}
+@keyframes flash{0%,100%{opacity:1}50%{opacity:.2}}
+.flash{animation:flash .25s ease 2;}
+@keyframes screenShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-name">英雄</div>
+    <div class="bar-wrap">
+      <div class="bar"><div class="bar-fill bar-hp" id="hpBar" style="width:100%"></div></div>
+      <div class="bar"><div class="bar-fill bar-mp" id="mpBar" style="width:100%"></div></div>
+    </div>
+    <div class="hud-r">
+      <div id="hpVal">100/100</div>
+      <div id="mpVal" style="color:#818cf8">50/50</div>
+    </div>
+    <div style="font-size:.65rem;color:var(--mut);margin-right:4px" id="lvVal">⚔️ Lv.1</div>
+    <button style="background:none;border:1px solid var(--b);color:var(--mut);
+      padding:4px 8px;border-radius:7px;font-size:.65rem;cursor:pointer;
+      font-family:inherit" onclick="openShop()">🛒</button>
+  </div>
+
+  <!-- SCENE -->
+  <div id="scene">
+    <div id="sceneBg"></div>
+    <canvas id="sceneCanvas"></canvas>
+    <div id="combatBars" style="display:none">
+      <div class="cbar-row">
+        <div class="cbar-lbl" id="enemyName" style="color:#f87171">👾 Enemy</div>
+        <div class="cbar"><div class="cbar-fill" id="enemyHpFill"
+          style="width:100%;background:linear-gradient(90deg,#ef4444,#f97316)"></div></div>
+        <div class="cbar-val" id="enemyHpVal">50</div>
+      </div>
+    </div>
+    <div id="sceneEmoji">🌌</div>
+    <div id="enemyEmoji"></div>
+    <div id="playerEmoji">🧙</div>
+  </div>
+
+  <!-- LOG -->
+  <div id="log"></div>
+
+  <!-- DIALOG -->
+  <div id="dialog">
+    <div id="speaker">旁白</div>
+    <div id="dialogText">在一个黑暗的夜晚，你发现自己站在一座废弃王国的大门前。</div>
+    <div id="choices"></div>
+    <div id="combatActions">
+      <button class="ca ca-atk" onclick="combatAction('attack')">⚔️ 攻击</button>
+      <button class="ca ca-mgc" onclick="combatAction('magic')">✨ 魔法</button>
+      <button class="ca ca-def" onclick="combatAction('defend')">🛡️ 防御</button>
+      <button class="ca ca-itm" onclick="combatAction('item')">🧪 物品</button>
+    </div>
+  </div>
+
+  <!-- AD -->
+  <div id="ad">
+    <span>📢 广告支持我们的团队</span>
+    <button class="bb" onclick="buyRemoveAds()">去除广告 $1.99</button>
+  </div>
+
+  <!-- SHOP -->
+  <div id="shopOv">
+    <h2 style="font-size:1.5rem;font-weight:900">🛒 商店</h2>
+    <div id="shopList" style="width:100%;max-width:360px;display:flex;
+      flex-direction:column;gap:10px;max-height:55vh;overflow-y:auto"></div>
+    <button onclick="closeShop()" style="background:rgba(255,255,255,.07);
+      border:1px solid var(--b);color:var(--txt);padding:10px 28px;
+      border-radius:10px;cursor:pointer;font-family:inherit;font-size:.9rem">
+      ✕ 返回</button>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────
+const CFG = {
+  pid:  'anima-architect-ai',
+  lang: 'zh',
+  acc:  '#818cf8',
+  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+};
+const SK = 'rt_' + CFG.pid;
+const S  = () => JSON.parse(localStorage.getItem(SK) || '{}');
+const sv = d  => localStorage.setItem(SK, JSON.stringify({...S(),...d}));
+
+// ─── GAME STATE ────────────────────────────────────────────────
+const G = {
+  hp: 100, maxHp: 100, mp: 50, maxMp: 50,
+  gold: 0, lv: 1, xp: 0, items: 3,
+  defending: false,
+  enemy: null,
+};
+
+// ─── SCENES ────────────────────────────────────────────────────
+const SCENES = {
+  intro: {
+    bg: 'linear-gradient(180deg,#07070f 0%,#0f0a1e 100%)',
+    emoji: '🌌',
+    speaker: '旁白',
+    text: '在一个黑暗的夜晚，你发现自己站在一座废弃王国的大门前。',
+    choices: [
+      { icon:'🏘️', label:'进入村庄', next:'village' },
+      { icon:'⛺', label:'建立营地',  next:'camp'    },
+    ]
+  },
+  village: {
+    bg: 'linear-gradient(180deg,#0d1117 0%,#1a1207 100%)',
+    emoji: '🏘️',
+    speaker: '长老',
+    text: '英雄，我们的王国在受苦。黑暗怪物每晚袭击我们。',
+    choices: [
+      { icon:'✅', label:'接受任务', next:'forest' },
+      { icon:'🛒', label:'前往商店',   next:'shop_scene' },
+      { icon:'🚶', label:'离开',  next:'intro'  },
+    ]
+  },
+  camp: {
+    bg: 'linear-gradient(180deg,#0a0e16 0%,#0d1a0d 100%)',
+    emoji: '🔥',
+    speaker: '旁白',
+    text: '火焰温暖着你。这里是冒险前休息的安全地方。',
+    choices: [
+      { icon:'💤', label:'休息（恢复30HP）', next:'intro', action:'rest' },
+      { icon:'🏘️', label:'进入村庄', next:'village' },
+    ]
+  },
+  shop_scene: {
+    bg: 'linear-gradient(180deg,#0f0d18 0%,#1a0f07 100%)',
+    emoji: '⚗️',
+    speaker: '商人',
+    text: '欢迎英雄！我有治疗药水和稀有武器。',
+    choices: [
+      { icon:'🧪', label:'购买药水（15金）', next:'village', action:'buy_potion' },
+      { icon:'🚶', label:'离开', next:'village' },
+    ]
+  },
+  forest: {
+    bg: 'linear-gradient(180deg,#050d05 0%,#0a150a 100%)',
+    emoji: '🌲',
+    speaker: '旁白',
+    text: '茂密的森林充满危险。你听到黑暗中有狼嚎叫。',
+    choices: [
+      { icon:'⚔️', label:'战斗',  next:'combat_wolf', combat:true },
+      { icon:'🤫', label:'悄悄通过',  next:'dungeon', action:'sneak'  },
+      { icon:'↩️', label:'返回',   next:'village' },
+    ]
+  },
+  dungeon: {
+    bg: 'linear-gradient(180deg,#0a0005 0%,#150010 100%)',
+    emoji: '🏰',
+    speaker: '旁白',
+    text: '你到达了古老的地牢。',
+    choices: [
+      { icon:'🗺️', label:'探索地牢', next:'combat_boss', combat:true },
+      { icon:'↩️', label:'返回',    next:'forest' },
+    ]
+  },
+  treasure: {
+    bg: 'linear-gradient(180deg,#0f0d00 0%,#1a1400 100%)',
+    emoji: '💎',
+    speaker: '旁白',
+    text: '你发现了一个充满黄金和珠宝的房间！',
+    choices: [
+      { icon:'🎉', label:'继续', next:'victory' },
+    ]
+  },
+  victory: {
+    bg: 'linear-gradient(180deg,#050f05 0%,#0a1e0a 100%)',
+    emoji: '🏆',
+    speaker: '旁白',
+    text: '你击败了黑暗之王，拯救了王国！',
+    choices: [
+      { icon:'🔄', label:'重新开始', next:'intro', action:'restart' },
+    ]
+  },
+  defeat: {
+    bg: 'linear-gradient(180deg,#0f0000 0%,#1a0000 100%)',
+    emoji: '💀',
+    speaker: '旁白',
+    text: '你在战斗中倒下了……站起来再试！',
+    choices: [
+      { icon:'🔄', label:'重新开始', next:'intro', action:'restart' },
+    ]
+  },
+};
+
+const ENEMIES = {
+  combat_wolf: {
+    name: '野狼',
+    emoji: '🐺',
+    hp: 35, maxHp: 35,
+    atk: [8,14], def: 3,
+    xp: 25, gold: 12,
+    next: 'dungeon',
+  },
+  combat_boss: {
+    name: '黑暗之王',
+    emoji: '👑',
+    hp: 80, maxHp: 80,
+    atk: [18,28], def: 8,
+    xp: 100, gold: 50,
+    next: 'treasure',
+  }
+};
+
+// ─── CANVAS BACKGROUND ────────────────────────────────────────
+const cv  = document.getElementById('sceneCanvas');
+const ctx = cv.getContext('2d');
+let particles = [];
+
+function resizeCanvas(){
+  const el = document.getElementById('scene');
+  cv.width  = el.clientWidth;
+  cv.height = el.clientHeight;
+}
+
+function spawnParticles(scene){
+  particles = [];
+  const colors = {
+    village: ['#f97316','#fbbf24','#fde68a'],
+    camp:    ['#f97316','#ef4444','#fbbf24'],
+    forest:  ['#22c55e','#16a34a','#86efac'],
+    dungeon: ['#818cf8','#a78bfa','#c4b5fd'],
+    default: ['var(--acc)','#ffffff','#818cf8'],
+  };
+  const key = Object.keys(colors).find(k => scene.startsWith(k)) || 'default';
+  const palette = colors[key];
+  for(let i=0;i<40;i++){
+    particles.push({
+      x: Math.random() * cv.width,
+      y: Math.random() * cv.height,
+      vx: (Math.random()-.5)*.4,
+      vy: -.2 - Math.random()*.5,
+      r: .5 + Math.random()*1.5,
+      a: Math.random(),
+      c: palette[Math.floor(Math.random()*palette.length)],
+    });
+  }
+}
+
+function animBg(){
+  if(!ctx) return;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy; p.a -= .003;
+    if(p.a <= 0 || p.y < -10){
+      p.y = cv.height + 5;
+      p.x = Math.random() * cv.width;
+      p.a = Math.random() * .6;
+    }
+    ctx.globalAlpha = Math.max(0, p.a);
+    ctx.fillStyle = p.c;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animBg);
+}
+
+// ─── LOG ───────────────────────────────────────────────────────
+function addLog(txt, cls=''){
+  const el = document.getElementById('log');
+  const d = document.createElement('div');
+  d.className = 'log-line ' + cls;
+  d.textContent = txt;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+  if(el.children.length > 30) el.children[0].remove();
+}
+
+// ─── HUD UPDATE ────────────────────────────────────────────────
+function updateHUD(){
+  const hp = Math.max(0, G.hp), mp = Math.max(0, G.mp);
+  document.getElementById('hpBar').style.width = (hp/G.maxHp*100) + '%';
+  document.getElementById('mpBar').style.width = (mp/G.maxMp*100) + '%';
+  document.getElementById('hpVal').textContent  = `${hp}/${G.maxHp}`;
+  document.getElementById('mpVal').textContent  = `${mp}/${G.maxMp}`;
+  document.getElementById('lvVal').textContent  = `⚔️ Lv.${G.lv}`;
+}
+
+// ─── DAMAGE FLOAT ──────────────────────────────────────────────
+function floatDmg(el, val, color){
+  const d  = document.createElement('div');
+  d.className = 'dmg-float';
+  d.textContent = (val > 0 ? '-' : '+') + Math.abs(val);
+  d.style.cssText = `color:${color};left:${30+Math.random()*40}%;top:${30+Math.random()*30}%`;
+  document.getElementById('scene').appendChild(d);
+  setTimeout(() => d.remove(), 900);
+}
+
+// ─── SCREEN SHAKE ──────────────────────────────────────────────
+function shakeScreen(){
+  const a = document.getElementById('app');
+  a.style.animation = 'screenShake .3s ease';
+  setTimeout(() => a.style.animation = '', 300);
+}
+
+// ─── SCENE RENDER ──────────────────────────────────────────────
+let currentScene = 'intro';
+
+function goScene(id, skipAction){
+  const sc = SCENES[id];
+  if(!sc){ console.warn('Unknown scene:', id); return; }
+  currentScene = id;
+
+  // Background
+  document.getElementById('sceneBg').style.background = sc.bg;
+  spawnParticles(id);
+
+  // Emoji
+  const sEmoji = document.getElementById('sceneEmoji');
+  sEmoji.textContent = sc.emoji;
+  sEmoji.style.display = 'block';
+  document.getElementById('enemyEmoji').style.display = 'none';
+  document.getElementById('combatBars').style.display = 'none';
+  document.getElementById('combatActions').style.display = 'none';
+
+  // Dialog
+  document.getElementById('speaker').textContent  = sc.speaker;
+  document.getElementById('dialogText').textContent = sc.text;
+
+  // Choices
+  const ch = document.getElementById('choices');
+  ch.innerHTML = '';
+  ch.style.display = 'flex';
+  sc.choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'choice' + (c.combat ? ' combat' : '');
+    btn.innerHTML = `<span class="choice-icon">${c.icon}</span><span>${c.label}</span>`;
+    btn.onclick = () => handleChoice(c);
+    ch.appendChild(btn);
+  });
+}
+
+// ─── CHOICE HANDLER ────────────────────────────────────────────
+function handleChoice(c){
+  // Actions
+  if(c.action === 'rest'){
+    const heal = 30;
+    G.hp = Math.min(G.maxHp, G.hp + heal);
+    G.mp = Math.min(G.maxMp, G.mp + 10);
+    addLog(`💤 休息（恢复30HP）`, 'acc');
+    floatDmg(null, -heal, '#4ade80');
+    updateHUD();
+  }
+  if(c.action === 'buy_potion'){
+    if(G.gold >= 15){ G.gold -= 15; G.items++; addLog('🧪 +1 potion', 'blue'); }
+    else { addLog('金币不足', 'red'); return; }
+  }
+  if(c.action === 'sneak'){
+    const ok = Math.random() > 0.4;
+    addLog(ok ? '🤫 Sneak success!' : '👁️ Spotted!', ok ? 'acc' : 'red');
+    if(!ok){ startCombat('combat_wolf'); return; }
+  }
+  if(c.action === 'restart'){
+    G.hp = G.maxHp; G.mp = G.maxMp; G.lv = 1; G.xp = 0; G.items = 3; G.gold = 0;
+    updateHUD();
+  }
+
+  if(c.combat){ startCombat(c.next); return; }
+  goScene(c.next);
+}
+
+// ─── COMBAT ────────────────────────────────────────────────────
+function startCombat(enemyKey){
+  const def = ENEMIES[enemyKey];
+  G.enemy = { ...def, key: enemyKey };
+  G.defending = false;
+
+  document.getElementById('sceneEmoji').style.display = 'none';
+  const ee = document.getElementById('enemyEmoji');
+  ee.textContent = G.enemy.emoji;
+  ee.style.display = 'block';
+
+  const cb = document.getElementById('combatBars');
+  cb.style.display = 'flex';
+  document.getElementById('enemyName').textContent = G.enemy.emoji + ' ' + G.enemy.name;
+  updateEnemyBar();
+
+  document.getElementById('choices').style.display = 'none';
+  document.getElementById('combatActions').style.display = 'grid';
+
+  document.getElementById('speaker').textContent   = '⚔️ 战斗开始！';
+  document.getElementById('dialogText').textContent = `${G.enemy.emoji} ${G.enemy.name} HP: ${G.enemy.hp}`;
+
+  addLog(`⚔️ 战斗开始！ — ${G.enemy.name}`, 'hi');
+}
+
+function updateEnemyBar(){
+  const e = G.enemy;
+  const pct = Math.max(0, e.hp / e.maxHp * 100);
+  document.getElementById('enemyHpFill').style.width = pct + '%';
+  document.getElementById('enemyHpVal').textContent  = Math.max(0, e.hp);
+}
+
+function combatAction(type){
+  if(!G.enemy) return;
+  G.defending = false;
+  let playerDmg = 0, msg = '';
+
+  if(type === 'attack'){
+    const [min,max] = [8,16];
+    playerDmg = Math.floor(Math.random()*(max-min+1)) + min;
+    const finalDmg = Math.max(1, playerDmg - G.enemy.def);
+    G.enemy.hp -= finalDmg;
+    floatDmg(null, finalDmg, '#f87171');
+    addLog(`⚔️ You hit ${G.enemy.name} for ${finalDmg}`, 'red');
+    msg = `⚔️ -${finalDmg} HP`;
+  } else if(type === 'magic'){
+    if(G.mp < 10){ addLog('MP不足', 'mut'); enemyTurn(); return; }
+    G.mp -= 10;
+    const dmg = Math.floor(20 + Math.random()*15);
+    G.enemy.hp -= dmg;
+    floatDmg(null, dmg, '#818cf8');
+    addLog(`✨ Magic hits for ${dmg}!`, 'blue');
+    msg = `✨ -${dmg} MP`;
+  } else if(type === 'defend'){
+    G.defending = true;
+    addLog(`🛡️ 你正在防御`, 'acc');
+    msg = '🛡️';
+  } else if(type === 'item'){
+    if(G.items <= 0){ addLog('没有物品了', 'mut'); enemyTurn(); return; }
+    G.items--;
+    const heal = 30;
+    G.hp = Math.min(G.maxHp, G.hp + heal);
+    floatDmg(null, -heal, '#4ade80');
+    addLog(`🧪 Healed ${heal} HP`, 'acc');
+    msg = `🧪 +${heal}`;
+  }
+
+  updateHUD(); updateEnemyBar();
+  document.getElementById('dialogText').textContent = `${msg} — ${G.enemy.emoji} ${G.enemy.name}: ${Math.max(0,G.enemy.hp)}/${G.enemy.maxHp} HP`;
+
+  if(G.enemy.hp <= 0){ winCombat(); return; }
+  document.getElementById('combatActions').style.opacity = '.4';
+  setTimeout(() => {
+    document.getElementById('combatActions').style.opacity = '1';
+    enemyTurn();
+  }, 600);
+}
+
+function enemyTurn(){
+  if(!G.enemy || G.enemy.hp <= 0) return;
+  const [min,max] = G.enemy.atk;
+  let dmg = Math.floor(Math.random()*(max-min+1)) + min;
+  if(G.defending) dmg = Math.floor(dmg * 0.35);
+  G.hp -= dmg;
+  shakeScreen();
+  floatDmg(null, dmg, '#fbbf24');
+  addLog(`${G.enemy.emoji} ${G.enemy.name} attacks for ${dmg}${G.defending?' (blocked!)':''}`, 'red');
+  updateHUD();
+  document.getElementById('playerEmoji').classList.add('flash');
+  setTimeout(() => document.getElementById('playerEmoji').classList.remove('flash'), 500);
+  if(G.hp <= 0){ loseCombat(); }
+}
+
+function winCombat(){
+  const e = G.enemy;
+  G.xp += e.xp; G.gold += e.gold;
+  // Level up every 100 XP
+  if(G.xp >= G.lv * 100){ G.lv++; G.maxHp += 20; G.hp = G.maxHp; G.maxMp += 10; G.mp = G.maxMp; addLog(`🌟 Level Up! Lv.${G.lv}`, 'acc'); }
+  addLog(`✅ ${e.name} defeated! +${e.xp}XP +${e.gold}G`, 'acc');
+  G.enemy = null;
+  updateHUD();
+  goScene(ENEMIES[Object.keys(ENEMIES).find(k => ENEMIES[k] === e) || 'combat_wolf'].next || 'treasure');
+}
+
+function loseCombat(){
+  G.hp = 1; G.enemy = null;
+  addLog('💀 游戏结束', 'red');
+  updateHUD();
+  setTimeout(() => goScene('defeat'), 800);
+}
+
+// ─── INIT ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  resizeCanvas();
+  animBg();
+  updateHUD();
+  goScene('intro');
+  if(S().adsRemoved) document.getElementById('ad').style.display = 'none';
+});
+window.addEventListener('resize', resizeCanvas);
+
+// ─── SHOP ──────────────────────────────────────────────────────
+function openShop(){
+  const cur = S(), list = document.getElementById('shopList');
+  list.innerHTML = '';
+  CFG.iaps.forEach(item => {
+    const owned = !!cur['own_' + item.id];
+    const name  = (item.name && (item.name[CFG.lang] || item.name.en)) || item.id;
+    const desc  = (item.desc && (item.desc[CFG.lang] || item.desc.en)) || '';
+    const d = document.createElement('div'); d.className = 'si';
+    d.innerHTML =
+      `<div><div class="si-n">${name}</div><div class="si-d">${desc}</div><div class="si-p">${item.price||'$0.99'}</div></div>` +
+      `<button class="bb${owned?' own':''}"${owned?' disabled':''} onclick="buy('${item.id}')">` +
+      `${owned ? '✓' : '商店'}</button>`;
+    list.appendChild(d);
+  });
+  if(!cur.adsRemoved){
+    const d = document.createElement('div'); d.className = 'si';
+    d.innerHTML =
+      `<div><div class="si-n">🚫 广告支持我们的团队</div><div class="si-p">去除广告 $1.99</div></div>` +
+      `<button class="bb" onclick="buyRemoveAds()">商店</button>`;
+    list.appendChild(d);
+  }
+  document.getElementById('shopOv').classList.add('on');
+}
+function closeShop()    { document.getElementById('shopOv').classList.remove('on'); }
+function buy(id)        { sv({ ['own_' + id]: true }); openShop(); }
+function buyRemoveAds() {
+  sv({ adsRemoved: true });
+  document.getElementById('ad').style.display = 'none';
+  if(document.getElementById('shopOv').classList.contains('on')) openShop();
+}
+</script>
+</body>
+</html>
