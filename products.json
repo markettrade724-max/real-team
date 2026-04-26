@@ -2233,5 +2233,106 @@
     },
     "iap": [],
     "templateFile": "phaser-game.html"
+  },
+  {
+    "id": "context-chaos-creator",
+    "slug": "context-chaos-creator",
+    "type": "AI-Assisted Absurdist Narrative Creator",
+    "category": "app",
+    "status": "available",
+    "emoji": "🤪",
+    "templateFile": "adventure-rpg.html",
+    "accent": "#f472b6",
+    "accentRgb": "244,114,182",
+    "gradient": "135deg,#1a0533,#831843",
+    "emojis": [],
+    "name": {
+      "ar": "فوضى السياق",
+      "en": "Context Chaos",
+      "fr": "Chaos Contextuel",
+      "es": "Caos Contextual",
+      "de": "Kontext Chaos",
+      "zh": "语境混乱"
+    },
+    "desc": {
+      "ar": "انغمس في عالم من الفوضى المبهجة حيث المعنى اختياري والضحك مضمون. يُمكّنك 'فوضى السياق' من أخذ مقاطع عشوائية وصياغة قصص مصغرة مرحة يرويها الذكاء الاصطناعي تتحدى المنطق وتنتشر كالنار في الهشيم.",
+      "en": "Dive into a universe of delightful disarray where meaning is optional and laughter is guaranteed. Context Chaos empowers you to take random clips and craft side-splitting, AI-narrated micro-stories that defy logic and spread like wildfire.",
+      "fr": "Plongez dans un univers de joyeux désordre où le sens est optionnel et le rire garanti. Context Chaos vous permet de prendre des clips aléatoires et de créer des micro-histoires hilarantes, narrées par l'IA, qui défient toute logique et se propagent comme une traînée de poudre.",
+      "es": "Sumérgete en un universo de delicioso desorden donde el significado es opcional y la risa está garantizada. Context Chaos te permite tomar clips aleatorios y crear micro-historias hilarantes, narradas por IA, que desafían la lógica y se vuelven virales.",
+      "de": "Tauchen Sie ein in ein Universum des entzückenden Durcheinanders, wo Bedeutung optional und Lachen garantiert ist. Context Chaos ermöglicht es Ihnen, zufällige Clips zu nehmen und urkomische, KI-erzählte Mikrogeschichten zu erstellen, die jeder Logik trotzen und sich wie ein Lauffeuer verbreiten.",
+      "zh": "潜入一个充满愉悦混乱的宇宙，意义是可选的，而笑声是必然的。《语境混乱》让你能够选取随机片段，并制作出由AI叙述的爆笑微故事，它们挑战逻辑并像野火一样传播开来。"
+    },
+    "tags": [
+      "meme generator",
+      "viral content",
+      "ai creativity",
+      "short video",
+      "humor app",
+      "social sharing",
+      "absurd fun",
+      "narrative tool"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [],
+    "generated": true,
+    "generatedAt": "2026-04-26T14:37:43.153Z"
   }
 ]
