@@ -1,148 +1,212 @@
 /**
- * generate-ideas.js — يولّد فكرة لعبة جديدة ويضيفها لـ products.json
- * يستخدم fetch مباشرة — لا يحتاج أي packages
+ * generate-ideas.js
+ * يستخدم Gemini لتوليد منتج جديد وإضافته إلى products.json
  */
 import { readFileSync, writeFileSync } from 'fs';
+import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const ROOT      = join(__dirname, '..');
+const PRODUCTS_PATH = join(ROOT, 'products.json');
+const API_KEY   = process.env.GEMINI_API_KEY;
 
-if (!GEMINI_API_KEY) {
-  console.error('❌ Missing GEMINI_API_KEY');
-  process.exit(1);
-}
+if (!API_KEY) { console.error('❌ GEMINI_API_KEY missing'); process.exit(1); }
 
-const PALETTES = [
-  { accent:'#f59e0b', accentRgb:'245,158,11',  gradient:'135deg,#1c1007,#78350f' },
-  { accent:'#06b6d4', accentRgb:'6,182,212',   gradient:'135deg,#042830,#164e63' },
-  { accent:'#a855f7', accentRgb:'168,85,247',  gradient:'135deg,#1a0533,#581c87' },
-  { accent:'#10b981', accentRgb:'16,185,129',  gradient:'135deg,#022c22,#064e3b' },
-  { accent:'#ef4444', accentRgb:'239,68,68',   gradient:'135deg,#1f0707,#7f1d1d' },
-  { accent:'#3b82f6', accentRgb:'59,130,246',  gradient:'135deg,#030712,#1e3a5f' },
-  { accent:'#f97316', accentRgb:'249,115,22',  gradient:'135deg,#1c0a03,#7c2d12' },
-  { accent:'#ec4899', accentRgb:'236,72,153',  gradient:'135deg,#1f0318,#831843' },
+// ── الأنواع والفئات المدعومة ──────────────────────────────────
+const VALID_TYPES = [
+  'racing','race','speed','car','drift',
+  'sport','football','basketball',
+  'arcade','shooter','action','space',
+  'rpg','adventure','story','quest',
+  'tool','app','timer','focus',
 ];
 
-// أنواع تشمل الألعاب الجديدة!
-const TYPES = [
-  'action','shooter','adventure','rpg','runner','platformer',
-  'battle','survival','dungeon','quest',
-  'memory','puzzle','word','quiz','trivia','arcade',
-  'tool','wellness','productivity',
+const CATEGORIES = ['game', 'app'];
+
+// ── موضوعات للإلهام (يتم اختيار واحد عشوائياً) ──────────────
+const THEMES = [
+  'space exploration and alien civilizations',
+  'underwater mysteries and ocean creatures',
+  'time travel and historical paradoxes',
+  'cyberpunk city and hacking',
+  'ancient mythology and epic heroes',
+  'music, rhythm and sound waves',
+  'cooking, food and culinary battles',
+  'sports championship and rivalries',
+  'AI consciousness and digital dreams',
+  'magic academy and spellcasting',
+  'street racing in neon cities',
+  'survival horror in abandoned places',
+  'medieval kingdom building',
+  'futuristic sports arena',
+  'mind puzzles and brain training',
 ];
 
-// ── خريطة القوالب (بدون imports) ──────────────────────────────
-const TEMPLATE_MAP = {
-  memory:'memory-game.html',   puzzle:'memory-game.html',
-  word:'memory-game.html',     quiz:'memory-game.html',
-  trivia:'memory-game.html',   arcade:'memory-game.html',
-  tool:'tool-app.html',        wellness:'tool-app.html',
-  productivity:'tool-app.html',
-  action:'action-shooter.html',  shooter:'action-shooter.html',
-  battle:'action-shooter.html',  survival:'action-shooter.html',
-  adventure:'adventure-rpg.html', rpg:'adventure-rpg.html',
-  dungeon:'adventure-rpg.html',  quest:'adventure-rpg.html',
-  runner:'endless-runner.html',  platformer:'endless-runner.html',
-};
-
-const DEFAULT_IAPS = [
-  { id:'no-ads',      type:'remove_ads', price:1.99, emoji:'🚫',
-    name:{ar:'إزالة الإعلانات',en:'Remove Ads',fr:'Sans pub',es:'Sin anuncios',de:'Werbefrei',zh:'去广告'} },
-  { id:'hint-pack',   type:'consumable', price:0.99, emoji:'💡',
-    name:{ar:'10 تلميحات',en:'10 Hints',fr:'10 indices',es:'10 pistas',de:'10 Hinweise',zh:'10个提示'} },
-  { id:'full-unlock', type:'unlock',     price:2.99, emoji:'⭐',
-    name:{ar:'فتح كل المحتوى',en:'Unlock All',fr:'Tout débloquer',es:'Desbloquear todo',de:'Alles freischalten',zh:'解锁全部'} },
-];
-
-async function askGemini(prompt) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.9,
-        maxOutputTokens: 1024,
-        responseMimeType: 'application/json',
-      },
-    }),
-  });
+// ── استدعاء Gemini ─────────────────────────────────────────────
+async function callGemini(prompt) {
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          maxOutputTokens: 1200,
+          temperature: 0.95,
+        },
+      }),
+    }
+  );
+  if (!res.ok) throw new Error(`Gemini HTTP ${res.status}: ${await res.text()}`);
   const data = await res.json();
-  if (data.error) throw new Error(JSON.stringify(data.error));
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Empty response from Gemini');
-  return text;
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
-async function generateIdea(existingIds) {
-  const type    = TYPES[Math.floor(Math.random() * TYPES.length)];
-  const category = ['tool','wellness','productivity'].includes(type) ? 'app' : 'game';
-  const palette  = PALETTES[Math.floor(Math.random() * PALETTES.length)];
-  const templateFile = TEMPLATE_MAP[type] || 'memory-game.html';
+// ── توليد فكرة جديدة ──────────────────────────────────────────
+async function generateIdea(existingSlugs) {
+  const theme = THEMES[Math.floor(Math.random() * THEMES.length)];
+  const typeHint = VALID_TYPES[Math.floor(Math.random() * VALID_TYPES.length)];
+  const catHint  = typeHint === 'tool' || typeHint === 'app' || typeHint === 'timer' || typeHint === 'focus'
+    ? 'app' : 'game';
 
-  const prompt = `You are a creative game designer. Create a ${category} idea of type "${type}".
-Do NOT use these existing slugs: ${existingIds.slice(-15).join(', ')}.
+  const prompt = `You are a creative game/app designer. Generate a unique, viral-worthy game or app idea.
 
-Return ONLY valid JSON:
+Theme inspiration: "${theme}"
+Suggested type: "${typeHint}"
+Category: "${catHint}"
+
+STRICT RULES:
+1. Return ONLY valid JSON, no markdown, no backticks, no extra text
+2. The "type" field MUST be exactly one of: ${VALID_TYPES.join(', ')}
+3. The "slug" must be lowercase, hyphens only, unique (not in: ${existingSlugs.slice(-10).join(', ')})
+4. All 6 languages required: ar, en, fr, es, de, zh
+5. "category" must be exactly "game" or "app"
+6. "status" must be "available"
+
+Return this exact JSON structure:
 {
-  "slug": "unique-english-slug-kebab-case",
-  "emoji": "one perfect emoji",
-  "name": { "ar": "اسم عربي", "en": "English Name", "fr": "Nom français", "es": "Nombre español", "de": "Deutscher Name", "zh": "中文名称" },
-  "desc": { "ar": "وصف قصير", "en": "Short description", "fr": "Description courte", "es": "Descripción corta", "de": "Kurze Beschreibung", "zh": "简短描述" },
-  "emojis": ["emoji1","emoji2","emoji3","emoji4","emoji5","emoji6","emoji7","emoji8"]
-}
+  "id": "unique-slug-here",
+  "slug": "unique-slug-here",
+  "type": "${typeHint}",
+  "category": "${catHint}",
+  "status": "available",
+  "emoji": "🎮",
+  "accent": "#facc15",
+  "accentRgb": "250,204,21",
+  "gradient": "135deg,#0f172a,#1e293b",
+  "emojis": ["🎮","⭐","🌟","💫","✨","🎯","🔮","💎","🌈","🎪","🎨","🎭"],
+  "name": {
+    "ar": "اسم عربي مبدع",
+    "en": "Creative English Name",
+    "fr": "Nom Français Créatif",
+    "es": "Nombre Español Creativo",
+    "de": "Kreativer Deutscher Name",
+    "zh": "创意中文名称"
+  },
+  "desc": {
+    "ar": "وصف عربي جذاب 1-2 جملة",
+    "en": "Compelling English description 1-2 sentences",
+    "fr": "Description française convaincante 1-2 phrases",
+    "es": "Descripción española convincente 1-2 oraciones",
+    "de": "Überzeugende deutsche Beschreibung 1-2 Sätze",
+    "zh": "引人入胜的中文描述1-2句"
+  },
+  "tags": ["tag1", "tag2", "tag3", "tag4"],
+  "iap": [
+    {
+      "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫",
+      "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" }
+    },
+    {
+      "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐",
+      "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" }
+    }
+  ],
+  "levels": null,
+  "generated": true,
+  "generatedAt": "${new Date().toISOString()}"
+}`;
 
-For type "${type}", choose fitting emojis as game elements or collectibles.`;
+  const raw = await callGemini(prompt);
 
-  const raw = await askGemini(prompt);
-  const clean = raw.replace(/```json|```/g, '').trim();
-  const idea = JSON.parse(clean);
+  // استخراج JSON من الرد
+  const jsonMatch = raw.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('No JSON found in Gemini response');
 
-  if (!idea.slug || !idea.name?.en) throw new Error('Missing required fields');
-  if (existingIds.includes(idea.slug)) idea.slug = `${idea.slug}-${Date.now().toString(36)}`;
+  const product = JSON.parse(jsonMatch[0]);
 
-  return {
-    id:           idea.slug,
-    slug:         idea.slug,
-    type,
-    category,
-    status:       'available',
-    emoji:        idea.emoji || '🎮',
-    accent:       palette.accent,
-    accentRgb:    palette.accentRgb,
-    gradient:     palette.gradient,
-    templateFile,
-    emojis:       idea.emojis || [],
-    levels:       null,
-    name:         idea.name,
-    desc:         idea.desc,
-    iap:          DEFAULT_IAPS,
-    generated:    true,
-    generatedAt:  new Date().toISOString(),
-  };
-}
-
-async function main() {
-  try {
-    const path     = join(__dirname, '..', 'products.json');
-    const products = JSON.parse(readFileSync(path, 'utf8'));
-    const ids      = products.map(p => p.id);
-
-    console.log(`📦 Existing: ${ids.length} products`);
-    console.log('🤖 Generating new idea...');
-
-    const idea = await generateIdea(ids);
-    products.push(idea);
-    writeFileSync(path, JSON.stringify(products, null, 2), 'utf8');
-
-    console.log(`✅ Added: ${idea.slug} [${idea.type}] → ${idea.templateFile}`);
-  } catch (err) {
-    console.error('❌ Error:', err.message);
-    process.exit(1);
+  // تحقق أساسي
+  if (!product.id || !product.slug || !product.name?.en || !product.desc?.en) {
+    throw new Error('Generated product missing required fields');
   }
+
+  // تأكد من صحة الـ type
+  if (!VALID_TYPES.includes(product.type)) {
+    console.warn(`⚠️  Invalid type "${product.type}" — fixing to "${typeHint}"`);
+    product.type = typeHint;
+  }
+
+  // تأكد من صحة الـ category
+  if (!CATEGORIES.includes(product.category)) {
+    product.category = catHint;
+  }
+
+  // تأكد من وجود كل اللغات
+  const LANGS = ['ar','en','fr','es','de','zh'];
+  LANGS.forEach(l => {
+    if (!product.name[l])  product.name[l]  = product.name.en;
+    if (!product.desc[l])  product.desc[l]  = product.desc.en;
+  });
+
+  // تأكد من عدم التكرار
+  if (existingSlugs.includes(product.slug)) {
+    product.slug = product.slug + '-' + Date.now().toString(36);
+    product.id   = product.slug;
+  }
+
+  return product;
 }
 
-main();
+// ── Main ───────────────────────────────────────────────────────
+async function main() {
+  // قراءة المنتجات الحالية
+  let products = [];
+  try {
+    products = JSON.parse(readFileSync(PRODUCTS_PATH, 'utf8'));
+  } catch(e) {
+    console.warn('⚠️  products.json not found — starting fresh');
+  }
+
+  const existingSlugs = products.map(p => p.slug);
+  console.log(`📦 Current products: ${products.length}`);
+
+  // محاولة توليد فكرة جديدة (3 محاولات)
+  let newProduct = null;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      console.log(`🤖 Generating idea (attempt ${attempt}/3)...`);
+      newProduct = await generateIdea(existingSlugs);
+      console.log(`✅ Generated: "${newProduct.name.en}" (${newProduct.type}) → ${newProduct.slug}`);
+      break;
+    } catch(e) {
+      console.error(`❌ Attempt ${attempt} failed: ${e.message}`);
+      if (attempt === 3) process.exit(1);
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  }
+
+  // إضافة المنتج الجديد في بداية القائمة
+  products.unshift(newProduct);
+
+  // التحقق من صحة JSON قبل الكتابة
+  const json = JSON.stringify(products, null, 2);
+  JSON.parse(json); // يرمي خطأ إن كان غير صالح
+
+  writeFileSync(PRODUCTS_PATH, json, 'utf8');
+  console.log(`\n🎉 products.json updated → ${products.length} products total`);
+  console.log(`   New: ${newProduct.slug} (${newProduct.type} / ${newProduct.category})`);
+}
+
+main().catch(e => { console.error('Fatal:', e.message); process.exit(1); });
