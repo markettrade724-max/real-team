@@ -1,63 +1,27 @@
 {
-  "runId": "2026-04-26T1436",
-  "timestamp": "2026-04-26T14:38:33.192Z",
-  "totalDuration": "121.6s",
-  "geminiCalls": "5/6",
+  "runId": "2026-04-27T1021",
+  "timestamp": "2026-04-27T10:22:13.023Z",
+  "totalDuration": "31.2s",
+  "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.1s",
+      "duration": "1.2s",
       "attempts": 1,
       "error": null
     },
     "idea": {
-      "success": true,
-      "duration": "14.1s",
+      "success": false,
+      "duration": "15.0s",
       "attempts": 1,
-      "error": null
-    },
-    "art": {
-      "success": true,
-      "duration": "5.0s",
-      "attempts": 1,
-      "error": null
-    },
-    "template": {
-      "success": true,
-      "duration": "2ms",
-      "attempts": 1,
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "6.3s",
-      "attempts": 1,
-      "error": null
-    },
-    "code": {
-      "success": true,
-      "duration": "51ms",
-      "attempts": 1,
-      "error": null
-    },
-    "marketing": {
-      "success": true,
-      "duration": "15.1s",
-      "attempts": 1,
-      "error": null
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "4.8s",
-      "attempts": 1,
-      "error": null
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 8,
-    "failed": 0,
-    "newGame": "context-chaos-creator",
-    "template": "adventure-rpg.html"
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "newGame": null,
+    "template": null
   }
 }
