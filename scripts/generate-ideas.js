@@ -44,24 +44,35 @@ const THEMES = [
 ];
 
 // ── استدعاء Gemini ─────────────────────────────────────────────
-async function callGemini(prompt) {
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          maxOutputTokens: 1200,
-          temperature: 0.95,
-        },
-      }),
+async function callGemini(prompt, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            maxOutputTokens: 1200,
+            temperature: 0.9,
+            responseMimeType: 'application/json',
+          },
+        }),
+      }
+    );
+    // 503 = overloaded, wait and retry
+    if (res.status === 503) {
+      const wait = (i + 1) * 8000;
+      console.log(`⏳ 503 overloaded — waiting ${wait/1000}s before retry ${i+1}/${retries}`);
+      await new Promise(r => setTimeout(r, wait));
+      continue;
     }
-  );
-  if (!res.ok) throw new Error(`Gemini HTTP ${res.status}: ${await res.text()}`);
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!res.ok) throw new Error(`Gemini HTTP ${res.status}: ${await res.text()}`);
+    const data = await res.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  }
+  throw new Error('Gemini unavailable after retries');
 }
 
 // استخراج JSON من رد Gemini — يتعامل مع markdown وبدونه
