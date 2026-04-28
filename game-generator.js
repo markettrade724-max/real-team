@@ -7,38 +7,105 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ── خريطة القوالب ─────────────────────────────────────────────
+// ── خريطة القوالب (مطابقة حرفية) ─────────────────────────────
 const TEMPLATE_MAP = {
-  // سباقات السرعة
-  racing:   'racing-game.html',
-  race:     'racing-game.html',
-  speed:    'racing-game.html',
-  car:      'racing-game.html',
-  drift:    'racing-game.html',
-  moto:     'racing-game.html',
-  // رياضات متنوعة
-  sport:      'sports-game.html',
-  football:   'sports-game.html',
-  basketball: 'sports-game.html',
-  tennis:     'sports-game.html',
-  soccer:     'sports-game.html',
-  // أكشن وإطلاق نار
-  arcade:   'phaser-game.html',
-  shooter:  'phaser-game.html',
-  action:   'phaser-game.html',
-  space:    'phaser-game.html',
-  // مغامرات وRPG
-  rpg:       'adventure-rpg.html',
-  adventure: 'adventure-rpg.html',
-  story:     'adventure-rpg.html',
-  quest:     'adventure-rpg.html',
-  // تطبيقات وأدوات
-  tool:      'tool-app.html',
-  app:       'tool-app.html',
-  timer:     'tool-app.html',
-  focus:     'tool-app.html',
-  // لا يوجد default — كل نوع غير معروف يُوقف المولّد بخطأ واضح
+  // سباقات
+  racing:'racing-game.html', race:'racing-game.html',
+  speed:'racing-game.html',  car:'racing-game.html',
+  drift:'racing-game.html',  moto:'racing-game.html',
+  // رياضات
+  sport:'sports-game.html',  football:'sports-game.html',
+  basketball:'sports-game.html', tennis:'sports-game.html',
+  soccer:'sports-game.html',
+  // أكشن
+  arcade:'phaser-game.html', shooter:'phaser-game.html',
+  action:'phaser-game.html', space:'phaser-game.html',
+  // مغامرات
+  rpg:'adventure-rpg.html',  adventure:'adventure-rpg.html',
+  story:'adventure-rpg.html', quest:'adventure-rpg.html',
+  // تطبيقات
+  tool:'tool-app.html', app:'tool-app.html',
+  timer:'tool-app.html', focus:'tool-app.html',
 };
+
+// ── كلمات مفتاحية للكشف الذكي ────────────────────────────────
+const SMART_RULES = [
+  {
+    template: 'racing-game.html',
+    keywords: ['racing','race','speed','car','drift','moto','drive',
+               'vehicle','kart','formula','nascar','rally','turbo'],
+  },
+  {
+    template: 'sports-game.html',
+    keywords: ['sport','football','soccer','basketball','tennis',
+               'baseball','hockey','cricket','golf','rugby','match',
+               'stadium','goal','league','championship'],
+  },
+  {
+    template: 'phaser-game.html',
+    keywords: ['arcade','shooter','shoot','action','space','alien',
+               'bullet','blast','battle','combat','fighter','pixel',
+               'retro','wave','invasion','defense','tower','arena',
+               'mischief','chaos','punchline','absurd','parody',
+               'viral','meme','genre','shift','creator','content'],
+  },
+  {
+    template: 'adventure-rpg.html',
+    keywords: ['rpg','adventure','quest','story','narrative','hero',
+               'dungeon','fantasy','myth','legend','saga','lore',
+               'verse','forge','realm','kingdom','magic','character',
+               'role','persona','arcana'],
+  },
+  {
+    template: 'tool-app.html',
+    keywords: ['app','tool','timer','focus','pomodoro','tracker',
+               'journal','art','creative','generative','visual',
+               'paint','draw','ai','generator','create','design',
+               'mood','emotion','identity','avatar','mirror','prism',
+               'echo','vibe','aura','luminal','moment','reality',
+               'weaver','mythos','anima','alternate','universe'],
+  },
+];
+
+// ── حل القالب بذكاء ───────────────────────────────────────────
+function resolveTemplate(product) {
+  const typeRaw = (product.type || '').toLowerCase().trim();
+
+  // 1. مطابقة حرفية مباشرة
+  if (TEMPLATE_MAP[typeRaw]) return TEMPLATE_MAP[typeRaw];
+
+  // 2. الـ type يحتوي على كلمة مفتاحية معروفة
+  for (const [key, tpl] of Object.entries(TEMPLATE_MAP)) {
+    if (typeRaw.includes(key)) return tpl;
+  }
+
+  // 3. تحليل الكلمات الكاملة في type + tags + slug
+  const corpus = [
+    typeRaw,
+    (product.slug || '').toLowerCase().replace(/-/g,' '),
+    ...(product.tags || []).map(t => t.toLowerCase()),
+    (product.category || '').toLowerCase(),
+  ].join(' ');
+
+  let bestTemplate = null, bestScore = 0;
+  for (const rule of SMART_RULES) {
+    const score = rule.keywords.reduce((s, kw) =>
+      corpus.includes(kw) ? s + 1 : s, 0);
+    if (score > bestScore) { bestScore = score; bestTemplate = rule.template; }
+  }
+
+  // 4. Fallback حسب category
+  if (!bestTemplate || bestScore === 0) {
+    bestTemplate = product.category === 'game'
+      ? 'phaser-game.html'
+      : 'tool-app.html';
+    console.warn(`⚠️  "${product.type}" (${product.slug}) → fallback: ${bestTemplate}`);
+  } else {
+    console.log(`🧠 Smart resolve: "${product.type}" → ${bestTemplate} (score:${bestScore})`);
+  }
+
+  return bestTemplate;
+}
 
 // ── الترجمات ──────────────────────────────────────────────────
 const LABELS = {
@@ -448,19 +515,12 @@ function ensureLang(obj, fallbackOrder = ['en','ar']) {
 
 // ── توليد لعبة واحدة ──────────────────────────────────────────
 function generate(product) {
-  const tplName = TEMPLATE_MAP[product.type];
-  if (!tplName) {
-    console.error(`❌ Unknown type: "${product.type}" (slug: ${product.slug})`);
-    console.error(`   Available types: ${Object.keys(TEMPLATE_MAP).join(', ')}`);
-    return false;
-  }
-
+  const tplName = resolveTemplate(product);
   const tplPath = join(__dirname, 'templates', tplName);
   let tpl;
   try { tpl = readFileSync(tplPath, 'utf8'); }
   catch(e) {
     console.error(`❌ Template file missing: ${tplName}`);
-    console.error(`   Expected at: templates/${tplName}`);
     return false;
   }
 
