@@ -1,8 +1,8 @@
 {
-  "runId": "2026-04-28T1607",
-  "timestamp": "2026-04-28T16:08:12.558Z",
-  "totalDuration": "17.6s",
-  "geminiCalls": "0/6",
+  "runId": "2026-04-28T1940",
+  "timestamp": "2026-04-28T19:43:05.143Z",
+  "totalDuration": "125.5s",
+  "geminiCalls": "5/6",
   "agents": {
     "analytics": {
       "success": true,
@@ -11,17 +11,53 @@
       "error": null
     },
     "idea": {
-      "success": false,
-      "duration": "1.1s",
+      "success": true,
+      "duration": "19.5s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": null
+    },
+    "art": {
+      "success": true,
+      "duration": "6.0s",
+      "attempts": 1,
+      "error": null
+    },
+    "template": {
+      "success": true,
+      "duration": "1ms",
+      "attempts": 1,
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "7.2s",
+      "attempts": 1,
+      "error": null
+    },
+    "code": {
+      "success": true,
+      "duration": "66ms",
+      "attempts": 1,
+      "error": null
+    },
+    "marketing": {
+      "success": true,
+      "duration": "10.1s",
+      "attempts": 1,
+      "error": null
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "6.3s",
+      "attempts": 1,
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
-    "failed": 1,
-    "newGame": null,
-    "template": null
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "newGame": "mirth-morph",
+    "template": "tool-app.html"
   }
 }

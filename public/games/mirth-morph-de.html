@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Stimmungs-Verse</title>
+<title>MirthMorph</title>
 <style>
 :root{
-  --acc:#818cf8;
-  --acc-rgb:129,140,248;
+  --acc:#f472b6;
+  --acc-rgb:244,114,182;
   --bg:#060610;--s:#0d0d1f;
   --b:rgba(255,255,255,0.07);
   --txt:#f1f5f9;--mut:#64748b;
@@ -139,7 +139,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 
   <div id="topBar">
     <a class="tb-back" href="/">← Zurück</a>
-    <div class="tb-title">✨ Stimmungs-Verse</div>
+    <div class="tb-title">🎭 MirthMorph</div>
     <button class="tb-shop" onclick="openShop()">🛒 Shop</button>
   </div>
 
@@ -160,14 +160,14 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────
 const CFG = {
-  pid:    'vibe-verse',
-  type:   'app',
+  pid:    'mirth-morph',
+  type:   'deepfake-parody-generator',
   lang:   'de',
-  acc:    '#818cf8',
-  emoji:  '✨',
-  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
-  name:   'Stimmungs-Verse',
-  desc:   'Drücken Sie Ihr Gefühl aus und beobachten Sie, wie KI eine einzigartige audiovisuelle Mini-Welt erschafft.',
+  acc:    '#f472b6',
+  emoji:  '🎭',
+  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提ش示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+  name:   'MirthMorph',
+  desc:   'Entfessle deinen inneren Meme-Meister! Verwandle dein Gesicht und deine Stimme in urkomische historische Figuren, lächerliche Filmcharaktere oder ikonische Meme-Helden in Sekunden. Erstelle lachhafte Deepfake-Videos und teile sie mit der Welt, um die nächste virale Sensation zu werden.',
   gemini: '',
 };
 const SK = 'rt_' + CFG.pid;
@@ -405,7 +405,7 @@ function buildArt(root){
       const adjs=['Ethereal','Vibrant','Mysterious','Cosmic','Fluid','Dynamic','Serene','Electric'];
       const nouns=['Dreamscape','Universe','Tapestry','Journey','Echo','Essence','Vision'];
       const title=`${adjs[Math.floor(Math.random()*adjs.length)]} ${nouns[Math.floor(Math.random()*nouns.length)]}`;
-      const tags=prompt.split(' ').filter(w=>w.length>3).slice(0,3).concat(['Stimmungs-Verse']);
+      const tags=prompt.split(' ').filter(w=>w.length>3).slice(0,3).concat(['MirthMorph']);
       document.getElementById('artDesc').textContent=prompt?`"${prompt}" — ${title}`:title;
       document.getElementById('artTags').innerHTML=tags.map(t=>`<span class="rc-tag">${t}</span>`).join('');
       document.getElementById('resultCard').style.display='block';
@@ -575,9 +575,9 @@ function buildCreative(root){
   let generating=false;
   root.innerHTML=`
     <div style="text-align:center;padding:8px 0">
-      <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">✨</div>
-      <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">Stimmungs-Verse</div>
-      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">Drücken Sie Ihr Gefühl aus und beobachten Sie, wie KI eine einzigartige audiovisuelle Mini-Welt erschafft.</div>
+      <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">🎭</div>
+      <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">MirthMorph</div>
+      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">Entfessle deinen inneren Meme-Meister! Verwandle dein Gesicht und deine Stimme in urkomische historische Figuren, lächerliche Filmcharaktere oder ikonische Meme-Helden in Sekunden. Erstelle lachhafte Deepfake-Videos und teile sie mit der Welt, um die nächste virale Sensation zu werden.</div>
     </div>
     <div class="inp-wrap">
       <textarea id="creInput" rows="3" placeholder="Gib deine Idee ein..."></textarea>
@@ -585,7 +585,7 @@ function buildCreative(root){
     <button class="btn btn-p" onclick="runCreative()">✨ Erstellen</button>
     <div id="loadWrap" style="display:none"><div class="spinner"></div><span>Generierung...</span></div>
     <div id="resultCard" style="display:none">
-      <div class="rc-label">Stimmungs-Verse</div>
+      <div class="rc-label">MirthMorph</div>
       <div class="rc-text" id="creResult"></div>
     </div>`;
 

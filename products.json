@@ -2334,5 +2334,157 @@
     },
     "iap": [],
     "templateFile": "phaser-game.html"
+  },
+  {
+    "id": "mirth-morph",
+    "slug": "mirth-morph",
+    "type": "deepfake-parody-generator",
+    "category": "app",
+    "status": "available",
+    "emoji": "🎭",
+    "templateFile": "tool-app.html",
+    "accent": "#f472b6",
+    "accentRgb": "244,114,182",
+    "gradient": "135deg,#1a0533,#831843",
+    "emojis": [],
+    "name": {
+      "ar": "تحولات المرح",
+      "en": "MirthMorph",
+      "fr": "MirthMorph",
+      "es": "MirthMorph",
+      "de": "MirthMorph",
+      "zh": "乐变"
+    },
+    "desc": {
+      "ar": "أطلق العنان لمبدع الميمات بداخلك! قم بتحويل وجهك وصوتك إلى أيقونات تاريخية أو شخصيات أفلام مضحكة أو أبطال ميمات في غضون ثوانٍ. اصنع مقاطع فيديو عميقة المضحكة وشاركها مع العالم لتصبح الضجة الفيروسية القادمة.",
+      "en": "Unleash your inner meme maestro! Transform your face and voice into hilarious historical figures, ridiculous movie characters, or iconic meme heroes within seconds. Craft side-splitting deepfake videos and share them with the world to become the next viral sensation.",
+      "fr": "Libérez le maestro des mèmes qui sommeille en vous ! Transformez votre visage et votre voix en figures historiques hilarantes, personnages de films ridicules ou héros de mèmes iconiques en quelques secondes. Créez des vidéos deepfake à mourir de rire et partagez-les avec le monde pour devenir la prochaine sensation virale.",
+      "es": "¡Libera al maestro de los memes que llevas dentro! Transforma tu cara y tu voz en figuras históricas hilarantes, personajes de películas ridículos o héroes de memes icónicos en segundos. Crea videos deepfake desternillantes y compártelos con el mundo para convertirte en la próxima sensación viral.",
+      "de": "Entfessle deinen inneren Meme-Meister! Verwandle dein Gesicht und deine Stimme in urkomische historische Figuren, lächerliche Filmcharaktere oder ikonische Meme-Helden in Sekunden. Erstelle lachhafte Deepfake-Videos und teile sie mit der Welt, um die nächste virale Sensation zu werden.",
+      "zh": "释放你内心的迷因大师！在几秒钟内将你的脸和声音变成爆笑的历史人物、荒谬的电影角色或标志性迷因英雄。制作令人捧腹的深度伪造视频并与世界分享，成为下一个病毒式传播的热潮。"
+    },
+    "tags": [
+      "deepfake",
+      "parody",
+      "comedy",
+      "social media",
+      "video editor",
+      "AI",
+      "viral",
+      "ugc"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "متدرب الميمز",
+          "en": "Meme Apprentice"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "مقلد الشخصيات الأيقونية",
+          "en": "Iconic Impersonator"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "عبقري الفيديوهات الفيروسية",
+          "en": "Viral Virtuoso"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "دينامو التزييف العميق",
+          "en": "Deepfake Dynamo"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "مايسترو ميرث مورف",
+          "en": "MirthMorph Master"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-28T19:42:18.691Z"
   }
 ]
