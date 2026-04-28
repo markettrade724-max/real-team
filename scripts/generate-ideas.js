@@ -46,7 +46,7 @@ const THEMES = [
 // ── استدعاء Gemini ─────────────────────────────────────────────
 async function callGemini(prompt) {
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -62,6 +62,21 @@ async function callGemini(prompt) {
   if (!res.ok) throw new Error(`Gemini HTTP ${res.status}: ${await res.text()}`);
   const data = await res.json();
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+// استخراج JSON من رد Gemini — يتعامل مع markdown وبدونه
+function extractJSON(raw) {
+  // إزالة markdown code blocks إن وجدت
+  let clean = raw
+    .replace(/```json\s*/gi, '')
+    .replace(/```\s*/g, '')
+    .trim();
+  // محاولة 1: JSON مباشر
+  const objMatch = clean.match(/\{[\s\S]*\}/);
+  if (objMatch) return objMatch[0];
+  // محاولة 2: النص الكامل بعد التنظيف
+  if (clean.startsWith('{')) return clean;
+  throw new Error('No JSON found in Gemini response');
 }
 
 // ── توليد فكرة جديدة ──────────────────────────────────────────
@@ -131,11 +146,8 @@ Return this exact JSON structure:
 
   const raw = await callGemini(prompt);
 
-  // استخراج JSON من الرد
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('No JSON found in Gemini response');
-
-  const product = JSON.parse(jsonMatch[0]);
+  const jsonStr = extractJSON(raw);
+  const product = JSON.parse(jsonStr);
 
   // تحقق أساسي
   if (!product.id || !product.slug || !product.name?.en || !product.desc?.en) {
