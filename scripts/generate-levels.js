@@ -18,7 +18,7 @@ const NEEDS_LEVELS = ['arcade','shooter','action','space','rpg','adventure','sto
 
 async function callGemini(prompt) {
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -31,6 +31,14 @@ async function callGemini(prompt) {
   if (!res.ok) throw new Error(`Gemini HTTP ${res.status}`);
   const data = await res.json();
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+function extractArray(raw) {
+  const clean = raw.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
+  const match = clean.match(/\[[\s\S]*\]/);
+  if (match) return match[0];
+  if (clean.startsWith('[')) return clean;
+  throw new Error('No JSON array in response');
 }
 
 async function generateLevels(product) {
@@ -74,10 +82,8 @@ Example output format:
 ]`;
 
   const raw = await callGemini(prompt);
-  const match = raw.match(/\[[\s\S]*\]/);
-  if (!match) throw new Error('No JSON array in response');
-
-  const levels = JSON.parse(match[0]);
+  const arrStr = extractArray(raw);
+  const levels = JSON.parse(arrStr);
   if (!Array.isArray(levels) || levels.length !== 5) throw new Error('Expected exactly 5 levels');
 
   return levels;
