@@ -1,27 +1,63 @@
 {
-  "runId": "2026-04-29T1015",
-  "timestamp": "2026-04-29T10:15:56.995Z",
-  "totalDuration": "17.5s",
-  "geminiCalls": "0/6",
+  "runId": "2026-04-29T1552",
+  "timestamp": "2026-04-29T15:54:25.527Z",
+  "totalDuration": "135.4s",
+  "geminiCalls": "3/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "740ms",
+      "duration": "1.4s",
       "attempts": 1,
       "error": null
     },
     "idea": {
+      "success": true,
+      "duration": "16.2s",
+      "attempts": 1,
+      "error": null
+    },
+    "art": {
       "success": false,
-      "duration": "1.7s",
+      "duration": "6.5s",
       "attempts": 1,
       "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+    },
+    "template": {
+      "success": true,
+      "duration": "2ms",
+      "attempts": 1,
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "21.1s",
+      "attempts": 1,
+      "error": null
+    },
+    "code": {
+      "success": true,
+      "duration": "62ms",
+      "attempts": 1,
+      "error": null
+    },
+    "marketing": {
+      "success": false,
+      "duration": "10.1s",
+      "attempts": 1,
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "5.0s",
+      "attempts": 1,
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
-    "failed": 1,
-    "newGame": null,
-    "template": null
+    "total": 8,
+    "passed": 6,
+    "failed": 2,
+    "newGame": "verifiction-news",
+    "template": "tool-app.html"
   }
 }

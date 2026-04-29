@@ -2486,5 +2486,157 @@
     },
     "iap": [],
     "templateFile": "phaser-game.html"
+  },
+  {
+    "id": "verifiction-news",
+    "slug": "verifiction-news",
+    "type": "AI-Powered Personalized News Generator",
+    "category": "app",
+    "status": "available",
+    "emoji": "📰",
+    "templateFile": "tool-app.html",
+    "accent": "#facc15",
+    "accentRgb": "250,204,21",
+    "gradient": "135deg,#0f172a,#1e293b",
+    "emojis": [],
+    "name": {
+      "ar": "أخبار VeriFiction",
+      "en": "VeriFiction News",
+      "fr": "Infos VeriFiction",
+      "es": "Noticias VeriFiction",
+      "de": "VeriFiction Nachrichten",
+      "zh": "虚实新闻"
+    },
+    "desc": {
+      "ar": "هل تساءلت يوماً ما هو العنوان الغريب الذي يحمله مستقبلك؟ تصنع أخبار VeriFiction قصصاً إخبارية وهمية مفصلة ومضحكة للغاية حول لحظاتك الفيروسية المحتملة، مع صور واقتباسات واقعية تم إنشاؤها بواسطة الذكاء الاصطناعي. اكتشف شهرتك أو سمعتك السيئة في المستقبل وشارك هذا العبث مع العالم!",
+      "en": "Ever wondered what bizarre headline your future holds? VeriFiction News crafts incredibly detailed, hilariously fake news stories about your potential viral moments, complete with realistic AI-generated images and quotes. Discover your future fame or infamy and share the absurdity with the world!",
+      "fr": "Vous êtes-vous déjà demandé quel titre de presse étrange votre avenir recèle ? VeriFiction Infos crée des reportages incroyablement détaillés et hilarants sur vos potentiels moments viraux, avec des images et des citations réalistes générées par l'IA. Découvrez votre future gloire ou infamie et partagez l'absurdité avec le monde !",
+      "es": "¿Alguna vez te has preguntado qué titular de prensa bizarro te depara el futuro? Noticias VeriFiction crea historias falsas increíblemente detalladas y divertidísimas sobre tus posibles momentos virales, completas con imágenes y citas realistas generadas por IA. ¡Descubre tu futura fama o infamia y comparte el absurdo con el mundo!",
+      "de": "Haben Sie sich jemals gefragt, welche bizarre Schlagzeile Ihre Zukunft bereithält? VeriFiction Nachrichten erstellt unglaublich detaillierte, urkomisch gefälschte Nachrichtenartikel über Ihre potenziellen viralen Momente, komplett mit realistischen KI-generierten Bildern und Zitaten. Entdecken Sie Ihren zukünftigen Ruhm oder Ihre Infamie und teilen Sie die Absurdität mit der Welt!",
+      "zh": "你有没有想过你的未来会是怎样一个离奇的头条新闻？虚实新闻利用人工智能生成逼真的图片和引文，为你量身定制极其详细、令人捧腹的未来病毒式新闻报道。快来发现你未来的名声或丑闻，与世界分享这份荒谬吧！"
+    },
+    "tags": [
+      "AI",
+      "humor",
+      "news generator",
+      "shareable",
+      "viral",
+      "creative",
+      "social media",
+      "personalization"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "أول خبر مستقبلي لي",
+          "en": "My First Future Scoop"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "يوميات غريبة الأطوار",
+          "en": "Daily Doings, Wildly Different"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "قصص الغد المصممة خصيصًا",
+          "en": "Tailored Tales of Tomorrow"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "بطاقة صحافة المفارقات",
+          "en": "Paradox Press Pass"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "بهجة وفوضى الأكوان المتعددة",
+          "en": "Multiverse Mirth & Mayhem"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-29T15:53:40.300Z"
   }
 ]
