@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>镜像神话</title>
+<style>
+:root{
+  --acc:#818cf8;
+  --acc-rgb:129,140,248;
+  --bg:#060610;--s:#0d0d1f;
+  --b:rgba(255,255,255,0.07);
+  --txt:#f1f5f9;--mut:#64748b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
+#app{position:relative;width:100%;max-width:420px;height:100dvh;
+  margin:0 auto;overflow:hidden;display:flex;flex-direction:column;}
+
+/* TOP BAR */
+#topBar{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;background:rgba(0,0,0,.5);
+  border-bottom:1px solid var(--b);flex-shrink:0;}
+.tb-back{color:var(--mut);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:4px;}
+.tb-title{font-weight:900;font-size:1rem;color:var(--acc);}
+.tb-shop{background:rgba(255,255,255,.07);border:1px solid var(--b);
+  color:var(--txt);padding:5px 12px;border-radius:8px;
+  font-size:.75rem;cursor:pointer;font-family:inherit;}
+
+/* MAIN */
+#main{flex:1;overflow-y:auto;overflow-x:hidden;
+  display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:16px;}
+
+/* TIMER RING */
+#timerWrap{position:relative;width:220px;height:220px;
+  display:none;align-items:center;justify-content:center;flex-shrink:0;}
+#timerSvg{position:absolute;inset:0;width:100%;height:100%;}
+#timerTxt{text-align:center;z-index:1;}
+#timerNum{font-size:3rem;font-weight:900;font-family:monospace;color:var(--txt);}
+#timerLbl{font-size:.75rem;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;}
+
+/* ART CANVAS */
+#artCanvas{width:100%;aspect-ratio:1;border-radius:18px;
+  border:1px solid var(--b);cursor:pointer;display:none;
+  box-shadow:0 0 40px rgba(var(--acc-rgb),.15);}
+
+/* TABS */
+.tabs{display:flex;gap:8px;width:100%;flex-shrink:0;}
+.tab{flex:1;background:var(--s);border:1px solid var(--b);border-radius:12px;
+  padding:10px 6px;text-align:center;cursor:pointer;transition:.2s;}
+.tab.on{background:rgba(var(--acc-rgb),.12);border-color:rgba(var(--acc-rgb),.4);}
+.tab .te{font-size:1.2rem;}
+.tab .tn{font-size:.72rem;font-weight:700;color:var(--mut);margin-top:2px;}
+.tab.on .tn{color:var(--acc);}
+
+/* INPUT */
+.inp-wrap{width:100%;position:relative;}
+.inp-wrap textarea{width:100%;background:var(--s);border:1px solid var(--b);
+  border-radius:14px;padding:14px 16px;color:var(--txt);font-family:inherit;
+  font-size:.9rem;resize:none;outline:none;line-height:1.6;}
+.inp-wrap textarea:focus{border-color:rgba(var(--acc-rgb),.5);}
+.inp-wrap textarea::placeholder{color:var(--mut);}
+
+/* RESULT CARD */
+#resultCard{width:100%;background:var(--s);border:1px solid rgba(var(--acc-rgb),.25);
+  border-radius:16px;padding:18px;display:none;animation:fadeUp .4s ease;}
+.rc-label{font-size:.62rem;color:var(--acc);text-transform:uppercase;
+  letter-spacing:.12em;font-family:monospace;margin-bottom:8px;}
+.rc-text{font-size:.9rem;line-height:1.7;color:var(--txt);}
+.rc-meta{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.rc-tag{background:rgba(var(--acc-rgb),.1);color:var(--acc);
+  padding:3px 10px;border-radius:100px;font-size:.68rem;font-family:monospace;}
+
+/* STATS */
+.stats-row{display:flex;gap:10px;width:100%;}
+.stat-c{flex:1;background:var(--s);border:1px solid var(--b);border-radius:12px;padding:12px 10px;text-align:center;}
+.stat-c .sv{font-size:1.4rem;font-weight:900;color:var(--acc);font-family:monospace;}
+.stat-c .sl{font-size:.6rem;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+
+/* PROGRESS BAR */
+.prog-wrap{width:100%;}
+.prog-lbl{display:flex;justify-content:space-between;font-size:.72rem;color:var(--mut);margin-bottom:6px;}
+.prog-bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;background:var(--acc);transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+
+/* BUTTONS */
+.btn{padding:13px 0;border-radius:12px;font-size:.95rem;font-weight:700;
+  border:none;cursor:pointer;width:100%;transition:transform .12s;
+  display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;}
+.btn:active{transform:scale(.96);}
+.btn-p{background:var(--acc);color:#000;box-shadow:0 0 24px rgba(var(--acc-rgb),.3);}
+.btn-s{background:rgba(255,255,255,.07);color:var(--txt);border:1px solid var(--b);}
+.btn-sm{padding:10px 20px;width:auto;font-size:.85rem;border-radius:10px;}
+.btn-row{display:flex;gap:10px;width:100%;}
+
+/* STORY LOG */
+#storyLog{width:100%;display:flex;flex-direction:column;gap:10px;
+  max-height:45vh;overflow-y:auto;padding-right:4px;}
+
+/* IDENTITY */
+#idQuestion{width:100%;background:var(--s);border:1px solid var(--b);
+  border-radius:16px;padding:20px;text-align:center;}
+#idResult{display:none;width:100%;text-align:center;gap:12px;flex-direction:column;align-items:center;}
+#idCanvas{display:none;border-radius:50%;border:3px solid var(--acc);
+  box-shadow:0 0 40px rgba(var(--acc-rgb),.4);}
+
+/* LOADING */
+#loadWrap{display:none;align-items:center;justify-content:center;
+  gap:10px;color:var(--mut);font-size:.85rem;width:100%;}
+.spinner{width:20px;height:20px;border:2px solid rgba(var(--acc-rgb),.3);
+  border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;}
+
+/* SHOP */
+#shopOv{position:absolute;inset:0;background:rgba(0,0,0,.95);display:none;
+  flex-direction:column;align-items:center;gap:12px;justify-content:center;
+  z-index:60;padding:24px;}
+#shopOv.on{display:flex;}
+.si{background:rgba(255,255,255,.05);border:1px solid var(--b);
+  border-radius:14px;padding:14px 18px;display:flex;align-items:center;
+  justify-content:space-between;width:100%;max-width:340px;gap:12px;}
+.si-n{font-weight:700;font-size:.9rem;}
+.si-p{color:var(--acc);font-size:.76rem;font-family:monospace;}
+.bb{background:var(--acc);color:#000;padding:8px 14px;border-radius:8px;
+  border:none;font-weight:700;font-size:.76rem;cursor:pointer;white-space:nowrap;}
+.bb.own{background:rgba(255,255,255,.08);color:var(--mut);}
+
+/* AD */
+#ad{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+  padding:7px 14px;background:rgba(255,255,255,.03);
+  border-top:1px solid var(--b);font-size:.72rem;color:var(--mut);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="topBar">
+    <a class="tb-back" href="/">← 返回</a>
+    <div class="tb-title">🎭 镜像神话</div>
+    <button class="tb-shop" onclick="openShop()">🛒 商店</button>
+  </div>
+
+  <div id="ad">
+    <span>📢 广告支持我们的团队</span>
+    <button class="bb" onclick="buyRemoveAds()">去除广告 $1.99</button>
+  </div>
+
+  <div id="main"></div>
+
+  <div id="shopOv">
+    <h2 style="font-size:1.5rem;font-weight:900">🛒 商店</h2>
+    <div id="shopList" style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px;max-height:55vh;overflow-y:auto"></div>
+    <button class="btn btn-s" style="max-width:200px" onclick="closeShop()">✕ 返回</button>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────
+const CFG = {
+  pid:    'mirrored-mythos',
+  type:   'app',
+  lang:   'zh',
+  acc:    '#818cf8',
+  emoji:  '🎭',
+  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+  name:   '镜像神话',
+  desc:   '深入挖掘你个性最深层的方面，展现令人惊叹的数字头像。',
+  gemini: '',
+};
+const SK = 'rt_' + CFG.pid;
+const S  = () => JSON.parse(localStorage.getItem(SK) || '{}');
+const sv = d  => localStorage.setItem(SK, JSON.stringify({...S(),...d}));
+
+// ─── GEMINI ────────────────────────────────────────────────────
+async function gemini(prompt, sys='') {
+  const full = sys ? sys + '\n\n' + prompt : prompt;
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${CFG.gemini}`,
+    {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        contents:[{parts:[{text:full}]}],
+        generationConfig:{maxOutputTokens:300,temperature:0.9},
+      })
+    }
+  );
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+}
+
+// ─── MODE DETECTION ────────────────────────────────────────────
+function getMode(){
+  const t   = CFG.type.toLowerCase();
+  const pid = CFG.pid.toLowerCase();
+  const all = t + ' ' + pid;
+
+  if(['tool','timer','focus','pomodoro'].some(k => all.includes(k)))
+    return 'timer';
+
+  if(['art','visual','creative','generative','aura','luminal','vibe',
+      'moment','paint','draw','canvas','color'].some(k => all.includes(k)))
+    return 'art';
+
+  if(['story','narrative','rpg','verse','forge','realm','kingdom',
+      'echo','anima','alternate','universe','chaos','absurd',
+      'context','genre','quest','adventure','tale','saga'].some(k => all.includes(k)))
+    return 'story';
+
+  if(['identity','avatar','persona','mirror','prism','arcana',
+      'mythos','myth','self','soul','character','personality'].some(k => all.includes(k)))
+    return 'identity';
+
+  if(CFG.type === 'app' || CFG.type === 'tool') return 'art';
+  return 'creative';
+}
+
+const MODE = getMode();
+
+// ─── INIT ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if(S().adsRemoved) document.getElementById('ad').style.display = 'none';
+  const main = document.getElementById('main');
+  if(MODE === 'timer')         buildTimer(main);
+  else if(MODE === 'art')      buildArt(main);
+  else if(MODE === 'story')    buildStory(main);
+  else if(MODE === 'identity') buildIdentity(main);
+  else                         buildCreative(main);
+});
+
+// ═══════════════════════════════════════════════════════════════
+// TIMER — Pomodoro
+// ═══════════════════════════════════════════════════════════════
+function buildTimer(root){
+  const MODES = [
+    {id:'focus', label:'专注', emoji:'🧘', min:25, color:'var(--acc)'},
+    {id:'short', label:'短暂休息', emoji:'☕', min:5,  color:'#60a5fa'},
+    {id:'long',  label:'长时间休息',  emoji:'🌿', min:15, color:'#4ade80'},
+  ];
+  let cur=0, running=false, remaining=25*60, raf=null, lastT=0;
+  let sessions=S().sessions||0, totalMin=S().totalMin||0;
+
+  root.innerHTML = `
+    <div class="tabs" id="modeTabs"></div>
+    <div id="timerWrap" style="display:flex">
+      <svg id="timerSvg" viewBox="0 0 220 220">
+        <circle cx="110" cy="110" r="98" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="10"/>
+        <circle id="timerArc" cx="110" cy="110" r="98" fill="none" stroke="var(--acc)"
+          stroke-width="10" stroke-linecap="round" stroke-dasharray="615.75"
+          stroke-dashoffset="0" transform="rotate(-90 110 110)" style="transition:stroke-dashoffset .5s,stroke .3s"/>
+      </svg>
+      <div id="timerTxt">
+        <div id="timerNum">25:00</div>
+        <div id="timerLbl">专注</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-s btn-sm" onclick="timerReset()">↺</button>
+      <button class="btn btn-p" id="btnPlay" onclick="timerToggle()">▶ 开始</button>
+      <button class="btn btn-s btn-sm" onclick="timerSkip()">⏭</button>
+    </div>
+    <div class="stats-row">
+      <div class="stat-c"><div class="sv" id="stSess">${sessions}</div><div class="sl">次数</div></div>
+      <div class="stat-c"><div class="sv" id="stMin">${totalMin}</div><div class="sl">分钟</div></div>
+      <div class="stat-c"><div class="sv">🔥</div><div class="sl">连续</div></div>
+    </div>`;
+
+  const tabsEl = root.querySelector('#modeTabs');
+  MODES.forEach((m,i)=>{
+    const d=document.createElement('div');
+    d.className='tab'+(i===0?' on':'');
+    d.innerHTML=`<div class="te">${m.emoji}</div><div class="tn">${m.label}<br><span style="font-size:.65rem;opacity:.6">${m.min} 分钟</span></div>`;
+    d.onclick=()=>{ cur=i; switchMode(); };
+    tabsEl.appendChild(d);
+  });
+
+  function render(){
+    const m=Math.floor(remaining/60), s=remaining%60;
+    document.getElementById('timerNum').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    const pct=remaining/(MODES[cur].min*60);
+    document.getElementById('timerArc').style.strokeDashoffset=615.75*(1-pct);
+  }
+
+  function switchMode(){
+    tabsEl.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===cur));
+    if(running) timerToggle();
+    remaining=MODES[cur].min*60;
+    document.getElementById('timerArc').style.stroke=MODES[cur].color;
+    document.getElementById('timerLbl').textContent=MODES[cur].label;
+    render();
+  }
+
+  function tick(ts){
+    if(!running) return;
+    if(lastT&&ts-lastT>=1000){
+      const secs=Math.floor((ts-lastT)/1000);
+      remaining=Math.max(0,remaining-secs); lastT=ts; render();
+      if(remaining===0){ timerDone(); return; }
+    } else if(!lastT) lastT=ts;
+    raf=requestAnimationFrame(tick);
+  }
+
+  window.timerToggle=()=>{
+    running=!running;
+    document.getElementById('btnPlay').innerHTML=running?'⏸ 暂停':'▶ 开始';
+    if(running){lastT=0; raf=requestAnimationFrame(tick);} else cancelAnimationFrame(raf);
+  };
+  window.timerReset=()=>{
+    cancelAnimationFrame(raf); running=false; remaining=MODES[cur].min*60;
+    document.getElementById('btnPlay').innerHTML='▶ 开始';
+    lastT=0; render();
+  };
+  window.timerSkip=()=>{ cancelAnimationFrame(raf); running=false; cur=(cur+1)%MODES.length; switchMode(); };
+
+  function timerDone(){
+    running=false; cancelAnimationFrame(raf);
+    if(cur===0){ sessions++; totalMin+=MODES[0].min; sv({sessions,totalMin}); }
+    document.getElementById('stSess').textContent=sessions;
+    document.getElementById('stMin').textContent=totalMin;
+    document.getElementById('timerLbl').textContent='专注完成！';
+    document.getElementById('timerArc').style.stroke='#4ade80';
+    setTimeout(()=>{ cur=(cur+1)%MODES.length; switchMode(); },1800);
+  }
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ART — Generative Art
+// ═══════════════════════════════════════════════════════════════
+function buildArt(root){
+  root.innerHTML = `
+    <canvas id="artCanvas" style="display:block"></canvas>
+    <div class="inp-wrap">
+      <textarea id="artPrompt" rows="3" placeholder="描述你的心情或想法..."></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-p" onclick="genArt()">✨ ✨ 生成</button>
+      <button class="btn btn-s btn-sm" onclick="saveArt()">💾</button>
+    </div>
+    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>创作中...</span></div>
+    <div id="resultCard" style="display:none">
+      <div class="rc-label">✨ 你的创作</div>
+      <div class="rc-text" id="artDesc"></div>
+      <div class="rc-meta" id="artTags"></div>
+    </div>`;
+
+  const cv=document.getElementById('artCanvas');
+  const ctx=cv.getContext('2d');
+  const SZ=Math.min(window.innerWidth-32,380);
+  cv.width=cv.height=SZ;
+  let hue=200, seed=Math.random()*1000;
+
+  function noise(x){ return (Math.sin(x*127.1+311.7)*.5+.5); }
+
+  function draw(prompt='',mood='neutral'){
+    hue=(hue+37)%360; seed=Math.random()*1000;
+    ctx.clearRect(0,0,SZ,SZ);
+    const bg=ctx.createRadialGradient(SZ/2,SZ/2,0,SZ/2,SZ/2,SZ*.7);
+    bg.addColorStop(0,`hsl(${hue},60%,8%)`);
+    bg.addColorStop(1,`hsl(${(hue+60)%360},40%,4%)`);
+    ctx.fillStyle=bg; ctx.fillRect(0,0,SZ,SZ);
+    const colors=[`hsl(${hue},90%,65%)`,`hsl(${(hue+90)%360},80%,60%)`,
+                  `hsl(${(hue+180)%360},70%,55%)`,`hsl(${(hue+270)%360},85%,70%)`];
+    const energy=mood==='calm'?.4:mood==='intense'?1.0:.7;
+    const cnt=Math.floor(40+energy*80);
+    for(let i=0;i<cnt;i++){
+      const x0=noise(seed+i)*SZ, y0=noise(seed+i+10)*SZ;
+      const x1=x0+(noise(seed+i+20)-.5)*SZ*.6, y1=y0+(noise(seed+i+30)-.5)*SZ*.6;
+      const c=colors[i%colors.length];
+      ctx.beginPath(); ctx.moveTo(x0,y0);
+      ctx.bezierCurveTo(x0+(x1-x0)*.4,y0+(y1-y0)*.1,x0+(x1-x0)*.6,y1-(y1-y0)*.1,x1,y1);
+      ctx.strokeStyle=c.replace('hsl','hsla').replace(')',`,${.05+energy*.15})`);
+      ctx.lineWidth=1+energy*2; ctx.stroke();
+    }
+    for(let i=0;i<12;i++){
+      const x=noise(seed+i+50)*SZ, y=noise(seed+i+60)*SZ;
+      const r=10+noise(seed+i+70)*SZ*.12*energy;
+      const g=ctx.createRadialGradient(x,y,0,x,y,r);
+      const c=colors[i%colors.length];
+      g.addColorStop(0,c.replace('hsl','hsla').replace(')',`,${.3*energy})`));
+      g.addColorStop(1,'transparent');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+    }
+    for(let i=0;i<cnt*2;i++){
+      const x=noise(seed+i+100)*SZ, y=noise(seed+i+200)*SZ;
+      ctx.fillStyle=colors[i%colors.length].replace('hsl','hsla').replace(')',`,.7)`);
+      ctx.beginPath(); ctx.arc(x,y,.5+noise(seed+i+300)*2.5,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  draw();
+
+  window.genArt=async()=>{
+    const prompt=document.getElementById('artPrompt').value.trim();
+    document.getElementById('loadWrap').style.display='flex';
+    document.getElementById('resultCard').style.display='none';
+    const mood=['sad','dark','low'].some(w=>prompt.toLowerCase().includes(w))?'calm':
+               ['energy','fire','love'].some(w=>prompt.toLowerCase().includes(w))?'intense':'neutral';
+    let frame=0;
+    const anim=setInterval(()=>{ seed=Math.random()*1000; draw(prompt,mood); if(++frame>8) clearInterval(anim); },80);
+    setTimeout(()=>{
+      document.getElementById('loadWrap').style.display='none';
+      const adjs=['Ethereal','Vibrant','Mysterious','Cosmic','Fluid','Dynamic','Serene','Electric'];
+      const nouns=['Dreamscape','Universe','Tapestry','Journey','Echo','Essence','Vision'];
+      const title=`${adjs[Math.floor(Math.random()*adjs.length)]} ${nouns[Math.floor(Math.random()*nouns.length)]}`;
+      const tags=prompt.split(' ').filter(w=>w.length>3).slice(0,3).concat(['镜像神话']);
+      document.getElementById('artDesc').textContent=prompt?`"${prompt}" — ${title}`:title;
+      document.getElementById('artTags').innerHTML=tags.map(t=>`<span class="rc-tag">${t}</span>`).join('');
+      document.getElementById('resultCard').style.display='block';
+    },750);
+  };
+  window.saveArt=()=>{
+    const a=document.createElement('a'); a.download=CFG.pid+'-art.png';
+    a.href=cv.toDataURL(); a.click();
+  };
+  cv.onclick=()=>{ seed=Math.random()*1000; draw(); };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STORY — Interactive Narrative
+// ═══════════════════════════════════════════════════════════════
+function buildStory(root){
+  let history=[], generating=false;
+
+  root.innerHTML=`
+    <div id="storyLog"></div>
+    <div class="inp-wrap">
+      <textarea id="storyInput" rows="2" placeholder="你做什么？"></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-p" onclick="sendStory()">🚀 发送</button>
+      <button class="btn btn-s btn-sm" onclick="resetStory()">↺</button>
+    </div>
+    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>叙述者思考中...</span></div>`;
+
+  const opening=`在一个黑暗的夜晚，你发现自己站在一座废弃王国的大门前。 — ${CFG.desc}`;
+  addMsg('ai',opening,false); history.push({role:'assistant',content:opening});
+
+  function addMsg(role,text,isNew=true){
+    const log=document.getElementById('storyLog'); if(!log) return;
+    const isUser=role==='user';
+    const d=document.createElement('div');
+    d.style.cssText=`background:${isUser?'rgba(var(--acc-rgb),.1)':'rgba(255,255,255,.04)'};
+      border:1px solid ${isUser?'rgba(var(--acc-rgb),.3)':'rgba(255,255,255,.07)'};
+      border-radius:12px;padding:10px 14px;${isNew?'animation:fadeUp .3s ease':''}`;
+    const label=isUser?'🧑 你':`🌌 旁白`;
+    d.innerHTML=`<div style="font-size:.6rem;color:var(--acc);font-family:monospace;letter-spacing:.1em;margin-bottom:4px">${label}</div>
+      <div style="font-size:.87rem;line-height:1.65">${text}</div>`;
+    log.appendChild(d); log.scrollTop=log.scrollHeight;
+  }
+
+  window.sendStory=async()=>{
+    if(generating) return;
+    const inp=document.getElementById('storyInput');
+    const txt=inp.value.trim(); if(!txt) return;
+    inp.value=''; addMsg('user',txt); history.push({role:'user',content:txt});
+    generating=true; document.getElementById('loadWrap').style.display='flex';
+    try{
+      const sys=`You are a narrator for "${CFG.name}": ${CFG.desc}.
+Keep responses under 80 words. Be immersive and poetic.
+Reply in language: zh. Always end with a choice or question.
+Recent history: ${history.slice(-4).map(m=>m.role+': '+m.content).join(' | ')}`;
+      const reply=await gemini(`Player: "${txt}"`,sys)||'...';
+      history.push({role:'assistant',content:reply});
+      document.getElementById('loadWrap').style.display='none';
+      addMsg('ai',reply);
+    }catch(e){
+      document.getElementById('loadWrap').style.display='none';
+      const fb=['英雄，我们的王国在受苦。黑暗怪物每晚袭击我们。','茂密的森林充满危险。你听到黑暗中有狼嚎叫。','火焰温暖着你。这里是冒险前休息的安全地方。','你到达了古老的地牢。'];
+      const r=fb[Math.floor(Math.random()*fb.length)];
+      history.push({role:'assistant',content:r}); addMsg('ai',r);
+    }
+    generating=false;
+  };
+
+  window.resetStory=()=>{
+    history=[{role:'assistant',content:opening}];
+    const log=document.getElementById('storyLog');
+    if(log){log.innerHTML=''; addMsg('ai',opening,false);}
+  };
+
+  document.getElementById('storyInput')?.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendStory();}
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// IDENTITY — Avatar Explorer
+// ═══════════════════════════════════════════════════════════════
+function buildIdentity(root){
+  const questions=[
+    {key:'color', q:'哪种颜色代表你？', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light']},
+    {key:'power', q:'你的内在力量？', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind']},
+    {key:'world', q:'你的世界？', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City']},
+    {key:'value', q:'你最重视什么？', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love']},
+  ];
+  let step=0, answers={};
+
+  root.innerHTML=`
+    <div id="idProgress" class="prog-wrap" style="width:100%">
+      <div class="prog-lbl"><span>发现</span><span id="idStep">1/${questions.length}</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="idFill" style="width:0%"></div></div>
+    </div>
+    <div id="idQuestion">
+      <div style="font-size:2rem;margin-bottom:10px" id="idQEmoji">✨</div>
+      <div style="font-weight:700;font-size:1rem;margin-bottom:16px" id="idQText"></div>
+      <div id="idOpts" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+    </div>
+    <canvas id="idCanvas" width="220" height="220" style="display:none;border-radius:50%;border:3px solid var(--acc);box-shadow:0 0 40px rgba(var(--acc-rgb),.4)"></canvas>
+    <div id="idResult" style="display:none;width:100%;text-align:center;gap:12px;flex-direction:column;align-items:center">
+      <div style="font-size:1.4rem;font-weight:900;color:var(--acc)" id="idTitle"></div>
+      <div style="color:var(--mut);font-size:.85rem;line-height:1.6" id="idDesc"></div>
+      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ 再试一次</button>
+    </div>`;
+
+  const emjs=['✨','🌟','💫','🔮','🌀','⚡','🎭','🌌'];
+
+  function showQ(){
+    if(step>=questions.length){showResult();return;}
+    const q=questions[step];
+    document.getElementById('idStep').textContent=`${step+1}/${questions.length}`;
+    document.getElementById('idFill').style.width=`${(step/questions.length)*100}%`;
+    document.getElementById('idQEmoji').textContent=emjs[step%emjs.length];
+    document.getElementById('idQText').textContent=q.q;
+    const opts=document.getElementById('idOpts'); opts.innerHTML='';
+    q.opts.forEach(o=>{
+      const b=document.createElement('button');
+      b.className='btn btn-s'; b.style.cssText='font-size:.82rem;padding:10px 6px;';
+      b.textContent=o; b.onclick=()=>{ answers[q.key]=o; step++; showQ(); };
+      opts.appendChild(b);
+    });
+  }
+
+  function showResult(){
+    document.getElementById('idFill').style.width='100%';
+    document.getElementById('idQuestion').style.display='none';
+    document.getElementById('idProgress').style.display='none';
+    // Draw avatar
+    const cv=document.getElementById('idCanvas');
+    const ctx=cv.getContext('2d'); const sz=220;
+    const hue=Object.values(answers).join('').length*17%360;
+    const bg=ctx.createRadialGradient(sz/2,sz/2,0,sz/2,sz/2,sz/2);
+    bg.addColorStop(0,`hsl(${hue},70%,15%)`); bg.addColorStop(1,`hsl(${(hue+60)%360},50%,6%)`);
+    ctx.fillStyle=bg; ctx.beginPath(); ctx.arc(sz/2,sz/2,sz/2,0,Math.PI*2); ctx.fill();
+    for(let i=0;i<4;i++){
+      ctx.beginPath(); ctx.ellipse(sz/2,sz/2,55+i*16,40+i*12,i*.4,0,Math.PI*2);
+      ctx.strokeStyle=`hsla(${(hue+i*45)%360},80%,65%,${.3-i*.05})`; ctx.lineWidth=2-i*.3; ctx.stroke();
+    }
+    const cg=ctx.createRadialGradient(sz/2,sz/2,0,sz/2,sz/2,45);
+    cg.addColorStop(0,`hsl(${hue},90%,80%)`); cg.addColorStop(.5,`hsl(${(hue+30)%360},80%,60%)`); cg.addColorStop(1,'transparent');
+    ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(sz/2,sz/2,45,0,Math.PI*2); ctx.fill();
+    for(let i=0;i<40;i++){
+      const a=Math.random()*Math.PI*2, r=60+Math.random()*42;
+      ctx.fillStyle=`hsla(${(hue+Math.random()*120)%360},90%,80%,.7)`;
+      ctx.beginPath(); ctx.arc(sz/2+Math.cos(a)*r,sz/2+Math.sin(a)*r,Math.random()*1.5+.3,0,Math.PI*2); ctx.fill();
+    }
+    cv.style.display='block';
+    const titles=['🌟 远见者','⚡ 催化者','🌊 梦想家','🔮 智者'];
+    const descs =['你看到别人错过的东西。','你点燃所到之处的变革。','你的想象力没有界限。','古老的智慧在你身上流淌。'];
+    const idx=Object.values(answers).length%titles.length;
+    document.getElementById('idTitle').textContent=titles[idx];
+    document.getElementById('idDesc').textContent=descs[idx];
+    document.getElementById('idResult').style.display='flex';
+  }
+
+  showQ();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CREATIVE — Generic AI App
+// ═══════════════════════════════════════════════════════════════
+function buildCreative(root){
+  let generating=false;
+  root.innerHTML=`
+    <div style="text-align:center;padding:8px 0">
+      <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">🎭</div>
+      <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">镜像神话</div>
+      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">深入挖掘你个性最深层的方面，展现令人惊叹的数字头像。</div>
+    </div>
+    <div class="inp-wrap">
+      <textarea id="creInput" rows="3" placeholder="输入你的想法..."></textarea>
+    </div>
+    <button class="btn btn-p" onclick="runCreative()">✨ 创建</button>
+    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>生成中...</span></div>
+    <div id="resultCard" style="display:none">
+      <div class="rc-label">镜像神话</div>
+      <div class="rc-text" id="creResult"></div>
+    </div>`;
+
+  window.runCreative=async()=>{
+    if(generating) return;
+    const inp=document.getElementById('creInput');
+    const txt=inp.value.trim(); if(!txt) return;
+    generating=true; document.getElementById('loadWrap').style.display='flex';
+    document.getElementById('resultCard').style.display='none';
+    try{
+      const reply=await gemini(
+        `App: "${CFG.name}" — ${CFG.desc}\nUser: "${txt}"\nReply creatively in language zh. Max 120 words.`
+      );
+      document.getElementById('creResult').textContent=reply||'...';
+    }catch(e){
+      document.getElementById('creResult').textContent='在一个黑暗的夜晚，你发现自己站在一座废弃王国的大门前。';
+    }
+    document.getElementById('loadWrap').style.display='none';
+    document.getElementById('resultCard').style.display='block';
+    generating=false;
+  };
+}
+
+// ─── SHOP ──────────────────────────────────────────────────────
+function openShop(){
+  const cur=S(), list=document.getElementById('shopList'); list.innerHTML='';
+  CFG.iaps.forEach(item=>{
+    const owned=!!cur['own_'+item.id];
+    const name=(item.name&&(item.name[CFG.lang]||item.name.en))||item.id;
+    const d=document.createElement('div'); d.className='si';
+    d.innerHTML=`<div><div class="si-n">${name}</div><div class="si-p">${item.price||'$0.99'}</div></div>`+
+      `<button class="bb${owned?' own':''}"${owned?' disabled':''} onclick="buy('${item.id}')">${owned?'✓':'商店'}</button>`;
+    list.appendChild(d);
+  });
+  if(!cur.adsRemoved){
+    const d=document.createElement('div'); d.className='si';
+    d.innerHTML=`<div><div class="si-n">🚫 广告支持我们的团队</div><div class="si-p">去除广告 $1.99</div></div>`+
+      `<button class="bb" onclick="buyRemoveAds()">商店</button>`;
+    list.appendChild(d);
+  }
+  document.getElementById('shopOv').classList.add('on');
+}
+function closeShop()    { document.getElementById('shopOv').classList.remove('on'); }
+function buy(id)        { sv({['own_'+id]:true}); openShop(); }
+function buyRemoveAds() {
+  sv({adsRemoved:true}); document.getElementById('ad').style.display='none';
+  if(document.getElementById('shopOv').classList.contains('on')) openShop();
+}
+</script>
+</body>
+</html>
