@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>تموجات الواقع بالذكاء الاصطناعي</title>
+<title>ريمكس الواقع</title>
 <style>
 :root{
-  --acc:#818cf8;
-  --acc-rgb:129,140,248;
+  --acc:#facc15;
+  --acc-rgb:250,204,21;
   --bg:#060610;--s:#0d0d1f;
   --b:rgba(255,255,255,0.07);
   --txt:#f1f5f9;--mut:#64748b;
@@ -139,7 +139,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 
   <div id="topBar">
     <a class="tb-back" href="/">← رجوع</a>
-    <div class="tb-title">🤯 تموجات الواقع بالذكاء الاصطناعي</div>
+    <div class="tb-title">🎨 ريمكس الواقع</div>
     <button class="tb-shop" onclick="openShop()">🛒 المتجر</button>
   </div>
 
@@ -160,14 +160,14 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────
 const CFG = {
-  pid:    'reality-ripple-ai',
-  type:   'AI Scenario Generator',
+  pid:    'reality-remix-ar',
+  type:   'app',
   lang:   'ar',
-  acc:    '#818cf8',
-  emoji:  '🤯',
+  acc:    '#facc15',
+  emoji:  '🎨',
   iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
-  name:   'تموجات الواقع بالذكاء الاصطناعي',
-  desc:   'هل تساءلت يوماً ماذا سيحدث لو أن الجوارب كان لها آراء؟ يأخذ Reality Ripple AI أسئلتك الأكثر جنوناً ويحولها إلى أكوان بديلة مذهلة ومضحكة.',
+  name:   'ريمكس الواقع',
+  desc:   'ارسم الفن الرقمي مباشرة على العالم المادي وتعاون مع الآخرين.',
   gemini: '',
 };
 const SK = 'rt_' + CFG.pid;
@@ -405,7 +405,7 @@ function buildArt(root){
       const adjs=['Ethereal','Vibrant','Mysterious','Cosmic','Fluid','Dynamic','Serene','Electric'];
       const nouns=['Dreamscape','Universe','Tapestry','Journey','Echo','Essence','Vision'];
       const title=`${adjs[Math.floor(Math.random()*adjs.length)]} ${nouns[Math.floor(Math.random()*nouns.length)]}`;
-      const tags=prompt.split(' ').filter(w=>w.length>3).slice(0,3).concat(['تموجات الواقع بالذكاء الاصطناعي']);
+      const tags=prompt.split(' ').filter(w=>w.length>3).slice(0,3).concat(['ريمكس الواقع']);
       document.getElementById('artDesc').textContent=prompt?`"${prompt}" — ${title}`:title;
       document.getElementById('artTags').innerHTML=tags.map(t=>`<span class="rc-tag">${t}</span>`).join('');
       document.getElementById('resultCard').style.display='block';
@@ -575,9 +575,9 @@ function buildCreative(root){
   let generating=false;
   root.innerHTML=`
     <div style="text-align:center;padding:8px 0">
-      <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">🤯</div>
-      <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">تموجات الواقع بالذكاء الاصطناعي</div>
-      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">هل تساءلت يوماً ماذا سيحدث لو أن الجوارب كان لها آراء؟ يأخذ Reality Ripple AI أسئلتك الأكثر جنوناً ويحولها إلى أكوان بديلة مذهلة ومضحكة.</div>
+      <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">🎨</div>
+      <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">ريمكس الواقع</div>
+      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">ارسم الفن الرقمي مباشرة على العالم المادي وتعاون مع الآخرين.</div>
     </div>
     <div class="inp-wrap">
       <textarea id="creInput" rows="3" placeholder="أدخل فكرتك..."></textarea>
@@ -585,7 +585,7 @@ function buildCreative(root){
     <button class="btn btn-p" onclick="runCreative()">✨ ابدأ الإبداع</button>
     <div id="loadWrap" style="display:none"><div class="spinner"></div><span>جاري التوليد...</span></div>
     <div id="resultCard" style="display:none">
-      <div class="rc-label">تموجات الواقع بالذكاء الاصطناعي</div>
+      <div class="rc-label">ريمكس الواقع</div>
       <div class="rc-text" id="creResult"></div>
     </div>`;
 
