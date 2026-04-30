@@ -1,27 +1,63 @@
 {
-  "runId": "2026-04-30T1010",
-  "timestamp": "2026-04-30T10:10:53.387Z",
-  "totalDuration": "29.7s",
-  "geminiCalls": "0/6",
+  "runId": "2026-04-30T1543",
+  "timestamp": "2026-04-30T15:45:39.760Z",
+  "totalDuration": "128.8s",
+  "geminiCalls": "5/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.0s",
+      "duration": "1.9s",
       "attempts": 1,
       "error": null
     },
     "idea": {
-      "success": false,
-      "duration": "13.6s",
+      "success": true,
+      "duration": "18.7s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": null
+    },
+    "art": {
+      "success": true,
+      "duration": "6.8s",
+      "attempts": 1,
+      "error": null
+    },
+    "template": {
+      "success": true,
+      "duration": "2ms",
+      "attempts": 1,
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "5.5s",
+      "attempts": 1,
+      "error": null
+    },
+    "code": {
+      "success": true,
+      "duration": "66ms",
+      "attempts": 1,
+      "error": null
+    },
+    "marketing": {
+      "success": true,
+      "duration": "14.5s",
+      "attempts": 1,
+      "error": null
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "6.3s",
+      "attempts": 1,
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
-    "failed": 1,
-    "newGame": null,
-    "template": null
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "newGame": "reality-ripple-ai",
+    "template": "tool-app.html"
   }
 }

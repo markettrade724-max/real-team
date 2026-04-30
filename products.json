@@ -2638,5 +2638,153 @@
     },
     "iap": [],
     "templateFile": "phaser-game.html"
+  },
+  {
+    "id": "reality-ripple-ai",
+    "slug": "reality-ripple-ai",
+    "type": "AI Scenario Generator",
+    "category": "app",
+    "status": "available",
+    "emoji": "🤯",
+    "templateFile": "tool-app.html",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [],
+    "name": {
+      "ar": "تموجات الواقع بالذكاء الاصطناعي",
+      "en": "Reality Ripple AI",
+      "fr": "Ondes Réelles IA",
+      "es": "Ondas de Realidad IA",
+      "de": "Realitäts-Wellen KI",
+      "zh": "现实涟漪AI"
+    },
+    "desc": {
+      "ar": "هل تساءلت يوماً ماذا سيحدث لو أن الجوارب كان لها آراء أو لو عملت الجاذبية بشكل جانبي فجأة؟ يأخذ تطبيق Reality Ripple AI أسئلتك الأكثر جنوناً 'ماذا لو' ويحولها إلى أكوان بديلة مذهلة ومضحكة، مع مرئيات يجب أن تراها لتصدق.",
+      "en": "Ever wonder what would happen if socks had opinions or if gravity suddenly worked sideways? Reality Ripple AI takes your wildest 'what if' questions and twists them into mind-bending, side-splitting alternate universes, complete with visuals you have to see to believe.",
+      "fr": "Vous êtes-vous déjà demandé ce qui se passerait si les chaussettes avaient des opinions ou si la gravité fonctionnait soudainement de côté ? Reality Ripple AI transforme vos 'et si' les plus fous en univers alternatifs époustouflants et hilarants, accompagnés de visuels que vous devez voir pour le croire.",
+      "es": "¿Alguna vez te has preguntado qué pasaría si los calcetines tuvieran opiniones o si la gravedad funcionara de lado de repente? Reality Ripple AI toma tus preguntas más alocadas de 'qué pasaría si' y las convierte en universos alternativos alucinantes y desternillantes, completos con imágenes que tienes que ver para creer.",
+      "de": "Haben Sie sich jemals gefragt, was passieren würde, wenn Socken Meinungen hätten oder die Schwerkraft plötzlich seitlich wirken würde? Reality Ripple AI nimmt Ihre wildesten 'Was wäre wenn'-Fragen und verwandelt sie in umwerfende, brüllend komische alternative Universen, komplett mit visuellen Darstellungen, die Sie einfach sehen müssen, um sie zu glauben.",
+      "zh": "你有没有想过，如果袜子有了思想，或者引力突然横向作用会怎样？Reality Ripple AI 将你最疯狂的“如果……会怎样？”问题，扭曲成令人惊叹、捧腹大笑的另类宇宙，并附带你必须亲眼所见才能相信的视觉效果。"
+    },
+    "tags": [
+      "AI",
+      "Absurd Humor",
+      "Scenario Generator",
+      "Social Sharing"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "التموج الأول",
+          "en": "First Ripple"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "لعب المفارقات",
+          "en": "Paradox Play"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "انحناء الواقع",
+          "en": "Reality Bend"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "انجراف الأبعاد",
+          "en": "Dimension Drift"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "ذروة العبث",
+          "en": "Absurdity Apex"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-30T15:44:48.852Z"
   }
 ]
