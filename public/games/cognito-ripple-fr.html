@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>EchoVerse</title>
+<title>CognitoOnde</title>
 <style>
 :root{
   --acc:#818cf8;
@@ -138,36 +138,36 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 <div id="app">
 
   <div id="topBar">
-    <a class="tb-back" href="/">← Back</a>
-    <div class="tb-title">🔮 EchoVerse</div>
-    <button class="tb-shop" onclick="openShop()">🛒 Shop</button>
+    <a class="tb-back" href="/">← Retour</a>
+    <div class="tb-title">🌀 CognitoOnde</div>
+    <button class="tb-shop" onclick="openShop()">🛒 Boutique</button>
   </div>
 
   <div id="ad">
-    <span>📢 Ads support our team</span>
-    <button class="bb" onclick="buyRemoveAds()">Remove $1.99</button>
+    <span>📢 Les pubs soutiennent l'équipe</span>
+    <button class="bb" onclick="buyRemoveAds()">Supprimer 1,99$</button>
   </div>
 
   <div id="main"></div>
 
   <div id="shopOv">
-    <h2 style="font-size:1.5rem;font-weight:900">🛒 Shop</h2>
+    <h2 style="font-size:1.5rem;font-weight:900">🛒 Boutique</h2>
     <div id="shopList" style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px;max-height:55vh;overflow-y:auto"></div>
-    <button class="btn btn-s" style="max-width:200px" onclick="closeShop()">✕ Back</button>
+    <button class="btn btn-s" style="max-width:200px" onclick="closeShop()">✕ Retour</button>
   </div>
 </div>
 
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────
 const CFG = {
-  pid:    'echo-verse-narratives',
-  type:   'app',
-  lang:   'en',
+  pid:    'cognito-ripple',
+  type:   'Perceptual Reality Game',
+  lang:   'fr',
   acc:    '#818cf8',
-  emoji:  '🔮',
-  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
-  name:   'EchoVerse',
-  desc:   'Uses AI to craft personalized alternate realities from your life's pivotal moments.',
+  emoji:  '🌀',
+  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提ش示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+  name:   'CognitoOnde',
+  desc:   'Plongez dans une expérience sociale collaborative mondiale où vos choix créatifs déforment subtilement la réalité collective partagée par des millions, estompant les frontières entre jeu et perception. Façonnez des détails historiques éphémères, inventez des mèmes viraux, ou semez des 'faits' qui se propagent parmi les joueurs, puis soyez témoin des façons chaotiques et surprenantes dont vos ondes affectent les expériences des autres.',
   gemini: '',
 };
 const SK = 'rt_' + CFG.pid;
@@ -236,8 +236,8 @@ window.addEventListener('DOMContentLoaded', () => {
 function buildTimer(root){
   const MODES = [
     {id:'focus', label:'Focus', emoji:'🧘', min:25, color:'var(--acc)'},
-    {id:'short', label:'Short Break', emoji:'☕', min:5,  color:'#60a5fa'},
-    {id:'long',  label:'Long Break',  emoji:'🌿', min:15, color:'#4ade80'},
+    {id:'short', label:'Pause courte', emoji:'☕', min:5,  color:'#60a5fa'},
+    {id:'long',  label:'Pause longue',  emoji:'🌿', min:15, color:'#4ade80'},
   ];
   let cur=0, running=false, remaining=25*60, raf=null, lastT=0;
   let sessions=S().sessions||0, totalMin=S().totalMin||0;
@@ -258,13 +258,13 @@ function buildTimer(root){
     </div>
     <div class="btn-row">
       <button class="btn btn-s btn-sm" onclick="timerReset()">↺</button>
-      <button class="btn btn-p" id="btnPlay" onclick="timerToggle()">▶ Start</button>
+      <button class="btn btn-p" id="btnPlay" onclick="timerToggle()">▶ Démarrer</button>
       <button class="btn btn-s btn-sm" onclick="timerSkip()">⏭</button>
     </div>
     <div class="stats-row">
       <div class="stat-c"><div class="sv" id="stSess">${sessions}</div><div class="sl">Sessions</div></div>
       <div class="stat-c"><div class="sv" id="stMin">${totalMin}</div><div class="sl">Minutes</div></div>
-      <div class="stat-c"><div class="sv">🔥</div><div class="sl">Streak</div></div>
+      <div class="stat-c"><div class="sv">🔥</div><div class="sl">Série</div></div>
     </div>`;
 
   const tabsEl = root.querySelector('#modeTabs');
@@ -304,12 +304,12 @@ function buildTimer(root){
 
   window.timerToggle=()=>{
     running=!running;
-    document.getElementById('btnPlay').innerHTML=running?'⏸ Pause':'▶ Start';
+    document.getElementById('btnPlay').innerHTML=running?'⏸ Pause':'▶ Démarrer';
     if(running){lastT=0; raf=requestAnimationFrame(tick);} else cancelAnimationFrame(raf);
   };
   window.timerReset=()=>{
     cancelAnimationFrame(raf); running=false; remaining=MODES[cur].min*60;
-    document.getElementById('btnPlay').innerHTML='▶ Start';
+    document.getElementById('btnPlay').innerHTML='▶ Démarrer';
     lastT=0; render();
   };
   window.timerSkip=()=>{ cancelAnimationFrame(raf); running=false; cur=(cur+1)%MODES.length; switchMode(); };
@@ -319,7 +319,7 @@ function buildTimer(root){
     if(cur===0){ sessions++; totalMin+=MODES[0].min; sv({sessions,totalMin}); }
     document.getElementById('stSess').textContent=sessions;
     document.getElementById('stMin').textContent=totalMin;
-    document.getElementById('timerLbl').textContent='Session done!';
+    document.getElementById('timerLbl').textContent='Session terminée!';
     document.getElementById('timerArc').style.stroke='#4ade80';
     setTimeout(()=>{ cur=(cur+1)%MODES.length; switchMode(); },1800);
   }
@@ -333,15 +333,15 @@ function buildArt(root){
   root.innerHTML = `
     <canvas id="artCanvas" style="display:block"></canvas>
     <div class="inp-wrap">
-      <textarea id="artPrompt" rows="3" placeholder="Describe your mood or idea..."></textarea>
+      <textarea id="artPrompt" rows="3" placeholder="Décrivez votre humeur ou idée..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn btn-p" onclick="genArt()">✨ ✨ Generate</button>
+      <button class="btn btn-p" onclick="genArt()">✨ ✨ Générer</button>
       <button class="btn btn-s btn-sm" onclick="saveArt()">💾</button>
     </div>
-    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>Creating...</span></div>
+    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>Création...</span></div>
     <div id="resultCard" style="display:none">
-      <div class="rc-label">✨ Your Creation</div>
+      <div class="rc-label">✨ Votre Création</div>
       <div class="rc-text" id="artDesc"></div>
       <div class="rc-meta" id="artTags"></div>
     </div>`;
@@ -405,7 +405,7 @@ function buildArt(root){
       const adjs=['Ethereal','Vibrant','Mysterious','Cosmic','Fluid','Dynamic','Serene','Electric'];
       const nouns=['Dreamscape','Universe','Tapestry','Journey','Echo','Essence','Vision'];
       const title=`${adjs[Math.floor(Math.random()*adjs.length)]} ${nouns[Math.floor(Math.random()*nouns.length)]}`;
-      const tags=prompt.split(' ').filter(w=>w.length>3).slice(0,3).concat(['EchoVerse']);
+      const tags=prompt.split(' ').filter(w=>w.length>3).slice(0,3).concat(['CognitoOnde']);
       document.getElementById('artDesc').textContent=prompt?`"${prompt}" — ${title}`:title;
       document.getElementById('artTags').innerHTML=tags.map(t=>`<span class="rc-tag">${t}</span>`).join('');
       document.getElementById('resultCard').style.display='block';
@@ -427,15 +427,15 @@ function buildStory(root){
   root.innerHTML=`
     <div id="storyLog"></div>
     <div class="inp-wrap">
-      <textarea id="storyInput" rows="2" placeholder="What do you do?"></textarea>
+      <textarea id="storyInput" rows="2" placeholder="Que faites-vous?"></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn btn-p" onclick="sendStory()">🚀 Send</button>
+      <button class="btn btn-p" onclick="sendStory()">🚀 Envoyer</button>
       <button class="btn btn-s btn-sm" onclick="resetStory()">↺</button>
     </div>
-    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>Narrating...</span></div>`;
+    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>Le narrateur réfléchit...</span></div>`;
 
-  const opening=`On a dark night, you find yourself at the gates of an abandoned kingdom. — ${CFG.desc}`;
+  const opening=`Par une nuit sombre, vous vous trouvez aux portes d'un royaume abandonné. — ${CFG.desc}`;
   addMsg('ai',opening,false); history.push({role:'assistant',content:opening});
 
   function addMsg(role,text,isNew=true){
@@ -445,7 +445,7 @@ function buildStory(root){
     d.style.cssText=`background:${isUser?'rgba(var(--acc-rgb),.1)':'rgba(255,255,255,.04)'};
       border:1px solid ${isUser?'rgba(var(--acc-rgb),.3)':'rgba(255,255,255,.07)'};
       border-radius:12px;padding:10px 14px;${isNew?'animation:fadeUp .3s ease':''}`;
-    const label=isUser?'🧑 You':`🌌 Narrator`;
+    const label=isUser?'🧑 Vous':`🌌 Narrateur`;
     d.innerHTML=`<div style="font-size:.6rem;color:var(--acc);font-family:monospace;letter-spacing:.1em;margin-bottom:4px">${label}</div>
       <div style="font-size:.87rem;line-height:1.65">${text}</div>`;
     log.appendChild(d); log.scrollTop=log.scrollHeight;
@@ -460,7 +460,7 @@ function buildStory(root){
     try{
       const sys=`You are a narrator for "${CFG.name}": ${CFG.desc}.
 Keep responses under 80 words. Be immersive and poetic.
-Reply in language: en. Always end with a choice or question.
+Reply in language: fr. Always end with a choice or question.
 Recent history: ${history.slice(-4).map(m=>m.role+': '+m.content).join(' | ')}`;
       const reply=await gemini(`Player: "${txt}"`,sys)||'...';
       history.push({role:'assistant',content:reply});
@@ -468,7 +468,7 @@ Recent history: ${history.slice(-4).map(m=>m.role+': '+m.content).join(' | ')}`;
       addMsg('ai',reply);
     }catch(e){
       document.getElementById('loadWrap').style.display='none';
-      const fb=['Hero, our kingdom suffers. Will you help us?','The dense forest is full of dangers. You hear wolves howling.','The fire warms you. This place is safe for rest.','You have reached the ancient dungeon. The air is heavy.'];
+      const fb=['Héros, notre royaume souffre. Des monstres nous attaquent chaque nuit.','La forêt dense est pleine de dangers.','Le feu vous réchauffe. Cet endroit est sûr pour se reposer.','Vous avez atteint l'ancien donjon. L'air est lourd.'];
       const r=fb[Math.floor(Math.random()*fb.length)];
       history.push({role:'assistant',content:r}); addMsg('ai',r);
     }
@@ -491,16 +491,16 @@ Recent history: ${history.slice(-4).map(m=>m.role+': '+m.content).join(' | ')}`;
 // ═══════════════════════════════════════════════════════════════
 function buildIdentity(root){
   const questions=[
-    {key:'color', q:'Which color speaks to you?', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light']},
-    {key:'power', q:'Your inner power?', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind']},
-    {key:'world', q:'Your world?', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City']},
-    {key:'value', q:'What you value most?', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love']},
+    {key:'color', q:'Quelle couleur vous parle?', opts:['🔴 Fire','🔵 Ocean','🟢 Forest','🟡 Light']},
+    {key:'power', q:'Votre pouvoir intérieur?', opts:['⚡ Speed','🌊 Flow','🔥 Passion','🧠 Mind']},
+    {key:'world', q:'Votre monde?', opts:['🌌 Space','🏔️ Mountains','🌊 Sea','🏙️ City']},
+    {key:'value', q:'Ce que vous valorisez le plus?', opts:['🤝 Trust','🎯 Focus','💡 Creativity','❤️ Love']},
   ];
   let step=0, answers={};
 
   root.innerHTML=`
     <div id="idProgress" class="prog-wrap" style="width:100%">
-      <div class="prog-lbl"><span>Discovery</span><span id="idStep">1/${questions.length}</span></div>
+      <div class="prog-lbl"><span>Découverte</span><span id="idStep">1/${questions.length}</span></div>
       <div class="prog-bar"><div class="prog-fill" id="idFill" style="width:0%"></div></div>
     </div>
     <div id="idQuestion">
@@ -512,7 +512,7 @@ function buildIdentity(root){
     <div id="idResult" style="display:none;width:100%;text-align:center;gap:12px;flex-direction:column;align-items:center">
       <div style="font-size:1.4rem;font-weight:900;color:var(--acc)" id="idTitle"></div>
       <div style="color:var(--mut);font-size:.85rem;line-height:1.6" id="idDesc"></div>
-      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ Try Again</button>
+      <button class="btn btn-s" style="max-width:220px" onclick="buildIdentity(document.getElementById('main'))">↺ Réessayer</button>
     </div>`;
 
   const emjs=['✨','🌟','💫','🔮','🌀','⚡','🎭','🌌'];
@@ -557,8 +557,8 @@ function buildIdentity(root){
       ctx.beginPath(); ctx.arc(sz/2+Math.cos(a)*r,sz/2+Math.sin(a)*r,Math.random()*1.5+.3,0,Math.PI*2); ctx.fill();
     }
     cv.style.display='block';
-    const titles=['🌟 The Visionary','⚡ The Catalyst','🌊 The Dreamer','🔮 The Sage'];
-    const descs =['You see what others miss.','You ignite change wherever you go.','Your imagination knows no limits.','Ancient wisdom flows through you.'];
+    const titles=['🌟 Le Visionnaire','⚡ Le Catalyseur','🌊 Le Rêveur','🔮 Le Sage'];
+    const descs =['Vous voyez ce que les autres manquent.','Vous allumez le changement partout.','Votre imagination est sans limites.','La sagesse ancienne coule en vous.'];
     const idx=Object.values(answers).length%titles.length;
     document.getElementById('idTitle').textContent=titles[idx];
     document.getElementById('idDesc').textContent=descs[idx];
@@ -575,17 +575,17 @@ function buildCreative(root){
   let generating=false;
   root.innerHTML=`
     <div style="text-align:center;padding:8px 0">
-      <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">🔮</div>
-      <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">EchoVerse</div>
-      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">Uses AI to craft personalized alternate realities from your life's pivotal moments.</div>
+      <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">🌀</div>
+      <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">CognitoOnde</div>
+      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">Plongez dans une expérience sociale collaborative mondiale où vos choix créatifs déforment subtilement la réalité collective partagée par des millions, estompant les frontières entre jeu et perception. Façonnez des détails historiques éphémères, inventez des mèmes viraux, ou semez des 'faits' qui se propagent parmi les joueurs, puis soyez témoin des façons chaotiques et surprenantes dont vos ondes affectent les expériences des autres.</div>
     </div>
     <div class="inp-wrap">
-      <textarea id="creInput" rows="3" placeholder="Enter your idea..."></textarea>
+      <textarea id="creInput" rows="3" placeholder="Entrez votre idée..."></textarea>
     </div>
-    <button class="btn btn-p" onclick="runCreative()">✨ Create</button>
-    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>Generating...</span></div>
+    <button class="btn btn-p" onclick="runCreative()">✨ Créer</button>
+    <div id="loadWrap" style="display:none"><div class="spinner"></div><span>Génération...</span></div>
     <div id="resultCard" style="display:none">
-      <div class="rc-label">EchoVerse</div>
+      <div class="rc-label">CognitoOnde</div>
       <div class="rc-text" id="creResult"></div>
     </div>`;
 
@@ -597,11 +597,11 @@ function buildCreative(root){
     document.getElementById('resultCard').style.display='none';
     try{
       const reply=await gemini(
-        `App: "${CFG.name}" — ${CFG.desc}\nUser: "${txt}"\nReply creatively in language en. Max 120 words.`
+        `App: "${CFG.name}" — ${CFG.desc}\nUser: "${txt}"\nReply creatively in language fr. Max 120 words.`
       );
       document.getElementById('creResult').textContent=reply||'...';
     }catch(e){
-      document.getElementById('creResult').textContent='On a dark night, you find yourself at the gates of an abandoned kingdom.';
+      document.getElementById('creResult').textContent='Par une nuit sombre, vous vous trouvez aux portes d'un royaume abandonné.';
     }
     document.getElementById('loadWrap').style.display='none';
     document.getElementById('resultCard').style.display='block';
@@ -617,13 +617,13 @@ function openShop(){
     const name=(item.name&&(item.name[CFG.lang]||item.name.en))||item.id;
     const d=document.createElement('div'); d.className='si';
     d.innerHTML=`<div><div class="si-n">${name}</div><div class="si-p">${item.price||'$0.99'}</div></div>`+
-      `<button class="bb${owned?' own':''}"${owned?' disabled':''} onclick="buy('${item.id}')">${owned?'✓':'Shop'}</button>`;
+      `<button class="bb${owned?' own':''}"${owned?' disabled':''} onclick="buy('${item.id}')">${owned?'✓':'Boutique'}</button>`;
     list.appendChild(d);
   });
   if(!cur.adsRemoved){
     const d=document.createElement('div'); d.className='si';
-    d.innerHTML=`<div><div class="si-n">🚫 Ads support our team</div><div class="si-p">Remove $1.99</div></div>`+
-      `<button class="bb" onclick="buyRemoveAds()">Shop</button>`;
+    d.innerHTML=`<div><div class="si-n">🚫 Les pubs soutiennent l'équipe</div><div class="si-p">Supprimer 1,99$</div></div>`+
+      `<button class="bb" onclick="buyRemoveAds()">Boutique</button>`;
     list.appendChild(d);
   }
   document.getElementById('shopOv').classList.add('on');
