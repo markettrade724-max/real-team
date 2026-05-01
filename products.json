@@ -1,5 +1,106 @@
 [
   {
+    "id": "cognito-ripple",
+    "slug": "cognito-ripple",
+    "type": "Perceptual Reality Game",
+    "category": "game",
+    "status": "available",
+    "emoji": "🌀",
+    "templateFile": "memory-game.html",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [],
+    "name": {
+      "ar": "تموج الإدراك",
+      "en": "CognitoRipple",
+      "fr": "CognitoOnde",
+      "es": "CognitoOnda",
+      "de": "CognitoWelle",
+      "zh": "认知涟漪"
+    },
+    "desc": {
+      "ar": "انغمس في تجربة اجتماعية عالمية تعاونية حيث تشوه خياراتك الإبداعية الواقع الجماعي الذي يشاركه الملايين ببراعة، مما يطمس الخطوط الفاصلة بين اللعبة والإدراك. شكّل تفاصيل تاريخية عابرة، اختلق ميمات فيروسية، أو ازرع 'حقائق' تنتشر بين اللاعبين، ثم شاهد الطرق الفوضوية والمفاجئة التي تؤثر بها تموجاتك على تجارب الآخرين.",
+      "en": "Dive into a global, collaborative social experiment where your creative choices subtly warp the collective reality shared by millions, blurring the lines between game and perception. Shape fleeting historical details, invent viral memes, or plant 'facts' that spread among players, then witness the chaotic, surprising ways your ripples affect others' experiences.",
+      "fr": "Plongez dans une expérience sociale collaborative mondiale où vos choix créatifs déforment subtilement la réalité collective partagée par des millions, estompant les frontières entre jeu et perception. Façonnez des détails historiques éphémères, inventez des mèmes viraux, ou semez des 'faits' qui se propagent parmi les joueurs, puis soyez témoin des façons chaotiques et surprenantes dont vos ondes affectent les expériences des autres.",
+      "es": "Sumérgete en un experimento social colaborativo global donde tus elecciones creativas distorsionan sutilmente la realidad colectiva compartida por millones, difuminando las líneas entre el juego y la percepción. Moldea detalles históricos efímeros, inventa memes virales o planta 'hechos' que se propagan entre los jugadores, luego sé testigo de las formas caóticas y sorprendentes en que tus ondas afectan las experiencias de los demás.",
+      "de": "Tauchen Sie ein in ein globales, kollaboratives soziales Experiment, bei dem Ihre kreativen Entscheidungen subtil die kollektive Realität von Millionen verzerren und die Grenzen zwischen Spiel und Wahrnehmung verschwimmen lassen. Gestalten Sie flüchtige historische Details, erfinden Sie virale Memes oder pflanzen Sie 'Fakten', die sich unter den Spielern verbreiten, und erleben Sie dann die chaotischen, überraschenden Wege, wie Ihre Wellen die Erfahrungen anderer beeinflussen.",
+      "zh": "投入一场全球性的协作式社会实验，您的创意选择将巧妙地扭曲数百万玩家共享的集体现实，模糊游戏与感知的界限。塑造转瞬即逝的历史细节，创造病毒式模因，或植入在玩家间传播的“事实”，然后目睹您的涟漪如何以混乱而惊喜的方式影响他人的体验。"
+    },
+    "tags": [
+      "social experiment",
+      "augmented reality",
+      "perception game",
+      "narrative",
+      "creative",
+      "viral",
+      "mind-bending",
+      "multiplayer"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [],
+    "generated": true,
+    "generatedAt": "2026-05-01T09:51:33.648Z"
+  },
+  {
     "id": "reality-ripple-ai",
     "slug": "reality-ripple-ai",
     "type": "AI Scenario Generator",
@@ -2786,106 +2887,5 @@
       "zh": "与时间赛跑，构建尽可能多的词语"
     },
     "iap": []
-  },
-  {
-    "id": "cognito-ripple",
-    "slug": "cognito-ripple",
-    "type": "Perceptual Reality Game",
-    "category": "game",
-    "status": "available",
-    "emoji": "🌀",
-    "templateFile": "adventure-rpg.html",
-    "accent": "#818cf8",
-    "accentRgb": "129,140,248",
-    "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": [],
-    "name": {
-      "ar": "تموج الإدراك",
-      "en": "CognitoRipple",
-      "fr": "CognitoOnde",
-      "es": "CognitoOnda",
-      "de": "CognitoWelle",
-      "zh": "认知涟漪"
-    },
-    "desc": {
-      "ar": "انغمس في تجربة اجتماعية عالمية تعاونية حيث تشوه خياراتك الإبداعية الواقع الجماعي الذي يشاركه الملايين ببراعة، مما يطمس الخطوط الفاصلة بين اللعبة والإدراك. شكّل تفاصيل تاريخية عابرة، اختلق ميمات فيروسية، أو ازرع 'حقائق' تنتشر بين اللاعبين، ثم شاهد الطرق الفوضوية والمفاجئة التي تؤثر بها تموجاتك على تجارب الآخرين.",
-      "en": "Dive into a global, collaborative social experiment where your creative choices subtly warp the collective reality shared by millions, blurring the lines between game and perception. Shape fleeting historical details, invent viral memes, or plant 'facts' that spread among players, then witness the chaotic, surprising ways your ripples affect others' experiences.",
-      "fr": "Plongez dans une expérience sociale collaborative mondiale où vos choix créatifs déforment subtilement la réalité collective partagée par des millions, estompant les frontières entre jeu et perception. Façonnez des détails historiques éphémères, inventez des mèmes viraux, ou semez des 'faits' qui se propagent parmi les joueurs, puis soyez témoin des façons chaotiques et surprenantes dont vos ondes affectent les expériences des autres.",
-      "es": "Sumérgete en un experimento social colaborativo global donde tus elecciones creativas distorsionan sutilmente la realidad colectiva compartida por millones, difuminando las líneas entre el juego y la percepción. Moldea detalles históricos efímeros, inventa memes virales o planta 'hechos' que se propagan entre los jugadores, luego sé testigo de las formas caóticas y sorprendentes en que tus ondas afectan las experiencias de los demás.",
-      "de": "Tauchen Sie ein in ein globales, kollaboratives soziales Experiment, bei dem Ihre kreativen Entscheidungen subtil die kollektive Realität von Millionen verzerren und die Grenzen zwischen Spiel und Wahrnehmung verschwimmen lassen. Gestalten Sie flüchtige historische Details, erfinden Sie virale Memes oder pflanzen Sie 'Fakten', die sich unter den Spielern verbreiten, und erleben Sie dann die chaotischen, überraschenden Wege, wie Ihre Wellen die Erfahrungen anderer beeinflussen.",
-      "zh": "投入一场全球性的协作式社会实验，您的创意选择将巧妙地扭曲数百万玩家共享的集体现实，模糊游戏与感知的界限。塑造转瞬即逝的历史细节，创造病毒式模因，或植入在玩家间传播的“事实”，然后目睹您的涟漪如何以混乱而惊喜的方式影响他人的体验。"
-    },
-    "tags": [
-      "social experiment",
-      "augmented reality",
-      "perception game",
-      "narrative",
-      "creative",
-      "viral",
-      "mind-bending",
-      "multiplayer"
-    ],
-    "iap": [
-      {
-        "id": "no-ads",
-        "type": "remove_ads",
-        "price": 1.99,
-        "emoji": "🚫",
-        "name": {
-          "ar": "إزالة الإعلانات",
-          "en": "Remove Ads",
-          "fr": "Sans pub",
-          "es": "Sin anuncios",
-          "de": "Werbefrei",
-          "zh": "去广告"
-        }
-      },
-      {
-        "id": "hint-pack",
-        "type": "consumable",
-        "price": 0.99,
-        "emoji": "💡",
-        "name": {
-          "ar": "10 تلميحات",
-          "en": "10 Hints",
-          "fr": "10 indices",
-          "es": "10 pistas",
-          "de": "10 Hinweise",
-          "zh": "10个提ش示"
-        }
-      },
-      {
-        "id": "theme-pack",
-        "type": "cosmetic",
-        "price": 1.49,
-        "emoji": "🎨",
-        "name": {
-          "ar": "حزمة الثيمات",
-          "en": "Themes Pack",
-          "fr": "Pack thèmes",
-          "es": "Pack temas",
-          "de": "Theme-Paket",
-          "zh": "主题包"
-        }
-      },
-      {
-        "id": "full-unlock",
-        "type": "unlock",
-        "price": 2.99,
-        "emoji": "⭐",
-        "name": {
-          "ar": "فتح كل المحتوى",
-          "en": "Unlock All",
-          "fr": "Tout débloquer",
-          "es": "Desbloquear todo",
-          "de": "Alles freischalten",
-          "zh": "解锁全部"
-        }
-      }
-    ],
-    "story": null,
-    "levels": [],
-    "generated": true,
-    "generatedAt": "2026-05-01T09:51:33.648Z"
   }
 ]
