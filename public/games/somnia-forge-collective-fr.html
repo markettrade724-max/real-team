@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Anima Architect</title>
+<title>SomniaForge</title>
 <style>
-:root{--acc:#818cf8;--acc-rgb:129,140,248;
+:root{--acc:#facc15;--acc-rgb:250,204,21;
   --bg:#07070f;--s:#0e0e1e;--b:rgba(255,255,255,.07);
   --txt:#f1f5f9;--mut:#64748b;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -134,7 +134,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 
   <!-- HUD -->
   <div id="hud">
-    <div class="hud-name">Hero</div>
+    <div class="hud-name">Héros</div>
     <div class="bar-wrap">
       <div class="bar"><div class="bar-fill bar-hp" id="hpBar" style="width:100%"></div></div>
       <div class="bar"><div class="bar-fill bar-mp" id="mpBar" style="width:100%"></div></div>
@@ -161,7 +161,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
         <div class="cbar-val" id="enemyHpVal">50</div>
       </div>
     </div>
-    <div id="sceneEmoji">🌌</div>
+    <div id="sceneEmoji">💭</div>
     <div id="enemyEmoji"></div>
     <div id="playerEmoji">🧙</div>
   </div>
@@ -171,42 +171,42 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 
   <!-- DIALOG -->
   <div id="dialog">
-    <div id="speaker">Narrator</div>
-    <div id="dialogText">On a dark night, you find yourself at the gates of an abandoned kingdom.</div>
+    <div id="speaker">Narrateur</div>
+    <div id="dialogText">Par une nuit sombre, vous vous trouvez aux portes d'un royaume abandonné.</div>
     <div id="choices"></div>
     <div id="combatActions">
-      <button class="ca ca-atk" onclick="combatAction('attack')">⚔️ Attack</button>
-      <button class="ca ca-mgc" onclick="combatAction('magic')">✨ Magic</button>
-      <button class="ca ca-def" onclick="combatAction('defend')">🛡️ Defend</button>
-      <button class="ca ca-itm" onclick="combatAction('item')">🧪 Item</button>
+      <button class="ca ca-atk" onclick="combatAction('attack')">⚔️ Attaque</button>
+      <button class="ca ca-mgc" onclick="combatAction('magic')">✨ Magie</button>
+      <button class="ca ca-def" onclick="combatAction('defend')">🛡️ Défense</button>
+      <button class="ca ca-itm" onclick="combatAction('item')">🧪 Objet</button>
     </div>
   </div>
 
   <!-- AD -->
   <div id="ad">
-    <span>📢 Ads support our team</span>
-    <button class="bb" onclick="buyRemoveAds()">Remove $1.99</button>
+    <span>📢 Les pubs soutiennent l'équipe</span>
+    <button class="bb" onclick="buyRemoveAds()">Supprimer 1,99$</button>
   </div>
 
   <!-- SHOP -->
   <div id="shopOv">
-    <h2 style="font-size:1.5rem;font-weight:900">🛒 Shop</h2>
+    <h2 style="font-size:1.5rem;font-weight:900">🛒 Boutique</h2>
     <div id="shopList" style="width:100%;max-width:360px;display:flex;
       flex-direction:column;gap:10px;max-height:55vh;overflow-y:auto"></div>
     <button onclick="closeShop()" style="background:rgba(255,255,255,.07);
       border:1px solid var(--b);color:var(--txt);padding:10px 28px;
       border-radius:10px;cursor:pointer;font-family:inherit;font-size:.9rem">
-      ✕ Back</button>
+      ✕ Retour</button>
   </div>
 </div>
 
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────
 const CFG = {
-  pid:  'anima-architect-ai',
-  lang: 'en',
-  acc:  '#818cf8',
-  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+  pid:  'somnia-forge-collective',
+  lang: 'fr',
+  acc:  '#facc15',
+  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提ش示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
 };
 const SK = 'rt_' + CFG.pid;
 const S  = () => JSON.parse(localStorage.getItem(SK) || '{}');
@@ -224,98 +224,98 @@ const G = {
 const SCENES = {
   intro: {
     bg: 'linear-gradient(180deg,#07070f 0%,#0f0a1e 100%)',
-    emoji: '🌌',
-    speaker: 'Narrator',
-    text: 'On a dark night, you find yourself at the gates of an abandoned kingdom.',
+    emoji: '💭',
+    speaker: 'Narrateur',
+    text: 'Par une nuit sombre, vous vous trouvez aux portes d'un royaume abandonné.',
     choices: [
-      { icon:'🏘️', label:'Enter the village', next:'village' },
-      { icon:'⛺', label:'Set up camp',  next:'camp'    },
+      { icon:'🏘️', label:'Entrer au village', next:'village' },
+      { icon:'⛺', label:'Établir un camp',  next:'camp'    },
     ]
   },
   village: {
     bg: 'linear-gradient(180deg,#0d1117 0%,#1a1207 100%)',
     emoji: '🏘️',
-    speaker: 'Elder',
-    text: 'Hero, our kingdom suffers. Will you help us?',
+    speaker: 'Ancien',
+    text: 'Héros, notre royaume souffre. Des monstres nous attaquent chaque nuit.',
     choices: [
-      { icon:'✅', label:'Accept the quest', next:'forest' },
-      { icon:'🛒', label:'Visit the shop',   next:'shop_scene' },
-      { icon:'🚶', label:'Leave',  next:'intro'  },
+      { icon:'✅', label:'Accepter la quête', next:'forest' },
+      { icon:'🛒', label:'Visiter la boutique',   next:'shop_scene' },
+      { icon:'🚶', label:'Partir',  next:'intro'  },
     ]
   },
   camp: {
     bg: 'linear-gradient(180deg,#0a0e16 0%,#0d1a0d 100%)',
     emoji: '🔥',
-    speaker: 'Narrator',
-    text: 'The fire warms you. This place is safe for rest.',
+    speaker: 'Narrateur',
+    text: 'Le feu vous réchauffe. Cet endroit est sûr pour se reposer.',
     choices: [
-      { icon:'💤', label:'Rest (restore 30 HP)', next:'intro', action:'rest' },
-      { icon:'🏘️', label:'Enter the village', next:'village' },
+      { icon:'💤', label:'Se reposer (+30 HP)', next:'intro', action:'rest' },
+      { icon:'🏘️', label:'Entrer au village', next:'village' },
     ]
   },
   shop_scene: {
     bg: 'linear-gradient(180deg,#0f0d18 0%,#1a0f07 100%)',
     emoji: '⚗️',
-    speaker: 'Merchant',
-    text: 'Welcome hero! I have healing potions and rare weapons.',
+    speaker: 'Marchand',
+    text: 'Bienvenue héros! J'ai des potions et des armes rares.',
     choices: [
-      { icon:'🧪', label:'Buy potion (15 gold)', next:'village', action:'buy_potion' },
-      { icon:'🚶', label:'Leave', next:'village' },
+      { icon:'🧪', label:'Acheter potion (15 or)', next:'village', action:'buy_potion' },
+      { icon:'🚶', label:'Partir', next:'village' },
     ]
   },
   forest: {
     bg: 'linear-gradient(180deg,#050d05 0%,#0a150a 100%)',
     emoji: '🌲',
-    speaker: 'Narrator',
-    text: 'The dense forest is full of dangers. You hear wolves howling.',
+    speaker: 'Narrateur',
+    text: 'La forêt dense est pleine de dangers.',
     choices: [
-      { icon:'⚔️', label:'Fight',  next:'combat_wolf', combat:true },
-      { icon:'🤫', label:'Sneak past',  next:'dungeon', action:'sneak'  },
-      { icon:'↩️', label:'Go back',   next:'village' },
+      { icon:'⚔️', label:'Combattre',  next:'combat_wolf', combat:true },
+      { icon:'🤫', label:'Passer discrètement',  next:'dungeon', action:'sneak'  },
+      { icon:'↩️', label:'Retour',   next:'village' },
     ]
   },
   dungeon: {
     bg: 'linear-gradient(180deg,#0a0005 0%,#150010 100%)',
     emoji: '🏰',
-    speaker: 'Narrator',
-    text: 'You have reached the ancient dungeon. The air is heavy.',
+    speaker: 'Narrateur',
+    text: 'Vous avez atteint l'ancien donjon. L'air est lourd.',
     choices: [
-      { icon:'🗺️', label:'Explore the dungeon', next:'combat_boss', combat:true },
-      { icon:'↩️', label:'Go back',    next:'forest' },
+      { icon:'🗺️', label:'Explorer le donjon', next:'combat_boss', combat:true },
+      { icon:'↩️', label:'Retour',    next:'forest' },
     ]
   },
   treasure: {
     bg: 'linear-gradient(180deg,#0f0d00 0%,#1a1400 100%)',
     emoji: '💎',
-    speaker: 'Narrator',
-    text: 'You found a chamber full of gold and jewels!',
+    speaker: 'Narrateur',
+    text: 'Vous avez trouvé une chambre pleine d'or et de joyaux!',
     choices: [
-      { icon:'🎉', label:'Continue', next:'victory' },
+      { icon:'🎉', label:'Continuer', next:'victory' },
     ]
   },
   victory: {
     bg: 'linear-gradient(180deg,#050f05 0%,#0a1e0a 100%)',
     emoji: '🏆',
-    speaker: 'Narrator',
-    text: 'You defeated the Dark King and saved the kingdom!',
+    speaker: 'Narrateur',
+    text: 'Vous avez vaincu le Roi des Ténèbres!',
     choices: [
-      { icon:'🔄', label:'Start over', next:'intro', action:'restart' },
+      { icon:'🔄', label:'Recommencer', next:'intro', action:'restart' },
     ]
   },
   defeat: {
     bg: 'linear-gradient(180deg,#0f0000 0%,#1a0000 100%)',
     emoji: '💀',
-    speaker: 'Narrator',
-    text: 'You fell in battle... Rise and try again!',
+    speaker: 'Narrateur',
+    text: 'Vous êtes tombé... Relevez-vous!',
     choices: [
-      { icon:'🔄', label:'Start over', next:'intro', action:'restart' },
+      { icon:'🔄', label:'Recommencer', next:'intro', action:'restart' },
     ]
   },
 };
 
 const ENEMIES = {
   combat_wolf: {
-    name: 'Wild Wolf',
+    name: 'Loup Sauvage',
     emoji: '🐺',
     hp: 35, maxHp: 35,
     atk: [8,14], def: 3,
@@ -323,7 +323,7 @@ const ENEMIES = {
     next: 'dungeon',
   },
   combat_boss: {
-    name: 'Dark King',
+    name: 'Roi des Ténèbres',
     emoji: '👑',
     hp: 80, maxHp: 80,
     atk: [18,28], def: 8,
@@ -467,13 +467,13 @@ function handleChoice(c){
     const heal = 30;
     G.hp = Math.min(G.maxHp, G.hp + heal);
     G.mp = Math.min(G.maxMp, G.mp + 10);
-    addLog(`💤 Rest (restore 30 HP)`, 'acc');
+    addLog(`💤 Se reposer (+30 HP)`, 'acc');
     floatDmg(null, -heal, '#4ade80');
     updateHUD();
   }
   if(c.action === 'buy_potion'){
     if(G.gold >= 15){ G.gold -= 15; G.items++; addLog('🧪 +1 potion', 'blue'); }
-    else { addLog('Not enough gold', 'red'); return; }
+    else { addLog('Pas assez d'or', 'red'); return; }
   }
   if(c.action === 'sneak'){
     const ok = Math.random() > 0.4;
@@ -508,10 +508,10 @@ function startCombat(enemyKey){
   document.getElementById('choices').style.display = 'none';
   document.getElementById('combatActions').style.display = 'grid';
 
-  document.getElementById('speaker').textContent   = '⚔️ Battle begins!';
+  document.getElementById('speaker').textContent   = '⚔️ Le combat commence!';
   document.getElementById('dialogText').textContent = `${G.enemy.emoji} ${G.enemy.name} HP: ${G.enemy.hp}`;
 
-  addLog(`⚔️ Battle begins! — ${G.enemy.name}`, 'hi');
+  addLog(`⚔️ Le combat commence! — ${G.enemy.name}`, 'hi');
 }
 
 function updateEnemyBar(){
@@ -535,7 +535,7 @@ function combatAction(type){
     addLog(`⚔️ You hit ${G.enemy.name} for ${finalDmg}`, 'red');
     msg = `⚔️ -${finalDmg} HP`;
   } else if(type === 'magic'){
-    if(G.mp < 10){ addLog('Not enough MP', 'mut'); enemyTurn(); return; }
+    if(G.mp < 10){ addLog('Pas assez de MP', 'mut'); enemyTurn(); return; }
     G.mp -= 10;
     const dmg = Math.floor(20 + Math.random()*15);
     G.enemy.hp -= dmg;
@@ -544,10 +544,10 @@ function combatAction(type){
     msg = `✨ -${dmg} MP`;
   } else if(type === 'defend'){
     G.defending = true;
-    addLog(`🛡️ You are defending`, 'acc');
+    addLog(`🛡️ Vous défendez`, 'acc');
     msg = '🛡️';
   } else if(type === 'item'){
-    if(G.items <= 0){ addLog('No items left', 'mut'); enemyTurn(); return; }
+    if(G.items <= 0){ addLog('Plus d'objets', 'mut'); enemyTurn(); return; }
     G.items--;
     const heal = 30;
     G.hp = Math.min(G.maxHp, G.hp + heal);
@@ -622,14 +622,14 @@ function openShop(){
     d.innerHTML =
       `<div><div class="si-n">${name}</div><div class="si-d">${desc}</div><div class="si-p">${item.price||'$0.99'}</div></div>` +
       `<button class="bb${owned?' own':''}"${owned?' disabled':''} onclick="buy('${item.id}')">` +
-      `${owned ? '✓' : 'Shop'}</button>`;
+      `${owned ? '✓' : 'Boutique'}</button>`;
     list.appendChild(d);
   });
   if(!cur.adsRemoved){
     const d = document.createElement('div'); d.className = 'si';
     d.innerHTML =
-      `<div><div class="si-n">🚫 Ads support our team</div><div class="si-p">Remove $1.99</div></div>` +
-      `<button class="bb" onclick="buyRemoveAds()">Shop</button>`;
+      `<div><div class="si-n">🚫 Les pubs soutiennent l'équipe</div><div class="si-p">Supprimer 1,99$</div></div>` +
+      `<button class="bb" onclick="buyRemoveAds()">Boutique</button>`;
     list.appendChild(d);
   }
   document.getElementById('shopOv').classList.add('on');

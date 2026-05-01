@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>ForjaVerso</title>
+<title>SomniaForge</title>
 <style>
-:root{--acc:#818cf8;--acc-rgb:129,140,248;
+:root{--acc:#facc15;--acc-rgb:250,204,21;
   --bg:#07070f;--s:#0e0e1e;--b:rgba(255,255,255,.07);
   --txt:#f1f5f9;--mut:#64748b;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -161,7 +161,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
         <div class="cbar-val" id="enemyHpVal">50</div>
       </div>
     </div>
-    <div id="sceneEmoji">🧱</div>
+    <div id="sceneEmoji">💭</div>
     <div id="enemyEmoji"></div>
     <div id="playerEmoji">🧙</div>
   </div>
@@ -203,10 +203,10 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 <script>
 // ─── CONFIG ────────────────────────────────────────────────────
 const CFG = {
-  pid:  'verse-forge',
+  pid:  'somnia-forge-collective',
   lang: 'es',
-  acc:  '#818cf8',
-  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+  acc:  '#facc15',
+  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提ش示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
 };
 const SK = 'rt_' + CFG.pid;
 const S  = () => JSON.parse(localStorage.getItem(SK) || '{}');
@@ -224,7 +224,7 @@ const G = {
 const SCENES = {
   intro: {
     bg: 'linear-gradient(180deg,#07070f 0%,#0f0a1e 100%)',
-    emoji: '🧱',
+    emoji: '💭',
     speaker: 'Narrador',
     text: 'En una noche oscura, te encuentras ante las puertas de un reino abandonado.',
     choices: [
