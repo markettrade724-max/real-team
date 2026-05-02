@@ -1,63 +1,63 @@
 {
-  "runId": "2026-05-01T1446",
-  "timestamp": "2026-05-01T14:48:38.976Z",
-  "totalDuration": "117.8s",
-  "geminiCalls": "3/6",
+  "runId": "2026-05-02T0911",
+  "timestamp": "2026-05-02T09:13:48.578Z",
+  "totalDuration": "119.6s",
+  "geminiCalls": "5/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.2s",
+      "duration": "1.5s",
       "attempts": 1,
       "error": null
     },
     "idea": {
       "success": true,
-      "duration": "14.1s",
+      "duration": "13.1s",
       "attempts": 1,
       "error": null
     },
     "art": {
-      "success": false,
-      "duration": "1.6s",
+      "success": true,
+      "duration": "5.4s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": null
     },
     "template": {
       "success": true,
-      "duration": "3ms",
+      "duration": "1ms",
       "attempts": 1,
       "error": null
     },
     "levels": {
       "success": true,
-      "duration": "6.6s",
+      "duration": "8.3s",
       "attempts": 1,
       "error": null
     },
     "code": {
       "success": true,
-      "duration": "65ms",
+      "duration": "56ms",
       "attempts": 1,
       "error": null
     },
     "marketing": {
-      "success": false,
-      "duration": "13.9s",
+      "success": true,
+      "duration": "12.0s",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": null
     },
     "roadmap": {
       "success": true,
-      "duration": "5.4s",
+      "duration": "4.1s",
       "attempts": 1,
       "error": null
     }
   },
   "summary": {
     "total": 8,
-    "passed": 6,
-    "failed": 2,
-    "newGame": "somnia-forge-collective",
-    "template": "adventure-rpg.html"
+    "passed": 8,
+    "failed": 0,
+    "newGame": "glimmerglass-logic",
+    "template": "memory-game.html"
   }
 }

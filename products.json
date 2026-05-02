@@ -2984,5 +2984,157 @@
     "levels": [],
     "generated": true,
     "generatedAt": "2026-05-01T14:47:49.599Z"
+  },
+  {
+    "id": "glimmerglass-logic",
+    "slug": "glimmerglass-logic",
+    "type": "puzzle",
+    "category": "game",
+    "status": "available",
+    "emoji": "🧩",
+    "templateFile": "memory-game.html",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [],
+    "name": {
+      "ar": "منطق الزجاج الوامض",
+      "en": "Glimmerglass Logic",
+      "fr": "Logique Glimmerglass",
+      "es": "Lógica Glimmerglass",
+      "de": "Glimmerglass Logik",
+      "zh": "闪光玻璃逻辑"
+    },
+    "desc": {
+      "ar": "ادخل عالمًا تتلاعب فيه بالمنظور وتخلق المستحيل. قم بتدوير وتغيير وترتيب قطع ثلاثية الأبعاد للكشف عن أوهام بصرية ثنائية الأبعاد مذهلة تستفز العقل. شارك إبداعاتك المثيرة للعقل واجعل العالم يتساءل عن حدود الواقع!",
+      "en": "Step into a world where you manipulate perspective to create the impossible. Rotate, shift, and arrange 3D pieces to unveil stunning 2D optical illusions that baffle the mind. Share your mind-bending creations and make the world question the very fabric of reality!",
+      "fr": "Plongez dans un monde où vous manipulez la perspective pour créer l'impossible. Faites pivoter, déplacez et arrangez des pièces 3D pour révéler des illusions d'optique 2D stupéfiantes qui déroutent l'esprit. Partagez vos créations hallucinantes et faites que le monde s'interroge sur le tissu même de la réalité !",
+      "es": "Adéntrate en un mundo donde manipulas la perspectiva para crear lo imposible. Gira, desplaza y organiza piezas 3D para desvelar asombrosas ilusiones ópticas en 2D que desconciertan la mente. ¡Comparte tus creaciones alucinantes y haz que el mundo cuestione la misma esencia de la realidad!",
+      "de": "Tauchen Sie ein in eine Welt, in der Sie die Perspektive manipulieren, um das Unmögliche zu schaffen. Drehen, verschieben und arrangieren Sie 3D-Teile, um atemberaubende 2D-optische Illusionen zu enthüllen, die den Verstand verblüffen. Teilen Sie Ihre geistverwirrenden Kreationen und lassen Sie die Welt die Grenzen der Realität in Frage stellen!",
+      "zh": "进入一个您可以操纵视角创造不可能的世界。旋转、移动和排列 3D 碎片，揭示令人惊叹的 2D 错觉，让大脑困惑不已。分享您令人费解的创作，让世界质疑现实的本质！"
+    },
+    "tags": [
+      "puzzle",
+      "logic",
+      "illusion",
+      "perspective",
+      "creative",
+      "viral",
+      "brain-teaser",
+      "artistic"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "اللمحة الأولى",
+          "en": "The First Glimmer"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "تغيير المنظور",
+          "en": "Shifting Perspectives"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "الهندسات الملتوية",
+          "en": "Twisted Geometries"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "أصداء الواقع",
+          "en": "Echoes of Reality"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "محرك المفارقة",
+          "en": "The Paradox Engine"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-05-02T09:13:02.420Z"
   }
 ]
