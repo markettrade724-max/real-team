@@ -1,8 +1,8 @@
 {
-  "runId": "2026-05-02T1440",
-  "timestamp": "2026-05-02T14:42:56.205Z",
-  "totalDuration": "132.7s",
-  "geminiCalls": "5/6",
+  "runId": "2026-05-03T0924",
+  "timestamp": "2026-05-03T09:26:36.338Z",
+  "totalDuration": "121.6s",
+  "geminiCalls": "4/6",
   "agents": {
     "analytics": {
       "success": true,
@@ -12,52 +12,52 @@
     },
     "idea": {
       "success": true,
-      "duration": "18.9s",
+      "duration": "9.9s",
       "attempts": 1,
       "error": null
     },
     "art": {
       "success": true,
-      "duration": "4.7s",
+      "duration": "6.7s",
       "attempts": 1,
       "error": null
     },
     "template": {
       "success": true,
-      "duration": "3ms",
+      "duration": "1ms",
       "attempts": 1,
       "error": null
     },
     "levels": {
       "success": true,
-      "duration": "10.5s",
+      "duration": "5.2s",
       "attempts": 1,
       "error": null
     },
     "code": {
       "success": true,
-      "duration": "63ms",
+      "duration": "57ms",
       "attempts": 1,
       "error": null
     },
     "marketing": {
-      "success": true,
+      "success": false,
       "duration": "17.3s",
       "attempts": 1,
-      "error": null
+      "error": "Invalid JSON from Gemini: {\n  \"twitter\": {\n    \"en\": \"Unleash your architect in Gravity Loom! Build impossible structure"
     },
     "roadmap": {
       "success": true,
-      "duration": "5.0s",
+      "duration": "6.2s",
       "attempts": 1,
       "error": null
     }
   },
   "summary": {
     "total": 8,
-    "passed": 8,
-    "failed": 0,
-    "newGame": "surreal-scramble-challenge",
-    "template": "endless-runner.html"
+    "passed": 7,
+    "failed": 1,
+    "newGame": "gravity-loom",
+    "template": "memory-game.html"
   }
 }

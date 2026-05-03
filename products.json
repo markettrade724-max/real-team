@@ -3244,5 +3244,159 @@
     ],
     "generated": true,
     "generatedAt": "2026-05-02T14:42:03.872Z"
+  },
+  {
+    "id": "gravity-loom",
+    "slug": "gravity-loom",
+    "type": "creative-puzzle-sandbox",
+    "category": "game",
+    "status": "available",
+    "emoji": "🌐",
+    "templateFile": "memory-game.html",
+    "accent": "#818cf8",
+    "accentRgb": "129,140,248",
+    "gradient": "135deg,#1e1b4b,#312e81",
+    "emojis": [],
+    "name": {
+      "ar": "نول الجاذبية",
+      "en": "Gravity Loom",
+      "fr": "Métier de Gravité",
+      "es": "Telar de Gravedad",
+      "de": "Gravitationswebstuhl",
+      "zh": "重力织机"
+    },
+    "desc": {
+      "ar": "أطلق العنان لمهندسك المعماري الداخلي لصياغة هياكل مذهلة ومستحيلة تتحدى الفيزياء والمنطق. شارك متاهاتك المعقدة كألغاز تفاعلية وشاهد اللاعبين حول العالم يحاولون كشف عبقريتك.",
+      "en": "Unleash your inner architect to craft stunning, impossible structures that defy physics and logic. Share your elaborate labyrinths as interactive puzzles and watch as players around the globe try to unravel your genius.",
+      "fr": "Libérez l'architecte qui sommeille en vous pour créer des structures impossibles et époustouflantes qui défient la physique et la logique. Partagez vos labyrinthes élaborés comme des puzzles interactifs et observez les joueurs du monde entier tenter de démêler votre génie.",
+      "es": "Libera a tu arquitecto interior para crear estructuras impresionantes e imposibles que desafían la física y la lógica. Comparte tus elaborados laberintos como rompecabezas interactivos y observa cómo jugadores de todo el mundo intentan desentrañar tu genialidad.",
+      "de": "Entfesseln Sie Ihren inneren Architekten, um atemberaubende, unmögliche Strukturen zu erschaffen, die Physik und Logik trotzen. Teilen Sie Ihre komplexen Labyrinthe als interaktive Rätsel und beobachten Sie, wie Spieler weltweit versuchen, Ihr Genie zu entschlüsseln.",
+      "zh": "释放你内在的建筑师，打造令人惊叹、不可能存在的结构，挑战物理和逻辑。将你精心设计的迷宫作为互动谜题分享，并看着全球玩家如何解开你的天才之作。"
+    },
+    "tags": [
+      "puzzle",
+      "creative",
+      "sandbox",
+      "social",
+      "architecture",
+      "escher",
+      "gravity",
+      "design",
+      "challenge",
+      "viral"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "الخيط الأول",
+          "en": "The First Thread"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "الممرات الملتوية",
+          "en": "Twisted Pathways"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "ملتقى الأبعاد",
+          "en": "Conflux of Dimensions"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "الإنشاءات المتناقضة",
+          "en": "Paradoxical Constructs"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "تحدي النساج الأخير",
+          "en": "Weaver's Ultimate Challenge"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-05-03T09:25:42.812Z"
   }
 ]
