@@ -1,63 +1,27 @@
 {
-  "runId": "2026-05-03T0924",
-  "timestamp": "2026-05-03T09:26:36.338Z",
-  "totalDuration": "121.6s",
-  "geminiCalls": "4/6",
+  "runId": "2026-05-03T1440",
+  "timestamp": "2026-05-03T14:41:06.735Z",
+  "totalDuration": "18.1s",
+  "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "1.3s",
+      "duration": "1.2s",
       "attempts": 1,
       "error": null
     },
     "idea": {
-      "success": true,
-      "duration": "9.9s",
-      "attempts": 1,
-      "error": null
-    },
-    "art": {
-      "success": true,
-      "duration": "6.7s",
-      "attempts": 1,
-      "error": null
-    },
-    "template": {
-      "success": true,
-      "duration": "1ms",
-      "attempts": 1,
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "5.2s",
-      "attempts": 1,
-      "error": null
-    },
-    "code": {
-      "success": true,
-      "duration": "57ms",
-      "attempts": 1,
-      "error": null
-    },
-    "marketing": {
       "success": false,
-      "duration": "17.3s",
+      "duration": "1.8s",
       "attempts": 1,
-      "error": "Invalid JSON from Gemini: {\n  \"twitter\": {\n    \"en\": \"Unleash your architect in Gravity Loom! Build impossible structure"
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "6.2s",
-      "attempts": 1,
-      "error": null
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 7,
+    "total": 2,
+    "passed": 1,
     "failed": 1,
-    "newGame": "gravity-loom",
-    "template": "memory-game.html"
+    "newGame": null,
+    "template": null
   }
 }
