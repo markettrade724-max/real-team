@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="de" dir="ltr">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Die Un-Erfindungsmaschine</title>
+<title>The Causality Carnival</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
 <style>
-:root{--acc:#f472b6;}
+:root{--acc:#2dd4bf;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;overflow:hidden;background:#000;font-family:'Segoe UI',Tajawal,sans-serif;color:#f1f5f9;}
 #wrap{position:relative;width:100%;max-width:420px;height:100dvh;margin:0 auto;overflow:hidden;}
@@ -24,7 +24,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Segoe UI',Taj
   cursor:pointer;width:100%;max-width:300px;transition:transform .12s;
   display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;}
 .btn:active{transform:scale(.96);}
-.btn-p{background:var(--acc);color:#000;box-shadow:0 0 28px rgba(244,114,182,.4);}
+.btn-p{background:var(--acc);color:#000;box-shadow:0 0 28px rgba(45,212,191,.4);}
 .btn-s{background:rgba(255,255,255,.07);color:#f1f5f9;border:1px solid rgba(255,255,255,.1);}
 a.lnk{color:#64748b;font-size:.82rem;text-decoration:none;}
 #hud{position:absolute;top:0;left:0;right:0;display:none;
@@ -37,16 +37,16 @@ a.lnk{color:#64748b;font-size:.82rem;text-decoration:none;}
 #hpBar{width:80px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
 #hpFill{height:100%;border-radius:3px;background:linear-gradient(90deg,#22cc44,#44ff66);transition:width .3s;}
 #lvFlash{position:absolute;top:54px;left:50%;transform:translateX(-50%);
-  background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.4);
+  background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.4);
   color:var(--acc);padding:5px 18px;border-radius:100px;font-weight:900;
   font-size:.85rem;font-family:monospace;letter-spacing:.1em;display:none;z-index:25;
   white-space:nowrap;text-shadow:0 0 10px var(--acc);}
 #fireBtn{position:absolute;bottom:20px;right:20px;width:68px;height:68px;border-radius:50%;
-  background:rgba(244,114,182,.15);border:2px solid rgba(244,114,182,.5);
+  background:rgba(45,212,191,.15);border:2px solid rgba(45,212,191,.5);
   display:none;align-items:center;justify-content:center;
   z-index:20;user-select:none;-webkit-user-select:none;cursor:pointer;}
 #fireBtn svg{width:28px;height:28px;fill:var(--acc);}
-#fireBtn.on{background:rgba(244,114,182,.45);}
+#fireBtn.on{background:rgba(45,212,191,.45);}
 #movePad{position:absolute;bottom:20px;left:20px;width:100px;height:68px;border-radius:14px;
   background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
   display:none;align-items:center;justify-content:space-between;padding:0 8px;z-index:20;}
@@ -77,20 +77,20 @@ a.lnk{color:#64748b;font-size:.82rem;text-decoration:none;}
 
   <div class="scr on" id="sStart">
     <canvas id="prevCv" width="220" height="160" style="border-radius:12px;margin-bottom:4px"></canvas>
-    <div class="g-title">Die Un-Erfindungsmaschine</div>
-    <div class="g-desc">Fordern Sie Ihren Verstand heraus, absurd überkonstruierte Maschinen zu bauen, um alltägliche Probleme zu lösen. Beobachten Sie, wie Ihre bizarrsten Kreationen in einer Reihe von unglaublich lustigen Versuchen zum Leben erwachen.</div>
+    <div class="g-title">The Causality Carnival</div>
+    <div class="g-desc">Unleash your inner mad scientist in a vibrant sandbox where logic takes a backseat to ludicrous contraptions. Build intricate machines, witness spectacular failures or improbable successes, and challenge friends to out-engineer your most absurd inventions for ultimate bragging rights.</div>
     <div class="stat-row">
-      <div class="stat"><div class="v" id="bestDisp">0</div><div class="l">Bestes Ergebnis</div></div>
+      <div class="stat"><div class="v" id="bestDisp">0</div><div class="l">Best Score</div></div>
       <div class="stat"><div class="v">5</div><div class="l">Level</div></div>
-      <div class="stat"><div class="v">3</div><div class="l">Leben</div></div>
+      <div class="stat"><div class="v">3</div><div class="l">Lives</div></div>
     </div>
-    <button class="btn btn-p" onclick="startGame()">▶ Spielen</button>
+    <button class="btn btn-p" onclick="startGame()">▶ Play Now</button>
     <button class="btn btn-s" onclick="openShop()">🛒 Shop</button>
-    <a class="lnk" href="/">← Start</a>
+    <a class="lnk" href="/">← Home</a>
   </div>
 
   <div id="hud">
-    <div class="hud-bl"><div class="hud-l">Punkte</div><div class="hud-v" id="hudScore">0</div></div>
+    <div class="hud-bl"><div class="hud-l">Score</div><div class="hud-v" id="hudScore">0</div></div>
     <div class="hud-bl" style="align-items:center"><div class="hud-l">Level</div><div class="hud-v" id="hudLevel">1</div></div>
     <div class="hud-bl" style="align-items:flex-end">
       <div class="hud-l">HP</div>
@@ -113,46 +113,46 @@ a.lnk{color:#64748b;font-size:.82rem;text-decoration:none;}
     <div style="font-size:3rem">💥</div>
     <div class="g-title" style="font-size:1.6rem">Game Over</div>
     <div class="stat-row">
-      <div class="stat"><div class="v" id="endScore">0</div><div class="l">Punkte</div></div>
+      <div class="stat"><div class="v" id="endScore">0</div><div class="l">Score</div></div>
       <div class="stat"><div class="v" id="endLevel">1</div><div class="l">Level</div></div>
     </div>
-    <div id="newBest" style="color:var(--acc);font-weight:700;font-size:.88rem;display:none">⭐ Neuer Rekord</div>
-    <button class="btn btn-p" onclick="startGame()">🔄 Nochmal</button>
-    <button class="btn btn-s" onclick="goHome()">🏠 Start</button>
+    <div id="newBest" style="color:var(--acc);font-weight:700;font-size:.88rem;display:none">⭐ New Record</div>
+    <button class="btn btn-p" onclick="startGame()">🔄 Try Again</button>
+    <button class="btn btn-s" onclick="goHome()">🏠 Home</button>
   </div>
 
   <div class="scr" id="sWin">
     <div style="font-size:3rem">🏆</div>
-    <div class="g-title" style="font-size:1.6rem;color:#4ade80">Gewonnen!</div>
+    <div class="g-title" style="font-size:1.6rem;color:#4ade80">You Win!</div>
     <div class="stat-row">
-      <div class="stat"><div class="v" id="winScore">0</div><div class="l">Punkte</div></div>
+      <div class="stat"><div class="v" id="winScore">0</div><div class="l">Score</div></div>
     </div>
-    <div id="newBest2" style="color:var(--acc);font-weight:700;font-size:.88rem;display:none">⭐ Neuer Rekord</div>
-    <button class="btn btn-p" onclick="startGame()">🔄 Nochmal</button>
-    <button class="btn btn-s" onclick="goHome()">🏠 Start</button>
+    <div id="newBest2" style="color:var(--acc);font-weight:700;font-size:.88rem;display:none">⭐ New Record</div>
+    <button class="btn btn-p" onclick="startGame()">🔄 Play Again</button>
+    <button class="btn btn-s" onclick="goHome()">🏠 Home</button>
   </div>
 
   <div id="shopOv">
     <h2 style="font-size:1.4rem;font-weight:900">🛒 Shop</h2>
     <div id="shopList" style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px;max-height:55vh;overflow-y:auto"></div>
-    <button class="btn btn-s" style="max-width:200px" onclick="closeShop()">✕ Zurück</button>
+    <button class="btn btn-s" style="max-width:200px" onclick="closeShop()">✕ Back</button>
   </div>
 
   <div id="ad">
-    <span>📢 Anzeigen unterstützen das Team</span>
-    <button class="bb" onclick="buyRemoveAds()">Entfernen 1,99$</button>
+    <span>📢 Ads support our team</span>
+    <button class="bb" onclick="buyRemoveAds()">Remove $1.99</button>
   </div>
 </div>
 
 <script>
 const CFG = {
-  pid:    'uninvention-engine',
-  lang:   'de',
-  acc:    '#f472b6',
-  accN:   parseInt('#f472b6'.replace('#',''), 16),
-  accRGB: '244,114,182'.split(',').map(Number),
+  pid:    'causality-carnival',
+  lang:   'en',
+  acc:    '#2dd4bf',
+  accN:   parseInt('#2dd4bf'.replace('#',''), 16),
+  accRGB: '45,212,191'.split(',').map(Number),
   iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提ش示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
-  lvls:   [],
+  lvls:   [{"number":1,"name":{"ar":"معضلة الدومينو","en":"The Domino Dilemma"},"difficulty":"easy","pairs":4,"timeLimit":60},{"number":2,"name":{"ar":"انفجار البالون العظيم","en":"The Great Balloon Burst"},"difficulty":"medium","pairs":6,"timeLimit":50},{"number":3,"name":{"ar":"لغز ساعة الوقواق","en":"The Cuckoo Clock Conundrum"},"difficulty":"medium","pairs":8,"timeLimit":45},{"number":4,"name":{"ar":"نزهة الحركة الدائمة","en":"The Perpetual Motion Picnic"},"difficulty":"hard","pairs":10,"timeLimit":40},{"number":5,"name":{"ar":"السمفونية الكونية الكبرى","en":"The Grand Cosmic Symphony"},"difficulty":"expert","pairs":12,"timeLimit":35}],
 };
 const SK  = 'rt_' + CFG.pid;
 const S   = () => JSON.parse(localStorage.getItem(SK) || '{}');
@@ -674,7 +674,7 @@ function openShop(){
   });
   if(!cur.adsRemoved){
     const d=document.createElement('div'); d.className='si';
-    d.innerHTML=`<div><div class="si-n">🚫 Anzeigen unterstützen das Team</div><div class="si-p">Entfernen 1,99$</div></div>`+
+    d.innerHTML=`<div><div class="si-n">🚫 Ads support our team</div><div class="si-p">Remove $1.99</div></div>`+
       `<button class="bb" onclick="buyRemoveAds()">Shop</button>`;
     list.appendChild(d);
   }

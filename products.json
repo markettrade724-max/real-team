@@ -3499,5 +3499,157 @@
     "levels": null,
     "generated": true,
     "generatedAt": "2026-05-04T10:19:07.780Z"
+  },
+  {
+    "id": "causality-carnival",
+    "slug": "causality-carnival",
+    "type": "Creative Physics Sandbox",
+    "category": "game",
+    "status": "available",
+    "emoji": "🎢",
+    "templateFile": "memory-game.html",
+    "accent": "#2dd4bf",
+    "accentRgb": "45,212,191",
+    "gradient": "135deg,#042830,#134e4a",
+    "emojis": [],
+    "name": {
+      "ar": "كرنفال السببية",
+      "en": "The Causality Carnival",
+      "fr": "Le Carnaval de la Causalité",
+      "es": "El Carnaval de la Causalidad",
+      "de": "Der Kausalitäts-Karneval",
+      "zh": "因果嘉年华"
+    },
+    "desc": {
+      "ar": "أطلق العنان لعالمك الداخلي المجنون في صندوق رمل نابض بالحياة حيث يتراجع المنطق أمام التركيبات السخيفة. قم ببناء آلات معقدة، وشاهد الإخفاقات المذهلة أو النجاحات غير المحتملة، وتحدَّ الأصدقاء لتفوق على أكثر اختراعاتك عبثية للحصول على حقوق المفاخرة المطلقة.",
+      "en": "Unleash your inner mad scientist in a vibrant sandbox where logic takes a backseat to ludicrous contraptions. Build intricate machines, witness spectacular failures or improbable successes, and challenge friends to out-engineer your most absurd inventions for ultimate bragging rights.",
+      "fr": "Libérez le savant fou qui sommeille en vous dans un bac à sable vibrant où la logique cède le pas à des engins farfelus. Construisez des machines complexes, soyez témoin d'échecs spectaculaires ou de succès improbables, et défiez vos amis à surpasser vos inventions les plus absurdes pour des droits de vantardise ultimes.",
+      "es": "Libera a tu científico loco interior en un vibrante mundo sandbox donde la lógica cede ante artilugios descabellados. Construye máquinas intrincadas, presencia fallos espectaculares o éxitos improbables, y desafía a tus amigos a superar tus inventos más absurdos para obtener el máximo derecho a presumir.",
+      "de": "Entfesseln Sie Ihren inneren verrückten Wissenschaftler in einer lebendigen Sandbox, in der Logik hinter absurden Apparaturen zurücktritt. Bauen Sie komplizierte Maschinen, erleben Sie spektakuläre Fehlschläge oder unwahrscheinliche Erfolge und fordern Sie Freunde heraus, Ihre absurdesten Erfindungen für die ultimativen Prahlereien zu übertreffen.",
+      "zh": "在这个充满活力的沙盒中释放你内心的疯狂科学家，让逻辑让位于荒谬的装置。建造复杂的机器，见证壮观的失败或不可思议的成功，并挑战朋友们超越你最荒谬的发明，争夺最终的吹牛资本。"
+    },
+    "tags": [
+      "physics puzzle",
+      "sandbox",
+      "creativity",
+      "viral",
+      "social",
+      "humor",
+      "chain reaction",
+      "simulation"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提ش示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "story": null,
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "معضلة الدومينو",
+          "en": "The Domino Dilemma"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "انفجار البالون العظيم",
+          "en": "The Great Balloon Burst"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "لغز ساعة الوقواق",
+          "en": "The Cuckoo Clock Conundrum"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "نزهة الحركة الدائمة",
+          "en": "The Perpetual Motion Picnic"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "السمفونية الكونية الكبرى",
+          "en": "The Grand Cosmic Symphony"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-05-04T15:56:03.761Z"
   }
 ]
