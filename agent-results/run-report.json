@@ -1,63 +1,27 @@
 {
-  "runId": "2026-05-04T1554",
-  "timestamp": "2026-05-04T15:56:51.880Z",
-  "totalDuration": "125.2s",
-  "geminiCalls": "5/6",
+  "runId": "2026-05-05T1006",
+  "timestamp": "2026-05-05T10:07:04.315Z",
+  "totalDuration": "16.1s",
+  "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": false,
-      "duration": "39ms",
+      "duration": "52ms",
       "attempts": 1,
       "error": "Node.js 20 detected without native WebSocket support.\n\nSuggested solution: For Node.js < 22, install \"ws\" package and pr"
     },
     "idea": {
-      "success": true,
-      "duration": "16.2s",
+      "success": false,
+      "duration": "1.0s",
       "attempts": 1,
-      "error": null
-    },
-    "art": {
-      "success": true,
-      "duration": "7.8s",
-      "attempts": 1,
-      "error": null
-    },
-    "template": {
-      "success": true,
-      "duration": "3ms",
-      "attempts": 1,
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "8.0s",
-      "attempts": 1,
-      "error": null
-    },
-    "code": {
-      "success": true,
-      "duration": "51ms",
-      "attempts": 1,
-      "error": null
-    },
-    "marketing": {
-      "success": true,
-      "duration": "12.2s",
-      "attempts": 1,
-      "error": null
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "5.8s",
-      "attempts": 1,
-      "error": null
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 7,
-    "failed": 1,
-    "newGame": "causality-carnival",
-    "template": "memory-game.html"
+    "total": 2,
+    "passed": 0,
+    "failed": 2,
+    "newGame": null,
+    "template": null
   }
 }
