@@ -165,7 +165,7 @@ const CFG = {
   lang:   'zh',
   acc:    '#f472b6',
   emoji:  '🎭',
-  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}] || [],   // 🔥 إصلاح: حماية من القيمة الفارغة
   name:   '荒诞作者AI',
   desc:   '成为你的混沌喜剧宇宙的导演。输入提示并观看搞笑超现实视频。',
   gemini: '{{GEMINI_KEY}}',
@@ -612,7 +612,7 @@ function buildCreative(root){
 // ─── SHOP ──────────────────────────────────────────────────────
 function openShop(){
   const cur=S(), list=document.getElementById('shopList'); list.innerHTML='';
-  CFG.iaps.forEach(item=>{
+  (CFG.iaps || []).forEach(item=>{                        // 🔥 تصحيح: حماية إضافية من المصفوفة الفارغة
     const owned=!!cur['own_'+item.id];
     const name=(item.name&&(item.name[CFG.lang]||item.name.en))||item.id;
     const d=document.createElement('div'); d.className='si';

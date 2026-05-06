@@ -165,7 +165,7 @@ const CFG = {
   lang:   'fr',
   acc:    '#818cf8',
   emoji:  '🔮',
-  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}] || [],   // 🔥 إصلاح: حماية من القيمة الفارغة
   name:   'Forge des Mythes Alpha',
   desc:   'Co-créez un univers entier de dieux, héros et bêtes légendaires avec une IA puissante.',
   gemini: '{{GEMINI_KEY}}',
@@ -612,7 +612,7 @@ function buildCreative(root){
 // ─── SHOP ──────────────────────────────────────────────────────
 function openShop(){
   const cur=S(), list=document.getElementById('shopList'); list.innerHTML='';
-  CFG.iaps.forEach(item=>{
+  (CFG.iaps || []).forEach(item=>{                        // 🔥 تصحيح: حماية إضافية من المصفوفة الفارغة
     const owned=!!cur['own_'+item.id];
     const name=(item.name&&(item.name[CFG.lang]||item.name.en))||item.id;
     const d=document.createElement('div'); d.className='si';
