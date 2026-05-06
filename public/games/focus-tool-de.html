@@ -168,7 +168,7 @@ const CFG = {
   iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"stats-pro","type":"feature","price":2.49,"emoji":"📊","name":{"ar":"إحصائيات Pro","en":"Pro Stats","fr":"Stats Pro","es":"Stats Pro","de":"Pro-Statistiken","zh":"专业统计"}},{"id":"themes-pack","type":"cosmetic","price":1.99,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack de thèmes","es":"Pack de temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-pro","type":"unlock","price":4.99,"emoji":"👑","name":{"ar":"النسخة Pro الكاملة","en":"Full Pro Version","fr":"Version Pro complète","es":"Versión Pro completa","de":"Vollständige Pro-Version","zh":"完整Pro版"}}],
   name:   'Fokus-Tool',
   desc:   'Intelligenter Pomodoro-Timer mit Statistiken',
-  gemini: '',
+  gemini: '{{GEMINI_KEY}}',
 };
 const SK = 'rt_' + CFG.pid;
 const S  = () => JSON.parse(localStorage.getItem(SK) || '{}');
