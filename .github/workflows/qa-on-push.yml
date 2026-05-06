@@ -7,8 +7,8 @@ on:
       - 'server.js'
       - 'public/**'
       - 'products.json'
-      - 'templates/**'          # ← أضفنا القوالب
-      - 'game-generator.js'     # ← أضفنا المولّد
+      - 'templates/**'
+      - 'game-generator.js'
   workflow_dispatch:
 
 jobs:
@@ -22,31 +22,33 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Wait for deployment
+      - name: Wait for Vercel deployment
         run: |
-          echo "⏳ Waiting for Railway deployment..."
-          for i in {1..12}; do
+          echo "⏳ Waiting for Vercel deployment to finish..."
+          # Vercel deploys usually take < 2 minutes; poll the site until it responds with 200
+          for i in {1..24}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL || echo "000")
-            if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ] || [ "$STATUS" = "302" ]; then
-              echo "✅ Site is live (HTTP $STATUS)"
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ Site is live (HTTP 200)"
               exit 0
             fi
-            echo "   Attempt $i/12 — got $STATUS, retrying in 10s..."
-            sleep 10
+            echo "   Attempt $i/24 — HTTP $STATUS, retrying in 5s..."
+            sleep 5
           done
           echo "❌ Site did not become ready after 2 minutes"
           exit 1
         env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://real-team-production.up.railway.app' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://real-team.vercel.app' }}
 
       - name: Run QA tests
         run: node scripts/qa-bot.js
         env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://real-team-production.up.railway.app' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://real-team.vercel.app' }}
 
       - name: Upload QA report
         if: always()
