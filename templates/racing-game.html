@@ -180,7 +180,7 @@ const CFG = {
   laps:   Number('{{TOTAL_LAPS}}')      || 3,
   maxSpd: Number('{{MAX_SPEED}}')       || 280,
   oppN:   Number('{{OPPONENT_COUNT}}')  || 3,
-  iaps:   {{IAPS_JSON}},
+  iaps:   {{IAPS_JSON}} || [],          // 🔥 تأمين ضد القيمة الفارغة
   lang:   '{{LANG}}',
   acc:    '{{ACCENT}}',
   accHex: parseInt('{{ACCENT}}'.replace('#',''), 16),
@@ -192,6 +192,7 @@ const S   = () => JSON.parse(localStorage.getItem(SK) || '{}');
 const sv  = d  => localStorage.setItem(SK, JSON.stringify({...S(),...d}));
 const mob = () => 'ontouchstart' in window;
 const fmt = ms => {
+  if (typeof ms !== 'number' || isNaN(ms)) return '0:00';
   const s = Math.floor(ms / 1000);
   return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
 };
@@ -221,17 +222,14 @@ class Boot extends Phaser.Scene {
   constructor() { super('Boot'); }
 
   create() {
-    // Particle pixel
     let g = this.make.graphics({ add: false });
     g.fillStyle(0xffffff); g.fillCircle(4, 4, 4);
     g.generateTexture('px', 8, 8); g.destroy();
 
-    // Car textures
     this.makeCar('pcar', CFG.accHex, true);
     const oppColors = [0xff3333, 0x3399ff, 0x33cc66, 0xcc44ff];
     oppColors.forEach((c, i) => this.makeCar('ocar' + i, c, false));
 
-    // Skid mark texture
     g = this.make.graphics({ add: false });
     g.fillStyle(0x000000, 0.4);
     g.fillRect(0, 0, 5, 16);
@@ -243,26 +241,20 @@ class Boot extends Phaser.Scene {
   makeCar(key, col, isPlayer) {
     const g = this.make.graphics({ add: false });
     const W = 28, H = 44;
-    // Shadow
     g.fillStyle(0x000000, 0.4);
     g.fillEllipse(W/2 + 2, H/2 + 4, W * 0.9, H * 0.4);
-    // Body
     g.fillStyle(col, 1);
     g.fillRoundedRect(0, 0, W, H, 5);
-    // Roof
     g.fillStyle(0x000000, 0.45);
     g.fillRoundedRect(4, 8, W - 8, 14, 3);
-    // Tyres
     g.fillStyle(0x111111);
     [[-5, 8], [W - 2, 8], [-5, 26], [W - 2, 26]].forEach(([x, y]) =>
       g.fillRoundedRect(x, y, 7, 12, 2)
     );
-    // Tyre shine
     g.fillStyle(0x444444, 0.7);
     [[-4, 10], [W - 1, 10], [-4, 28], [W - 1, 28]].forEach(([x, y]) =>
       g.fillCircle(x + 3, y + 3, 2.5)
     );
-    // Lights
     const ltCol = isPlayer ? 0xfff176 : 0xff5555;
     g.fillStyle(ltCol); g.fillRect(3, H - 6, 8, 5); g.fillRect(W - 11, H - 6, 8, 5);
     if (isPlayer) {
@@ -287,6 +279,7 @@ class Race extends Phaser.Scene {
     this.nitroOn   = false;
     this.playerWp  = 0;
     this.lastCrash = 0;
+    this.skidLayer = null;
 
     this._buildTrack();
     this._buildCars();
@@ -300,11 +293,9 @@ class Race extends Phaser.Scene {
   _buildTrack() {
     const wp = this.waypoints;
 
-    // Grass
     const grass = this.add.graphics();
     grass.fillStyle(0x1a3d1a);
     grass.fillRect(0, 0, GW, GH);
-    // Subtle grass texture
     for (let i = 0; i < 300; i++) {
       grass.fillStyle(Phaser.Math.Between(0x15301a, 0x235c25), 0.3);
       grass.fillRect(
@@ -312,19 +303,14 @@ class Race extends Phaser.Scene {
       );
     }
 
-    // Track layers
     const track = this.add.graphics();
-    // Kerb (outer edge)
     track.lineStyle(TRACK_W + 18, 0x374151);
     this._strokeLoop(track, wp); track.strokePath();
-    // Asphalt
     track.lineStyle(TRACK_W, 0x1e2740);
     this._strokeLoop(track, wp); track.strokePath();
-    // Asphalt detail
     track.lineStyle(TRACK_W - 4, 0x252f47);
     this._strokeLoop(track, wp); track.strokePath();
 
-    // Lane dashes
     for (let i = 0; i < wp.length; i += 3) {
       const j = (i + 1) % wp.length;
       track.lineStyle(2, 0xffffff, 0.12);
@@ -334,7 +320,6 @@ class Race extends Phaser.Scene {
       track.strokePath();
     }
 
-    // Barriers
     const barOuter = this.waypoints.map(p => ({
       x: GW / 2 + (p.x - GW / 2) * 1.16,
       y: GH / 2 + (p.y - GH / 2) * 1.16,
@@ -343,21 +328,18 @@ class Race extends Phaser.Scene {
       x: GW / 2 + (p.x - GW / 2) * 0.84,
       y: GH / 2 + (p.y - GH / 2) * 0.84,
     }));
-    [barOuter, barInner].forEach((pts, bi) => {
-      // Tyre barriers
+    [barOuter, barInner].forEach((pts) => {
       for (let i = 0; i < pts.length; i += 2) {
-        track.fillStyle(bi === 0 ? 0xff3333 : 0xff3333, 0.7);
+        track.fillStyle(0xff3333, 0.7);
         track.fillCircle(pts[i].x, pts[i].y, 5);
         track.fillStyle(0x111111, 0.5);
         track.fillCircle(pts[i].x, pts[i].y, 3);
       }
-      // Line
       track.lineStyle(3, 0xff4444, 0.6);
       this._strokeLoop(track, pts);
       track.strokePath();
     });
 
-    // Start / Finish line
     const s0 = wp[0], s1 = wp[1];
     const ang = Math.atan2(s1.y - s0.y, s1.x - s0.x);
     const nx = Math.cos(ang + Math.PI / 2), ny = Math.sin(ang + Math.PI / 2);
@@ -374,7 +356,6 @@ class Race extends Phaser.Scene {
       }
     }
 
-    // Skid marks layer
     this.skidLayer = this.add.group();
   }
 
@@ -391,7 +372,6 @@ class Race extends Phaser.Scene {
       wp[0].x, wp[0].y, wp[1].x, wp[1].y
     ) * Phaser.Math.RAD_TO_DEG + 90;
 
-    // Player
     this.car = this.physics.add.image(wp[0].x, wp[0].y, 'pcar');
     this.car.setAngle(startAng);
     this.car.setDamping(true);
@@ -399,7 +379,6 @@ class Race extends Phaser.Scene {
     this.car.setMaxVelocity(CFG.maxSpd * 0.65);
     this.car.setDepth(6);
 
-    // Opponents
     this.opps = [];
     for (let i = 0; i < Math.min(CFG.oppN, 4); i++) {
       const wi = Math.floor(((i + 1) / (CFG.oppN + 1)) * wp.length);
@@ -414,7 +393,6 @@ class Race extends Phaser.Scene {
 
   // ── Particles ──────────────────────────────────────────────
   _buildParticles() {
-    // Exhaust smoke
     this.exhaust = this.add.particles(0, 0, 'px', {
       speed: { min: 10, max: 35 },
       angle: { min: 165, max: 195 },
@@ -427,7 +405,6 @@ class Race extends Phaser.Scene {
     });
     this.exhaust.setDepth(3);
 
-    // Nitro burst
     this.nitroFx = this.add.particles(0, 0, 'px', {
       speed: { min: 80, max: 180 },
       angle: { min: 155, max: 205 },
@@ -440,7 +417,6 @@ class Race extends Phaser.Scene {
     });
     this.nitroFx.setDepth(4);
 
-    // Crash sparks
     this.crashFx = this.add.particles(0, 0, 'px', {
       speed: { min: 100, max: 280 },
       angle: { min: 0, max: 360 },
@@ -493,8 +469,9 @@ class Race extends Phaser.Scene {
       o.wpIdx = wi; o.lap = 0;
     });
 
-    // Clear skid marks
-    this.skidLayer.clear(true, true);
+    if (this.skidLayer) {
+      this.skidLayer.clear(true, true);
+    }
     this.exhaust.stop();
     this.nitroFx.stop();
   }
@@ -543,9 +520,8 @@ class Race extends Phaser.Scene {
     if (spd > 90 && (L || R) && Math.random() < 0.25) {
       const sk = this.add.image(this.car.x, this.car.y, 'skid');
       sk.setAngle(this.car.angle).setAlpha(0.4).setDepth(1);
-      this.skidLayer.add(sk);
-      // Fade out old marks
-      if (this.skidLayer.getLength() > 80) {
+      if (this.skidLayer) this.skidLayer.add(sk);
+      if (this.skidLayer && this.skidLayer.getLength() > 80) {
         const old = this.skidLayer.getChildren()[0];
         this.tweens.add({ targets: old, alpha: 0, duration: 600,
           onComplete: () => { this.skidLayer.remove(old, true, true); }
@@ -553,7 +529,7 @@ class Race extends Phaser.Scene {
       }
     }
 
-    // ── Track boundary (ellipse check) ──
+    // ── Track boundary ──
     const dx = this.car.x - GW / 2, dy = this.car.y - GH / 2;
     const rx = GW * 0.36, ry = GH * 0.36;
     const d  = (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry);
@@ -596,7 +572,10 @@ class Race extends Phaser.Scene {
       const od = Phaser.Math.Distance.Between(o.s.x, o.s.y, twp.x, twp.y);
       if (od < TRACK_W * 0.6) o.wpIdx = (o.wpIdx + 1) % this.waypoints.length;
       if (o.wpIdx === 0) o.lap++;
-      if (o.lap > this.lapCount || (o.lap === this.lapCount && o.wpIdx > this.playerWp)) ahead++;
+      // 🔥 تصحيح: مقارنة أدق للتقدم (معرفة من في المقدمة)
+      const oppProgress = o.lap * 1000 + o.wpIdx;
+      const playerProgress = this.lapCount * 1000 + this.playerWp;
+      if (oppProgress > playerProgress) ahead++;
     });
 
     // ── HUD update ──
@@ -623,7 +602,7 @@ class Race extends Phaser.Scene {
     this.finished = true; this.racing = false;
     this.exhaust.stop(); this.nitroFx.stop();
     this.cameras.main.shake(350, 0.012);
-    const pos = this.opps.filter(o => o.lap >= CFG.laps).length + 1;
+    const pos = this.opps.filter(o => (o.lap * 1000 + o.wpIdx) > (CFG.laps * 1000)).length + 1;
     setTimeout(() => _showEnd(this.elapsed, pos), 900);
   }
 }
@@ -729,7 +708,7 @@ wire('bL', 'L'); wire('bR', 'R'); wire('bN', 'N');
 function openShop() {
   const cur = S(), list = document.getElementById('shopList');
   list.innerHTML = '';
-  CFG.iaps.forEach(item => {
+  (CFG.iaps || []).forEach(item => {
     const owned = !!cur['own_' + item.id];
     const name  = (item.name && (item.name[CFG.lang] || item.name.en)) || item.id;
     const desc  = (item.desc && (item.desc[CFG.lang] || item.desc.en)) || '';
