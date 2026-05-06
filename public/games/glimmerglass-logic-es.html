@@ -2,238 +2,87 @@
 <html lang="es" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lógica Glimmerglass — realteam</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Lógica Glimmerglass</title>
 <style>
-:root{
-  --bg:#060610; --surface:#0d0d1f; --border:rgba(255,255,255,0.08);
-  --accent:#818cf8; --accentRgb:129,140,248;
-  --text:#f1f5f9; --muted:#64748b;
-}
+:root{--acc:#818cf8;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;padding:20px 16px 100px;}
-body::before{content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(129,140,248,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(129,140,248,0.03) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;z-index:0;}
-.wrap{position:relative;z-index:1;width:100%;max-width:600px;}
+html,body{height:100%;overflow:hidden;background:#000;
+  font-family:'Segoe UI',Tajawal,sans-serif;color:#f1f5f9;}
+#wrap{position:relative;width:100%;max-width:420px;height:100vh;margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px;}
 
-/* HEADER */
-.g-header{text-align:center;padding:24px 0 20px;}
-.g-back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:0.82rem;
-  text-decoration:none;margin-bottom:20px;transition:color 0.2s;}
-.g-back:hover{color:var(--text);}
-.g-emoji{font-size:3.5rem;filter:drop-shadow(0 0 24px rgba(129,140,248,0.5));display:block;margin-bottom:12px;}
-.g-title{font-size:1.8rem;font-weight:900;letter-spacing:-1px;}
-.g-title em{font-style:normal;color:var(--accent);}
-.g-sub{color:var(--muted);font-size:0.88rem;margin-top:6px;}
+.grid{display:grid;gap:8px;justify-content:center;width:100%;max-width:340px;
+  grid-template-columns:repeat(3,1fr);}
+.card{aspect-ratio:1;font-size:3rem;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.07);border-radius:12px;cursor:pointer;
+  transition:transform .2s,background .2s;user-select:none;}
+.card.flipped{background:rgba(129,140,248,.25);transform:scale(1.05);}
+.card.matched{opacity:.4;pointer-events:none;}
 
-/* AD BANNER (يختفي عند شراء no-ads) */
-#ad-banner{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;
-  padding:10px;text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:16px;
-  display:flex;align-items:center;justify-content:space-between;gap:8px;}
-#ad-banner.hidden{display:none;}
-.ad-remove-btn{background:rgba(129,140,248,0.15);color:var(--accent);border:none;
-  padding:5px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;font-family:inherit;white-space:nowrap;}
-
-/* HUD */
-.hud{display:flex;justify-content:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
-.hud-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 18px;text-align:center;min-width:80px;}
-.hud-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);}
-.hud-lbl{font-size:0.65rem;color:var(--muted);margin-top:2px;letter-spacing:0.05em;}
-
-/* GRID */
-.g-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
-.card{aspect-ratio:1;border-radius:14px;cursor:pointer;position:relative;
-  transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(.175,.885,.32,1.275);}
-.card.flipped,.card.matched{transform:rotateY(180deg);}
-.card.matched{cursor:default;}
-.face{position:absolute;inset:0;border-radius:14px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;}
-.back{background:var(--surface);border:1px solid var(--border);}
-.back::after{content:'?';font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:rgba(129,140,248,0.3);}
-.front{background:linear-gradient(135deg,var(--surface),rgba(129,140,248,0.15));
-  border:1px solid rgba(129,140,248,0.35);transform:rotateY(180deg);font-size:3rem;}
-.card.matched .front{border-color:var(--accent);box-shadow:0 0 16px rgba(129,140,248,0.35);}
-
-/* HINT (يُشترى) */
-#hint-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;justify-content:center;}
-.hint-btn{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.3);
-  color:var(--accent);padding:8px 16px;border-radius:10px;font-size:0.85rem;cursor:pointer;
-  font-family:inherit;transition:background 0.2s;}
-.hint-btn:hover{background:rgba(129,140,248,0.2);}
-.hint-count{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted);}
-
-/* ACTIONS */
-.g-actions{display:flex;gap:10px;margin-bottom:16px;}
-.btn-main{flex:1;padding:13px;border-radius:12px;background:var(--accent);color:#000;
-  font-weight:700;font-size:0.95rem;font-family:inherit;border:none;cursor:pointer;
-  transition:transform 0.2s,box-shadow 0.2s;}
-.btn-main:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(129,140,248,0.4);}
-
-/* WIN OVERLAY */
-#win-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.85);
-  backdrop-filter:blur(12px);align-items:center;justify-content:center;}
-#win-overlay.show{display:flex;}
-.win-box{background:var(--surface);border:1px solid rgba(129,140,248,0.4);border-radius:24px;
-  padding:40px 32px;text-align:center;max-width:360px;width:90%;
-  box-shadow:0 0 60px rgba(129,140,248,0.2);}
-.win-emoji{font-size:3.5rem;display:block;margin-bottom:14px;}
-.win-title{font-size:1.8rem;font-weight:900;color:var(--accent);margin-bottom:8px;}
-.win-stats{color:var(--muted);font-size:0.88rem;line-height:1.9;margin-bottom:24px;}
-.win-stats strong{color:var(--text);}
+.hud{display:flex;justify-content:space-between;width:100%;max-width:340px;font-size:.85rem;}
+.hud span{font-family:monospace;color:var(--acc);}
+.btn{background:var(--acc);color:#000;border:none;padding:12px 28px;border-radius:10px;
+  font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem;}
+.btn:active{transform:scale(.95);}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="g-header">
-    <a href="/" class="g-back">← {{BACK_LABEL}}</a>
-    <span class="g-emoji">🧩</span>
-    <h1 class="g-title">{{GAME_NAME_HTML}}</h1>
-    <p class="g-sub">Adéntrate en un mundo donde manipulas la perspectiva para crear lo imposible. Gira, desplaza y organiza piezas 3D para desvelar asombrosas ilusiones ópticas en 2D que desconciertan la mente. ¡Comparte tus creaciones alucinantes y haz que el mundo cuestione la misma esencia de la realidad!</p>
-  </div>
-
-  <!-- إعلان (يختفي بعد شراء no-ads) -->
-  <div id="ad-banner">
-    <span>📢 Los anuncios apoyan al equipo</span>
-    <button class="ad-remove-btn" onclick="IAPStore.open()">Eliminar $1.99</button>
-  </div>
-
-  <!-- HUD -->
+<div id="wrap">
   <div class="hud">
-    <div class="hud-card"><div class="hud-val" id="h-moves">0</div><div class="hud-lbl">Movimientos</div></div>
-    <div class="hud-card"><div class="hud-val" id="h-time">0:00</div><div class="hud-lbl">Tiempo</div></div>
-    <div class="hud-card"><div class="hud-val" id="h-pairs">0/4</div><div class="hud-lbl">Pares</div></div>
+    <span id="moves">Movimientos: 0</span>
+    <span id="pairs">Pares: 0/4</span>
+    <span id="hintBtn" style="cursor:pointer;" title="Pista">💡 2</span>
   </div>
-
-  <!-- GRID -->
-  <div class="g-grid" id="grid"></div>
-
-  <!-- HINT BAR -->
-  <div id="hint-bar">
-    <button class="hint-btn" onclick="useHint()">💡 Pista</button>
-    <span class="hint-count" id="hint-count">{{HINTS_LEFT}} Pistas restantes</span>
-  </div>
-
-  <!-- ACTIONS -->
-  <div class="g-actions">
-    <button class="btn-main" onclick="initGame()">🔄 Nuevo juego</button>
-  </div>
+  <div class="grid" id="grid"></div>
+  <button class="btn" onclick="restart()" id="restartBtn">Nuevo juego</button>
+  <div id="winMsg" style="color:var(--acc);font-weight:900;font-size:1.2rem;display:none;">¡Ganaste!</div>
 </div>
-
-<!-- WIN -->
-<div id="win-overlay">
-  <div class="win-box">
-    <span class="win-emoji">🏆</span>
-    <div class="win-title">¡Ganaste!</div>
-    <div class="win-stats" id="win-stats"></div>
-    <button class="btn-main" onclick="initGame();document.getElementById('win-overlay').classList.remove('show')">Jugar de nuevo</button>
-  </div>
-</div>
-
-<!-- IAP STORE -->
-<script src="/iap-modal.js"></script>
 <script>
-// ── Game Config ──────────────────────────────────────────────
-const EMOJIS = ["🎮","⭐","🔥","💎","🚀","🌟","🎯","🎪","🎨","🎭","🔮","💡"];
-const PAIRS  = 4;
-const COLS   = 3;
-let hints    = 2;
-
-// ── IAP Init ─────────────────────────────────────────────────
-IAPStore.init('glimmerglass-logic', 'es', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}]);
-
-// إخفاء الإعلان إذا كان المستخدم اشترى no-ads سابقاً
-if (IAPStore.isOwned('no-ads')) document.getElementById('ad-banner').classList.add('hidden');
-window.addEventListener('iap:no-ads', () => document.getElementById('ad-banner').classList.add('hidden'));
-
-// إضافة تلميحات عند شراء hint-pack
-window.addEventListener('iap:purchased', e => {
-  if (e.detail.iapId === 'hint-pack') { hints += 10; updateHintCount(); }
-});
-
-// ── Game Logic ───────────────────────────────────────────────
-let cards=[], flipped=[], matched=0, moves=0, secs=0, timer=null, locked=false;
-
-function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
-
-function initGame(){
-  clearInterval(timer); secs=0; moves=0; matched=0; flipped=[]; locked=false;
-  const pool = shuffle([...EMOJIS]).slice(0, PAIRS);
-  cards = shuffle([...pool,...pool].map((e,i)=>({id:i,e,flipped:false,matched:false})));
-  renderGrid(); updateHUD();
-  timer = setInterval(()=>{ secs++; updateTime(); }, 1000);
+const EMOJIS = ["🎮","⭐","🔥","💎","🚀","🌟","🎯","🎪","🎨","🎭","🔮","💡"].slice(0, 4);
+const TOTAL_PAIRS = 4;
+let moves = 0, found = 0, hintsLeft = 2, lock = false, first = null, second = null;
+const movesEl = document.getElementById('moves'), pairsEl = document.getElementById('pairs');
+const grid = document.getElementById('grid'), winMsg = document.getElementById('winMsg');
+const hintBtn = document.getElementById('hintBtn');
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let cards = shuffle([...EMOJIS,...EMOJIS].map((e,i)=>({emoji:e,id:i,matched:false,flipped:false})));
+function render(){
+  grid.innerHTML='';
+  cards.forEach((c,i)=>{
+    const d=document.createElement('div'); d.className='card'+(c.matched?' matched':c.flipped?' flipped':'');
+    d.textContent=c.flipped||c.matched?c.emoji:'';
+    d.addEventListener('click',()=>flip(i));
+    grid.appendChild(d);
+  });
+  pairsEl.textContent=`Pares: ${found}/${TOTAL_PAIRS}`;
 }
-
-function renderGrid(){
-  document.getElementById('grid').innerHTML = cards.map(c=>`
-    <div class="card${c.flipped?' flipped':''}${c.matched?' matched':''}" id="c${c.id}" onclick="flip(${c.id})">
-      <div class="face back"></div>
-      <div class="face front">${c.e}</div>
-    </div>`).join('');
-}
-
-function flip(id){
-  if(locked) return;
-  const c=cards[id];
-  if(c.flipped||c.matched||flipped.length===2) return;
-  c.flipped=true; document.getElementById('c'+id).classList.add('flipped');
-  flipped.push(id);
-  if(flipped.length===2){
-    moves++; document.getElementById('h-moves').textContent=moves; locked=true;
-    const[a,b]=flipped;
-    if(cards[a].e===cards[b].e){
-      cards[a].matched=cards[b].matched=true;
-      ['c'+a,'c'+b].forEach(id=>document.getElementById(id).classList.add('matched'));
-      matched++; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS;
-      flipped=[]; locked=false;
-      if(matched===PAIRS) setTimeout(showWin,500);
-    } else {
-      setTimeout(()=>{
-        cards[a].flipped=cards[b].flipped=false;
-        ['c'+a,'c'+b].forEach(id=>document.getElementById(id).classList.remove('flipped'));
-        flipped=[]; locked=false;
-      },900);
-    }
+function flip(i){
+  if(lock||cards[i].matched||cards[i].flipped||i===first)return;
+  cards[i].flipped=true;render();
+  if(first===null){first=i;return;}
+  second=i;moves++;movesEl.textContent=`Movimientos: ${moves}`;
+  if(cards[first].emoji===cards[second].emoji){
+    cards[first].matched=cards[second].matched=true;found++;
+    if(found===TOTAL_PAIRS){winMsg.style.display='block';}
+    first=second=null;render();
+  }else{
+    lock=true;
+    setTimeout(()=>{cards[first].flipped=cards[second].flipped=false;first=second=null;lock=false;render();},800);
   }
 }
-
-function useHint(){
-  if(hints<=0){ IAPStore.open(); return; }
-  hints--;
-  updateHintCount();
-  // اكشف زوجاً غير مكتشف لثانية واحدة
-  const hidden = cards.filter(c=>!c.matched&&!c.flipped);
-  if(hidden.length<2) return;
-  const pair = hidden.slice(0,2);
-  pair.forEach(c=>document.getElementById('c'+c.id).classList.add('flipped'));
-  setTimeout(()=>{ pair.forEach(c=>{ if(!c.matched) document.getElementById('c'+c.id).classList.remove('flipped'); }); }, 1000);
-}
-
-function updateHintCount(){ document.getElementById('hint-count').textContent = hints+' Pistas restantes'; }
-function updateHUD(){ document.getElementById('h-moves').textContent=moves; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS; updateTime(); }
-function updateTime(){ const m=Math.floor(secs/60),s=secs%60; document.getElementById('h-time').textContent=m+':'+(s<10?'0':'')+s; }
-
-function showWin(){
-  clearInterval(timer);
-  const stars = moves<=PAIRS*2?'⭐⭐⭐':moves<=PAIRS*3?'⭐⭐':'⭐';
-  const m=Math.floor(secs/60),s=secs%60;
-  document.getElementById('win-stats').innerHTML=`${stars}<br><strong>${moves}</strong> Movimientos · <strong>${m}:${s<10?'0':''}${s}</strong>`;
-  document.getElementById('win-overlay').classList.add('show');
-}
-
-initGame();
-</script>
-
-<!-- Social Bar -->
-<script src="/social-bar.js"></script>
-<script>
-  SocialBar.init({
-    title: 'Lógica Glimmerglass — realteam',
-    url:   'https://real-team-production.up.railway.app/games/glimmerglass-logic.html',
-    lang:  'es'
-  });
+hintBtn.addEventListener('click',()=>{
+  if(lock||hintsLeft<=0)return;
+  const unflipped=cards.reduce((a,c,i)=>(!c.flipped&&!c.matched?a.concat(i):a),[]);
+  if(unflipped.length<2)return;
+  const i1=unflipped[Math.floor(Math.random()*unflipped.length)];
+  const pair=cards.findIndex((c,idx)=>idx!==i1&&c.emoji===cards[i1].emoji&&!c.flipped&&!c.matched);
+  if(pair>-1){[cards[i1].flipped,cards[pair].flipped]=[true,true];hintsLeft--;hintBtn.textContent=`💡 ${hintsLeft}`;render();
+    setTimeout(()=>{cards[i1].flipped=cards[pair].flipped=false;render();},1200);
+  }
+});
+function restart(){cards=shuffle([...EMOJIS,...EMOJIS].map((e,i)=>({emoji:e,id:i,matched:false,flipped:false})));moves=found=0;hintsLeft=2;first=second=null;lock=false;winMsg.style.display='none';hintBtn.textContent=`💡 ${hintsLeft}`;render();}
+render();
 </script>
 </body>
 </html>
