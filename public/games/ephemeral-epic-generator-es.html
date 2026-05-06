@@ -206,7 +206,7 @@ const CFG = {
   pid:  'ephemeral-epic-generator',
   lang: 'es',
   acc:  '#a78bfa',
-  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
+  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}] || [],
 };
 const SK = 'rt_' + CFG.pid;
 const S  = () => JSON.parse(localStorage.getItem(SK) || '{}');
@@ -334,23 +334,28 @@ const ENEMIES = {
 
 // ─── CANVAS BACKGROUND ────────────────────────────────────────
 const cv  = document.getElementById('sceneCanvas');
-const ctx = cv.getContext('2d');
+const ctx = cv ? cv.getContext('2d') : null;
 let particles = [];
 
 function resizeCanvas(){
+  if (!cv) return;
   const el = document.getElementById('scene');
+  if (!el) return;
   cv.width  = el.clientWidth;
   cv.height = el.clientHeight;
 }
 
 function spawnParticles(scene){
+  if (!cv) return;
   particles = [];
+  // Use actual accent color, not CSS variable
+  const accentColor = CFG.acc || '#818cf8';
   const colors = {
     village: ['#f97316','#fbbf24','#fde68a'],
     camp:    ['#f97316','#ef4444','#fbbf24'],
     forest:  ['#22c55e','#16a34a','#86efac'],
     dungeon: ['#818cf8','#a78bfa','#c4b5fd'],
-    default: ['var(--acc)','#ffffff','#818cf8'],
+    default: [accentColor, '#ffffff', accentColor],
   };
   const key = Object.keys(colors).find(k => scene.startsWith(k)) || 'default';
   const palette = colors[key];
@@ -368,7 +373,7 @@ function spawnParticles(scene){
 }
 
 function animBg(){
-  if(!ctx) return;
+  if (!cv || !ctx) return requestAnimationFrame(animBg);
   ctx.clearRect(0,0,cv.width,cv.height);
   particles.forEach(p => {
     p.x += p.vx; p.y += p.vy; p.a -= .003;
@@ -431,11 +436,9 @@ function goScene(id, skipAction){
   if(!sc){ console.warn('Unknown scene:', id); return; }
   currentScene = id;
 
-  // Background
   document.getElementById('sceneBg').style.background = sc.bg;
   spawnParticles(id);
 
-  // Emoji
   const sEmoji = document.getElementById('sceneEmoji');
   sEmoji.textContent = sc.emoji;
   sEmoji.style.display = 'block';
@@ -443,11 +446,9 @@ function goScene(id, skipAction){
   document.getElementById('combatBars').style.display = 'none';
   document.getElementById('combatActions').style.display = 'none';
 
-  // Dialog
   document.getElementById('speaker').textContent  = sc.speaker;
   document.getElementById('dialogText').textContent = sc.text;
 
-  // Choices
   const ch = document.getElementById('choices');
   ch.innerHTML = '';
   ch.style.display = 'flex';
@@ -462,12 +463,11 @@ function goScene(id, skipAction){
 
 // ─── CHOICE HANDLER ────────────────────────────────────────────
 function handleChoice(c){
-  // Actions
   if(c.action === 'rest'){
     const heal = 30;
     G.hp = Math.min(G.maxHp, G.hp + heal);
     G.mp = Math.min(G.maxMp, G.mp + 10);
-    addLog(`💤 Descansar (+30 HP)`, 'acc');
+    addLog('💤 Descansar (+30 HP)', 'acc');
     floatDmg(null, -heal, '#4ade80');
     updateHUD();
   }
@@ -492,6 +492,7 @@ function handleChoice(c){
 // ─── COMBAT ────────────────────────────────────────────────────
 function startCombat(enemyKey){
   const def = ENEMIES[enemyKey];
+  if (!def) return;
   G.enemy = { ...def, key: enemyKey };
   G.defending = false;
 
@@ -516,6 +517,7 @@ function startCombat(enemyKey){
 
 function updateEnemyBar(){
   const e = G.enemy;
+  if (!e) return;
   const pct = Math.max(0, e.hp / e.maxHp * 100);
   document.getElementById('enemyHpFill').style.width = pct + '%';
   document.getElementById('enemyHpVal').textContent  = Math.max(0, e.hp);
@@ -585,12 +587,12 @@ function enemyTurn(){
 function winCombat(){
   const e = G.enemy;
   G.xp += e.xp; G.gold += e.gold;
-  // Level up every 100 XP
   if(G.xp >= G.lv * 100){ G.lv++; G.maxHp += 20; G.hp = G.maxHp; G.maxMp += 10; G.mp = G.maxMp; addLog(`🌟 Level Up! Lv.${G.lv}`, 'acc'); }
   addLog(`✅ ${e.name} defeated! +${e.xp}XP +${e.gold}G`, 'acc');
+  const nextKey = G.enemy.key; // save key before clearing
   G.enemy = null;
   updateHUD();
-  goScene(ENEMIES[Object.keys(ENEMIES).find(k => ENEMIES[k] === e) || 'combat_wolf'].next || 'treasure');
+  goScene(ENEMIES[nextKey]?.next || 'treasure');
 }
 
 function loseCombat(){
@@ -614,7 +616,7 @@ window.addEventListener('resize', resizeCanvas);
 function openShop(){
   const cur = S(), list = document.getElementById('shopList');
   list.innerHTML = '';
-  CFG.iaps.forEach(item => {
+  (CFG.iaps || []).forEach(item => {
     const owned = !!cur['own_' + item.id];
     const name  = (item.name && (item.name[CFG.lang] || item.name.en)) || item.id;
     const desc  = (item.desc && (item.desc[CFG.lang] || item.desc.en)) || '';
