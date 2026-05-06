@@ -291,7 +291,7 @@
 
 <!-- HEADER -->
 <div id="header">
-  <button id="back-btn" onclick="history.back()">← {{BACK_LABEL}}</button>
+  <button id="back-btn" onclick="history.back()">← {{BACK_LBL}}</button>
   <div id="game-title">{{EMOJI}} {{GAME_NAME}}</div>
   <div id="score-hud" style="font-family:'Orbitron',monospace;color:var(--accent);font-size:.85rem;font-weight:700">0</div>
 </div>
@@ -323,7 +323,7 @@
     <div class="overlay-icon">{{EMOJI}}</div>
     <div class="overlay-title">{{GAME_NAME}}</div>
     <div class="overlay-subtitle">{{GAME_DESC}}</div>
-    <div class="level-badge">{{LEVEL_LBL}} <strong id="start-level">1</strong> — {{WAVE_LBL}} 1</div>
+    <div class="level-badge">{{LEVEL_LBL}} <strong id="start-level">1</strong></div>
     <button class="overlay-btn" id="btn-start">{{START_LBL}}</button>
   </div>
 
@@ -333,14 +333,14 @@
     <div class="overlay-title">{{WIN_TITLE}}</div>
     <div class="score-display">{{SCORE_LBL}}: <span id="final-score">0</span></div>
     <div class="overlay-subtitle" id="win-msg"></div>
-    <button class="overlay-btn" id="btn-next">{{NEXT_LBL}} →</button>
+    <button class="overlay-btn" id="btn-next">{{PLAY_AGAIN_LBL}}</button>
     <button class="overlay-btn" style="background:transparent;border:1px solid var(--accent);color:var(--accent);box-shadow:none" id="btn-restart-win">{{RESTART_LBL}}</button>
   </div>
 
   <!-- LOSE OVERLAY -->
   <div class="overlay hidden" id="overlay-lose">
     <div class="overlay-icon">💀</div>
-    <div class="overlay-title">{{LOSE_TITLE}}</div>
+    <div class="overlay-title">{{GAMEOVER_LBL}}</div>
     <div class="score-display">{{SCORE_LBL}}: <span id="lose-score">0</span></div>
     <div class="overlay-subtitle" id="lose-msg"></div>
     <button class="overlay-btn" id="btn-restart">{{RESTART_LBL}}</button>
@@ -356,8 +356,8 @@
     <button class="dpad-btn" id="btn-down">▼</button>
   </div>
   <div id="action-btns">
-    <button class="action-btn" id="btn-fire">🔫 {{FIRE_LBL}}</button>
-    <button class="action-btn" id="btn-special">⚡ {{SPECIAL_LBL}}</button>
+    <button class="action-btn" id="btn-fire">🔫 <span id="fire-lbl">Fire</span></button>
+    <button class="action-btn" id="btn-special">⚡ <span id="special-lbl">Special</span></button>
   </div>
 </div>
 
@@ -368,12 +368,52 @@
 </div>
 
 <script>
+// ── polyfill roundRect ──────────────────────────────────────
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+    this.beginPath();
+    this.moveTo(x + r.tl, y);
+    this.lineTo(x + w - r.tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+    this.lineTo(x + w, y + h - r.br);
+    this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+    this.lineTo(x + r.bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+    this.lineTo(x, y + r.tl);
+    this.quadraticCurveTo(x, y, x + r.tl, y);
+    this.closePath();
+  };
+}
+
+// ─── MULTI-LANG FALLBACK LABELS ─────────────────────────────
+const L = {
+  fire:    '{{FIRE_LBL}}'    || 'Fire',
+  special: '{{SPECIAL_LBL}}' || 'Special',
+  next:    '{{NEXT_LBL}}'    || 'Next →',
+  wave:    '{{WAVE_LBL}}'    || 'Wave',
+};
+// Patch DOM labels that generator may have missed
+(function patchLabels() {
+  const fl = document.getElementById('fire-lbl');
+  if (fl && fl.textContent === 'Fire' && L.fire !== 'Fire') fl.textContent = L.fire;
+  const sl = document.getElementById('special-lbl');
+  if (sl && sl.textContent === 'Special' && L.special !== 'Special') sl.textContent = L.special;
+  const nb = document.getElementById('btn-next');
+  if (nb && nb.textContent.trim() === '{{PLAY_AGAIN_LBL}}') nb.textContent = L.next;
+  // If generator left {{WAVE_LBL}} unreplaced, patch the badge
+  const badge = document.querySelector('.level-badge');
+  if (badge && badge.innerHTML.includes('{{')) {
+    badge.innerHTML = '{{LEVEL_LBL}} <strong id="start-level">1</strong> &mdash; ' + L.wave + ' 1';
+  }
+})();
+
 // ─── CONFIG ──────────────────────────────────────────────────
 const CONFIG = {
   emoji: '{{EMOJI}}',
   accent: '{{ACCENT}}',
-  levels: {{LEVELS_JSON}},
-  iaps: {{IAPS_JSON}},
+  levels: {{LEVELS_JSON}} || [],
+  iaps: {{IAPS_JSON}} || [],
   maxLives: 3,
   lifeIcon: '❤️',
 };
@@ -402,15 +442,17 @@ function resizeCanvas() {
     STATE.player.x = Math.min(STATE.player.x, w - STATE.player.r);
     STATE.player.y = Math.min(STATE.player.y, h - STATE.player.r);
   }
+  initStars();
 }
 window.addEventListener('resize', resizeCanvas);
 
 // ─── LEVEL DATA ──────────────────────────────────────────────
 function getLevelData() {
   const lvls = CONFIG.levels;
-  if (lvls && lvls.length > 0) {
+  if (Array.isArray(lvls) && lvls.length > 0) {
     return lvls[Math.min(STATE.level, lvls.length - 1)];
   }
+  // Fallback default
   return {
     enemyCount: 5 + STATE.level * 3,
     enemySpeed: 1 + STATE.level * 0.3,
@@ -418,6 +460,8 @@ function getLevelData() {
     bulletSpeed: 6,
     spawnInterval: Math.max(60, 120 - STATE.level * 10),
     emojis: ['👾','🤖','👽','🦠','💀','🔥','⚡','🌀'],
+    winMessage: 'Wave cleared!',
+    loseMessage: 'Mission failed. Try again!',
   };
 }
 
@@ -585,7 +629,12 @@ const stars = [];
 function initStars() {
   stars.length = 0;
   for (let i = 0; i < 80; i++) {
-    stars.push({ x: Math.random() * 800, y: Math.random() * 600, s: Math.random() * 2, speed: .5 + Math.random() * 1.5 });
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      s: Math.random() * 2,
+      speed: .5 + Math.random() * 1.5,
+    });
   }
 }
 
@@ -645,7 +694,6 @@ function handleSpawning() {
     spawnEnemy();
     totalSpawned++;
   }
-  // All enemies defeated AND none left to spawn → wave done
   if (totalSpawned >= ld.enemyCount && STATE.enemies.length === 0) {
     endGame(true);
   }
@@ -727,12 +775,11 @@ function gameLoop() {
     }
 
     // Hit by player bullet
-    let hit = false;
     STATE.bullets = STATE.bullets.filter(b => {
       if (dist(b, e) < e.r + b.r) {
         e.health -= b.dmg;
         spawnParticles(b.x, b.y, CONFIG.accent, 5);
-        hit = true; return false;
+        return false;
       }
       return true;
     });
@@ -781,6 +828,7 @@ function startGame() {
   document.getElementById('score-val').textContent = '0';
   document.getElementById('score-hud').textContent = '0';
   document.getElementById('level-val').textContent = STATE.level + 1;
+  document.getElementById('start-level').textContent = STATE.level + 1;
   hideAllOverlays();
   STATE.running = true;
   gameLoop();
@@ -801,14 +849,24 @@ function endGame(win) {
   }
 }
 
-function showOverlay(id) { document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
-function hideAllOverlays() { document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden')); }
+function showOverlay(id) {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+function hideAllOverlays() {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
+}
 
 // ─── CONTROLS ────────────────────────────────────────────────
 document.getElementById('btn-start').addEventListener('click', startGame);
 document.getElementById('btn-restart').addEventListener('click', startGame);
 document.getElementById('btn-restart-win').addEventListener('click', startGame);
-document.getElementById('btn-next').addEventListener('click', () => { STATE.level = Math.min(STATE.level + 1, (CONFIG.levels?.length || 5) - 1); startGame(); });
+document.getElementById('btn-next').addEventListener('click', () => {
+  const maxLevel = Array.isArray(CONFIG.levels) && CONFIG.levels.length > 0
+    ? CONFIG.levels.length - 1 : 4;
+  STATE.level = Math.min(STATE.level + 1, maxLevel);
+  startGame();
+});
 
 // D-pad
 const dpadMap = {
@@ -819,14 +877,15 @@ const dpadMap = {
 };
 Object.entries(dpadMap).forEach(([btnId, key]) => {
   const btn = document.getElementById(btnId);
+  if (!btn) return;
   btn.addEventListener('pointerdown', () => { STATE.keys[key] = true; btn.classList.add('pressed'); });
   btn.addEventListener('pointerup',   () => { STATE.keys[key] = false; btn.classList.remove('pressed'); });
   btn.addEventListener('pointerleave',() => { STATE.keys[key] = false; btn.classList.remove('pressed'); });
 });
 
-document.getElementById('btn-fire').addEventListener('pointerdown', () => { STATE.keys.fire = true; });
-document.getElementById('btn-fire').addEventListener('pointerup',   () => { STATE.keys.fire = false; });
-document.getElementById('btn-special').addEventListener('pointerdown', fireSpecial);
+document.getElementById('btn-fire')?.addEventListener('pointerdown', () => { STATE.keys.fire = true; });
+document.getElementById('btn-fire')?.addEventListener('pointerup',   () => { STATE.keys.fire = false; });
+document.getElementById('btn-special')?.addEventListener('pointerdown', fireSpecial);
 
 // Keyboard
 window.addEventListener('keydown', e => {
