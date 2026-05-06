@@ -63,7 +63,7 @@
           "fr": "10 indices",
           "es": "10 pistas",
           "de": "10 Hinweise",
-          "zh": "10个提ش示"
+          "zh": "10个提示"
         }
       },
       {
@@ -660,7 +660,7 @@
     "category": "app",
     "status": "available",
     "emoji": "🎬",
-    "templateFile": "phaser-game.html",
+    "templateFile": "memory-game.html",
     "accent": "#f472b6",
     "accentRgb": "244,114,182",
     "gradient": "135deg,#1a0533,#831843",
@@ -1393,7 +1393,7 @@
     "category": "game",
     "status": "available",
     "emoji": "🤔",
-    "templateFile": "phaser-game.html",
+    "templateFile": "memory-game.html",
     "accent": "#facc15",
     "accentRgb": "250,204,21",
     "gradient": "135deg,#0f172a,#1e293b",
@@ -1470,6 +1470,58 @@
           "de": "Alles freischalten",
           "zh": "解锁全部"
         }
+      }
+    ],
+    "levels": [
+      {
+        "number": 1,
+        "name": {
+          "ar": "التناقض الأول",
+          "en": "First Paradox"
+        },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": {
+          "ar": "متاهة المنطق",
+          "en": "Logic Maze"
+        },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": {
+          "ar": "مركز الفوضى",
+          "en": "Chaos Central"
+        },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": {
+          "ar": "صدى العبث",
+          "en": "Echo of Absurdity"
+        },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": {
+          "ar": "النهاية المستحيلة",
+          "en": "Impossible End"
+        },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
       }
     ],
     "generated": true,
@@ -2476,7 +2528,7 @@
     "category": "game",
     "status": "available",
     "emoji": "⏳",
-    "templateFile": "phaser-game.html",
+    "templateFile": "memory-game.html",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
@@ -2568,6 +2620,43 @@
         }
       }
     ],
+    "levels": [
+      {
+        "number": 1,
+        "name": { "ar": "اللحظة الأولى", "en": "First Moment" },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": { "ar": "ممرات الزمن", "en": "Time Passages" },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": { "ar": "مفترق العصور", "en": "Era Junction" },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": { "ar": "اللانهاية", "en": "Infinity" },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": { "ar": "الخلود", "en": "Eternity" },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
     "generated": true,
     "generatedAt": "2026-04-11T11:40:16.778Z"
   },
@@ -2578,7 +2667,7 @@
     "category": "game",
     "status": "available",
     "emoji": "🌌",
-    "templateFile": "phaser-game.html",
+    "templateFile": "memory-game.html",
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
@@ -2669,7 +2758,46 @@
           "zh": "解锁全部"
         }
       }
-    ]
+    ],
+    "levels": [
+      {
+        "number": 1,
+        "name": { "ar": "المجرة الأولى", "en": "First Galaxy" },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": { "ar": "سديم", "en": "Nebula" },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": { "ar": "نجم نابض", "en": "Pulsar" },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": { "ar": "أفق الحدث", "en": "Event Horizon" },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": { "ar": "الكون المتعدد", "en": "Multiverse" },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-12T09:20:00.000Z"
   },
   {
     "id": "neon-puzzle",
@@ -2678,7 +2806,7 @@
     "category": "game",
     "status": "available",
     "emoji": "🧩",
-    "templateFile": "phaser-game.html",
+    "templateFile": "memory-game.html",
     "accent": "#f472b6",
     "accentRgb": "244,114,182",
     "gradient": "135deg,#1a0533,#831843",
@@ -2769,7 +2897,46 @@
           "zh": "完整收藏"
         }
       }
-    ]
+    ],
+    "levels": [
+      {
+        "number": 1,
+        "name": { "ar": "أول شكل", "en": "First Shape" },
+        "difficulty": "easy",
+        "pairs": 4,
+        "timeLimit": 60
+      },
+      {
+        "number": 2,
+        "name": { "ar": "وميض نيون", "en": "Neon Flash" },
+        "difficulty": "medium",
+        "pairs": 6,
+        "timeLimit": 50
+      },
+      {
+        "number": 3,
+        "name": { "ar": "فسيفساء", "en": "Mosaic" },
+        "difficulty": "medium",
+        "pairs": 8,
+        "timeLimit": 45
+      },
+      {
+        "number": 4,
+        "name": { "ar": "متاهة", "en": "Labyrinth" },
+        "difficulty": "hard",
+        "pairs": 10,
+        "timeLimit": 40
+      },
+      {
+        "number": 5,
+        "name": { "ar": "تحفة", "en": "Masterpiece" },
+        "difficulty": "expert",
+        "pairs": 12,
+        "timeLimit": 35
+      }
+    ],
+    "generated": true,
+    "generatedAt": "2026-04-10T14:30:00.000Z"
   },
   {
     "id": "focus-tool",
@@ -2948,7 +3115,7 @@
           "fr": "10 indices",
           "es": "10 pistas",
           "de": "10 Hinweise",
-          "zh": "10个提ش示"
+          "zh": "10个提示"
         }
       },
       {
@@ -3049,7 +3216,7 @@
           "fr": "10 indices",
           "es": "10 pistas",
           "de": "10 Hinweise",
-          "zh": "10个提ش示"
+          "zh": "10个提示"
         }
       },
       {
@@ -3203,7 +3370,7 @@
           "fr": "10 indices",
           "es": "10 pistas",
           "de": "10 Hinweise",
-          "zh": "10个提ش示"
+          "zh": "10个提示"
         }
       },
       {
@@ -3311,7 +3478,7 @@
           "fr": "10 indices",
           "es": "10 pistas",
           "de": "10 Hinweise",
-          "zh": "10个提ش示"
+          "zh": "10个提示"
         }
       },
       {
@@ -3463,7 +3630,7 @@
           "fr": "10 indices",
           "es": "10 pistas",
           "de": "10 Hinweise",
-          "zh": "10个提ش示"
+          "zh": "10个提示"
         }
       },
       {
@@ -3496,7 +3663,7 @@
       }
     ],
     "story": null,
-    "levels": null,
+    "levels": [],
     "generated": true,
     "generatedAt": "2026-05-04T10:19:07.780Z"
   },
@@ -3564,7 +3731,7 @@
           "fr": "10 indices",
           "es": "10 pistas",
           "de": "10 Hinweise",
-          "zh": "10个提ش示"
+          "zh": "10个提示"
         }
       },
       {
@@ -3716,7 +3883,7 @@
           "fr": "10 indices",
           "es": "10 pistas",
           "de": "10 Hinweise",
-          "zh": "10个提ش示"
+          "zh": "10个提示"
         }
       },
       {
