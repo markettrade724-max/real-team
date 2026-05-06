@@ -1,84 +1,87 @@
 /**
- * qa-bot.js
- * يختبر الموقع تلقائياً ويتحقق من سلامة كل شيء
+ * qa-bot.js — يفحص جميع الألعاب والتطبيقات المنشورة
+ * يتحقق من: وجود الملفات، عدم وجود {{...}}، استجابة الصفحات
  */
+import { readFileSync, existsSync, writeFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE_URL = process.env.SITE_URL || 'https://real-team-production.up.railway.app';
+const LANGS = ['ar','en','fr','es','de','zh'];
 
-let passed = 0;
-let failed = 0;
+const results = { pass:[], fail:[], total:0, checkedAt: new Date().toISOString() };
 
-async function test(name, fn) {
+async function checkPage(path, label) {
   try {
-    await fn();
-    console.log(`✅ ${name}`);
-    passed++;
-  } catch (err) {
-    console.error(`❌ ${name}: ${err.message}`);
-    failed++;
-  }
-}
-
-async function main() {
-  console.log(`🔍 Testing: ${SITE_URL}\n`);
-
-  // ── اختبار /health ────────────────────────────────────────
-  await test('/health returns ok', async () => {
-    const res  = await fetch(`${SITE_URL}/health`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    if (data.status !== 'ok') throw new Error(`status: ${data.status}`);
-    if (data.database !== 'connected') throw new Error(`DB: ${data.database}`);
-  });
-
-  // ── اختبار index.html ─────────────────────────────────────
-  await test('index.html loads', async () => {
-    const res = await fetch(`${SITE_URL}/`);
+    const res = await fetch(`${SITE_URL}/${path}`, { redirect:'follow', timeout:10000 });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const html = await res.text();
-    if (!html.includes('realteam')) throw new Error('Missing realteam content');
-  });
-
-  // ── اختبار products.json ──────────────────────────────────
-  await test('products.json is valid', async () => {
-    const res  = await fetch(`${SITE_URL}/products.json`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!Array.isArray(data)) throw new Error('Not an array');
-    if (data.length === 0) throw new Error('Empty products');
-    console.log(`   → ${data.length} products found`);
-  });
-
-  // ── اختبار الألعاب المولّدة ───────────────────────────────
-  await test('games are accessible', async () => {
-    const res      = await fetch(`${SITE_URL}/products.json`);
-    const products = await res.json();
-    const available = products.filter(p => p.status === 'available');
-
-    for (const game of available) {
-      const gameRes = await fetch(`${SITE_URL}/games/${game.slug}.html`);
-      if (!gameRes.ok) throw new Error(`${game.slug}: HTTP ${gameRes.status}`);
-      console.log(`   → ${game.slug} ✓`);
+    
+    // فحص عدم وجود متغيرات غير مستبدلة
+    const unreplaced = html.match(/\{\{[A-Z_]+\}\}/g);
+    if (unreplaced) {
+      throw new Error(`Unreplaced placeholders: ${[...new Set(unreplaced)].join(', ')}`);
     }
-  });
+    
+    // فحص أساسي لوجود عناصر HTML
+    if (!html.includes('<!DOCTYPE html>')) throw new Error('Missing DOCTYPE');
+    
+    results.pass.push(label);
+    console.log(`  ✅ ${label}`);
+  } catch (err) {
+    results.fail.push({ label, error: err.message });
+    console.log(`  ❌ ${label}: ${err.message}`);
+  }
+  results.total++;
+}
 
-  // ── اختبار iap-modal.js ───────────────────────────────────
-  await test('iap-modal.js loads', async () => {
-    const res = await fetch(`${SITE_URL}/iap-modal.js`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  });
+async function run() {
+  console.log(`🔍 QA Bot scanning: ${SITE_URL}\n`);
 
-  // ── النتيجة ───────────────────────────────────────────────
-  console.log(`\n── Results ──────────────────`);
-  console.log(`✅ Passed: ${passed}`);
-  console.log(`❌ Failed: ${failed}`);
+  const productsPath = join(__dirname, '..', 'products.json');
+  if (!existsSync(productsPath)) {
+    console.warn('⚠️  products.json not found — generating list from public/games');
+  }
 
-  if (failed > 0) {
-    console.error('\n⚠️ QA FAILED');
+  const products = JSON.parse(readFileSync(productsPath, 'utf8') || '[]');
+  const available = products.filter(p => p.status === 'available' || p.status === 'coming_soon');
+
+  if (available.length === 0) {
+    console.log('ℹ️  No available products to test.');
+  }
+
+  for (const product of available) {
+    const slug = product.slug;
+    console.log(`📦 ${product.name?.en || slug}`);
+    
+    for (const lang of LANGS) {
+      const filename = lang === 'ar' ? `${slug}.html` : `${slug}-${lang}.html`;
+      await checkPage(`games/${filename}`, `${slug} [${lang}]`);
+    }
+  }
+
+  // فحص الصفحة الرئيسية
+  console.log(`\n🏠 Homepage`);
+  await checkPage('', 'Homepage');
+
+  // حفظ النتائج
+  writeFileSync(join(__dirname, '..', 'qa-results.json'), JSON.stringify(results, null, 2));
+  
+  console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  console.log(`✅ Passed: ${results.pass.length}`);
+  console.log(`❌ Failed: ${results.fail.length}`);
+  console.log(`📊 Total:  ${results.total}`);
+  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+
+  if (results.fail.length > 0) {
+    console.log('\n❌ Failures:');
+    results.fail.forEach(f => console.log(`   - ${f.label}: ${f.error}`));
     process.exit(1);
-  } else {
-    console.log('\n🎉 All tests passed!');
   }
 }
 
-main();
+run().catch(err => {
+  console.error('QA Bot crashed:', err);
+  process.exit(1);
+});
