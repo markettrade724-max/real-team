@@ -45,7 +45,7 @@ body::before{content:'';position:fixed;inset:0;
 .hud-lbl{font-size:0.65rem;color:var(--muted);margin-top:2px;letter-spacing:0.05em;}
 
 /* GRID */
-.g-grid{display:grid;grid-template-columns:repeat({{COLS}},1fr);gap:10px;margin-bottom:20px;}
+.g-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
 .card{aspect-ratio:1;border-radius:14px;cursor:pointer;position:relative;
   transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(.175,.885,.32,1.275);}
 .card.flipped,.card.matched{transform:rotateY(180deg);}
@@ -54,7 +54,7 @@ body::before{content:'';position:fixed;inset:0;
 .back{background:var(--surface);border:1px solid var(--border);}
 .back::after{content:'?';font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:rgba(129,140,248,0.3);}
 .front{background:linear-gradient(135deg,var(--surface),rgba(129,140,248,0.15));
-  border:1px solid rgba(129,140,248,0.35);transform:rotateY(180deg);font-size:{{EMOJI_SIZE}};}
+  border:1px solid rgba(129,140,248,0.35);transform:rotateY(180deg);font-size:3rem;}
 .card.matched .front{border-color:var(--accent);box-shadow:0 0 16px rgba(129,140,248,0.35);}
 
 /* HINT (يُشترى) */
@@ -102,9 +102,9 @@ body::before{content:'';position:fixed;inset:0;
 
   <!-- HUD -->
   <div class="hud">
-    <div class="hud-card"><div class="hud-val" id="h-moves">0</div><div class="hud-lbl">{{MOVES_LBL}}</div></div>
+    <div class="hud-card"><div class="hud-val" id="h-moves">0</div><div class="hud-lbl">Movimientos</div></div>
     <div class="hud-card"><div class="hud-val" id="h-time">0:00</div><div class="hud-lbl">Tiempo</div></div>
-    <div class="hud-card"><div class="hud-val" id="h-pairs">0/{{PAIRS}}</div><div class="hud-lbl">{{PAIRS_LBL}}</div></div>
+    <div class="hud-card"><div class="hud-val" id="h-pairs">0/4</div><div class="hud-lbl">Pares</div></div>
   </div>
 
   <!-- GRID -->
@@ -112,8 +112,8 @@ body::before{content:'';position:fixed;inset:0;
 
   <!-- HINT BAR -->
   <div id="hint-bar">
-    <button class="hint-btn" onclick="useHint()">💡 {{HINT_LBL}}</button>
-    <span class="hint-count" id="hint-count">{{HINTS_LEFT}} {{HINT_LEFT_LBL}}</span>
+    <button class="hint-btn" onclick="useHint()">💡 Pista</button>
+    <span class="hint-count" id="hint-count">{{HINTS_LEFT}} Pistas restantes</span>
   </div>
 
   <!-- ACTIONS -->
@@ -137,9 +137,9 @@ body::before{content:'';position:fixed;inset:0;
 <script>
 // ── Game Config ──────────────────────────────────────────────
 const EMOJIS = ["🎮","⭐","🔥","💎","🚀","🌟","🎯","🎪","🎨","🎭","🔮","💡"];
-const PAIRS  = {{PAIRS}};
-const COLS   = {{COLS}};
-let hints    = {{HINTS_START}};
+const PAIRS  = 4;
+const COLS   = 3;
+let hints    = 2;
 
 // ── IAP Init ─────────────────────────────────────────────────
 IAPStore.init('cognito-ripple', 'es', [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}]);
@@ -211,7 +211,7 @@ function useHint(){
   setTimeout(()=>{ pair.forEach(c=>{ if(!c.matched) document.getElementById('c'+c.id).classList.remove('flipped'); }); }, 1000);
 }
 
-function updateHintCount(){ document.getElementById('hint-count').textContent = hints+' {{HINT_LEFT_LBL}}'; }
+function updateHintCount(){ document.getElementById('hint-count').textContent = hints+' Pistas restantes'; }
 function updateHUD(){ document.getElementById('h-moves').textContent=moves; document.getElementById('h-pairs').textContent=matched+'/'+PAIRS; updateTime(); }
 function updateTime(){ const m=Math.floor(secs/60),s=secs%60; document.getElementById('h-time').textContent=m+':'+(s<10?'0':'')+s; }
 
@@ -219,7 +219,7 @@ function showWin(){
   clearInterval(timer);
   const stars = moves<=PAIRS*2?'⭐⭐⭐':moves<=PAIRS*3?'⭐⭐':'⭐';
   const m=Math.floor(secs/60),s=secs%60;
-  document.getElementById('win-stats').innerHTML=`${stars}<br><strong>${moves}</strong> {{MOVES_LBL}} · <strong>${m}:${s<10?'0':''}${s}</strong>`;
+  document.getElementById('win-stats').innerHTML=`${stars}<br><strong>${moves}</strong> Movimientos · <strong>${m}:${s<10?'0':''}${s}</strong>`;
   document.getElementById('win-overlay').classList.add('show');
 }
 
