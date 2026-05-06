@@ -165,7 +165,7 @@ const CFG = {
   lang:   '{{LANG}}',
   acc:    '{{ACCENT}}',
   emoji:  '{{EMOJI}}',
-  iaps:   {{IAPS_JSON}},
+  iaps:   {{IAPS_JSON}} || [],   // 🔥 إصلاح: حماية من القيمة الفارغة
   name:   '{{GAME_NAME}}',
   desc:   '{{GAME_DESC}}',
   gemini: '{{GEMINI_KEY}}',
@@ -612,7 +612,7 @@ function buildCreative(root){
 // ─── SHOP ──────────────────────────────────────────────────────
 function openShop(){
   const cur=S(), list=document.getElementById('shopList'); list.innerHTML='';
-  CFG.iaps.forEach(item=>{
+  (CFG.iaps || []).forEach(item=>{                        // 🔥 تصحيح: حماية إضافية من المصفوفة الفارغة
     const owned=!!cur['own_'+item.id];
     const name=(item.name&&(item.name[CFG.lang]||item.name.en))||item.id;
     const d=document.createElement('div'); d.className='si';
