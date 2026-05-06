@@ -7,11 +7,14 @@ on:
       - 'server.js'
       - 'public/**'
       - 'products.json'
+      - 'templates/**'          # ← أضفنا القوالب
+      - 'game-generator.js'     # ← أضفنا المولّد
   workflow_dispatch:
 
 jobs:
   qa:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
@@ -20,10 +23,34 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Wait for Railway deployment
-        run: sleep 30  # انتظر 30 ثانية حتى يكتمل النشر
+      - name: Install dependencies
+        run: npm install
+
+      - name: Wait for deployment
+        run: |
+          echo "⏳ Waiting for Railway deployment..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL || echo "000")
+            if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ] || [ "$STATUS" = "302" ]; then
+              echo "✅ Site is live (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "   Attempt $i/12 — got $STATUS, retrying in 10s..."
+            sleep 10
+          done
+          echo "❌ Site did not become ready after 2 minutes"
+          exit 1
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://real-team-production.up.railway.app' }}
 
       - name: Run QA tests
         run: node scripts/qa-bot.js
         env:
-          SITE_URL: https://real-team-production.up.railway.app
+          SITE_URL: ${{ vars.SITE_URL || 'https://real-team-production.up.railway.app' }}
+
+      - name: Upload QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-report
+          path: qa-results.json
