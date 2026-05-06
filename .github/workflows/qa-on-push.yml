@@ -22,15 +22,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Wait for Vercel deployment
         run: |
-          echo "⏳ Waiting for Vercel deployment to finish..."
-          # Vercel deploys usually take < 2 minutes; poll the site until it responds with 200
+          echo "⏳ Waiting for Vercel deployment..."
           for i in {1..24}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL || echo "000")
             if [ "$STATUS" = "200" ]; then
