@@ -7,6 +7,7 @@
  * - مستويات افتراضية احتياطية (fallback) لجميع القوالب
  * - معالجة آمنة للقيم المفقودة (emojis, levels, translations...)
  * - إضافة متغيرات STORY_JSON و LABELS_JSON لتمرير القصة والتسميات
+ * - إضافة متغيرات خاصة بقالب memory-game (MOVES_LBL, PAIRS_LBL, HINT_LBL...)
  * - إصلاح: levels أصبحت دائماً مصفوفة (تجنب TypeError)
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
@@ -156,7 +157,7 @@ function ensureLang(obj, fallbackOrder = ['en','ar','fr','es','de','zh']) {
   return result;
 }
 
-// ─ـ التسميات متعددة اللغات (كاملة كما أرسلتها سابقاً) ──────────
+// ─ـ التسميات متعددة اللغات (كاملة) ──────────────────────────
 const LABELS = {
   ar:{ dir:'rtl',
     START_LBL:'ابدأ اللعبة', SHOP_LBL:'المتجر', BEST_LBL:'أفضل نتيجة',
@@ -166,6 +167,8 @@ const LABELS = {
     TIME_LBL:'وقت', RESTART_LBL:'لعبة جديدة', WIN_TITLE:'أحسنت!',
     PLAY_AGAIN_LBL:'مرة أخرى', AD_LABEL:'الإعلانات تدعم الفريق',
     AD_REMOVE_LABEL:'إزالة $1.99',
+    MOVES_LBL:'حركات', PAIRS_LBL:'أزواج', HINT_LBL:'تلميح',
+    HINT_LEFT_LBL:'تلميحات متبقية',
     // سباقات
     LAP_LBL:'لفّة', LAPS_LBL:'اللفّات', SPEED_LBL:'السرعة',
     POSITION_LBL:'المركز', BEST_LAP_LBL:'أفضل لفّة', FINISH_LBL:'النهاية',
@@ -234,6 +237,8 @@ const LABELS = {
     TIME_LBL:'Time', RESTART_LBL:'New Game', WIN_TITLE:'You Win!',
     PLAY_AGAIN_LBL:'Play Again', AD_LABEL:'Ads support our team',
     AD_REMOVE_LABEL:'Remove $1.99',
+    MOVES_LBL:'Moves', PAIRS_LBL:'Pairs', HINT_LBL:'Hint',
+    HINT_LEFT_LBL:'Hints left',
     LAP_LBL:'Lap', LAPS_LBL:'Laps', SPEED_LBL:'Speed',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Best Lap', FINISH_LBL:'Finish',
     RACE_START_LBL:'Go!', RACE_OVER_LBL:'Race Over',
@@ -298,6 +303,8 @@ const LABELS = {
     TIME_LBL:'Temps', RESTART_LBL:'Nouveau jeu', WIN_TITLE:'Bravo!',
     PLAY_AGAIN_LBL:'Rejouer', AD_LABEL:'Les pubs soutiennent l\'équipe',
     AD_REMOVE_LABEL:'Supprimer 1,99$',
+    MOVES_LBL:'Coups', PAIRS_LBL:'Paires', HINT_LBL:'Indice',
+    HINT_LEFT_LBL:'Indices restants',
     LAP_LBL:'Tour', LAPS_LBL:'Tours', SPEED_LBL:'Vitesse',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Meilleur tour', FINISH_LBL:'Arrivée',
     RACE_START_LBL:'Partez!', RACE_OVER_LBL:'Course terminée',
@@ -361,6 +368,8 @@ const LABELS = {
     TIME_LBL:'Tiempo', RESTART_LBL:'Nuevo juego', WIN_TITLE:'¡Ganaste!',
     PLAY_AGAIN_LBL:'Jugar de nuevo', AD_LABEL:'Los anuncios apoyan al equipo',
     AD_REMOVE_LABEL:'Eliminar $1.99',
+    MOVES_LBL:'Movimientos', PAIRS_LBL:'Pares', HINT_LBL:'Pista',
+    HINT_LEFT_LBL:'Pistas restantes',
     LAP_LBL:'Vuelta', LAPS_LBL:'Vueltas', SPEED_LBL:'Velocidad',
     POSITION_LBL:'Posición', BEST_LAP_LBL:'Mejor vuelta', FINISH_LBL:'Meta',
     RACE_START_LBL:'¡Arranca!', RACE_OVER_LBL:'Carrera terminada',
@@ -424,6 +433,8 @@ const LABELS = {
     TIME_LBL:'Zeit', RESTART_LBL:'Neues Spiel', WIN_TITLE:'Gewonnen!',
     PLAY_AGAIN_LBL:'Nochmal', AD_LABEL:'Anzeigen unterstützen das Team',
     AD_REMOVE_LABEL:'Entfernen 1,99$',
+    MOVES_LBL:'Züge', PAIRS_LBL:'Paare', HINT_LBL:'Hinweis',
+    HINT_LEFT_LBL:'Hinweise übrig',
     LAP_LBL:'Runde', LAPS_LBL:'Runden', SPEED_LBL:'Geschwindigkeit',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Beste Runde', FINISH_LBL:'Ziel',
     RACE_START_LBL:'Los!', RACE_OVER_LBL:'Rennen beendet',
@@ -487,6 +498,8 @@ const LABELS = {
     TIME_LBL:'时间', RESTART_LBL:'新游戏', WIN_TITLE:'你赢了！',
     PLAY_AGAIN_LBL:'再玩', AD_LABEL:'广告支持我们的团队',
     AD_REMOVE_LABEL:'去除广告 $1.99',
+    MOVES_LBL:'步数', PAIRS_LBL:'对数', HINT_LBL:'提示',
+    HINT_LEFT_LBL:'剩余提示',
     LAP_LBL:'圈', LAPS_LBL:'圈数', SPEED_LBL:'速度',
     POSITION_LBL:'名次', BEST_LAP_LBL:'最快圈速', FINISH_LBL:'终点',
     RACE_START_LBL:'出发！', RACE_OVER_LBL:'比赛结束',
@@ -593,15 +606,24 @@ function generate(product) {
     } else if (tplName === 'endless-runner.html') {
       levels = [{ startSpeed: 5, speedIncrement: 0.001 }];
     } else {
-      // أي قالب آخر لا يحتاج مستويات (مثل tool-app، racing، sports)
       levels = [];
     }
     console.log(`  ℹ️  Using default levels for ${tplName}`);
   }
   
-  // 🔒 حماية مزدوجة: تأكد أن levels مصفوفة (للحالات التي لم تدخل الشروط)
+  // حماية مزدوجة
   if (!Array.isArray(levels)) {
     levels = [];
+  }
+
+  // إعدادات خاصة بقالب memory-game
+  let cols = 4, pairs = 4, hintsStart = 2;
+  const emojiSize = '3rem';
+  if (tplName === 'memory-game.html' && Array.isArray(levels) && levels.length > 0) {
+    const first = levels[0];
+    pairs = first.pairs || 4;
+    cols = Math.min(6, Math.ceil(Math.sqrt(pairs * 2)));
+    hintsStart = first.hints || 2;
   }
 
   const outDir = join(__dirname, 'public', 'games');
@@ -638,6 +660,10 @@ function generate(product) {
                         ...product.story
                       }),
       LABELS_JSON:   JSON.stringify(product.labels || lbl || {}),
+      EMOJI_SIZE:    emojiSize,
+      COLS:          cols,
+      PAIRS:         pairs,
+      HINTS_START:   hintsStart,
       ...(lbl || {}),
     };
 
