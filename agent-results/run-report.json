@@ -1,63 +1,27 @@
 {
-  "runId": "2026-05-05T1529",
-  "timestamp": "2026-05-05T15:31:30.654Z",
-  "totalDuration": "131.6s",
-  "geminiCalls": "4/6",
+  "runId": "2026-05-06T1022",
+  "timestamp": "2026-05-06T10:23:02.761Z",
+  "totalDuration": "24.1s",
+  "geminiCalls": "0/6",
   "agents": {
     "analytics": {
       "success": false,
-      "duration": "38ms",
+      "duration": "61ms",
       "attempts": 1,
       "error": "Node.js 20 detected without native WebSocket support.\n\nSuggested solution: For Node.js < 22, install \"ws\" package and pr"
     },
     "idea": {
-      "success": true,
-      "duration": "13.4s",
-      "attempts": 1,
-      "error": null
-    },
-    "art": {
-      "success": true,
-      "duration": "8.4s",
-      "attempts": 1,
-      "error": null
-    },
-    "template": {
-      "success": true,
-      "duration": "3ms",
-      "attempts": 1,
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "9.5s",
-      "attempts": 1,
-      "error": null
-    },
-    "code": {
-      "success": true,
-      "duration": "48ms",
-      "attempts": 1,
-      "error": null
-    },
-    "marketing": {
       "success": false,
-      "duration": "18.0s",
+      "duration": "9.0s",
       "attempts": 1,
-      "error": "Invalid JSON from Gemini: {\n  \"twitter\": {\n    \"en\": \"Craft your unique story in Ephemeral Epic Generator! 📜 Make choic"
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "7.2s",
-      "attempts": 1,
-      "error": null
+      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 6,
+    "total": 2,
+    "passed": 0,
     "failed": 2,
-    "newGame": "ephemeral-epic-generator",
-    "template": "adventure-rpg.html"
+    "newGame": null,
+    "template": null
   }
 }
