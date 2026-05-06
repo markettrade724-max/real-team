@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Punchline Pixel</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js">
+</script>
 <style>
 :root{--acc:#f472b6;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -79,7 +80,7 @@ a.lnk{color:#64748b;font-size:.82rem;text-decoration:none;}
 /* SHOP */
 #shopOv{position:absolute;inset:0;background:rgba(0,0,0,.95);display:none;
   flex-direction:column;align-items:center;gap:12px;justify-content:center;
-  z-index:60;padding:24px;}
+  z-index:60;padding:24px;overflow-y:auto;}
 #shopOv.on{display:flex;}
 .si{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
   border-radius:14px;padding:14px 18px;display:flex;align-items:center;
@@ -201,14 +202,13 @@ const CFG = {
 const SK = 'rt_' + CFG.pid;
 const S  = () => JSON.parse(localStorage.getItem(SK) || '{}');
 const sv = d  => localStorage.setItem(SK, JSON.stringify({...S(),...d}));
-const mob = () => 'ontouchstart' in window;
+const mob = () => 'ontouchstart' in window && matchMedia('(pointer: coarse)').matches;
 
 const GW = Math.min(window.innerWidth, 420);
 const GH = window.innerHeight;
 const HUD_H = 44;
 
 // ─── ENEMY TYPES ───────────────────────────────────────────────
-// Each type has a draw function + stats modifier
 const ENEMY_TYPES = [
   { key:'scout',  color:0xff4444, w:28, h:22, hp:1,  pts:10, draw:drawScout  },
   { key:'heavy',  color:0xff8800, w:34, h:28, hp:2,  pts:20, draw:drawHeavy  },
@@ -219,25 +219,20 @@ const ENEMY_TYPES = [
 
 function drawScout(g, c, w, h){
   const d = darken(c, .55), hi = brighten(c, .5);
-  // Main body — saucer shape
   g.fillStyle(d, 1);
   g.fillEllipse(w/2, h*.55, w*.9, h*.45);
   g.fillStyle(c, 1);
   g.fillEllipse(w/2, h*.48, w*.75, h*.38);
-  // Dome
   g.fillStyle(hi, .85);
   g.fillEllipse(w/2, h*.3, w*.38, h*.28);
   g.fillStyle(0x00ffff, .5);
   g.fillEllipse(w/2, h*.28, w*.2, h*.16);
-  // Engine pods
   g.fillStyle(d, 1);
   g.fillEllipse(w*.18, h*.65, w*.22, h*.14);
   g.fillEllipse(w*.82, h*.65, w*.22, h*.14);
-  // Engine glow
   g.fillStyle(0xff4400, .8);
   g.fillEllipse(w*.18, h*.7, w*.13, h*.09);
   g.fillEllipse(w*.82, h*.7, w*.13, h*.09);
-  // Cannons
   g.fillStyle(0x888888, 1);
   g.fillRect(w*.38, h*.68, w*.06, h*.22);
   g.fillRect(w*.56, h*.68, w*.06, h*.22);
@@ -248,31 +243,25 @@ function drawScout(g, c, w, h){
 
 function drawHeavy(g, c, w, h){
   const d = darken(c, .5), hi = brighten(c, .4);
-  // Hull — armored cruiser
   g.fillStyle(d, 1);
   g.fillRect(w*.05, h*.1, w*.9, h*.75);
-  // Layered armor
   g.fillStyle(c, 1);
   g.fillRect(w*.1, h*.05, w*.8, h*.7);
   g.fillStyle(hi, .6);
   g.fillRect(w*.15, h*.08, w*.7, h*.25);
-  // Bridge
   g.fillStyle(d, 1);
   g.fillRect(w*.28, 0, w*.44, h*.2);
   g.fillStyle(0x00ccff, .55);
   g.fillRect(w*.33, h*.02, w*.34, h*.14);
-  // Side cannons
   g.fillStyle(0x555555, 1);
   g.fillRect(0, h*.35, w*.12, h*.08);
   g.fillRect(w*.88, h*.35, w*.12, h*.08);
   g.fillRect(0, h*.5, w*.1, h*.07);
   g.fillRect(w*.9, h*.5, w*.1, h*.07);
-  // Front cannon
   g.fillStyle(0x333333, 1);
   g.fillRect(w*.43, h*.72, w*.14, h*.28);
   g.fillStyle(0xff6600, .6);
   g.fillRect(w*.46, h*.96, w*.08, h*.04);
-  // Details
   g.fillStyle(0xffffff, .15);
   g.fillRect(w*.12, h*.38, w*.76, h*.04);
   g.fillRect(w*.12, h*.5, w*.76, h*.04);
@@ -280,22 +269,17 @@ function drawHeavy(g, c, w, h){
 
 function drawSpeeder(g, c, w, h){
   const d = darken(c, .45), hi = brighten(c, .55);
-  // Sleek arrow body
   g.fillStyle(d, 1);
   g.fillTriangle(w/2, 0, w*.85, h, w*.15, h);
   g.fillStyle(c, 1);
   g.fillTriangle(w/2, h*.05, w*.78, h*.95, w*.22, h*.95);
-  // Center spine
   g.fillStyle(hi, .9);
   g.fillRect(w*.44, h*.08, w*.12, h*.6);
-  // Wing accent lines
   g.fillStyle(hi, .5);
   g.fillTriangle(w/2, h*.15, w*.72, h*.85, w*.5, h*.7);
   g.fillTriangle(w/2, h*.15, w*.28, h*.85, w*.5, h*.7);
-  // Cockpit visor
   g.fillStyle(0xff00ff, .7);
   g.fillEllipse(w/2, h*.22, w*.18, h*.14);
-  // Engine exhausts
   g.fillStyle(0xff8800, .9);
   g.fillEllipse(w*.35, h*.95, w*.12, h*.08);
   g.fillEllipse(w*.65, h*.95, w*.12, h*.08);
@@ -306,64 +290,52 @@ function drawSpeeder(g, c, w, h){
 
 function drawTank(g, c, w, h){
   const d = darken(c, .45), hi = brighten(c, .35);
-  // Heavy main hull
   g.fillStyle(d, 1);
   g.fillRect(0, h*.2, w, h*.65);
   g.fillStyle(c, 1);
   g.fillRect(w*.06, h*.12, w*.88, h*.7);
-  // Shoulder plates
   g.fillStyle(d, 1);
   g.fillRect(0, h*.1, w*.25, h*.5);
   g.fillRect(w*.75, h*.1, w*.25, h*.5);
-  // Center tower
   g.fillStyle(hi, .8);
   g.fillRect(w*.28, 0, w*.44, h*.35);
   g.fillStyle(0x00ffaa, .6);
   g.fillRect(w*.34, h*.03, w*.32, h*.2);
-  // Armor bolts
   g.fillStyle(d, .9);
   [[.15,.25],[.85,.25],[.15,.55],[.85,.55]].forEach(([x,y])=>
     g.fillCircle(w*x, h*y, 4));
-  // Triple barrel cannon
   g.fillStyle(0x444444, 1);
   g.fillRect(w*.38, h*.75, w*.09, h*.25);
   g.fillRect(w*.46, h*.72, w*.08, h*.28);
   g.fillRect(w*.53, h*.75, w*.09, h*.25);
-  // Muzzle flash spots
   g.fillStyle(0xff8800, .7);
   g.fillRect(w*.39, h*.97, w*.07, h*.03);
   g.fillRect(w*.47, h*.97, w*.06, h*.03);
   g.fillRect(w*.54, h*.97, w*.07, h*.03);
-  // Hull lines
   g.fillStyle(0xffffff, .1);
   g.fillRect(w*.07, h*.45, w*.86, h*.03);
 }
 
 function drawBoss(g, c, w, h){
   const d = darken(c, .4), hi = brighten(c, .45);
-  // Massive carrier hull
   g.fillStyle(d, 1);
   g.fillRect(w*.05, h*.05, w*.9, h*.8);
   g.fillStyle(c, 1);
   g.fillRect(w*.1, 0, w*.8, h*.85);
-  // Swept wings
   g.fillStyle(d, 1);
   g.fillTriangle(0, h*.6, w*.1, h*.1, w*.3, h*.7);
   g.fillTriangle(w, h*.6, w*.9, h*.1, w*.7, h*.7);
   g.fillStyle(hi, .5);
   g.fillTriangle(w*.02, h*.55, w*.1, h*.18, w*.28, h*.65);
   g.fillTriangle(w*.98, h*.55, w*.9, h*.18, w*.72, h*.65);
-  // Command bridge
   g.fillStyle(hi, .9);
   g.fillRect(w*.28, h*.02, w*.44, h*.22);
   g.fillStyle(0x00ffff, .65);
   g.fillRect(w*.32, h*.04, w*.36, h*.14);
-  // Sensor array
   g.fillStyle(0xffffff, .8);
   g.fillEllipse(w/2, h*.11, w*.12, h*.08);
   g.fillStyle(0xff0044, .9);
   g.fillCircle(w/2, h*.11, 4);
-  // Weapon banks L/R
   g.fillStyle(0x333333, 1);
   [[.12,.38],[.12,.52],[.88,.38],[.88,.52]].forEach(([x,y])=>{
     g.fillRect(w*x-8, h*y, 16, h*.08);
@@ -371,7 +343,6 @@ function drawBoss(g, c, w, h){
     g.fillRect(w*x-4, h*(y+.06), 8, h*.03);
     g.fillStyle(0x333333,1);
   });
-  // Heavy center cannons
   g.fillStyle(0x222222, 1);
   g.fillRect(w*.33, h*.75, w*.12, h*.25);
   g.fillRect(w*.44, h*.72, w*.12, h*.28);
@@ -380,11 +351,9 @@ function drawBoss(g, c, w, h){
   g.fillRect(w*.34, h*.97, w*.1, h*.03);
   g.fillRect(w*.45, h*.97, w*.1, h*.03);
   g.fillRect(w*.56, h*.97, w*.1, h*.03);
-  // Energy conduits
   g.fillStyle(hi, .35);
   g.fillRect(w*.1, h*.6, w*.8, h*.03);
   g.fillRect(w*.1, h*.7, w*.8, h*.03);
-  // Armor plating lines
   g.fillStyle(0xffffff, .08);
   g.fillRect(w*.11, h*.3, w*.78, h*.025);
   g.fillRect(w*.11, h*.45, w*.78, h*.025);
@@ -419,14 +388,12 @@ class Boot extends Phaser.Scene {
   _makeStars(){
     const g = this.make.graphics({add:false});
     g.fillStyle(0x030310); g.fillRect(0,0,512,512);
-    // Stars in layers
     for(let i=0;i<260;i++){
       const a = Math.random();
       const s = Math.random()<.04 ? 2 : 1;
       g.fillStyle(0xffffff, a*.8);
       g.fillRect(Math.random()*512|0, Math.random()*512|0, s, s);
     }
-    // Nebula blobs
     for(let i=0;i<6;i++){
       const h = [0x1a0040,0x001040,0x002030][i%3];
       g.fillStyle(h,.4);
@@ -437,31 +404,23 @@ class Boot extends Phaser.Scene {
   }
 
   _makePlayer(){
-    // Player ship — sleek fighter
     const W=36, H=50;
     const g = this.make.graphics({add:false});
-    // Engine glow
     g.fillStyle(CFG.accN,.25);
     g.fillEllipse(W/2, H+8, 22, 14);
-    // Body
     g.fillStyle(0xd0d8f0,1);
     g.fillTriangle(W/2,2, W-4,H-12, 4,H-12);
-    // Wings
     g.fillStyle(0x8899cc,1);
     g.fillTriangle(4,H-12, 0,H, W*.4,H-20);
     g.fillTriangle(W-4,H-12, W,H, W*.6,H-20);
-    // Cockpit
     g.fillStyle(CFG.accN,.85);
     g.fillEllipse(W/2, H*.38, 12, 18);
     g.fillStyle(0xffffff,.35);
     g.fillEllipse(W/2-2, H*.34, 5, 8);
-    // Engine nozzle
     g.fillStyle(0x334466,1);
     g.fillRect(W/2-6,H-14,12,10);
-    // Accent stripe
     g.fillStyle(CFG.accN,.6);
     g.fillRect(W/2-1,8,2,H-24);
-    // Gun tips
     g.fillStyle(0xaabbdd,1);
     g.fillRect(3,H-18,4,10);
     g.fillRect(W-7,H-18,4,10);
@@ -474,7 +433,6 @@ class Boot extends Phaser.Scene {
       et.draw(g, et.color, et.w, et.h);
       g.generateTexture('enemy_'+et.key, et.w, et.h);
       g.destroy();
-      // Damaged version (tinted)
       const g2 = this.make.graphics({add:false});
       et.draw(g2, darken(et.color,.6), et.w, et.h);
       g2.generateTexture('enemy_'+et.key+'_dmg', et.w, et.h);
@@ -483,18 +441,15 @@ class Boot extends Phaser.Scene {
   }
 
   _makeBullets(){
-    // Player bullet
     const g = this.make.graphics({add:false});
     g.fillStyle(CFG.accN,1);
     g.fillRect(1,0,4,18);
     g.fillStyle(0xffffff,.8);
     g.fillRect(2,0,2,10);
-    // Glow tip
     g.fillStyle(CFG.accN,.5);
     g.fillRect(0,0,6,6);
     g.generateTexture('bullet',6,18); g.destroy();
 
-    // Enemy bullet
     const g2 = this.make.graphics({add:false});
     g2.fillStyle(0xff3333,1);
     g2.fillRect(1,0,4,14);
@@ -502,7 +457,6 @@ class Boot extends Phaser.Scene {
     g2.fillRect(2,0,2,6);
     g2.generateTexture('ebullet',6,14); g2.destroy();
 
-    // Boss bullet (bigger)
     const g3 = this.make.graphics({add:false});
     g3.fillStyle(0xff2266,1);
     g3.fillEllipse(8,4,16,8);
@@ -512,18 +466,15 @@ class Boot extends Phaser.Scene {
   }
 
   _makeEffects(){
-    // Particle pixel
     const g = this.make.graphics({add:false});
     g.fillStyle(0xffffff); g.fillRect(0,0,4,4);
     g.generateTexture('px',4,4); g.destroy();
 
-    // Shield hit flash
     const g2 = this.make.graphics({add:false});
     g2.fillStyle(CFG.accN,.6);
     g2.fillCircle(20,20,20);
     g2.generateTexture('shield',40,40); g2.destroy();
 
-    // Explosion ring
     const g3 = this.make.graphics({add:false});
     g3.lineStyle(3,0xff6600,.9); g3.strokeCircle(24,24,22);
     g3.lineStyle(2,0xffcc00,.5); g3.strokeCircle(24,24,16);
@@ -531,7 +482,6 @@ class Boot extends Phaser.Scene {
   }
 
   _makeUI(){
-    // HP bar pip
     const g = this.make.graphics({add:false});
     g.fillStyle(0x22cc44,1); g.fillRect(0,0,10,6);
     g.generateTexture('hp',10,6); g.destroy();
@@ -644,10 +594,8 @@ class Game extends Phaser.Scene {
     const isBoss= this.lvIdx === (CFG.lvls.length-1);
 
     if(isBoss && cnt >= 15){
-      // Spawn a boss
       this._spawnEnemy('boss', GW/2, -30, spd*.4, hp*3);
       this.bossActive = true;
-      // Flankers
       for(let i=0;i<4;i++){
         const x = 60 + i*(GW-120)/3;
         this._spawnEnemy('scout', x, -80-i*40, spd*1.2, hp);
@@ -655,7 +603,6 @@ class Game extends Phaser.Scene {
       return;
     }
 
-    // Pick enemy mix based on level
     const types = this.lvIdx < 2 ? ['scout','scout','scout']
                 : this.lvIdx < 4 ? ['scout','heavy','scout']
                 : ['heavy','speeder','tank'];
@@ -695,11 +642,10 @@ class Game extends Phaser.Scene {
     if(!this.active) return;
     const dt = delta/1000;
 
-    // Scroll bg
     this.bg1.tilePositionY -= 1.4;
     this.bg2.tilePositionY -= 0.7;
 
-    // Player input
+    // Player input — keyboard + pad flags only; swipe handled externally
     const L = this.cursors?.left.isDown  || this.wasd?.A.isDown || window.K?.L;
     const R = this.cursors?.right.isDown || this.wasd?.D.isDown || window.K?.R;
     const F = this.cursors?.space?.isDown || window.K?.F;
@@ -728,23 +674,19 @@ class Game extends Phaser.Scene {
       if(!e.active) return;
       allGone = false;
 
-      // Oscillation
       if(!e._isBoss){
         e.x += Math.sin(time*.002+e._phase)*1.8*e._spd;
         e.x  = Phaser.Math.Clamp(e.x, 20, GW-20);
       } else {
-        // Boss patrol
         e.x += Math.sin(time*.001+e._phase)*2.5;
         e.x  = Phaser.Math.Clamp(e.x, 60, GW-60);
       }
 
-      // Off screen bottom
       if(e.y > GH+40){
         if(!e._isBoss){ this._damagePlayer(1); }
         e.destroy(); return;
       }
 
-      // Enemy shoot
       e._shootT -= dt;
       if(e._shootT<=0){
         this._enemyFire(e);
@@ -757,10 +699,18 @@ class Game extends Phaser.Scene {
       b.destroy();
       this.hitSpark.setPosition(e.x, e.y).explode(6);
       e._hp--;
-      // Flash damage
-      e.setTexture(e._hp>0 ? 'enemy_'+e._et.key+'_dmg' : 'enemy_'+e._et.key);
+      // Swap to damage texture
+      if(e.texture.key !== 'enemy_'+e._et.key+'_dmg'){
+        e.setTexture('enemy_'+e._et.key+'_dmg');
+      }
       if(e._hp>0){
-        this.time.delayedCall(80,()=>{ if(e.active) e.setTexture('enemy_'+e._et.key); });
+        // Safe restore: store scene ref to avoid race condition after destroy
+        const scene = this;
+        scene.time.delayedCall(80, ()=>{
+          if(e.scene && e.active){
+            e.setTexture('enemy_'+e._et.key);
+          }
+        });
         return;
       }
       this.explode.setPosition(e.x,e.y).explode(e._isBoss?30:14);
@@ -784,7 +734,7 @@ class Game extends Phaser.Scene {
       if(b.y<-30||b.y>GH+30||b.x<-10||b.x>GW+10) b.destroy();
     });
 
-    // Wave clear?
+    // Wave clear
     if(allGone && this.enemies.getLength()===0 && this.killed>0){
       this.active=false; this.thruster.stop();
       this.time.delayedCall(700,()=>this._nextLevel());
@@ -804,7 +754,6 @@ class Game extends Phaser.Scene {
     const key = isBoss ? 'bbullet' : 'ebullet';
 
     if(isBoss){
-      // 3-way spread
       [-1,0,1].forEach(dir=>{
         const b = this.physics.add.image(e.x,e.y+20,key).setDepth(7).setAngle(dir*15);
         b.body.velocity.x = dir*120;
@@ -892,13 +841,11 @@ function drawPreview(){
   const [r,g,b] = CFG.accRGB;
   const acc = `rgb(${r},${g},${b})`;
 
-  // Stars
   ctx.fillStyle='#020209'; ctx.fillRect(0,0,220,180);
   for(let i=0;i<80;i++){
     ctx.fillStyle=`rgba(255,255,255,${Math.random()*.7})`;
     ctx.fillRect(Math.random()*220|0,Math.random()*180|0,1,1);
   }
-  // Ship preview
   ctx.fillStyle='#d0d8f0';
   ctx.beginPath(); ctx.moveTo(110,60); ctx.lineTo(90,120); ctx.lineTo(130,120); ctx.fill();
   ctx.fillStyle='#8899cc';
@@ -907,7 +854,6 @@ function drawPreview(){
   ctx.fillStyle=acc; ctx.globalAlpha=.85;
   ctx.beginPath(); ctx.ellipse(110,85,7,11,0,0,Math.PI*2); ctx.fill();
   ctx.globalAlpha=1;
-  // Enemy previews
   const colors=['#ff4444','#ff8800','#cc44ff'];
   [40,110,180].forEach((x,i)=>{
     ctx.fillStyle=colors[i];
@@ -915,7 +861,6 @@ function drawPreview(){
     ctx.fillStyle='rgba(255,255,255,.2)';
     ctx.fillRect(x-4,34,8,6);
   });
-  // Bullets
   ctx.fillStyle=acc;
   ctx.fillRect(109,130,2,12);
   ctx.fillRect(108,135,4,4);
@@ -990,15 +935,30 @@ const fb=document.getElementById('fireBtn');
 fb.addEventListener('touchstart',e=>{e.preventDefault();fb.classList.add('on');K.F=true;},{passive:false});
 fb.addEventListener('touchend',e=>{e.preventDefault();fb.classList.remove('on');K.F=false;},{passive:false});
 
-// Swipe on canvas to move
-let _tx=GW/2;
-document.getElementById('wrap').addEventListener('touchmove',e=>{
+// Swipe on canvas to move — only active during gameplay, not over UI controls
+let _swipeActive = false;
+const wrapEl = document.getElementById('wrap');
+wrapEl.addEventListener('touchstart', (e) => {
+  const sc = window._gs;
+  if (!sc || !sc.active) return;
+  // Skip if touch is on the pad or fire button
+  const t = e.target;
+  if (t.closest('#movePad') || t.closest('#fireBtn')) return;
+  _swipeActive = true;
+}, {passive: true});
+
+wrapEl.addEventListener('touchmove', (e) => {
+  if (!_swipeActive) return;
+  const sc = window._gs;
+  if (!sc || !sc.active) return;
   e.preventDefault();
-  const sc=window._gs; if(!sc||!sc.active) return;
-  _tx=e.touches[0].clientX;
-  const rect=document.getElementById('wrap').getBoundingClientRect();
-  sc.player.x=Phaser.Math.Clamp(_tx-rect.left,20,GW-20);
-},{passive:false});
+  const rect = wrapEl.getBoundingClientRect();
+  const tx = e.touches[0].clientX;
+  sc.player.x = Phaser.Math.Clamp(tx - rect.left, 20, GW - 20);
+}, {passive: false});
+
+wrapEl.addEventListener('touchend', () => { _swipeActive = false; });
+wrapEl.addEventListener('touchcancel', () => { _swipeActive = false; });
 
 // ─── SHOP ──────────────────────────────────────────────────────
 function openShop(){
