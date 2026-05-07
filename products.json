@@ -1,5 +1,113 @@
 [
   {
+    "id": "sauce-shooter-showdown",
+    "slug": "sauce-shooter-showdown",
+    "type": "shooter",
+    "category": "game",
+    "status": "available",
+    "emoji": "🌶️",
+    "accent": "#f59e0b",
+    "accentRgb": "245,158,11",
+    "gradient": "135deg,#fef3c7,#f59e0b",
+    "emojis": [
+      "🌶️",
+      "🔪",
+      "💥"
+    ],
+    "name": {
+      "ar": "معركة صلصة إطلاق النار",
+      "en": "Sauce Shooter Showdown",
+      "fr": "Duel de Tir à la Sauce",
+      "es": "Sauce Shooter Showdown",
+      "de": "Sauce Shooter Showdown",
+      "zh": "Sauce Shooter Showdown"
+    },
+    "desc": {
+      "ar": "معارك طعام ملحمية! أطلق المكونات، اصنع الأطباق، سيطر على المطبخ.",
+      "en": "Epic food battles! Shoot ingredients, craft dishes, dominate the kitchen.",
+      "fr": "Batailles épiques! Tirez des ingrédients, créez des plats, dominez la cuisine.",
+      "es": "Epic food battles! Shoot ingredients, craft dishes, dominate the kitchen.",
+      "de": "Epic food battles! Shoot ingredients, craft dishes, dominate the kitchen.",
+      "zh": "Epic food battles! Shoot ingredients, craft dishes, dominate the kitchen."
+    },
+    "tags": [
+      "food",
+      "shooter",
+      "cooking",
+      "battle",
+      "multiplayer",
+      "culinary",
+      "fun"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "levels": [
+      {
+        "enemyCount": 8,
+        "enemySpeed": 1.3,
+        "enemyHealth": 1,
+        "bulletSpeed": 6,
+        "spawnInterval": 90
+      },
+      {
+        "enemyCount": 11,
+        "enemySpeed": 1.6,
+        "enemyHealth": 1,
+        "bulletSpeed": 6,
+        "spawnInterval": 80
+      },
+      {
+        "enemyCount": 14,
+        "enemySpeed": 1.9,
+        "enemyHealth": 2,
+        "bulletSpeed": 6,
+        "spawnInterval": 70
+      },
+      {
+        "enemyCount": 17,
+        "enemySpeed": 2.2,
+        "enemyHealth": 2,
+        "bulletSpeed": 6,
+        "spawnInterval": 60
+      },
+      {
+        "enemyCount": 20,
+        "enemySpeed": 2.5,
+        "enemyHealth": 3,
+        "bulletSpeed": 6,
+        "spawnInterval": 50
+      }
+    ]
+  },
+  {
     "id": "cognito-ripple",
     "slug": "cognito-ripple",
     "type": "Perceptual Reality Game",
@@ -1384,7 +1492,49 @@
       }
     ],
     "generated": true,
-    "generatedAt": "2026-04-22T20:19:52.190Z"
+    "generatedAt": "2026-04-22T20:19:52.190Z",
+    "levels": [
+      {
+        "enemyCount": 3,
+        "enemySpeed": 0.8,
+        "enemyHealth": 1,
+        "bulletSpeed": 5,
+        "spawnInterval": 120,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 4,
+        "enemySpeed": 1,
+        "enemyHealth": 1,
+        "bulletSpeed": 5,
+        "spawnInterval": 100,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 5,
+        "enemySpeed": 1.2,
+        "enemyHealth": 2,
+        "bulletSpeed": 5,
+        "spawnInterval": 90,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 6,
+        "enemySpeed": 1.4,
+        "enemyHealth": 2,
+        "bulletSpeed": 5,
+        "spawnInterval": 80,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 7,
+        "enemySpeed": 1.6,
+        "enemyHealth": 3,
+        "bulletSpeed": 5,
+        "spawnInterval": 70,
+        "bossLevel": true
+      }
+    ]
   },
   {
     "id": "paradox-pixel-playground",
@@ -2111,7 +2261,49 @@
       }
     ],
     "generated": true,
-    "generatedAt": "2026-04-15T17:50:01.577Z"
+    "generatedAt": "2026-04-15T17:50:01.577Z",
+    "levels": [
+      {
+        "enemyCount": 3,
+        "enemySpeed": 0.8,
+        "enemyHealth": 1,
+        "bulletSpeed": 5,
+        "spawnInterval": 120,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 4,
+        "enemySpeed": 1,
+        "enemyHealth": 1,
+        "bulletSpeed": 5,
+        "spawnInterval": 100,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 5,
+        "enemySpeed": 1.2,
+        "enemyHealth": 2,
+        "bulletSpeed": 5,
+        "spawnInterval": 90,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 6,
+        "enemySpeed": 1.4,
+        "enemyHealth": 2,
+        "bulletSpeed": 5,
+        "spawnInterval": 80,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 7,
+        "enemySpeed": 1.6,
+        "enemyHealth": 3,
+        "bulletSpeed": 5,
+        "spawnInterval": 70,
+        "bossLevel": true
+      }
+    ]
   },
   {
     "id": "mirrored-mythos",
@@ -2519,7 +2711,49 @@
       }
     ],
     "generated": true,
-    "generatedAt": "2026-04-13T17:45:01.561Z"
+    "generatedAt": "2026-04-13T17:45:01.561Z",
+    "levels": [
+      {
+        "enemyCount": 3,
+        "enemySpeed": 0.8,
+        "enemyHealth": 1,
+        "bulletSpeed": 5,
+        "spawnInterval": 120,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 4,
+        "enemySpeed": 1,
+        "enemyHealth": 1,
+        "bulletSpeed": 5,
+        "spawnInterval": 100,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 5,
+        "enemySpeed": 1.2,
+        "enemyHealth": 2,
+        "bulletSpeed": 5,
+        "spawnInterval": 90,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 6,
+        "enemySpeed": 1.4,
+        "enemyHealth": 2,
+        "bulletSpeed": 5,
+        "spawnInterval": 80,
+        "bossLevel": false
+      },
+      {
+        "enemyCount": 7,
+        "enemySpeed": 1.6,
+        "enemyHealth": 3,
+        "bulletSpeed": 5,
+        "spawnInterval": 70,
+        "bossLevel": true
+      }
+    ]
   },
   {
     "id": "chrono-quest",
@@ -2623,35 +2857,50 @@
     "levels": [
       {
         "number": 1,
-        "name": { "ar": "اللحظة الأولى", "en": "First Moment" },
+        "name": {
+          "ar": "اللحظة الأولى",
+          "en": "First Moment"
+        },
         "difficulty": "easy",
         "pairs": 4,
         "timeLimit": 60
       },
       {
         "number": 2,
-        "name": { "ar": "ممرات الزمن", "en": "Time Passages" },
+        "name": {
+          "ar": "ممرات الزمن",
+          "en": "Time Passages"
+        },
         "difficulty": "medium",
         "pairs": 6,
         "timeLimit": 50
       },
       {
         "number": 3,
-        "name": { "ar": "مفترق العصور", "en": "Era Junction" },
+        "name": {
+          "ar": "مفترق العصور",
+          "en": "Era Junction"
+        },
         "difficulty": "medium",
         "pairs": 8,
         "timeLimit": 45
       },
       {
         "number": 4,
-        "name": { "ar": "اللانهاية", "en": "Infinity" },
+        "name": {
+          "ar": "اللانهاية",
+          "en": "Infinity"
+        },
         "difficulty": "hard",
         "pairs": 10,
         "timeLimit": 40
       },
       {
         "number": 5,
-        "name": { "ar": "الخلود", "en": "Eternity" },
+        "name": {
+          "ar": "الخلود",
+          "en": "Eternity"
+        },
         "difficulty": "expert",
         "pairs": 12,
         "timeLimit": 35
@@ -2762,35 +3011,50 @@
     "levels": [
       {
         "number": 1,
-        "name": { "ar": "المجرة الأولى", "en": "First Galaxy" },
+        "name": {
+          "ar": "المجرة الأولى",
+          "en": "First Galaxy"
+        },
         "difficulty": "easy",
         "pairs": 4,
         "timeLimit": 60
       },
       {
         "number": 2,
-        "name": { "ar": "سديم", "en": "Nebula" },
+        "name": {
+          "ar": "سديم",
+          "en": "Nebula"
+        },
         "difficulty": "medium",
         "pairs": 6,
         "timeLimit": 50
       },
       {
         "number": 3,
-        "name": { "ar": "نجم نابض", "en": "Pulsar" },
+        "name": {
+          "ar": "نجم نابض",
+          "en": "Pulsar"
+        },
         "difficulty": "medium",
         "pairs": 8,
         "timeLimit": 45
       },
       {
         "number": 4,
-        "name": { "ar": "أفق الحدث", "en": "Event Horizon" },
+        "name": {
+          "ar": "أفق الحدث",
+          "en": "Event Horizon"
+        },
         "difficulty": "hard",
         "pairs": 10,
         "timeLimit": 40
       },
       {
         "number": 5,
-        "name": { "ar": "الكون المتعدد", "en": "Multiverse" },
+        "name": {
+          "ar": "الكون المتعدد",
+          "en": "Multiverse"
+        },
         "difficulty": "expert",
         "pairs": 12,
         "timeLimit": 35
@@ -2901,35 +3165,50 @@
     "levels": [
       {
         "number": 1,
-        "name": { "ar": "أول شكل", "en": "First Shape" },
+        "name": {
+          "ar": "أول شكل",
+          "en": "First Shape"
+        },
         "difficulty": "easy",
         "pairs": 4,
         "timeLimit": 60
       },
       {
         "number": 2,
-        "name": { "ar": "وميض نيون", "en": "Neon Flash" },
+        "name": {
+          "ar": "وميض نيون",
+          "en": "Neon Flash"
+        },
         "difficulty": "medium",
         "pairs": 6,
         "timeLimit": 50
       },
       {
         "number": 3,
-        "name": { "ar": "فسيفساء", "en": "Mosaic" },
+        "name": {
+          "ar": "فسيفساء",
+          "en": "Mosaic"
+        },
         "difficulty": "medium",
         "pairs": 8,
         "timeLimit": 45
       },
       {
         "number": 4,
-        "name": { "ar": "متاهة", "en": "Labyrinth" },
+        "name": {
+          "ar": "متاهة",
+          "en": "Labyrinth"
+        },
         "difficulty": "hard",
         "pairs": 10,
         "timeLimit": 40
       },
       {
         "number": 5,
-        "name": { "ar": "تحفة", "en": "Masterpiece" },
+        "name": {
+          "ar": "تحفة",
+          "en": "Masterpiece"
+        },
         "difficulty": "expert",
         "pairs": 12,
         "timeLimit": 35
