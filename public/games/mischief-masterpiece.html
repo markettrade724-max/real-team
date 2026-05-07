@@ -12,6 +12,7 @@ html,body{height:100%;overflow:hidden;background:#000;
   font-family:'Segoe UI',Tajawal,sans-serif;color:#f1f5f9;}
 #wrap{position:relative;width:100%;max-width:420px;height:100dvh;margin:0 auto;overflow:hidden;}
 #wrap canvas{position:absolute;top:0;left:0;width:100%!important;height:100%!important;}
+
 .scr{position:absolute;inset:0;display:none;flex-direction:column;
   align-items:center;justify-content:center;gap:14px;text-align:center;
   padding:28px;background:linear-gradient(180deg,#020209,#080820);z-index:50;}
@@ -67,6 +68,7 @@ html,body{height:100%;overflow:hidden;background:#000;
 </head>
 <body>
 <div id="wrap">
+
   <div class="scr on" id="sStart">
     <div class="g-title">تحفة الفوضى</div>
     <div class="g-desc">ألعاب أكشن مجنونة لا تتوقف — تنافس وسط الفوضى المرحة!</div>
@@ -170,7 +172,8 @@ class Game extends Phaser.Scene {
   create(){
     this.lvIdx=0; this.score=0; this.hp=3; this.active=false; this.invincible=0; this.killed=0;
     this.bg1 = this.add.tileSprite(GW/2,GH/2,GW,GH,'stars').setDepth(0);
-    this.player = this.physics.add.image(GW/2, GH-90, 'player').setDepth(6).setCollideWorldBounds(true).body.setSize(24,36).setOffset(6,8);
+    this.player = this.physics.add.image(GW/2, GH-90, 'player').setDepth(6).setCollideWorldBounds(true);
+    this.player.body.setSize(24,36).setOffset(6,8);
     this.bullets = this.physics.add.group();
     this.enemies = this.physics.add.group();
     this.cursors = this.input.keyboard?.createCursorKeys();
@@ -184,7 +187,9 @@ class Game extends Phaser.Scene {
     for(let i=0;i<cnt;i++){
       const x = 30 + (i%5)*(GW-60)/4;
       const y = 50 + Math.floor(i/5)*40;
-      const e = this.physics.add.image(x, -y, 'enemy').setDepth(5).body.setSize(24,20).setOffset(2,2).velocity.y = spd*30;
+      const e = this.physics.add.image(x, -y, 'enemy').setDepth(5);
+      e.body.setSize(24,20).setOffset(2,2);
+      e.body.velocity.y = spd*30;
       this.enemies.add(e);
     }
     document.getElementById('lvFlash').style.display='block';
@@ -194,16 +199,16 @@ class Game extends Phaser.Scene {
 
   update(time, delta){
     if(!this.active) return;
-    const dt = delta/1000;
     this.bg1.tilePositionY -= 1.4;
     const L = this.cursors?.left.isDown, R = this.cursors?.right.isDown;
     this.player.body.velocity.x = L?-290:R?290:0;
-    if(this.invincible>0){ this.invincible-=dt; this.player.setAlpha(.5+Math.abs(Math.sin(time*.015))); }
+    if(this.invincible>0){ this.invincible-=delta/1000; this.player.setAlpha(.5+Math.abs(Math.sin(time*.015))); }
     else this.player.setAlpha(1);
 
     if(this.cursors?.space.isDown){
       if(!this._lastFire || time-this._lastFire>200){
-        const b = this.physics.add.image(this.player.x, this.player.y-28,'bullet').setDepth(7).body.velocity.y=-580;
+        const b = this.physics.add.image(this.player.x, this.player.y-28,'bullet').setDepth(7);
+        b.body.velocity.y=-580;
         this.bullets.add(b); this._lastFire=time;
       }
     }
