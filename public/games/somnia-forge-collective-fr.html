@@ -172,7 +172,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
   <!-- DIALOG -->
   <div id="dialog">
     <div id="speaker">Narrateur</div>
-    <div id="dialogText">Par une nuit sombre, vous vous trouvez aux portes d'un royaume abandonné.</div>
+    <div id="dialogText">Par une nuit sombre, vous vous trouvez aux portes d\'un royaume abandonné.</div>
     <div id="choices"></div>
     <div id="combatActions">
       <button class="ca ca-atk" onclick="combatAction('attack')">⚔️ Attaque</button>
@@ -184,7 +184,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 
   <!-- AD -->
   <div id="ad">
-    <span>📢 Les pubs soutiennent l'équipe</span>
+    <span>📢 Les pubs soutiennent l\'équipe</span>
     <button class="bb" onclick="buyRemoveAds()">Supprimer 1,99$</button>
   </div>
 
@@ -226,7 +226,7 @@ const SCENES = {
     bg: 'linear-gradient(180deg,#07070f 0%,#0f0a1e 100%)',
     emoji: '💭',
     speaker: 'Narrateur',
-    text: 'Par une nuit sombre, vous vous trouvez aux portes d'un royaume abandonné.',
+    text: 'Par une nuit sombre, vous vous trouvez aux portes d\'un royaume abandonné.',
     choices: [
       { icon:'🏘️', label:'Entrer au village', next:'village' },
       { icon:'⛺', label:'Établir un camp',  next:'camp'    },
@@ -257,7 +257,7 @@ const SCENES = {
     bg: 'linear-gradient(180deg,#0f0d18 0%,#1a0f07 100%)',
     emoji: '⚗️',
     speaker: 'Marchand',
-    text: 'Bienvenue héros! J'ai des potions et des armes rares.',
+    text: 'Bienvenue héros! J\'ai des potions et des armes rares.',
     choices: [
       { icon:'🧪', label:'Acheter potion (15 or)', next:'village', action:'buy_potion' },
       { icon:'🚶', label:'Partir', next:'village' },
@@ -278,7 +278,7 @@ const SCENES = {
     bg: 'linear-gradient(180deg,#0a0005 0%,#150010 100%)',
     emoji: '🏰',
     speaker: 'Narrateur',
-    text: 'Vous avez atteint l'ancien donjon. L'air est lourd.',
+    text: 'Vous avez atteint l\'ancien donjon. L\'air est lourd.',
     choices: [
       { icon:'🗺️', label:'Explorer le donjon', next:'combat_boss', combat:true },
       { icon:'↩️', label:'Retour',    next:'forest' },
@@ -288,7 +288,7 @@ const SCENES = {
     bg: 'linear-gradient(180deg,#0f0d00 0%,#1a1400 100%)',
     emoji: '💎',
     speaker: 'Narrateur',
-    text: 'Vous avez trouvé une chambre pleine d'or et de joyaux!',
+    text: 'Vous avez trouvé une chambre pleine d\'or et de joyaux!',
     choices: [
       { icon:'🎉', label:'Continuer', next:'victory' },
     ]
@@ -473,7 +473,7 @@ function handleChoice(c){
   }
   if(c.action === 'buy_potion'){
     if(G.gold >= 15){ G.gold -= 15; G.items++; addLog('🧪 +1 potion', 'blue'); }
-    else { addLog('Pas assez d'or', 'red'); return; }
+    else { addLog('Pas assez d\'or', 'red'); return; }
   }
   if(c.action === 'sneak'){
     const ok = Math.random() > 0.4;
@@ -549,7 +549,7 @@ function combatAction(type){
     addLog(`🛡️ Vous défendez`, 'acc');
     msg = '🛡️';
   } else if(type === 'item'){
-    if(G.items <= 0){ addLog('Plus d'objets', 'mut'); enemyTurn(); return; }
+    if(G.items <= 0){ addLog('Plus d\'objets', 'mut'); enemyTurn(); return; }
     G.items--;
     const heal = 30;
     G.hp = Math.min(G.maxHp, G.hp + heal);
@@ -630,7 +630,7 @@ function openShop(){
   if(!cur.adsRemoved){
     const d = document.createElement('div'); d.className = 'si';
     d.innerHTML =
-      `<div><div class="si-n">🚫 Les pubs soutiennent l'équipe</div><div class="si-p">Supprimer 1,99$</div></div>` +
+      `<div><div class="si-n">🚫 Les pubs soutiennent l\'équipe</div><div class="si-p">Supprimer 1,99$</div></div>` +
       `<button class="bb" onclick="buyRemoveAds()">Boutique</button>`;
     list.appendChild(d);
   }
