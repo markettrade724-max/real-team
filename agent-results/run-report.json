@@ -1,26 +1,26 @@
 {
-  "runId": "2026-05-06T1557",
-  "timestamp": "2026-05-06T15:57:36.301Z",
-  "totalDuration": "21.8s",
+  "runId": "2026-05-07T1028",
+  "timestamp": "2026-05-07T10:28:30.283Z",
+  "totalDuration": "15.1s",
   "geminiCalls": "0/6",
   "agents": {
     "analytics": {
-      "success": false,
-      "duration": "55ms",
+      "success": true,
+      "duration": "56ms",
       "attempts": 1,
-      "error": "Node.js 20 detected without native WebSocket support.\n\nSuggested solution: For Node.js < 22, install \"ws\" package and pr"
+      "error": null
     },
     "idea": {
       "success": false,
-      "duration": "6.7s",
+      "duration": "1ms",
       "attempts": 1,
-      "error": "got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. S"
+      "error": "loadJSON is not defined"
     }
   },
   "summary": {
     "total": 2,
-    "passed": 0,
-    "failed": 2,
+    "passed": 1,
+    "failed": 1,
     "newGame": null,
     "template": null
   }
