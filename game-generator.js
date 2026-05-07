@@ -9,6 +9,7 @@
  * - إضافة متغيرات STORY_JSON و LABELS_JSON لتمرير القصة والتسميات
  * - إضافة متغيرات خاصة بقالب memory-game (MOVES_LBL, PAIRS_LBL, HINT_LBL...)
  * - إصلاح: levels أصبحت دائماً مصفوفة (تجنب TypeError)
+ * - إضافة تسميات endless-runner: COINS_LBL, DIST_LBL, SLIDE_LBL, JUMP_LBL
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -16,36 +17,30 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ── خريطة القوالب (مطابقة حرفية) ─────────────────────────────
+// ─ـ خريطة القوالب (مطابقة حرفية) ─────────────────────────────
 const TEMPLATE_MAP = {
-  // ألعاب ذاكرة وألغاز
   memory:'memory-game.html', puzzle:'memory-game.html',
   word:'memory-game.html',   quiz:'memory-game.html',
   matching:'memory-game.html', trivia:'memory-game.html',
-  // سباقات
   racing:'racing-game.html', race:'racing-game.html',
   speed:'racing-game.html',  car:'racing-game.html',
   drift:'racing-game.html',  moto:'racing-game.html',
-  // رياضات
   sport:'sports-game.html',  football:'sports-game.html',
   basketball:'sports-game.html', tennis:'sports-game.html',
   soccer:'sports-game.html',
-  // أكشن وإطلاق نار
   arcade:'phaser-game.html', shooter:'phaser-game.html',
   action:'phaser-game.html', space:'phaser-game.html',
   bullet:'phaser-game.html', battle:'phaser-game.html',
   defense:'phaser-game.html', survival:'phaser-game.html',
-  // مغامرات وRPG
   rpg:'adventure-rpg.html',  adventure:'adventure-rpg.html',
   story:'adventure-rpg.html', quest:'adventure-rpg.html',
   narrative:'adventure-rpg.html', dungeon:'adventure-rpg.html',
-  // أدوات وتطبيقات
   tool:'tool-app.html', app:'tool-app.html',
   timer:'tool-app.html', focus:'tool-app.html',
   generator:'tool-app.html', creative:'tool-app.html',
 };
 
-// ── كلمات مفتاحية للكشف الذكي (مُحسَّنة) ─────────────────────
+// ─ـ كلمات مفتاحية للكشف الذكي (مُحسَّنة) ─────────────────────
 const SMART_RULES = [
   {
     template: 'racing-game.html',
@@ -92,7 +87,6 @@ const SMART_RULES = [
 
 // ─ـ حل القالب بذكاء ─────────────────────────────────────────
 function resolveTemplate(product) {
-  // الأولوية القصوى: templateFile المخزّن (من template-engineer)
   if (product.templateFile) {
     const tplPath = join(__dirname, 'templates', product.templateFile);
     if (existsSync(tplPath)) {
@@ -103,16 +97,11 @@ function resolveTemplate(product) {
   }
 
   const typeRaw = (product.type || '').toLowerCase().trim();
-
-  // 1. مطابقة حرفية مباشرة
   if (TEMPLATE_MAP[typeRaw]) return TEMPLATE_MAP[typeRaw];
-
-  // 2. الـ type يحتوي على كلمة مفتاحية من الخريطة
   for (const [key, tpl] of Object.entries(TEMPLATE_MAP)) {
     if (typeRaw.includes(key)) return tpl;
   }
 
-  // 3. تحليل الكلمات الكاملة (type + tags + slug)
   const corpus = [
     typeRaw,
     (product.slug || '').toLowerCase().replace(/-/g,' '),
@@ -127,7 +116,6 @@ function resolveTemplate(product) {
     if (score > bestScore) { bestScore = score; bestTemplate = rule.template; }
   }
 
-  // 4. Fallback حسب category
   if (!bestTemplate || bestScore === 0) {
     bestTemplate = product.category === 'game'
       ? 'phaser-game.html'
@@ -169,6 +157,8 @@ const LABELS = {
     AD_REMOVE_LABEL:'إزالة $1.99',
     MOVES_LBL:'حركات', PAIRS_LBL:'أزواج', HINT_LBL:'تلميح',
     HINT_LEFT_LBL:'تلميحات متبقية',
+    COINS_LBL:'عملات', DIST_LBL:'المسافة',
+    SLIDE_LBL:'انزلاق', JUMP_LBL:'قفز',
     // سباقات
     LAP_LBL:'لفّة', LAPS_LBL:'اللفّات', SPEED_LBL:'السرعة',
     POSITION_LBL:'المركز', BEST_LAP_LBL:'أفضل لفّة', FINISH_LBL:'النهاية',
@@ -239,6 +229,8 @@ const LABELS = {
     AD_REMOVE_LABEL:'Remove $1.99',
     MOVES_LBL:'Moves', PAIRS_LBL:'Pairs', HINT_LBL:'Hint',
     HINT_LEFT_LBL:'Hints left',
+    COINS_LBL:'Coins', DIST_LBL:'Distance',
+    SLIDE_LBL:'Slide', JUMP_LBL:'Jump',
     LAP_LBL:'Lap', LAPS_LBL:'Laps', SPEED_LBL:'Speed',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Best Lap', FINISH_LBL:'Finish',
     RACE_START_LBL:'Go!', RACE_OVER_LBL:'Race Over',
@@ -305,6 +297,8 @@ const LABELS = {
     AD_REMOVE_LABEL:'Supprimer 1,99$',
     MOVES_LBL:'Coups', PAIRS_LBL:'Paires', HINT_LBL:'Indice',
     HINT_LEFT_LBL:'Indices restants',
+    COINS_LBL:'Pièces', DIST_LBL:'Distance',
+    SLIDE_LBL:'Glisser', JUMP_LBL:'Sauter',
     LAP_LBL:'Tour', LAPS_LBL:'Tours', SPEED_LBL:'Vitesse',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Meilleur tour', FINISH_LBL:'Arrivée',
     RACE_START_LBL:'Partez!', RACE_OVER_LBL:'Course terminée',
@@ -370,6 +364,8 @@ const LABELS = {
     AD_REMOVE_LABEL:'Eliminar $1.99',
     MOVES_LBL:'Movimientos', PAIRS_LBL:'Pares', HINT_LBL:'Pista',
     HINT_LEFT_LBL:'Pistas restantes',
+    COINS_LBL:'Monedas', DIST_LBL:'Distancia',
+    SLIDE_LBL:'Deslizar', JUMP_LBL:'Saltar',
     LAP_LBL:'Vuelta', LAPS_LBL:'Vueltas', SPEED_LBL:'Velocidad',
     POSITION_LBL:'Posición', BEST_LAP_LBL:'Mejor vuelta', FINISH_LBL:'Meta',
     RACE_START_LBL:'¡Arranca!', RACE_OVER_LBL:'Carrera terminada',
@@ -435,6 +431,8 @@ const LABELS = {
     AD_REMOVE_LABEL:'Entfernen 1,99$',
     MOVES_LBL:'Züge', PAIRS_LBL:'Paare', HINT_LBL:'Hinweis',
     HINT_LEFT_LBL:'Hinweise übrig',
+    COINS_LBL:'Münzen', DIST_LBL:'Distanz',
+    SLIDE_LBL:'Rutschen', JUMP_LBL:'Springen',
     LAP_LBL:'Runde', LAPS_LBL:'Runden', SPEED_LBL:'Geschwindigkeit',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Beste Runde', FINISH_LBL:'Ziel',
     RACE_START_LBL:'Los!', RACE_OVER_LBL:'Rennen beendet',
@@ -500,6 +498,8 @@ const LABELS = {
     AD_REMOVE_LABEL:'去除广告 $1.99',
     MOVES_LBL:'步数', PAIRS_LBL:'对数', HINT_LBL:'提示',
     HINT_LEFT_LBL:'剩余提示',
+    COINS_LBL:'金币', DIST_LBL:'距离',
+    SLIDE_LBL:'滑行', JUMP_LBL:'跳跃',
     LAP_LBL:'圈', LAPS_LBL:'圈数', SPEED_LBL:'速度',
     POSITION_LBL:'名次', BEST_LAP_LBL:'最快圈速', FINISH_LBL:'终点',
     RACE_START_LBL:'出发！', RACE_OVER_LBL:'比赛结束',
@@ -575,14 +575,12 @@ function generate(product) {
   const safeWin    = ensureLang(product.story?.winMessage);
   const safeLose   = ensureLang(product.story?.loseMessage);
   
-  // تأكد من emojis
   let emojis = product.emojis;
   if (!Array.isArray(emojis) || emojis.length === 0) {
     emojis = ['🎮','⭐','🔥','💎','🚀','🌟','🎯','🎪','🎨','🎭','🔮','💡'];
   }
   emojis = emojis.slice(0, 12);
 
-  // تأكد من levels مع fallback حسب القالب
   let levels = product.levels;
   if (!Array.isArray(levels) || levels.length === 0) {
     if (tplName === 'phaser-game.html') {
@@ -611,12 +609,10 @@ function generate(product) {
     console.log(`  ℹ️  Using default levels for ${tplName}`);
   }
   
-  // حماية مزدوجة
   if (!Array.isArray(levels)) {
     levels = [];
   }
 
-  // إعدادات خاصة بقالب memory-game
   let cols = 4, pairs = 4, hintsStart = 2;
   const emojiSize = '3rem';
   if (tplName === 'memory-game.html' && Array.isArray(levels) && levels.length > 0) {
