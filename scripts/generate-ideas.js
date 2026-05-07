@@ -1,7 +1,7 @@
 /**
  * generate-ideas.js
  * يستخدم Gemini لتوليد منتج جديد وإضافته إلى products.json
- * مع حماية كاملة ضد فقدان البيانات
+ * مع معالجة متقدمة لأخطاء JSON
  */
 import { readFileSync, writeFileSync, existsSync, copyFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -15,7 +15,6 @@ const API_KEY   = process.env.GEMINI_API_KEY;
 
 if (!API_KEY) { console.error('❌ GEMINI_API_KEY missing'); process.exit(1); }
 
-// ── الأنواع والفئات المدعومة ──────────────────────────────────
 const VALID_TYPES = [
   'racing','race','speed','car','drift',
   'sport','football','basketball',
@@ -26,7 +25,6 @@ const VALID_TYPES = [
 
 const CATEGORIES = ['game', 'app'];
 
-// ── موضوعات للإلهام (يتم اختيار واحد عشوائياً) ──────────────
 const THEMES = [
   'space exploration and alien civilizations',
   'underwater mysteries and ocean creatures',
@@ -45,7 +43,6 @@ const THEMES = [
   'mind puzzles and brain training',
 ];
 
-// ── استدعاء Gemini ─────────────────────────────────────────────
 async function callGemini(prompt, retries = 3) {
   for (let i = 0; i < retries; i++) {
     const res = await fetch(
@@ -57,7 +54,7 @@ async function callGemini(prompt, retries = 3) {
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: {
             maxOutputTokens: 1200,
-            temperature: 0.9,
+            temperature: 0.8,
             responseMimeType: 'application/json',
           },
         }),
@@ -76,19 +73,28 @@ async function callGemini(prompt, retries = 3) {
   throw new Error('Gemini unavailable after retries');
 }
 
-// استخراج JSON من رد Gemini — يتعامل مع markdown وبدونه
-function extractJSON(raw) {
-  let clean = raw
-    .replace(/```json\s*/gi, '')
-    .replace(/```\s*/g, '')
-    .trim();
-  const objMatch = clean.match(/\{[\s\S]*\}/);
-  if (objMatch) return objMatch[0];
-  if (clean.startsWith('{')) return clean;
-  throw new Error('No JSON found in Gemini response');
+// إصلاح JSON المعطوب بذكاء
+function repairJSON(raw) {
+  let json = raw.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+
+  // إذا بدأ بـ [ أو { فهو جيد، وإلا حاول استخراج أول { أو [
+  const startObj = json.indexOf('{');
+  const startArr = json.indexOf('[');
+  if (startObj === -1 && startArr === -1) throw new Error('No JSON found');
+
+  const start = startObj !== -1 && (startArr === -1 || startObj < startArr) ? startObj : startArr;
+  json = json.substring(start);
+
+  // تصحيح علامات الاقتباس المفقودة في أسماء الخصائص
+  json = json.replace(/([{,]\s*)([a-zA-Z0-9_]+)(\s*:)/g, '$1"$2"$3');
+
+  // إزالة أي نص بعد آخر }
+  let end = json.lastIndexOf('}');
+  if (end !== -1) json = json.substring(0, end + 1);
+
+  return json;
 }
 
-// ── توليد فكرة جديدة ──────────────────────────────────────────
 async function generateIdea(existingSlugs) {
   const theme = THEMES[Math.floor(Math.random() * THEMES.length)];
   const typeHint = VALID_TYPES[Math.floor(Math.random() * VALID_TYPES.length)];
@@ -107,6 +113,7 @@ STRICT RULES:
 4. All 6 languages required: ar, en, fr, es, de, zh
 5. "category" must be exactly "game" or "app"
 6. "status" must be "available"
+7. Make sure all JSON property names are double-quoted and no trailing commas
 
 Return this exact JSON structure:
 {
@@ -153,8 +160,24 @@ Return this exact JSON structure:
 }`;
 
   const raw = await callGemini(prompt);
-  const jsonStr = extractJSON(raw);
-  const product = JSON.parse(jsonStr);
+  console.log('📝 Raw response:', raw.substring(0, 200) + '...');
+
+  let jsonStr;
+  try {
+    jsonStr = repairJSON(raw);
+  } catch (e) {
+    console.error('❌ Could not extract JSON from response');
+    throw e;
+  }
+
+  let product;
+  try {
+    product = JSON.parse(jsonStr);
+  } catch (e) {
+    console.error('❌ JSON parse error after repair:', e.message);
+    console.error('🤖 Attempted to parse:', jsonStr.substring(0, 300));
+    throw e;
+  }
 
   if (!product.id || !product.slug || !product.name?.en || !product.desc?.en) {
     throw new Error('Generated product missing required fields');
@@ -183,7 +206,6 @@ Return this exact JSON structure:
   return product;
 }
 
-// ── Main ───────────────────────────────────────────────────────
 async function main() {
   let products = [];
   try {
@@ -214,7 +236,6 @@ async function main() {
 
   if (!newProduct) throw new Error('Could not generate a new product');
 
-  // نسخ احتياطي قبل التعديل
   if (existsSync(PRODUCTS_PATH)) {
     copyFileSync(PRODUCTS_PATH, BACKUP_PATH);
     console.log('📋 Backup of products.json created');
@@ -222,7 +243,6 @@ async function main() {
 
   products.unshift(newProduct);
 
-  // تحقق من صلاحية JSON قبل الكتابة
   const json = JSON.stringify(products, null, 2);
   JSON.parse(json);
 
