@@ -119,7 +119,8 @@ const CFG = {
   iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
   lvls: [{"enemyCount":8,"enemySpeed":1.3,"enemyHealth":1,"bulletSpeed":6,"spawnInterval":90},{"enemyCount":11,"enemySpeed":1.6,"enemyHealth":1,"bulletSpeed":6,"spawnInterval":80},{"enemyCount":14,"enemySpeed":1.9,"enemyHealth":2,"bulletSpeed":6,"spawnInterval":70},{"enemyCount":17,"enemySpeed":2.2,"enemyHealth":2,"bulletSpeed":6,"spawnInterval":60},{"enemyCount":20,"enemySpeed":2.5,"enemyHealth":3,"bulletSpeed":6,"spawnInterval":50}] || []
 };
-// ضمان وجود بيانات مستوى واحدة على الأقل صالحة
+
+// ضمان وجود مستويات افتراضية
 if (!Array.isArray(CFG.lvls) || CFG.lvls.length === 0) {
   CFG.lvls = [
     { enemyCount:8,  enemySpeed:1.3, enemyHealth:1 },
@@ -130,7 +131,6 @@ if (!Array.isArray(CFG.lvls) || CFG.lvls.length === 0) {
   ];
 }
 
-// دالة مساعدة لقراءة بيانات المستوى مع قيم افتراضية
 function getLevelData(index) {
   const defaultLevel = { enemyCount: 8, enemySpeed: 1.3, enemyHealth: 1 };
   const lv = (CFG.lvls && CFG.lvls[index]) ? CFG.lvls[index] : defaultLevel;
@@ -143,7 +143,6 @@ function getLevelData(index) {
 
 const SK = 'rt_' + CFG.pid;
 const S  = () => JSON.parse(localStorage.getItem(SK) || '{}');
-const sv = d  => localStorage.setItem(SK, JSON.stringify({...S(),...d}));
 const mob = () => 'ontouchstart' in window && matchMedia('(pointer: coarse)').matches;
 
 const GW = Math.min(window.innerWidth, 420);
@@ -190,6 +189,13 @@ class Game extends Phaser.Scene {
     this.bullets = this.physics.add.group();
     this.enemies = this.physics.add.group();
     this.cursors = this.input.keyboard?.createCursorKeys();
+
+    // دعم النقر على الشاشة للإطلاق
+    this.input.on('pointerdown', () => {
+      if (!this.active) return;
+      this._fireBullet();
+    });
+
     window._gs = this;
   }
 
@@ -202,10 +208,11 @@ class Game extends Phaser.Scene {
     const spd = lv.enemySpeed;
     for(let i=0;i<cnt;i++){
       const x = 30 + (i%5)*(GW-60)/4;
-      const y = 50 + Math.floor(i/5)*40;
-      const e = this.physics.add.image(x, -y, 'enemy').setDepth(5);
+      // بداية الأعداء بالقرب من أعلى الشاشة مباشرة (y سالب صغير)
+      const y = -20;
+      const e = this.physics.add.image(x, y, 'enemy').setDepth(5);
       e.body.setSize(24,20).setOffset(2,2);
-      e.body.velocity.y = spd*30;
+      e.body.velocity.y = spd * 30;
       this.enemies.add(e);
     }
     document.getElementById('lvFlash').style.display='block';
@@ -213,29 +220,48 @@ class Game extends Phaser.Scene {
     this._updateHUD();
   }
 
+  _fireBullet(){
+    if (!this.player) return;
+    const b = this.physics.add.image(this.player.x, this.player.y-28,'bullet').setDepth(7);
+    b.body.velocity.y = -580;
+    this.bullets.add(b);
+    console.log('💥 bullet fired');
+  }
+
   update(time, delta){
     if(!this.active) return;
     this.bg1.tilePositionY -= 1.4;
-    const L = this.cursors?.left.isDown, R = this.cursors?.right.isDown;
+    // دعم لوحة المفاتيح
+    const L = this.cursors?.left.isDown;
+    const R = this.cursors?.right.isDown;
     this.player.body.velocity.x = L?-290:R?290:0;
+
     if(this.invincible>0){ this.invincible-=delta/1000; this.player.setAlpha(.5+Math.abs(Math.sin(time*.015))); }
     else this.player.setAlpha(1);
 
     if(this.cursors?.space.isDown){
       if(!this._lastFire || time-this._lastFire>200){
-        const b = this.physics.add.image(this.player.x, this.player.y-28,'bullet').setDepth(7);
-        b.body.velocity.y=-580;
-        this.bullets.add(b); this._lastFire=time;
+        this._fireBullet();
+        this._lastFire=time;
+      }
+    }
+
+    // دعم الأزرار التي تعمل باللمس (window.K)
+    if (window.K && window.K.F) {
+      if(!this._lastFire || time-this._lastFire>200){
+        this._fireBullet();
+        this._lastFire=time;
       }
     }
 
     this.enemies.getChildren().forEach(e=>{
       if(!e.active) return;
       e.x += Math.sin(time*.002+e.y)*1.5;
-      if(e.y>GH+40){ if(this.invincible<=0) this._damagePlayer(1); e.destroy(); }
+      if(e.y > GH+40){ if(this.invincible<=0) this._damagePlayer(1); e.destroy(); }
     });
 
     this.physics.overlap(this.bullets, this.enemies, (b,e)=>{
+      console.log('💀 enemy hit');
       b.destroy(); e.destroy(); this.score+=10*(this.lvIdx+1); this.killed++;
       this._updateHUD();
     });
@@ -283,7 +309,10 @@ function startGame(){
   document.getElementById('sStart').classList.remove('on');
   document.getElementById('sEnd').classList.remove('on');
   document.getElementById('hud').style.display='flex';
-  if(mob()){ document.getElementById('fireBtn').style.display='flex'; document.getElementById('movePad').style.display='flex'; }
+  if(mob()){
+    document.getElementById('fireBtn').style.display='flex';
+    document.getElementById('movePad').style.display='flex';
+  }
   const sc=window._gs; if(sc){ sc.resetGame(); sc.startLevel(); }
 }
 function _endGame(win,score){
@@ -293,6 +322,21 @@ function _endGame(win,score){
   document.getElementById('sEnd').classList.add('on');
   document.getElementById('sEnd').querySelector('.g-title').textContent=win?'Gewonnen!':'Game Over';
 }
+
+// دعم أزرار اللمس
+window.K = window.K || { F: false, L: false, R: false };
+document.getElementById('fireBtn')?.addEventListener('pointerdown', ()=>{
+  window.K.F = true;
+  document.getElementById('fireBtn').classList.add('on');
+});
+document.getElementById('fireBtn')?.addEventListener('pointerup', ()=>{
+  window.K.F = false;
+  document.getElementById('fireBtn').classList.remove('on');
+});
+document.getElementById('mpL')?.addEventListener('pointerdown', ()=>{ window.K.L = true; });
+document.getElementById('mpL')?.addEventListener('pointerup', ()=>{ window.K.L = false; });
+document.getElementById('mpR')?.addEventListener('pointerdown', ()=>{ window.K.R = true; });
+document.getElementById('mpR')?.addEventListener('pointerup', ()=>{ window.K.R = false; });
 </script>
 </body>
 </html>
