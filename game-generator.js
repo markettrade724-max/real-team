@@ -660,6 +660,7 @@ function generate(product) {
       COLS:          cols,
       PAIRS:         pairs,
       HINTS_START:   hintsStart,
+      GEMINI_KEY: process.env.GEMINI_KEY || '',
       ...(lbl || {}),
     };
 
