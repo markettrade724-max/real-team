@@ -10,6 +10,7 @@
  * - إضافة متغيرات خاصة بقالب memory-game (MOVES_LBL, PAIRS_LBL, HINT_LBL...)
  * - إصلاح: levels أصبحت دائماً مصفوفة (تجنب TypeError)
  * - إضافة تسميات endless-runner: COINS_LBL, DIST_LBL, SLIDE_LBL, JUMP_LBL
+ * - إضافة حماية escaping لمنع كسر JavaScript بسبب علامات التنصيص
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -143,6 +144,17 @@ function ensureLang(obj, fallbackOrder = ['en','ar','fr','es','de','zh']) {
     result[l] = result[l] || '';
   });
   return result;
+}
+
+// ─ـ دالة escaping لحماية النصوص داخل JavaScript ──────────────
+function esc(str) {
+  return String(str || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
 }
 
 // ─ـ التسميات متعددة اللغات (كاملة) ──────────────────────────
@@ -583,7 +595,7 @@ function generate(product) {
 
   let levels = product.levels;
   if (!Array.isArray(levels) || levels.length === 0) {
-    if (tplName === 'phaser-game.html') {
+    if (tplName === 'phaser-game.html' || tplName === 'action-shooter.html') {
       levels = [
         { enemyCount:8,  enemySpeed:1.3, enemyHealth:1 },
         { enemyCount:11, enemySpeed:1.6, enemyHealth:1 },
@@ -633,6 +645,14 @@ function generate(product) {
     const name = safeName[lang];
     const desc = safeDesc[lang];
 
+    // تجهيز تسميات آمنة مع escaping
+    const safeLbl = {};
+    if (lbl) {
+      for (const [k, v] of Object.entries(lbl)) {
+        safeLbl[k] = esc(v);
+      }
+    }
+
     let out = tpl;
 
     const vars = {
@@ -640,8 +660,8 @@ function generate(product) {
       DIR:           lbl?.dir || 'ltr',
       PRODUCT_ID:    product.id,
       PRODUCT_TYPE:  product.type,
-      GAME_NAME:     name,
-      GAME_DESC:     desc,
+      GAME_NAME:     esc(name),
+      GAME_DESC:     esc(desc),
       EMOJI:         product.emoji || '🎮',
       ACCENT:        product.accent || '#facc15',
       ACCENT_RGB:    product.accentRgb || '250,204,21',
@@ -660,13 +680,18 @@ function generate(product) {
       COLS:          cols,
       PAIRS:         pairs,
       HINTS_START:   hintsStart,
-      GEMINI_KEY: process.env.GEMINI_KEY || '',
-      ...(lbl || {}),
+      GEMINI_KEY:    process.env.GEMINI_KEY || '',
+      ...safeLbl,      // التسميات المؤمنة
     };
 
     Object.entries(vars).forEach(([k, v]) => {
       out = out.split(`{{${k}}}`).join(String(v ?? ''));
     });
+
+    // تحذير في حال وجود export
+    if (/\bexport\b/.test(out.replace(/\/\/.*|\/\*[\s\S]*?\*\//g, ''))) {
+      console.warn(`  ⚠️  Possible 'export' keyword in ${filename}`);
+    }
 
     const filename = lang === 'ar'
       ? `${product.slug}.html`
