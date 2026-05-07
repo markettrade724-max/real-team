@@ -1,14 +1,16 @@
 /**
  * generate-levels.js
  * يولّد مستويات لمنتجات arcade/action التي ليس لها مستويات بعد
+ * مع مستويات افتراضية مناسبة لكل نوع
  */
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, copyFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT      = join(__dirname, '..');
 const PRODUCTS_PATH = join(ROOT, 'products.json');
+const BACKUP_PATH   = PRODUCTS_PATH + '.bak';
 const API_KEY   = process.env.GEMINI_API_KEY;
 
 if (!API_KEY) { console.error('❌ GEMINI_API_KEY missing'); process.exit(1); }
@@ -16,9 +18,48 @@ if (!API_KEY) { console.error('❌ GEMINI_API_KEY missing'); process.exit(1); }
 // أنواع تحتاج مستويات
 const NEEDS_LEVELS = ['arcade','shooter','action','space','rpg','adventure','story','quest','racing','race','sport'];
 
+// المستويات الافتراضية لكل نوع
+const DEFAULT_LEVELS = {
+  arcade: [
+    { enemyCount:8,  enemySpeed:1.3, enemyHealth:1, bulletSpeed:6, spawnInterval:90 },
+    { enemyCount:11, enemySpeed:1.6, enemyHealth:1, bulletSpeed:6, spawnInterval:80 },
+    { enemyCount:14, enemySpeed:1.9, enemyHealth:2, bulletSpeed:6, spawnInterval:70 },
+    { enemyCount:17, enemySpeed:2.2, enemyHealth:2, bulletSpeed:6, spawnInterval:60 },
+    { enemyCount:20, enemySpeed:2.5, enemyHealth:3, bulletSpeed:6, spawnInterval:50 },
+  ],
+  racing: [
+    { laps:3, trackDifficulty:'easy', opponents:2, maxSpeed:200 },
+    { laps:4, trackDifficulty:'medium', opponents:3, maxSpeed:240 },
+    { laps:5, trackDifficulty:'medium', opponents:3, maxSpeed:260 },
+    { laps:5, trackDifficulty:'hard', opponents:4, maxSpeed:280 },
+    { laps:6, trackDifficulty:'hard', opponents:4, maxSpeed:300 },
+  ],
+  sport: [
+    { matchDuration:60, difficulty:'easy', teamStrength:1 },
+    { matchDuration:60, difficulty:'medium', teamStrength:2 },
+    { matchDuration:90, difficulty:'medium', teamStrength:2 },
+    { matchDuration:90, difficulty:'hard', teamStrength:3 },
+    { matchDuration:90, difficulty:'hard', teamStrength:3 },
+  ],
+  rpg: [
+    { enemyCount:3, enemySpeed:0.8, enemyHealth:1, bulletSpeed:5, spawnInterval:120, bossLevel:false },
+    { enemyCount:4, enemySpeed:1.0, enemyHealth:1, bulletSpeed:5, spawnInterval:100, bossLevel:false },
+    { enemyCount:5, enemySpeed:1.2, enemyHealth:2, bulletSpeed:5, spawnInterval:90,  bossLevel:false },
+    { enemyCount:6, enemySpeed:1.4, enemyHealth:2, bulletSpeed:5, spawnInterval:80,  bossLevel:false },
+    { enemyCount:7, enemySpeed:1.6, enemyHealth:3, bulletSpeed:5, spawnInterval:70,  bossLevel:true  },
+  ],
+};
+
+function getDefaultLevels(type) {
+  if (['racing','race','speed','car','drift','moto'].includes(type)) return DEFAULT_LEVELS.racing;
+  if (['sport','football','basketball','tennis','soccer'].includes(type)) return DEFAULT_LEVELS.sport;
+  if (['rpg','adventure','story','quest'].includes(type)) return DEFAULT_LEVELS.rpg;
+  return DEFAULT_LEVELS.arcade;
+}
+
 async function callGemini(prompt) {
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -33,7 +74,7 @@ async function callGemini(prompt) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
-function extractArray(raw) {
+function extractJsonArray(raw) {
   const clean = raw.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
   const match = clean.match(/\[[\s\S]*\]/);
   if (match) return match[0];
@@ -49,16 +90,15 @@ async function generateLevels(product) {
   let levelSchema, example;
 
   if (isRacing) {
-    levelSchema = `{ "enemyCount": 0, "enemySpeed": 1.0, "laps": 3, "trackDifficulty": "easy", "opponents": 3, "maxSpeed": 280 }`;
-    example = `{ "enemyCount": 0, "enemySpeed": 1.0, "laps": 3, "trackDifficulty": "easy", "opponents": 2, "maxSpeed": 200 }`;
+    levelSchema = `{ "laps": 3, "trackDifficulty": "easy", "opponents": 2, "maxSpeed": 200 }`;
+    example = `{ "laps": 3, "trackDifficulty": "easy", "opponents": 2, "maxSpeed": 200 }`;
   } else if (isSport) {
-    levelSchema = `{ "enemyCount": 0, "enemySpeed": 1.0, "matchDuration": 60, "difficulty": "easy", "teamStrength": 1 }`;
-    example = `{ "enemyCount": 0, "enemySpeed": 1.0, "matchDuration": 60, "difficulty": "easy", "teamStrength": 1 }`;
+    levelSchema = `{ "matchDuration": 60, "difficulty": "easy", "teamStrength": 1 }`;
+    example = `{ "matchDuration": 60, "difficulty": "easy", "teamStrength": 1 }`;
   } else if (isRPG) {
     levelSchema = `{ "enemyCount": 3, "enemySpeed": 1.0, "enemyHealth": 1, "bulletSpeed": 5, "spawnInterval": 90, "bossLevel": false }`;
     example = `{ "enemyCount": 3, "enemySpeed": 0.8, "enemyHealth": 1, "bulletSpeed": 5, "spawnInterval": 120, "bossLevel": false }`;
   } else {
-    // arcade default
     levelSchema = `{ "enemyCount": 8, "enemySpeed": 1.3, "enemyHealth": 1, "bulletSpeed": 6, "spawnInterval": 90 }`;
     example = `{ "enemyCount": 8, "enemySpeed": 1.3, "enemyHealth": 1, "bulletSpeed": 6, "spawnInterval": 90 }`;
   }
@@ -82,7 +122,7 @@ Example output format:
 ]`;
 
   const raw = await callGemini(prompt);
-  const arrStr = extractArray(raw);
+  const arrStr = extractJsonArray(raw);
   const levels = JSON.parse(arrStr);
   if (!Array.isArray(levels) || levels.length !== 5) throw new Error('Expected exactly 5 levels');
 
@@ -90,10 +130,18 @@ Example output format:
 }
 
 async function main() {
-  let products = JSON.parse(readFileSync(PRODUCTS_PATH, 'utf8'));
+  // قراءة آمنة
+  let products;
+  try {
+    if (!existsSync(PRODUCTS_PATH)) { console.error('❌ products.json not found'); process.exit(1); }
+    products = JSON.parse(readFileSync(PRODUCTS_PATH, 'utf8'));
+  } catch (e) {
+    console.error('❌ Failed to read products.json:', e.message);
+    process.exit(1);
+  }
+
   console.log(`📦 Loaded ${products.length} products`);
 
-  // فلترة المنتجات التي تحتاج مستويات
   const toProcess = products.filter(p =>
     p.status === 'available' &&
     NEEDS_LEVELS.includes(p.type) &&
@@ -112,35 +160,32 @@ async function main() {
     try {
       console.log(`⚙️  Generating levels for: ${product.slug}`);
       const levels = await generateLevels(product);
-      // تحديث المنتج في المصفوفة
       const idx = products.findIndex(p => p.id === product.id);
       if (idx !== -1) { products[idx].levels = levels; updated++; }
       console.log(`   ✅ ${product.slug} → ${levels.length} levels`);
-      // تأخير بين الطلبات
       await new Promise(r => setTimeout(r, 1200));
     } catch(e) {
       console.warn(`   ⚠️  ${product.slug} failed: ${e.message} — using defaults`);
-      // استخدام مستويات افتراضية
       const idx = products.findIndex(p => p.id === product.id);
       if (idx !== -1) {
-        products[idx].levels = [
-          { enemyCount:8,  enemySpeed:1.3, enemyHealth:1, bulletSpeed:6, spawnInterval:90 },
-          { enemyCount:11, enemySpeed:1.6, enemyHealth:1, bulletSpeed:6, spawnInterval:80 },
-          { enemyCount:14, enemySpeed:1.9, enemyHealth:2, bulletSpeed:6, spawnInterval:70 },
-          { enemyCount:17, enemySpeed:2.2, enemyHealth:2, bulletSpeed:6, spawnInterval:60 },
-          { enemyCount:20, enemySpeed:2.5, enemyHealth:3, bulletSpeed:6, spawnInterval:50 },
-        ];
+        products[idx].levels = getDefaultLevels(product.type);
         updated++;
       }
     }
   }
 
   if (updated > 0) {
-    // التحقق من صحة JSON قبل الكتابة
-    const json = JSON.stringify(products, null, 2);
-    JSON.parse(json);
-    writeFileSync(PRODUCTS_PATH, json, 'utf8');
-    console.log(`\n✅ Updated ${updated} products with levels`);
+    // كتابة آمنة مع نسخة احتياطية
+    try {
+      copyFileSync(PRODUCTS_PATH, BACKUP_PATH);
+      const json = JSON.stringify(products, null, 2);
+      JSON.parse(json); // تحقق من الصحة
+      writeFileSync(PRODUCTS_PATH, json, 'utf8');
+      console.log(`\n✅ Updated ${updated} products with levels (backup created)`);
+    } catch (e) {
+      console.error('❌ Failed to write products.json:', e.message);
+      process.exit(1);
+    }
   } else {
     console.log('ℹ️  No changes made');
   }
