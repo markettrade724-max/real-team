@@ -110,6 +110,7 @@ html,body{height:100%;overflow:hidden;background:#000;
 </div>
 
 <script>
+// ─── CONFIG ──────────────────────────────────────────────────
 const CFG = {
   pid: 'mischief-masterpiece',
   lang: 'ar',
@@ -119,7 +120,6 @@ const CFG = {
   iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}],
   lvls: [{"enemyCount":8,"enemySpeed":1.3,"enemyHealth":1,"bulletSpeed":6,"spawnInterval":90},{"enemyCount":11,"enemySpeed":1.6,"enemyHealth":1,"bulletSpeed":6,"spawnInterval":80},{"enemyCount":14,"enemySpeed":1.9,"enemyHealth":2,"bulletSpeed":6,"spawnInterval":70},{"enemyCount":17,"enemySpeed":2.2,"enemyHealth":2,"bulletSpeed":6,"spawnInterval":60},{"enemyCount":20,"enemySpeed":2.5,"enemyHealth":3,"bulletSpeed":6,"spawnInterval":50}] || []
 };
-
 // ضمان وجود مستويات افتراضية
 if (!Array.isArray(CFG.lvls) || CFG.lvls.length === 0) {
   CFG.lvls = [
@@ -148,6 +148,7 @@ const mob = () => 'ontouchstart' in window && matchMedia('(pointer: coarse)').ma
 const GW = Math.min(window.innerWidth, 420);
 const GH = window.innerHeight;
 
+// ─── PHASER SCENES ────────────────────────────────────────
 class Boot extends Phaser.Scene {
   constructor(){ super('Boot'); }
   create(){
@@ -190,7 +191,7 @@ class Game extends Phaser.Scene {
     this.enemies = this.physics.add.group();
     this.cursors = this.input.keyboard?.createCursorKeys();
 
-    // دعم النقر على الشاشة للإطلاق
+    // 🔥 النقر على الشاشة للإطلاق
     this.input.on('pointerdown', () => {
       if (!this.active) return;
       this._fireBullet();
@@ -208,11 +209,11 @@ class Game extends Phaser.Scene {
     const spd = lv.enemySpeed;
     for(let i=0;i<cnt;i++){
       const x = 30 + (i%5)*(GW-60)/4;
-      // بداية الأعداء بالقرب من أعلى الشاشة مباشرة (y سالب صغير)
-      const y = -20;
+      // 🔥 الأعداء يظهرون فورًا على الشاشة من الأعلى
+      const y = 60;
       const e = this.physics.add.image(x, y, 'enemy').setDepth(5);
       e.body.setSize(24,20).setOffset(2,2);
-      e.body.velocity.y = spd * 30;
+      e.body.velocity.y = spd * 35;
       this.enemies.add(e);
     }
     document.getElementById('lvFlash').style.display='block';
@@ -220,8 +221,9 @@ class Game extends Phaser.Scene {
     this._updateHUD();
   }
 
+  // 🔥 دالة إطلاق نار موحدة
   _fireBullet(){
-    if (!this.player) return;
+    if (!this.player || !this.active) return;
     const b = this.physics.add.image(this.player.x, this.player.y-28,'bullet').setDepth(7);
     b.body.velocity.y = -580;
     this.bullets.add(b);
@@ -230,8 +232,8 @@ class Game extends Phaser.Scene {
 
   update(time, delta){
     if(!this.active) return;
+
     this.bg1.tilePositionY -= 1.4;
-    // دعم لوحة المفاتيح
     const L = this.cursors?.left.isDown;
     const R = this.cursors?.right.isDown;
     this.player.body.velocity.x = L?-290:R?290:0;
@@ -239,15 +241,8 @@ class Game extends Phaser.Scene {
     if(this.invincible>0){ this.invincible-=delta/1000; this.player.setAlpha(.5+Math.abs(Math.sin(time*.015))); }
     else this.player.setAlpha(1);
 
-    if(this.cursors?.space.isDown){
-      if(!this._lastFire || time-this._lastFire>200){
-        this._fireBullet();
-        this._lastFire=time;
-      }
-    }
-
-    // دعم الأزرار التي تعمل باللمس (window.K)
-    if (window.K && window.K.F) {
+    // إطلاق نار عبر المسافة أو اللمس المستمر
+    if(this.cursors?.space.isDown || (window.K && window.K.F)){
       if(!this._lastFire || time-this._lastFire>200){
         this._fireBullet();
         this._lastFire=time;
@@ -323,7 +318,7 @@ function _endGame(win,score){
   document.getElementById('sEnd').querySelector('.g-title').textContent=win?'أحسنت!':'انتهت اللعبة';
 }
 
-// دعم أزرار اللمس
+// ─── CONTROLS ──────────────────────────────────────────────
 window.K = window.K || { F: false, L: false, R: false };
 document.getElementById('fireBtn')?.addEventListener('pointerdown', ()=>{
   window.K.F = true;
