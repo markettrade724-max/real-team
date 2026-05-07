@@ -1,7 +1,7 @@
 /**
  * generate-ideas.js
  * يستخدم Gemini لتوليد منتج جديد وإضافته إلى products.json
- * مع معالجة متقدمة لأخطاء JSON
+ * مع معالجة متقدمة لأخطاء JSON وحل مشكلة انقطاع المخرجات
  */
 import { readFileSync, writeFileSync, existsSync, copyFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -77,20 +77,30 @@ async function callGemini(prompt, retries = 3) {
 function repairJSON(raw) {
   let json = raw.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
 
-  // إذا بدأ بـ [ أو { فهو جيد، وإلا حاول استخراج أول { أو [
   const startObj = json.indexOf('{');
-  const startArr = json.indexOf('[');
-  if (startObj === -1 && startArr === -1) throw new Error('No JSON found');
+  if (startObj === -1) throw new Error('No JSON found');
+  json = json.substring(startObj);
 
-  const start = startObj !== -1 && (startArr === -1 || startObj < startArr) ? startObj : startArr;
-  json = json.substring(start);
-
-  // تصحيح علامات الاقتباس المفقودة في أسماء الخصائص
+  // إصلاح علامات الاقتباس المفقودة في أسماء الخصائص
   json = json.replace(/([{,]\s*)([a-zA-Z0-9_]+)(\s*:)/g, '$1"$2"$3');
 
-  // إزالة أي نص بعد آخر }
-  let end = json.lastIndexOf('}');
-  if (end !== -1) json = json.substring(0, end + 1);
+  // إذا كان JSON غير مكتمل، حاول إغلاقه بذكاء
+  let braceCount = 0, inString = false, escapeNext = false;
+  for (const ch of json) {
+    if (escapeNext) { escapeNext = false; continue; }
+    if (ch === '\\') { escapeNext = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') braceCount++;
+    if (ch === '}') braceCount--;
+  }
+  // أضف الفواصل المفقودة
+  while (braceCount > 0) { json += '}'; braceCount--; }
+  // إذا آخر حرف ليس } أو ]، حاول إغلاق النص
+  if (json.endsWith('"') || json.endsWith(',') || json.endsWith(':')) {
+    json += '" "'; // قيمة فارغة مؤقتة
+    while (braceCount > 0) { json += '}'; braceCount--; }
+  }
 
   return json;
 }
@@ -100,25 +110,21 @@ async function generateIdea(existingSlugs) {
   const typeHint = VALID_TYPES[Math.floor(Math.random() * VALID_TYPES.length)];
   const catHint  = ['tool','app','timer','focus'].includes(typeHint) ? 'app' : 'game';
 
+  // 🔥 أهم تغيير: طلب 3 لغات فقط (en, ar, fr) لتقليل حجم JSON
   const prompt = `You are a creative game/app designer. Generate a unique, viral-worthy game or app idea.
 
 Theme inspiration: "${theme}"
 Suggested type: "${typeHint}"
 Category: "${catHint}"
 
-STRICT RULES:
-1. Return ONLY valid JSON, no markdown, no backticks, no extra text
-2. The "type" field MUST be exactly one of: ${VALID_TYPES.join(', ')}
-3. The "slug" must be lowercase, hyphens only, unique (not in: ${existingSlugs.slice(-10).join(', ')})
-4. All 6 languages required: ar, en, fr, es, de, zh
-5. "category" must be exactly "game" or "app"
-6. "status" must be "available"
-7. Make sure all JSON property names are double-quoted and no trailing commas
+CRITICAL: Keep descriptions SHORT (max 10 words each) to fit within token limit.
+Only provide translations in 3 languages: en, ar, fr. Other languages will be auto-filled.
 
-Return this exact JSON structure:
+Return ONLY valid JSON, no markdown, no backticks, no extra text. Ensure JSON is complete.
+
 {
-  "id": "unique-slug-here",
-  "slug": "unique-slug-here",
+  "id": "unique-slug",
+  "slug": "unique-slug",
   "type": "${typeHint}",
   "category": "${catHint}",
   "status": "available",
@@ -126,41 +132,14 @@ Return this exact JSON structure:
   "accent": "#facc15",
   "accentRgb": "250,204,21",
   "gradient": "135deg,#0f172a,#1e293b",
-  "emojis": ["🎮","⭐","🌟","💫","✨","🎯","🔮","💎","🌈","🎪","🎨","🎭"],
-  "name": {
-    "ar": "اسم عربي مبدع",
-    "en": "Creative English Name",
-    "fr": "Nom Français Créatif",
-    "es": "Nombre Español Creativo",
-    "de": "Kreativer Deutscher Name",
-    "zh": "创意中文名称"
-  },
-  "desc": {
-    "ar": "وصف عربي جذاب 1-2 جملة",
-    "en": "Compelling English description 1-2 sentences",
-    "fr": "Description française convaincante 1-2 phrases",
-    "es": "Descripción española convincente 1-2 oraciones",
-    "de": "Überzeugende deutsche Beschreibung 1-2 Sätze",
-    "zh": "引人入胜的中文描述1-2句"
-  },
-  "tags": ["tag1", "tag2", "tag3", "tag4"],
-  "iap": [
-    {
-      "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫",
-      "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" }
-    },
-    {
-      "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐",
-      "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" }
-    }
-  ],
-  "levels": null,
-  "generated": true,
-  "generatedAt": "${new Date().toISOString()}"
+  "emojis": ["🎮","⭐","🌟"],
+  "name": { "ar": "اسم", "en": "Name", "fr": "Nom" },
+  "desc": { "ar": "وصف قصير", "en": "Short desc", "fr": "Desc courte" },
+  "tags": ["tag1","tag2","tag3"]
 }`;
 
   const raw = await callGemini(prompt);
-  console.log('📝 Raw response:', raw.substring(0, 200) + '...');
+  console.log('📝 Raw response length:', raw.length);
 
   let jsonStr;
   try {
@@ -179,12 +158,11 @@ Return this exact JSON structure:
     throw e;
   }
 
-  if (!product.id || !product.slug || !product.name?.en || !product.desc?.en) {
+  if (!product.id || !product.slug || !product.name?.en) {
     throw new Error('Generated product missing required fields');
   }
 
   if (!VALID_TYPES.includes(product.type)) {
-    console.warn(`⚠️  Invalid type "${product.type}" — fixing to "${typeHint}"`);
     product.type = typeHint;
   }
 
@@ -192,15 +170,36 @@ Return this exact JSON structure:
     product.category = catHint;
   }
 
+  // 🔥 املأ اللغات الناقصة تلقائيًا
   const LANGS = ['ar','en','fr','es','de','zh'];
   LANGS.forEach(l => {
-    if (!product.name[l])  product.name[l]  = product.name.en;
-    if (!product.desc[l])  product.desc[l]  = product.desc.en;
+    if (!product.name) product.name = {};
+    if (!product.desc) product.desc = {};
+    if (!product.name[l])  product.name[l]  = product.name.en || product.name.ar || '';
+    if (!product.desc[l])  product.desc[l]  = product.desc.en || product.desc.ar || '';
   });
+
+  if (!Array.isArray(product.emojis) || product.emojis.length === 0) {
+    product.emojis = ['🎮','⭐','🌟','💫','✨','🎯','🔮','💎','🌈','🎪','🎨','🎭'];
+  }
 
   if (existingSlugs.includes(product.slug)) {
     product.slug = product.slug + '-' + Date.now().toString(36);
     product.id   = product.slug;
+  }
+
+  // إضافة IAP افتراضي إذا لم يوجد
+  if (!product.iap || !Array.isArray(product.iap)) {
+    product.iap = [
+      {
+        "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫",
+        "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" }
+      },
+      {
+        "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐",
+        "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" }
+      }
+    ];
   }
 
   return product;
