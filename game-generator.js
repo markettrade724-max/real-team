@@ -12,7 +12,7 @@
  * - إضافة تسميات endless-runner: COINS_LBL, DIST_LBL, SLIDE_LBL, JUMP_LBL
  * - إضافة حماية escaping لمنع كسر JavaScript بسبب علامات التنصيص
  * - دعم القوالب الجديدة: enhanced-memory-game, sports-master
- * - دعم GAME_TYPE, SPORT_TYPE, SHOOT_LBL, PASS_LBL
+ * - دعم GAME_TYPE, SPORT_TYPE, SHOOT_LBL, PASS_LBL, GRADIENT
  * - إصلاح: تعريف filename قبل استخدامه في console.warn
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
@@ -686,7 +686,7 @@ function generate(product) {
     const first = levels[0];
     pairs = first.pairs || 4;
     cols = Math.min(6, Math.ceil(Math.sqrt(pairs * 2)));
-    hintsStart = first.hints ?? 2;
+    hintsStart = first.hints || 2;
   }
 
   // إعدادات الرياضة
@@ -741,6 +741,7 @@ function generate(product) {
       EMOJI:         product.emoji || '🎮',
       ACCENT:        product.accent || '#facc15',
       ACCENT_RGB:    product.accentRgb || '250,204,21',
+      GRADIENT:      product.gradient || '135deg,#0f172a,#1e293b',
       IAPS_JSON:     JSON.stringify(product.iap || []),
       EMOJIS_JSON:   JSON.stringify(emojis),
       LEVELS_JSON:   JSON.stringify(levels),
