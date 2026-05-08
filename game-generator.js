@@ -11,6 +11,9 @@
  * - إصلاح: levels أصبحت دائماً مصفوفة (تجنب TypeError)
  * - إضافة تسميات endless-runner: COINS_LBL, DIST_LBL, SLIDE_LBL, JUMP_LBL
  * - إضافة حماية escaping لمنع كسر JavaScript بسبب علامات التنصيص
+ * - دعم القوالب الجديدة: enhanced-memory-game, sports-master
+ * - دعم GAME_TYPE, SPORT_TYPE, SHOOT_LBL, PASS_LBL
+ * - إصلاح: تعريف filename قبل استخدامه في console.warn
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -20,25 +23,38 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ─ـ خريطة القوالب (مطابقة حرفية) ─────────────────────────────
 const TEMPLATE_MAP = {
+  // ألعاب ذاكرة وألغاز
   memory:'memory-game.html', puzzle:'memory-game.html',
   word:'memory-game.html',   quiz:'memory-game.html',
   matching:'memory-game.html', trivia:'memory-game.html',
+  'memory-match':'memory-game.html',
+  'simon-says':'memory-game.html',
+  'sliding-puzzle':'memory-game.html',
+  // سباقات
   racing:'racing-game.html', race:'racing-game.html',
   speed:'racing-game.html',  car:'racing-game.html',
   drift:'racing-game.html',  moto:'racing-game.html',
+  // رياضات
   sport:'sports-game.html',  football:'sports-game.html',
   basketball:'sports-game.html', tennis:'sports-game.html',
   soccer:'sports-game.html',
+  // أكشن وإطلاق نار
   arcade:'phaser-game.html', shooter:'phaser-game.html',
   action:'phaser-game.html', space:'phaser-game.html',
   bullet:'phaser-game.html', battle:'phaser-game.html',
   defense:'phaser-game.html', survival:'phaser-game.html',
+  // مغامرات وRPG
   rpg:'adventure-rpg.html',  adventure:'adventure-rpg.html',
   story:'adventure-rpg.html', quest:'adventure-rpg.html',
   narrative:'adventure-rpg.html', dungeon:'adventure-rpg.html',
+  // أدوات وتطبيقات
   tool:'tool-app.html', app:'tool-app.html',
   timer:'tool-app.html', focus:'tool-app.html',
   generator:'tool-app.html', creative:'tool-app.html',
+  // ألعاب الذاكرة المحسنة
+  'enhanced-memory':'enhanced-memory-game.html',
+  // ألعاب رياضية متقدمة
+  'sports-master':'sports-master.html',
 };
 
 // ─ـ كلمات مفتاحية للكشف الذكي (مُحسَّنة) ─────────────────────
@@ -82,12 +98,23 @@ const SMART_RULES = [
     keywords: ['memory','puzzle','quiz','matching','trivia','word',
                'brain','logic','illusion','perspective','optical',
                'glimmerglass','paradox','gravity','causality',
-               'uninvention'],
+               'uninvention','memory-match','simon-says','sliding-puzzle'],
+  },
+  {
+    template: 'enhanced-memory-game.html',
+    keywords: ['enhanced-memory','multi-memory','memory-master',
+               'simon','sliding','memory-match-pro'],
+  },
+  {
+    template: 'sports-master.html',
+    keywords: ['sports-master','sport-pro','football-pro',
+               'basketball-pro','tennis-pro','multi-sport'],
   },
 ];
 
 // ─ـ حل القالب بذكاء ─────────────────────────────────────────
 function resolveTemplate(product) {
+  // الأولوية القصوى: templateFile المخزّن (من template-engineer)
   if (product.templateFile) {
     const tplPath = join(__dirname, 'templates', product.templateFile);
     if (existsSync(tplPath)) {
@@ -98,11 +125,16 @@ function resolveTemplate(product) {
   }
 
   const typeRaw = (product.type || '').toLowerCase().trim();
+
+  // 1. مطابقة حرفية مباشرة
   if (TEMPLATE_MAP[typeRaw]) return TEMPLATE_MAP[typeRaw];
+
+  // 2. الـ type يحتوي على كلمة مفتاحية من الخريطة
   for (const [key, tpl] of Object.entries(TEMPLATE_MAP)) {
     if (typeRaw.includes(key)) return tpl;
   }
 
+  // 3. تحليل الكلمات الكاملة (type + tags + slug)
   const corpus = [
     typeRaw,
     (product.slug || '').toLowerCase().replace(/-/g,' '),
@@ -117,6 +149,7 @@ function resolveTemplate(product) {
     if (score > bestScore) { bestScore = score; bestTemplate = rule.template; }
   }
 
+  // 4. Fallback حسب category
   if (!bestTemplate || bestScore === 0) {
     bestTemplate = product.category === 'game'
       ? 'phaser-game.html'
@@ -171,6 +204,7 @@ const LABELS = {
     HINT_LEFT_LBL:'تلميحات متبقية',
     COINS_LBL:'عملات', DIST_LBL:'المسافة',
     SLIDE_LBL:'انزلاق', JUMP_LBL:'قفز',
+    SHOOT_LBL:'تسديد', PASS_LBL:'تمرير',
     // سباقات
     LAP_LBL:'لفّة', LAPS_LBL:'اللفّات', SPEED_LBL:'السرعة',
     POSITION_LBL:'المركز', BEST_LAP_LBL:'أفضل لفّة', FINISH_LBL:'النهاية',
@@ -243,6 +277,7 @@ const LABELS = {
     HINT_LEFT_LBL:'Hints left',
     COINS_LBL:'Coins', DIST_LBL:'Distance',
     SLIDE_LBL:'Slide', JUMP_LBL:'Jump',
+    SHOOT_LBL:'Shoot', PASS_LBL:'Pass',
     LAP_LBL:'Lap', LAPS_LBL:'Laps', SPEED_LBL:'Speed',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Best Lap', FINISH_LBL:'Finish',
     RACE_START_LBL:'Go!', RACE_OVER_LBL:'Race Over',
@@ -311,6 +346,7 @@ const LABELS = {
     HINT_LEFT_LBL:'Indices restants',
     COINS_LBL:'Pièces', DIST_LBL:'Distance',
     SLIDE_LBL:'Glisser', JUMP_LBL:'Sauter',
+    SHOOT_LBL:'Tirer', PASS_LBL:'Passer',
     LAP_LBL:'Tour', LAPS_LBL:'Tours', SPEED_LBL:'Vitesse',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Meilleur tour', FINISH_LBL:'Arrivée',
     RACE_START_LBL:'Partez!', RACE_OVER_LBL:'Course terminée',
@@ -378,6 +414,7 @@ const LABELS = {
     HINT_LEFT_LBL:'Pistas restantes',
     COINS_LBL:'Monedas', DIST_LBL:'Distancia',
     SLIDE_LBL:'Deslizar', JUMP_LBL:'Saltar',
+    SHOOT_LBL:'Disparar', PASS_LBL:'Pasar',
     LAP_LBL:'Vuelta', LAPS_LBL:'Vueltas', SPEED_LBL:'Velocidad',
     POSITION_LBL:'Posición', BEST_LAP_LBL:'Mejor vuelta', FINISH_LBL:'Meta',
     RACE_START_LBL:'¡Arranca!', RACE_OVER_LBL:'Carrera terminada',
@@ -445,6 +482,7 @@ const LABELS = {
     HINT_LEFT_LBL:'Hinweise übrig',
     COINS_LBL:'Münzen', DIST_LBL:'Distanz',
     SLIDE_LBL:'Rutschen', JUMP_LBL:'Springen',
+    SHOOT_LBL:'Schießen', PASS_LBL:'Passen',
     LAP_LBL:'Runde', LAPS_LBL:'Runden', SPEED_LBL:'Geschwindigkeit',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Beste Runde', FINISH_LBL:'Ziel',
     RACE_START_LBL:'Los!', RACE_OVER_LBL:'Rennen beendet',
@@ -512,6 +550,7 @@ const LABELS = {
     HINT_LEFT_LBL:'剩余提示',
     COINS_LBL:'金币', DIST_LBL:'距离',
     SLIDE_LBL:'滑行', JUMP_LBL:'跳跃',
+    SHOOT_LBL:'射门', PASS_LBL:'传球',
     LAP_LBL:'圈', LAPS_LBL:'圈数', SPEED_LBL:'速度',
     POSITION_LBL:'名次', BEST_LAP_LBL:'最快圈速', FINISH_LBL:'终点',
     RACE_START_LBL:'出发！', RACE_OVER_LBL:'比赛结束',
@@ -611,10 +650,26 @@ function generate(product) {
         { number:4, name:{ar:'٤',en:'4'}, difficulty:'hard',   pairs:10, timeLimit:40 },
         { number:5, name:{ar:'٥',en:'5'}, difficulty:'expert', pairs:12, timeLimit:35 },
       ];
+    } else if (tplName === 'enhanced-memory-game.html') {
+      levels = [
+        { pairs: 4, cols: 4, hints: 2, sequenceLength: 3, speed: 800, size: 3, moves: 50 },
+        { pairs: 6, cols: 4, hints: 1, sequenceLength: 5, speed: 600, size: 3, moves: 40 },
+        { pairs: 8, cols: 5, hints: 1, sequenceLength: 7, speed: 450, size: 4, moves: 80 },
+        { pairs: 10, cols: 5, hints: 0, sequenceLength: 9, speed: 350, size: 4, moves: 60 },
+        { pairs: 12, cols: 6, hints: 0, sequenceLength: 12, speed: 250, size: 5, moves: 120 },
+      ];
     } else if (tplName === 'adventure-rpg.html') {
       levels = [{}];
     } else if (tplName === 'endless-runner.html') {
       levels = [{ startSpeed: 5, speedIncrement: 0.001 }];
+    } else if (tplName === 'sports-game.html') {
+      levels = [{ matchDuration: 120, difficulty: 'medium', teamStrength: 1 }];
+    } else if (tplName === 'sports-master.html') {
+      levels = [
+        { matchDuration: 90, difficulty: 'easy', speed: 2.0 },
+        { matchDuration: 90, difficulty: 'medium', speed: 2.5 },
+        { matchDuration: 120, difficulty: 'hard', speed: 3.0 },
+      ];
     } else {
       levels = [];
     }
@@ -627,11 +682,27 @@ function generate(product) {
 
   let cols = 4, pairs = 4, hintsStart = 2;
   const emojiSize = '3rem';
-  if (tplName === 'memory-game.html' && Array.isArray(levels) && levels.length > 0) {
+  if ((tplName === 'memory-game.html' || tplName === 'enhanced-memory-game.html') && Array.isArray(levels) && levels.length > 0) {
     const first = levels[0];
     pairs = first.pairs || 4;
     cols = Math.min(6, Math.ceil(Math.sqrt(pairs * 2)));
-    hintsStart = first.hints || 2;
+    hintsStart = first.hints ?? 2;
+  }
+
+  // إعدادات الرياضة
+  let sportType = product.type || 'football';
+  let matchDuration = 120;
+  let difficulty = 'medium';
+  if ((tplName === 'sports-game.html' || tplName === 'sports-master.html') && Array.isArray(levels) && levels.length > 0) {
+    const first = levels[0];
+    matchDuration = first.matchDuration || 120;
+    difficulty = first.difficulty || 'medium';
+  }
+
+  // إعدادات نوع اللعبة للذاكرة المحسنة
+  let gameType = product.type || 'memory-match';
+  if (tplName === 'enhanced-memory-game.html') {
+    if (product.gameType) gameType = product.gameType;
   }
 
   const outDir = join(__dirname, 'public', 'games');
@@ -644,6 +715,11 @@ function generate(product) {
     const lbl  = LABELS[lang];
     const name = safeName[lang];
     const desc = safeDesc[lang];
+
+    // تحديد اسم الملف
+    const filename = lang === 'ar'
+      ? `${product.slug}.html`
+      : `${product.slug}-${lang}.html`;
 
     // تجهيز تسميات آمنة مع escaping
     const safeLbl = {};
@@ -681,6 +757,10 @@ function generate(product) {
       PAIRS:         pairs,
       HINTS_START:   hintsStart,
       GEMINI_KEY:    process.env.GEMINI_KEY || '',
+      GAME_TYPE:     gameType,
+      SPORT_TYPE:    sportType,
+      MATCH_DURATION: matchDuration,
+      DIFFICULTY:    difficulty,
       ...safeLbl,      // التسميات المؤمنة
     };
 
@@ -688,14 +768,10 @@ function generate(product) {
       out = out.split(`{{${k}}}`).join(String(v ?? ''));
     });
 
-    // تحذير في حال وجود export
+    // تحذير في حال وجود export (الآن filename معرف مسبقاً)
     if (/\bexport\b/.test(out.replace(/\/\/.*|\/\*[\s\S]*?\*\//g, ''))) {
       console.warn(`  ⚠️  Possible 'export' keyword in ${filename}`);
     }
-
-    const filename = lang === 'ar'
-      ? `${product.slug}.html`
-      : `${product.slug}-${lang}.html`;
 
     writeFileSync(join(outDir, filename), out, 'utf8');
     built++;
