@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>{{GAME_NAME}}</title>
+<style>
+:root{--acc:{{ACCENT}};--acc-rgb:{{ACCENT_RGB}};--bg:#0a0a14;--surface:#12121f;--text:#f1f5f9;--text2:#7a7a8a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',Tajawal,sans-serif;color:var(--text);}
+#app{display:flex;flex-direction:column;width:100%;max-width:420px;height:100dvh;margin:0 auto;padding:20px;gap:16px;}
+#header{display:flex;align-items:center;justify-content:space-between;}
+#back-btn{background:none;border:1px solid rgba(255,255,255,0.2);color:var(--text2);padding:4px 12px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.7rem;}
+#game-title{font-weight:900;font-size:1rem;color:var(--acc);}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;align-content:start;}
+.sound-btn{aspect-ratio:1;background:var(--surface);border:1px solid rgba(255,255,255,0.1);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all 0.15s;font-family:inherit;color:var(--text);}
+.sound-btn:active{background:rgba(var(--acc-rgb),0.2);transform:scale(0.95);}
+.sound-emoji{font-size:2.2rem;}
+.sound-label{font-size:0.7rem;color:var(--text2);}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <button id="back-btn" onclick="history.back()">← {{BACK_LBL}}</button>
+    <div id="game-title">{{EMOJI}} {{GAME_NAME}}</div>
+    <div style="width:50px"></div>
+  </div>
+  <div class="grid" id="soundGrid"></div>
+</div>
+<script>
+const SOUNDS = [
+  { emoji:'😂', label:'Laugh', freq:400, type:'sine', duration:0.3 },
+  { emoji:'💨', label:'Fart', freq:80, type:'sawtooth', duration:0.4 },
+  { emoji:'❌', label:'Wrong', freq:200, type:'square', duration:0.3 },
+  { emoji:'✅', label:'Correct', freq:600, type:'sine', duration:0.2 },
+  { emoji:'👏', label:'Clap', freq:500, type:'triangle', duration:0.15 },
+  { emoji:'😱', label:'Scream', freq:1000, type:'sawtooth', duration:0.5 },
+  { emoji:'🎉', label:'Party', freq:800, type:'sine', duration:0.3 },
+  { emoji:'🤖', label:'Robot', freq:150, type:'square', duration:0.4 },
+  { emoji:'🔔', label:'Bell', freq:900, type:'sine', duration:0.2 },
+];
+
+function playTone(freq, type, duration) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.value = 0.3;
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + duration + 0.05);
+}
+
+document.getElementById('soundGrid').innerHTML = SOUNDS.map(s => `
+  <button class="sound-btn" onclick="playTone(${s.freq},'${s.type}',${s.duration})">
+    <span class="sound-emoji">${s.emoji}</span>
+    <span class="sound-label">${s.label}</span>
+  </button>
+`).join('');
+</script>
+</body>
+</html>
