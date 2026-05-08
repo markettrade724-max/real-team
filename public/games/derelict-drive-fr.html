@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Conduite Abandonnée</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
+<style>
+:root{--acc:#facc15;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:#000;}
+#wrap{position:relative;width:100%;max-width:420px;height:100dvh;margin:0 auto;overflow:hidden;}
+#wrap canvas{position:absolute;top:0;left:0;}
+
+/* ── SCREENS ── */
+.scr{position:absolute;inset:0;display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;text-align:center;
+  padding:28px;font-family:'Segoe UI',Tajawal,sans-serif;color:#f1f5f9;
+  background:#060610;z-index:50;}
+.scr.on{display:flex;}
+.g-emoji{font-size:5rem;line-height:1;}
+.g-title{font-size:2rem;font-weight:900;color:var(--acc);}
+.g-desc{color:#64748b;font-size:.9rem;line-height:1.6;max-width:300px;}
+.stat-row{display:flex;gap:24px;}
+.stat .v{font-size:1.6rem;font-weight:900;color:var(--acc);font-family:monospace;}
+.stat .l{font-size:.62rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em;}
+.btn{padding:13px 0;border-radius:12px;font-size:.95rem;font-weight:700;border:none;
+  cursor:pointer;width:100%;max-width:300px;transition:transform .12s;
+  display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;}
+.btn:active{transform:scale(.96);}
+.btn-p{background:var(--acc);color:#000;box-shadow:0 0 28px rgba(250,204,21,.35);}
+.btn-s{background:rgba(255,255,255,.07);color:#f1f5f9;border:1px solid rgba(255,255,255,.1);}
+a.btn-home{color:#64748b;font-size:.82rem;text-decoration:none;}
+
+/* ── HUD ── */
+#hud{position:absolute;top:0;left:0;right:0;display:none;
+  justify-content:space-between;padding:10px 16px;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.06);z-index:20;
+  font-family:'Segoe UI',Tajawal,sans-serif;}
+.hi .l{font-size:.58rem;color:#64748b;text-transform:uppercase;letter-spacing:.1em;}
+.hi .v{font-size:1rem;font-weight:900;color:var(--acc);font-family:monospace;}
+
+/* ── NITRO ── */
+#nbar{position:absolute;left:14px;right:14px;bottom:78px;height:6px;
+  background:rgba(255,255,255,.08);border-radius:3px;display:none;z-index:20;}
+#nfill{height:100%;width:100%;border-radius:3px;
+  background:linear-gradient(90deg,#60a5fa,#a78bfa);transition:width .08s;}
+#nfill.hot{box-shadow:0 0 10px #818cf8;}
+
+/* ── SPEED LINES ── */
+#sl{position:absolute;inset:0;pointer-events:none;z-index:15;opacity:0;transition:opacity .25s;}
+
+/* ── CONTROLS ── */
+#ctrl{position:absolute;bottom:0;left:0;right:0;display:none;gap:8px;
+  padding:8px 14px 16px;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);z-index:20;}
+.cb{flex:1;height:52px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;font-size:1.4rem;display:flex;align-items:center;
+  justify-content:center;user-select:none;-webkit-user-select:none;cursor:pointer;
+  font-family:inherit;}
+.cb.on,.cb:active{background:rgba(255,255,255,.22);}
+.cb-n{flex:.85;background:rgba(129,140,248,.15);border-color:rgba(129,140,248,.4);
+  font-size:.68rem;font-weight:900;color:#a78bfa;letter-spacing:.05em;}
+
+/* ── COUNTDOWN ── */
+#cd{position:absolute;inset:0;background:rgba(0,0,0,.82);display:none;
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;z-index:45;font-family:'Segoe UI',sans-serif;}
+#cd.on{display:flex;}
+#cdN{font-size:9rem;font-weight:900;color:var(--acc);line-height:1;
+  text-shadow:0 0 80px var(--acc),0 0 120px rgba(250,204,21,.5);}
+#cdS{color:#94a3b8;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;}
+
+/* ── LAP FLASH ── */
+#lapFlash{position:absolute;top:60px;left:50%;transform:translateX(-50%);
+  background:rgba(250,204,21,.15);border:1px solid rgba(250,204,21,.4);
+  color:var(--acc);padding:6px 20px;border-radius:100px;font-weight:900;
+  font-size:.9rem;font-family:monospace;letter-spacing:.1em;display:none;z-index:25;}
+
+/* ── SHOP ── */
+#shopOv{position:absolute;inset:0;background:rgba(0,0,0,.95);display:none;
+  flex-direction:column;align-items:center;gap:12px;justify-content:center;
+  z-index:60;padding:24px;font-family:'Segoe UI',sans-serif;color:#f1f5f9;}
+#shopOv.on{display:flex;}
+.si{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:14px 18px;display:flex;align-items:center;
+  justify-content:space-between;width:100%;max-width:340px;gap:12px;}
+.si-n{font-weight:700;font-size:.92rem;} .si-d{color:#64748b;font-size:.75rem;margin:2px 0;}
+.si-p{color:var(--acc);font-size:.78rem;font-family:monospace;}
+.bb{background:var(--acc);color:#000;padding:8px 14px;border-radius:8px;
+  border:none;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap;}
+.bb.own{background:rgba(255,255,255,.08);color:#64748b;}
+
+/* ── AD ── */
+#ad{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;
+  justify-content:space-between;padding:8px 16px;
+  background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.07);
+  font-size:.74rem;color:#64748b;z-index:10;font-family:'Segoe UI',sans-serif;}
+</style>
+</head>
+<body>
+<div id="wrap">
+
+  <!-- START -->
+  <div class="scr on" id="sStart">
+    <div class="g-emoji">🚗</div>
+    <div class="g-title">Conduite Abandonnée</div>
+    <div class="g-desc">Fuyez les ruines hantées dans votre voiture délabrée. Carburant, peur, survivez.</div>
+    <div class="stat-row">
+      <div class="stat"><div class="v" id="bestDisp">--:--</div><div class="l">Meilleur temps</div></div>
+      <div class="stat"><div class="v">{{TOTAL_LAPS}}</div><div class="l">Tours</div></div>
+      <div class="stat"><div class="v">{{MAX_SPEED}}</div><div class="l">km/h</div></div>
+    </div>
+    <button class="btn btn-p" onclick="startGame()">🏁 Jouer</button>
+    <button class="btn btn-s" onclick="openShop()">🛒 Boutique</button>
+    <a class="btn-home" href="/">← Accueil</a>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hi"><div class="l">Tour</div><div class="v" id="hLap">1/{{TOTAL_LAPS}}</div></div>
+    <div class="hi"><div class="l">Position</div><div class="v" id="hPos">P1</div></div>
+    <div class="hi"><div class="l">Temps</div><div class="v" id="hTime">0:00</div></div>
+    <div class="hi"><div class="l">Vitesse</div><div class="v" id="hSpd">0</div></div>
+  </div>
+
+  <!-- SPEED LINES -->
+  <canvas id="sl"></canvas>
+
+  <!-- NITRO -->
+  <div id="nbar"><div id="nfill"></div></div>
+
+  <!-- LAP FLASH -->
+  <div id="lapFlash">LAP {{TOTAL_LAPS}}/{{TOTAL_LAPS}}</div>
+
+  <!-- CONTROLS -->
+  <div id="ctrl">
+    <div class="cb" id="bL">◀</div>
+    <div class="cb cb-n" id="bN">⚡ Nitro</div>
+    <div class="cb" id="bR">▶</div>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div id="cd">
+    <div id="cdN">3</div>
+    <div id="cdS">Prêt</div>
+  </div>
+
+  <!-- END -->
+  <div class="scr" id="sEnd">
+    <div class="g-emoji">🏁</div>
+    <div class="g-title" id="endTitle">Course terminée</div>
+    <div class="stat-row">
+      <div class="stat"><div class="v" id="endTime">0:00</div><div class="l">Temps</div></div>
+      <div class="stat"><div class="v" id="endPos">P1</div><div class="l">Position</div></div>
+    </div>
+    <div id="newBest" style="color:var(--acc);font-weight:700;font-size:.9rem;display:none">⭐ Nouveau record</div>
+    <button class="btn btn-p" onclick="startGame()">🔄 Réessayer</button>
+    <button class="btn btn-s" onclick="goHome()">🏠 Accueil</button>
+  </div>
+
+  <!-- SHOP -->
+  <div id="shopOv">
+    <h2 style="font-size:1.6rem;font-weight:900">🛒 Boutique</h2>
+    <div id="shopList" style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px;max-height:55vh;overflow-y:auto"></div>
+    <button class="btn btn-s" style="max-width:220px" onclick="closeShop()">✕ Retour</button>
+  </div>
+
+  <!-- AD -->
+  <div id="ad">
+    <span>📢 Les pubs soutiennent l\'équipe</span>
+    <button class="bb" onclick="buyRemoveAds()">Supprimer 1,99$</button>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG (injected by generator) ───────────────────────────
+const CFG = {
+  pid:    'derelict-drive',
+  laps:   Number('{{TOTAL_LAPS}}')      || 3,
+  maxSpd: Number('{{MAX_SPEED}}')       || 280,
+  oppN:   Number('{{OPPONENT_COUNT}}')  || 3,
+  iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}] || [],          // 🔥 تأمين ضد القيمة الفارغة
+  lang:   'fr',
+  acc:    '#facc15',
+  accHex: parseInt('#facc15'.replace('#',''), 16),
+};
+
+// ─── UTILS ─────────────────────────────────────────────────────
+const SK  = 'rt_' + CFG.pid;
+const S   = () => JSON.parse(localStorage.getItem(SK) || '{}');
+const sv  = d  => localStorage.setItem(SK, JSON.stringify({...S(),...d}));
+const mob = () => 'ontouchstart' in window;
+const fmt = ms => {
+  if (typeof ms !== 'number' || isNaN(ms)) return '0:00';
+  const s = Math.floor(ms / 1000);
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+};
+
+// ─── LAYOUT ────────────────────────────────────────────────────
+const GW = Math.min(window.innerWidth, 420);
+const GH = window.innerHeight;
+
+// ─── TRACK WAYPOINTS (oval, 40 pts) ───────────────────────────
+function makeWaypoints(n = 40) {
+  const cx = GW / 2, cy = GH / 2;
+  const rx = GW * 0.36, ry = GH * 0.36;
+  return Array.from({length: n}, (_, i) => {
+    const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+    return { x: cx + Math.cos(a) * rx, y: cy + Math.sin(a) * ry };
+  });
+}
+const WAYPOINTS = makeWaypoints();
+const TRACK_W   = Math.round(GW * 0.19);
+
+// ─── SHARED STATE ──────────────────────────────────────────────
+window.K = { L: false, R: false, N: false };
+let raceScene = null;
+
+// ─── PHASER: BOOT ──────────────────────────────────────────────
+class Boot extends Phaser.Scene {
+  constructor() { super('Boot'); }
+
+  create() {
+    let g = this.make.graphics({ add: false });
+    g.fillStyle(0xffffff); g.fillCircle(4, 4, 4);
+    g.generateTexture('px', 8, 8); g.destroy();
+
+    this.makeCar('pcar', CFG.accHex, true);
+    const oppColors = [0xff3333, 0x3399ff, 0x33cc66, 0xcc44ff];
+    oppColors.forEach((c, i) => this.makeCar('ocar' + i, c, false));
+
+    g = this.make.graphics({ add: false });
+    g.fillStyle(0x000000, 0.4);
+    g.fillRect(0, 0, 5, 16);
+    g.generateTexture('skid', 5, 16); g.destroy();
+
+    this.scene.start('Race');
+  }
+
+  makeCar(key, col, isPlayer) {
+    const g = this.make.graphics({ add: false });
+    const W = 28, H = 44;
+    g.fillStyle(0x000000, 0.4);
+    g.fillEllipse(W/2 + 2, H/2 + 4, W * 0.9, H * 0.4);
+    g.fillStyle(col, 1);
+    g.fillRoundedRect(0, 0, W, H, 5);
+    g.fillStyle(0x000000, 0.45);
+    g.fillRoundedRect(4, 8, W - 8, 14, 3);
+    g.fillStyle(0x111111);
+    [[-5, 8], [W - 2, 8], [-5, 26], [W - 2, 26]].forEach(([x, y]) =>
+      g.fillRoundedRect(x, y, 7, 12, 2)
+    );
+    g.fillStyle(0x444444, 0.7);
+    [[-4, 10], [W - 1, 10], [-4, 28], [W - 1, 28]].forEach(([x, y]) =>
+      g.fillCircle(x + 3, y + 3, 2.5)
+    );
+    const ltCol = isPlayer ? 0xfff176 : 0xff5555;
+    g.fillStyle(ltCol); g.fillRect(3, H - 6, 8, 5); g.fillRect(W - 11, H - 6, 8, 5);
+    if (isPlayer) {
+      g.fillStyle(0xffffff, 0.5); g.fillRect(3, 0, 8, 5); g.fillRect(W - 11, 0, 8, 5);
+    }
+    g.generateTexture(key, W, H);
+    g.destroy();
+  }
+}
+
+// ─── PHASER: RACE ──────────────────────────────────────────────
+class Race extends Phaser.Scene {
+  constructor() { super('Race'); }
+
+  create() {
+    this.waypoints = WAYPOINTS;
+    this.racing    = false;
+    this.finished  = false;
+    this.elapsed   = 0;
+    this.lapCount  = 0;
+    this.nitro     = 100;
+    this.nitroOn   = false;
+    this.playerWp  = 0;
+    this.lastCrash = 0;
+    this.skidLayer = null;
+
+    this._buildTrack();
+    this._buildCars();
+    this._buildParticles();
+    this._buildKeys();
+
+    raceScene = this;
+  }
+
+  // ── Track ──────────────────────────────────────────────────
+  _buildTrack() {
+    const wp = this.waypoints;
+
+    const grass = this.add.graphics();
+    grass.fillStyle(0x1a3d1a);
+    grass.fillRect(0, 0, GW, GH);
+    for (let i = 0; i < 300; i++) {
+      grass.fillStyle(Phaser.Math.Between(0x15301a, 0x235c25), 0.3);
+      grass.fillRect(
+        Phaser.Math.Between(0, GW), Phaser.Math.Between(0, GH), 3, 7
+      );
+    }
+
+    const track = this.add.graphics();
+    track.lineStyle(TRACK_W + 18, 0x374151);
+    this._strokeLoop(track, wp); track.strokePath();
+    track.lineStyle(TRACK_W, 0x1e2740);
+    this._strokeLoop(track, wp); track.strokePath();
+    track.lineStyle(TRACK_W - 4, 0x252f47);
+    this._strokeLoop(track, wp); track.strokePath();
+
+    for (let i = 0; i < wp.length; i += 3) {
+      const j = (i + 1) % wp.length;
+      track.lineStyle(2, 0xffffff, 0.12);
+      track.beginPath();
+      track.moveTo(wp[i].x, wp[i].y);
+      track.lineTo(wp[j].x, wp[j].y);
+      track.strokePath();
+    }
+
+    const barOuter = this.waypoints.map(p => ({
+      x: GW / 2 + (p.x - GW / 2) * 1.16,
+      y: GH / 2 + (p.y - GH / 2) * 1.16,
+    }));
+    const barInner = this.waypoints.map(p => ({
+      x: GW / 2 + (p.x - GW / 2) * 0.84,
+      y: GH / 2 + (p.y - GH / 2) * 0.84,
+    }));
+    [barOuter, barInner].forEach((pts) => {
+      for (let i = 0; i < pts.length; i += 2) {
+        track.fillStyle(0xff3333, 0.7);
+        track.fillCircle(pts[i].x, pts[i].y, 5);
+        track.fillStyle(0x111111, 0.5);
+        track.fillCircle(pts[i].x, pts[i].y, 3);
+      }
+      track.lineStyle(3, 0xff4444, 0.6);
+      this._strokeLoop(track, pts);
+      track.strokePath();
+    });
+
+    const s0 = wp[0], s1 = wp[1];
+    const ang = Math.atan2(s1.y - s0.y, s1.x - s0.x);
+    const nx = Math.cos(ang + Math.PI / 2), ny = Math.sin(ang + Math.PI / 2);
+    const hw = TRACK_W / 2;
+    const sq = 9;
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 3; j++) {
+        track.fillStyle((i + j) % 2 === 0 ? 0xffffff : 0x000000);
+        track.fillRect(
+          s0.x + nx * (hw - sq * (j + 1)) - sq / 2 + Math.cos(ang) * (i * sq - sq * 3.5),
+          s0.y + ny * (hw - sq * (j + 1)) - sq / 2 + Math.sin(ang) * (i * sq - sq * 3.5),
+          sq, sq
+        );
+      }
+    }
+
+    this.skidLayer = this.add.group();
+  }
+
+  _strokeLoop(g, pts) {
+    g.beginPath();
+    pts.forEach((p, i) => i === 0 ? g.moveTo(p.x, p.y) : g.lineTo(p.x, p.y));
+    g.closePath();
+  }
+
+  // ── Cars ───────────────────────────────────────────────────
+  _buildCars() {
+    const wp = this.waypoints;
+    const startAng = Phaser.Math.Angle.Between(
+      wp[0].x, wp[0].y, wp[1].x, wp[1].y
+    ) * Phaser.Math.RAD_TO_DEG + 90;
+
+    this.car = this.physics.add.image(wp[0].x, wp[0].y, 'pcar');
+    this.car.setAngle(startAng);
+    this.car.setDamping(true);
+    this.car.setDrag(0.88);
+    this.car.setMaxVelocity(CFG.maxSpd * 0.65);
+    this.car.setDepth(6);
+
+    this.opps = [];
+    for (let i = 0; i < Math.min(CFG.oppN, 4); i++) {
+      const wi = Math.floor(((i + 1) / (CFG.oppN + 1)) * wp.length);
+      const o = this.physics.add.image(wp[wi].x, wp[wi].y, 'ocar' + i);
+      o.setAngle(startAng);
+      o.setDamping(true); o.setDrag(0.88);
+      o.setMaxVelocity(CFG.maxSpd * 0.55);
+      o.setDepth(5);
+      this.opps.push({ s: o, wpIdx: wi, lap: 0, spd: 220 + i * 12 + Math.random() * 20 });
+    }
+  }
+
+  // ── Particles ──────────────────────────────────────────────
+  _buildParticles() {
+    this.exhaust = this.add.particles(0, 0, 'px', {
+      speed: { min: 10, max: 35 },
+      angle: { min: 165, max: 195 },
+      scale: { start: 0.35, end: 0 },
+      alpha: { start: 0.55, end: 0 },
+      tint: [0x888888, 0x666666, 0x555555],
+      lifespan: 450, frequency: 35,
+      blendMode: 'NORMAL',
+      emitting: false,
+    });
+    this.exhaust.setDepth(3);
+
+    this.nitroFx = this.add.particles(0, 0, 'px', {
+      speed: { min: 80, max: 180 },
+      angle: { min: 155, max: 205 },
+      scale: { start: 0.6, end: 0 },
+      alpha: { start: 0.95, end: 0 },
+      tint: [0x60a5fa, 0xa78bfa, 0xffffff],
+      lifespan: 220, frequency: 10,
+      blendMode: 'ADD',
+      emitting: false,
+    });
+    this.nitroFx.setDepth(4);
+
+    this.crashFx = this.add.particles(0, 0, 'px', {
+      speed: { min: 100, max: 280 },
+      angle: { min: 0, max: 360 },
+      scale: { start: 0.7, end: 0 },
+      alpha: { start: 1, end: 0 },
+      tint: [0xff6600, 0xffcc00, 0xff3300],
+      lifespan: 450,
+      blendMode: 'ADD',
+      emitting: false,
+    });
+    this.crashFx.setDepth(7);
+  }
+
+  // ── Keys ───────────────────────────────────────────────────
+  _buildKeys() {
+    if (!this.input.keyboard) return;
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.wasd = this.input.keyboard.addKeys('W,A,S,D,SPACE');
+  }
+
+  // ── START ──────────────────────────────────────────────────
+  startRace() {
+    this.racing   = true;
+    this.finished = false;
+    this.elapsed  = 0;
+    this.lapCount = 0;
+    this.nitro    = 100;
+    this.nitroOn  = false;
+    this.playerWp = 0;
+    this.exhaust.start();
+  }
+
+  resetPositions() {
+    const wp = this.waypoints;
+    const ang = Phaser.Math.Angle.Between(
+      wp[0].x, wp[0].y, wp[1].x, wp[1].y
+    ) * Phaser.Math.RAD_TO_DEG + 90;
+
+    this.car.setPosition(wp[0].x, wp[0].y);
+    this.car.setAngle(ang);
+    this.car.body.velocity.set(0, 0);
+    this.car.body.acceleration.set(0, 0);
+    this.playerWp = 0;
+
+    this.opps.forEach((o, i) => {
+      const wi = Math.floor(((i + 1) / (CFG.oppN + 1)) * wp.length);
+      o.s.setPosition(wp[wi].x, wp[wi].y);
+      o.s.setAngle(ang);
+      o.s.body.velocity.set(0, 0);
+      o.wpIdx = wi; o.lap = 0;
+    });
+
+    if (this.skidLayer) {
+      this.skidLayer.clear(true, true);
+    }
+    this.exhaust.stop();
+    this.nitroFx.stop();
+  }
+
+  // ── UPDATE ─────────────────────────────────────────────────
+  update(time, delta) {
+    if (!this.racing || this.finished) return;
+    const dt = delta / 1000;
+    this.elapsed += dt;
+
+    // ── Input ──
+    const L = this.cursors?.left.isDown  || this.wasd?.A.isDown || window.K.L;
+    const R = this.cursors?.right.isDown || this.wasd?.D.isDown || window.K.R;
+    const N = this.cursors?.space?.isDown || this.wasd?.SPACE?.isDown || window.K.N;
+
+    // ── Steering ──
+    const turnRate = this.nitroOn ? 2.8 : 3.3;
+    if (L) this.car.setAngle(this.car.angle - turnRate);
+    if (R) this.car.setAngle(this.car.angle + turnRate);
+
+    // ── Nitro ──
+    if (N && this.nitro > 8) {
+      this.nitroOn = true;
+      this.nitro   = Math.max(0, this.nitro - dt * 36);
+    } else {
+      this.nitroOn = false;
+      this.nitro   = Math.min(100, this.nitro + dt * 9);
+    }
+
+    // ── Acceleration ──
+    const ang = Phaser.Math.DegToRad(this.car.angle - 90);
+    const accel = this.nitroOn ? 560 : 360;
+    this.car.body.acceleration.set(Math.cos(ang) * accel, Math.sin(ang) * accel);
+
+    // ── Particle positions ──
+    const bx = this.car.x - Math.cos(ang) * 20;
+    const by = this.car.y - Math.sin(ang) * 20;
+    this.exhaust.setPosition(bx, by);
+    this.nitroFx.setPosition(bx, by);
+    this.exhaust.setAngle(this.car.angle + 90);
+    this.nitroFx.setAngle(this.car.angle + 90);
+    if (this.nitroOn) this.nitroFx.start(); else this.nitroFx.stop();
+
+    // ── Skid marks ──
+    const spd = this.car.body.speed;
+    if (spd > 90 && (L || R) && Math.random() < 0.25) {
+      const sk = this.add.image(this.car.x, this.car.y, 'skid');
+      sk.setAngle(this.car.angle).setAlpha(0.4).setDepth(1);
+      if (this.skidLayer) this.skidLayer.add(sk);
+      if (this.skidLayer && this.skidLayer.getLength() > 80) {
+        const old = this.skidLayer.getChildren()[0];
+        this.tweens.add({ targets: old, alpha: 0, duration: 600,
+          onComplete: () => { this.skidLayer.remove(old, true, true); }
+        });
+      }
+    }
+
+    // ── Track boundary ──
+    const dx = this.car.x - GW / 2, dy = this.car.y - GH / 2;
+    const rx = GW * 0.36, ry = GH * 0.36;
+    const d  = (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry);
+    if (d > 1.14 || d < 0.72) {
+      this.car.body.velocity.scale(0.65);
+      this.car.x += (GW / 2 - this.car.x) * 0.05;
+      this.car.y += (GH / 2 - this.car.y) * 0.05;
+      if (time - this.lastCrash > 700) {
+        this.cameras.main.shake(220, 0.009);
+        this.crashFx.setPosition(this.car.x, this.car.y).explode(12);
+        this.lastCrash = time;
+      }
+    }
+
+    // ── Checkpoint / lap ──
+    const wp  = this.waypoints[this.playerWp];
+    const wdx = this.car.x - wp.x, wdy = this.car.y - wp.y;
+    if (Math.sqrt(wdx * wdx + wdy * wdy) < TRACK_W * 0.6) {
+      this.playerWp = (this.playerWp + 1) % this.waypoints.length;
+      if (this.playerWp === 0) {
+        this.lapCount++;
+        this._flashLap();
+        if (this.lapCount >= CFG.laps) { this._finishRace(); return; }
+        this.cameras.main.flash(200, 250, 204, 21, true);
+      }
+    }
+
+    // ── Opponents AI ──
+    let ahead = 0;
+    this.opps.forEach(o => {
+      const twp = this.waypoints[o.wpIdx];
+      const ta  = Math.atan2(twp.y - o.s.y, twp.x - o.s.x);
+      const oa  = Phaser.Math.DegToRad(o.s.angle - 90);
+      let da = ta - oa;
+      while (da > Math.PI)  da -= Math.PI * 2;
+      while (da < -Math.PI) da += Math.PI * 2;
+      o.s.setAngle(o.s.angle + Math.sign(da) * 2.8);
+      const na = Phaser.Math.DegToRad(o.s.angle - 90);
+      o.s.body.acceleration.set(Math.cos(na) * o.spd, Math.sin(na) * o.spd);
+      const od = Phaser.Math.Distance.Between(o.s.x, o.s.y, twp.x, twp.y);
+      if (od < TRACK_W * 0.6) o.wpIdx = (o.wpIdx + 1) % this.waypoints.length;
+      if (o.wpIdx === 0) o.lap++;
+      // 🔥 تصحيح: مقارنة أدق للتقدم (معرفة من في المقدمة)
+      const oppProgress = o.lap * 1000 + o.wpIdx;
+      const playerProgress = this.lapCount * 1000 + this.playerWp;
+      if (oppProgress > playerProgress) ahead++;
+    });
+
+    // ── HUD update ──
+    const dispSpd = Math.round(spd * (CFG.maxSpd / (CFG.maxSpd * 0.65)));
+    document.getElementById('hLap').textContent  = (this.lapCount + 1) + '/' + CFG.laps;
+    document.getElementById('hPos').textContent  = 'P' + (ahead + 1);
+    document.getElementById('hTime').textContent = fmt(this.elapsed * 1000);
+    document.getElementById('hSpd').textContent  = Math.min(dispSpd, CFG.maxSpd);
+    document.getElementById('nfill').style.width = this.nitro + '%';
+    document.getElementById('nfill').className   = 'id' + (this.nitroOn ? ' hot' : '');
+
+    // ── Speed lines ──
+    _drawSpeedLines(spd / (CFG.maxSpd * 0.65));
+  }
+
+  _flashLap() {
+    const el = document.getElementById('lapFlash');
+    el.textContent = 'LAP ' + (this.lapCount + 1) + '/' + CFG.laps;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 1200);
+  }
+
+  _finishRace() {
+    this.finished = true; this.racing = false;
+    this.exhaust.stop(); this.nitroFx.stop();
+    this.cameras.main.shake(350, 0.012);
+    const pos = this.opps.filter(o => (o.lap * 1000 + o.wpIdx) > (CFG.laps * 1000)).length + 1;
+    setTimeout(() => _showEnd(this.elapsed, pos), 900);
+  }
+}
+
+// ─── SPEED LINES ───────────────────────────────────────────────
+const slCv  = document.getElementById('sl');
+const slCtx = slCv.getContext('2d');
+slCv.width = GW; slCv.height = GH;
+slCv.style.width = GW + 'px'; slCv.style.height = GH + 'px';
+
+function _drawSpeedLines(t) {
+  slCtx.clearRect(0, 0, GW, GH);
+  if (t < 0.52) { slCv.style.opacity = '0'; return; }
+  const a = Math.min((t - 0.52) * 2.4, 0.75);
+  slCv.style.opacity = a.toString();
+  slCtx.strokeStyle = 'rgba(255,255,255,0.18)';
+  slCtx.lineWidth   = 1;
+  for (let i = 0; i < 20; i++) {
+    const x  = Math.random() * GW;
+    const len = 22 + Math.random() * 70 * t;
+    slCtx.beginPath(); slCtx.moveTo(x, 0);   slCtx.lineTo(x, len);   slCtx.stroke();
+    slCtx.beginPath(); slCtx.moveTo(x, GH);  slCtx.lineTo(x, GH-len); slCtx.stroke();
+  }
+}
+
+// ─── PHASER CONFIG ─────────────────────────────────────────────
+new Phaser.Game({
+  type: Phaser.AUTO,
+  width: GW, height: GH,
+  backgroundColor: 0x000000,
+  physics: { default: 'arcade', arcade: { gravity: { y: 0 }, debug: false } },
+  scene: [Boot, Race],
+  parent: 'wrap',
+  render: { transparent: false },
+});
+
+// ─── GAME FLOW ─────────────────────────────────────────────────
+function startGame() {
+  document.getElementById('sStart').className = 'scr';
+  document.getElementById('sEnd').className   = 'scr';
+  document.getElementById('hud').style.display  = 'flex';
+  document.getElementById('nbar').style.display = 'block';
+  document.getElementById('ad').style.display   = S().adsRemoved ? 'none' : 'flex';
+  if (mob()) document.getElementById('ctrl').style.display = 'flex';
+
+  if (raceScene) raceScene.resetPositions();
+
+  const cd = document.getElementById('cd');
+  const cdN = document.getElementById('cdN');
+  cd.classList.add('on');
+  let n = 3; cdN.textContent = n;
+  const t = setInterval(() => {
+    n--;
+    if (n <= 0) {
+      cdN.textContent = 'Partez!';
+      clearInterval(t);
+      setTimeout(() => {
+        cd.classList.remove('on');
+        if (raceScene) raceScene.startRace();
+      }, 380);
+    } else cdN.textContent = n;
+  }, 900);
+}
+
+function _showEnd(elapsed, pos) {
+  ['hud', 'nbar', 'ctrl'].forEach(id => document.getElementById(id).style.display = 'none');
+  slCv.style.opacity = '0';
+
+  document.getElementById('endTime').textContent  = fmt(elapsed * 1000);
+  document.getElementById('endPos').textContent   = 'P' + pos;
+  document.getElementById('endTitle').textContent =
+    pos === 1 ? 'Vous avez gagné!' : 'Meilleure chance la prochaine fois';
+
+  const isNew = pos === 1 && (!S().bestTime || elapsed < S().bestTime);
+  document.getElementById('newBest').style.display = isNew ? 'block' : 'none';
+  if (isNew) sv({ bestTime: elapsed });
+
+  document.getElementById('sEnd').className = 'scr on';
+  document.getElementById('ad').style.display = S().adsRemoved ? 'none' : 'flex';
+}
+
+function goHome() {
+  ['hud', 'nbar', 'ctrl'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('sEnd').className   = 'scr';
+  document.getElementById('ad').style.display = S().adsRemoved ? 'none' : 'flex';
+  document.getElementById('sStart').className = 'scr on';
+  const cur = S();
+  if (cur.bestTime) document.getElementById('bestDisp').textContent = fmt(cur.bestTime * 1000);
+}
+
+// ─── MOBILE CONTROLS ───────────────────────────────────────────
+function wire(id, k) {
+  const el = document.getElementById(id); if (!el) return;
+  const on  = e => { e.preventDefault(); window.K[k] = true;  el.classList.add('on');    };
+  const off = e => { e.preventDefault(); window.K[k] = false; el.classList.remove('on'); };
+  el.addEventListener('touchstart',  on,  { passive: false });
+  el.addEventListener('touchend',    off, { passive: false });
+  el.addEventListener('touchcancel', off, { passive: false });
+}
+wire('bL', 'L'); wire('bR', 'R'); wire('bN', 'N');
+
+// ─── SHOP ──────────────────────────────────────────────────────
+function openShop() {
+  const cur = S(), list = document.getElementById('shopList');
+  list.innerHTML = '';
+  (CFG.iaps || []).forEach(item => {
+    const owned = !!cur['own_' + item.id];
+    const name  = (item.name && (item.name[CFG.lang] || item.name.en)) || item.id;
+    const desc  = (item.desc && (item.desc[CFG.lang] || item.desc.en)) || '';
+    const d = document.createElement('div'); d.className = 'si';
+    d.innerHTML =
+      `<div><div class="si-n">${name}</div><div class="si-d">${desc}</div><div class="si-p">${item.price||'$0.99'}</div></div>` +
+      `<button class="bb${owned?' own':''}"${owned?' disabled':''} onclick="buy('${item.id}')">` +
+      `${owned ? '✓' : 'Boutique'}</button>`;
+    list.appendChild(d);
+  });
+  if (!cur.adsRemoved) {
+    const d = document.createElement('div'); d.className = 'si';
+    d.innerHTML =
+      `<div><div class="si-n">🚫 Les pubs soutiennent l\'équipe</div><div class="si-p">Supprimer 1,99$</div></div>` +
+      `<button class="bb" onclick="buyRemoveAds()">Boutique</button>`;
+    list.appendChild(d);
+  }
+  document.getElementById('shopOv').classList.add('on');
+}
+function closeShop()    { document.getElementById('shopOv').classList.remove('on'); }
+function buy(id)        { sv({ ['own_' + id]: true }); openShop(); }
+function buyRemoveAds() {
+  sv({ adsRemoved: true });
+  document.getElementById('ad').style.display = 'none';
+  if (document.getElementById('shopOv').classList.contains('on')) openShop();
+}
+
+// ─── BOOTSTRAP ─────────────────────────────────────────────────
+(function () {
+  const cur = S();
+  if (cur.adsRemoved) document.getElementById('ad').style.display = 'none';
+  if (cur.bestTime) document.getElementById('bestDisp').textContent = fmt(cur.bestTime * 1000);
+})();
+</script>
+</body>
+</html>
