@@ -2,220 +2,152 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>لغز النيون</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js"></script>
 <style>
-:root{--acc:#f472b6;--acc-rgb:244,114,182;}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;outline:none;}
-html,body{height:100%;overflow:hidden;background:#000;font-family:'Segoe UI',Tajawal,sans-serif;color:#f1f5f9;user-select:none;-webkit-user-select:none;touch-action:manipulation;}
-#wrap{position:relative;width:100%;max-width:420px;height:100dvh;margin:0 auto;overflow:hidden;background:radial-gradient(ellipse at center,#0a0a1a 0%,#000 100%);}
-#wrap canvas{position:absolute;top:0;left:0;width:100%!important;height:100%!important;touch-action:none;}
-.scr{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:28px;background:radial-gradient(ellipse at center,rgba(244,114,182,0.15) 0%,rgba(0,0,0,0.9) 100%);backdrop-filter:blur(10px);z-index:50;}
-.scr.on{display:flex;}
-.g-title{font-size:2.2rem;font-weight:900;color:var(--acc);text-shadow:0 0 30px var(--acc);animation:titlePulse 2s ease-in-out infinite;}
-@keyframes titlePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-.g-desc{color:#94a3b8;font-size:.9rem;line-height:1.6;max-width:300px;}
-.btn{padding:14px 0;border-radius:14px;font-size:1rem;font-weight:700;border:none;cursor:pointer;width:100%;max-width:300px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;text-transform:uppercase;letter-spacing:.05em;}
-.btn:active{transform:scale(.96);}
-.btn-p{background:var(--acc);color:#000;box-shadow:0 0 30px rgba(244,114,182,0.5);}
-#hud{position:absolute;top:0;left:0;right:0;display:none;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(0,0,0,0.7);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);z-index:20;}
-.hud-bl{display:flex;flex-direction:column;}
-.hud-l{font-size:.6rem;color:#64748b;text-transform:uppercase;letter-spacing:.12em;}
-.hud-v{font-size:1rem;font-weight:900;color:var(--acc);font-family:monospace;}
-#hpBar{width:80px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;}
-#hpFill{height:100%;border-radius:4px;background:linear-gradient(90deg,#ef4444,#f97316);transition:width .3s;}
-#fireBtn{position:absolute;bottom:20px;right:20px;width:72px;height:72px;border-radius:50%;background:rgba(244,114,182,0.2);border:3px solid rgba(244,114,182,0.5);display:none;align-items:center;justify-content:center;z-index:20;cursor:pointer;animation:firePulse 1.5s ease-in-out infinite;backdrop-filter:blur(8px);touch-action:manipulation;}
-@keyframes firePulse{0%,100%{box-shadow:0 0 20px rgba(244,114,182,0.4)}50%{box-shadow:0 0 40px rgba(244,114,182,0.8)}}
-#fireBtn.on{background:rgba(244,114,182,0.5);border-color:#fff;}
-#fireBtn svg{width:32px;height:32px;fill:var(--acc);pointer-events:none;}
-#movePad{position:absolute;bottom:20px;left:20px;width:110px;height:70px;border-radius:16px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);display:none;align-items:center;justify-content:space-between;padding:0 10px;z-index:20;backdrop-filter:blur(10px);touch-action:manipulation;}
-.mpBtn{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;touch-action:manipulation;}
-.mpBtn.on{background:rgba(244,114,182,0.35);border-color:var(--acc);box-shadow:0 0 20px rgba(244,114,182,0.4);}
-.mpBtn svg{width:22px;height:22px;fill:#cbd5e1;pointer-events:none;}
-#lvFlash{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:rgba(244,114,182,0.2);border:1px solid rgba(244,114,182,0.5);color:var(--acc);padding:6px 22px;border-radius:100px;font-weight:900;font-size:.9rem;font-family:monospace;letter-spacing:.1em;display:none;z-index:25;text-shadow:0 0 12px var(--acc);}
+:root{--acc:#f472b6;--acc-rgb:244,114,182;--bg:#0a0a14;--surface:#12121f;--text:#f1f5f9;--text2:#7a7a8a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',Tajawal,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none;}
+#app{display:flex;flex-direction:column;width:100%;max-width:420px;height:100dvh;margin:0 auto;overflow:hidden;}
+#header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,255,255,0.06);z-index:10;}
+#back-btn{background:none;border:1px solid rgba(255,255,255,0.2);color:var(--text2);padding:4px 12px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:0.7rem;}
+#game-title{font-weight:900;font-size:1rem;color:var(--acc);text-shadow:0 0 20px rgba(var(--acc-rgb),0.5);}
+#hud{display:flex;justify-content:center;gap:20px;padding:8px 16px;background:var(--surface);border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.75rem;font-weight:700;}
+.hud-item{display:flex;align-items:center;gap:6px;}
+.hud-label{color:var(--text2);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.05em;}
+.hud-val{color:var(--acc);font-family:monospace;font-size:0.9rem;}
+#main-area{flex:1;display:flex;align-items:center;justify-content:center;padding:10px;}
+.grid{display:grid;gap:8px;justify-content:center;width:100%;max-width:360px;}
+.card{aspect-ratio:1;font-size:3rem;display:flex;align-items:center;justify-content:center;background:var(--surface);border-radius:12px;cursor:pointer;transition:transform 0.2s,background 0.2s;border:1px solid rgba(255,255,255,0.05);}
+.card.flipped{background:rgba(var(--acc-rgb),0.2);transform:scale(1.05);border-color:var(--acc);}
+.card.matched{opacity:0.4;pointer-events:none;background:rgba(var(--acc-rgb),0.1);}
+.btn{padding:0.7rem 2rem;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:0.85rem;background:var(--acc);color:#000;box-shadow:0 0 20px rgba(var(--acc-rgb),0.3);}
+.btn:active{transform:scale(0.96);}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:rgba(10,10,20,0.9);backdrop-filter:blur(10px);z-index:20;}
+.overlay.hidden{display:none;}
+.overlay-title{font-size:2rem;font-weight:900;color:var(--acc);}
 </style>
 </head>
 <body>
-<div id="wrap">
-  <div class="scr on" id="sStart"><div class="g-title">لغز النيون</div><div class="g-desc">أعد تركيب الصورة قبل انتهاء الوقت</div><button class="btn btn-p" onclick="startGame()">▶ ابدأ اللعبة</button></div>
-  <div id="hud"><div class="hud-bl"><div class="hud-l">النقاط</div><div class="hud-v" id="hudScore">0</div></div><div class="hud-bl" style="align-items:center"><div class="hud-l">المستوى</div><div class="hud-v" id="hudLevel">1</div></div><div class="hud-bl" style="align-items:flex-end"><div class="hud-l">HP</div><div id="hpWrap"><div id="hpBar"><div id="hpFill" style="width:100%"></div></div></div></div></div>
-  <div id="lvFlash">LEVEL 1</div>
-  <div id="fireBtn"><svg viewBox="0 0 24 24"><polygon points="12,2 22,22 12,17 2,22"/></svg></div>
-  <div id="movePad">
-    <div class="mpBtn" id="mpL"><svg viewBox="0 0 24 24"><polygon points="15,4 5,12 15,20"/></svg></div>
-    <div class="mpBtn" id="mpR"><svg viewBox="0 0 24 24"><polygon points="9,4 19,12 9,20"/></svg></div>
+<div id="app">
+  <div id="header">
+    <button id="back-btn" onclick="history.back()">← رجوع</button>
+    <div id="game-title">🧩 لغز النيون</div>
+    <div style="width:50px"></div>
   </div>
-  <div class="scr" id="sEnd"><div style="font-size:3.5rem">💥</div><div class="g-title" style="font-size:1.8rem">انتهت اللعبة</div><div id="finalScore" style="font-family:monospace;font-size:1.3rem;color:var(--acc)"></div><button class="btn btn-p" onclick="startGame()">حاول مجدداً</button></div>
+  <div id="hud">
+    <div class="hud-item"><span class="hud-label">حركات</span><span class="hud-val" id="movesVal">0</span></div>
+    <div class="hud-item"><span class="hud-label">أزواج</span><span class="hud-val" id="pairsVal">0/4</span></div>
+    <div class="hud-item"><span class="hud-label">تلميح</span><span class="hud-val" id="hintVal">💡 2</span></div>
+  </div>
+  <div id="main-area"></div>
+  <div class="overlay" id="overlayStart">
+    <div style="font-size:4rem">🧩</div>
+    <div class="overlay-title">لغز النيون</div>
+    <p style="color:var(--text2)">أعد تركيب الصورة قبل انتهاء الوقت</p>
+    <button class="btn" id="btnStart">ابدأ اللعبة</button>
+  </div>
+  <div class="overlay hidden" id="overlayWin">
+    <div style="font-size:4rem">🏆</div>
+    <div class="overlay-title">أحسنت!</div>
+    <button class="btn" id="btnRestart">مرة أخرى</button>
+  </div>
 </div>
+
 <script>
-// ═══════════════════════════════════════════
-// CONFIG & STATE
-// ═══════════════════════════════════════════
-const CFG={pid:'neon-puzzle',lang:'ar',acc:'#f472b6',accN:parseInt('#f472b6'.replace('#',''),16),accRGB:[244,114,182].map(Number),iaps:[{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"extra-time","type":"consumable","price":0.99,"emoji":"⏱️","name":{"ar":"5 تمديدات وقت","en":"5 Time Extensions","fr":"5 extensions","es":"5 extensiones","de":"5 Zeitverlängerungen","zh":"5次延时"}},{"id":"theme-cyber","type":"cosmetic","price":1.49,"emoji":"🤖","name":{"ar":"ثيم سايبر","en":"Cyber Theme","fr":"Thème cyber","es":"Tema cyber","de":"Cyber-Theme","zh":"赛博主题"}},{"id":"full-unlock","type":"unlock","price":3.99,"emoji":"⭐","name":{"ar":"المجموعة الكاملة","en":"Full Collection","fr":"Collection complète","es":"Colección completa","de":"Vollständige Sammlung","zh":"完整收藏"}}],lvls:[{"enemyCount":8,"enemySpeed":1.1,"enemyHealth":1,"enemyTypes":[0,1],"bossLevel":false,"spawnPattern":"waves","name":{"ar":"البداية","en":"First Contact"}},{"enemyCount":14,"enemySpeed":1.5,"enemyHealth":2,"enemyTypes":[0,1,2],"bossLevel":false,"spawnPattern":"zigzag","name":{"ar":"المقاومة","en":"Resistance"}},{"enemyCount":20,"enemySpeed":1.9,"enemyHealth":3,"enemyTypes":[1,2,3],"bossLevel":false,"spawnPattern":"storm","name":{"ar":"العاصفة","en":"The Storm"}},{"enemyCount":8,"enemySpeed":1.3,"enemyHealth":8,"enemyTypes":[3],"bossLevel":true,"spawnPattern":"boss","name":{"ar":"الحارس","en":"The Guardian"}},{"enemyCount":30,"enemySpeed":2.3,"enemyHealth":5,"enemyTypes":[0,1,2,3],"bossLevel":false,"spawnPattern":"chaos","name":{"ar":"الفوضى العظمى","en":"Grand Chaos"}}]||[]};
-if(!Array.isArray(CFG.lvls)||CFG.lvls.length===0){CFG.lvls=[{enemyCount:8,enemySpeed:1.3,enemyHealth:1},{enemyCount:12,enemySpeed:1.7,enemyHealth:2,enemyTypes:[0,1]},{enemyCount:16,enemySpeed:2.2,enemyHealth:3,enemyTypes:[1,2]},{enemyCount:12,enemySpeed:1.5,enemyHealth:5,enemyTypes:[2,3],bossLevel:true},{enemyCount:25,enemySpeed:2.8,enemyHealth:4,enemyTypes:[0,1,2,3]}]}
-function getLevelData(idx){const d=CFG.lvls[idx]||{};return{enemyCount:d.enemyCount||8,enemySpeed:d.enemySpeed||1.3,enemyHealth:d.enemyHealth||1,enemyTypes:d.enemyTypes||[0,1],bossLevel:d.bossLevel||false}}
-const SK='rt_'+CFG.pid,S=()=>JSON.parse(localStorage.getItem(SK)||'{}'),isMob=()=>'ontouchstart' in window&&matchMedia('(pointer: coarse)').matches;
-const GW=Math.min(window.innerWidth,420),GH=window.innerHeight;
+const CFG = {
+  pid: 'neon-puzzle',
+  lang: 'ar',
+  acc: '#f472b6',
+  iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"extra-time","type":"consumable","price":0.99,"emoji":"⏱️","name":{"ar":"5 تمديدات وقت","en":"5 Time Extensions","fr":"5 extensions","es":"5 extensiones","de":"5 Zeitverlängerungen","zh":"5次延时"}},{"id":"theme-cyber","type":"cosmetic","price":1.49,"emoji":"🤖","name":{"ar":"ثيم سايبر","en":"Cyber Theme","fr":"Thème cyber","es":"Tema cyber","de":"Cyber-Theme","zh":"赛博主题"}},{"id":"full-unlock","type":"unlock","price":3.99,"emoji":"⭐","name":{"ar":"المجموعة الكاملة","en":"Full Collection","fr":"Collection complète","es":"Colección completa","de":"Vollständige Sammlung","zh":"完整收藏"}}] || [],
+  emojis: ["🧩","💠","🔶","🔷","🟥","🟦","🟧","🟨","🟩","🟪","⬛","⬜"] || ['⭐','🌟','💫','✨','🎯','🔮','💎','🌈','🎨','🎭'],
+  lvls: [{"enemyCount":8,"enemySpeed":1.1,"enemyHealth":1,"enemyTypes":[0,1],"bossLevel":false,"spawnPattern":"waves","name":{"ar":"البداية","en":"First Contact"}},{"enemyCount":14,"enemySpeed":1.5,"enemyHealth":2,"enemyTypes":[0,1,2],"bossLevel":false,"spawnPattern":"zigzag","name":{"ar":"المقاومة","en":"Resistance"}},{"enemyCount":20,"enemySpeed":1.9,"enemyHealth":3,"enemyTypes":[1,2,3],"bossLevel":false,"spawnPattern":"storm","name":{"ar":"العاصفة","en":"The Storm"}},{"enemyCount":8,"enemySpeed":1.3,"enemyHealth":8,"enemyTypes":[3],"bossLevel":true,"spawnPattern":"boss","name":{"ar":"الحارس","en":"The Guardian"}},{"enemyCount":30,"enemySpeed":2.3,"enemyHealth":5,"enemyTypes":[0,1,2,3],"bossLevel":false,"spawnPattern":"chaos","name":{"ar":"الفوضى العظمى","en":"Grand Chaos"}}] || [{pairs:4,cols:4,hints:2},{pairs:6,cols:4,hints:1},{pairs:8,cols:5,hints:1},{pairs:10,cols:5,hints:0},{pairs:12,cols:6,hints:0}]
+};
 
-// ═══════════════════════════════════════════
-// TOUCH INPUT SYSTEM (ULTRA RESPONSIVE)
-// ═══════════════════════════════════════════
-window.K={L:!1,R:!1,F:!1};
-
-// استخدام setInterval لفحص حالة الأزرار كل 16ms (60fps) بدلاً من الاعتماد على الأحداث فقط
-let inputPollInterval = null;
-function startInputPolling() {
-  if (inputPollInterval) clearInterval(inputPollInterval);
-  inputPollInterval = setInterval(() => {
-    // سيتم استهلاك هذه الحالة في Phaser update loop
-  }, 16);
-}
-function stopInputPolling() {
-  if (inputPollInterval) { clearInterval(inputPollInterval); inputPollInterval = null; }
+function getLvl(idx) {
+  const lvls = CFG.lvls;
+  if (Array.isArray(lvls) && lvls.length > 0) {
+    return lvls[Math.min(idx, lvls.length - 1)];
+  }
+  return { pairs: 4, cols: 4, hints: 2 };
 }
 
-function bindButton(id, key) {
-  const el = document.getElementById(id);
-  if (!el) return;
+let G = { level: 0, moves: 0, found: 0, lock: false, first: null, second: null, cards: [], hintsLeft: 0 };
 
-  // استخدام pointerdown/pointerup مع capture للحصول على أسرع استجابة
-  const onDown = (e) => {
-    e.preventDefault(); e.stopPropagation();
-    window.K[key] = true;
-    el.classList.add('on');
-  };
-  const onUp = (e) => {
-    e.preventDefault(); e.stopPropagation();
-    window.K[key] = false;
-    el.classList.remove('on');
-  };
-
-  el.addEventListener('pointerdown', onDown, { capture: true, passive: false });
-  el.addEventListener('pointerup', onUp, { capture: true, passive: false });
-  el.addEventListener('pointercancel', onUp, { capture: true, passive: false });
-  el.addEventListener('pointerleave', onUp, { capture: true, passive: false });
+function startGame() {
+  const lv = getLvl(G.level);
+  const pairs = lv.pairs || 4;
+  const cols = lv.cols || 4;
+  G.hintsLeft = lv.hints ?? 2; // ✅ إصلاح 1: ?? بدلاً من || لدعم القيمة 0
+  G.moves = 0; G.found = 0; G.lock = false; G.first = null; G.second = null;
+  
+  const icons = CFG.emojis.slice(0, pairs);
+  G.cards = shuffle([...icons, ...icons].map((e,i)=>({emoji:e, id:i, matched:false, flipped:false})));
+  
+  document.getElementById('movesVal').textContent = '0';
+  document.getElementById('pairsVal').textContent = `0/${pairs}`;
+  document.getElementById('hintVal').textContent = `💡 ${G.hintsLeft}`;
+  document.getElementById('overlayStart').classList.add('hidden');
+  document.getElementById('overlayWin').classList.add('hidden');
+  
+  renderBoard(cols);
 }
 
-// ربط الأزرار
-bindButton('fireBtn', 'F');
-bindButton('mpL', 'L');
-bindButton('mpR', 'R');
+function shuffle(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
-// دعم السحب على الشاشة للتحريك وإطلاق النار
-let swipeActive = false;
-const wrapEl = document.getElementById('wrap');
-wrapEl.addEventListener('pointerdown', (e) => {
-  if (!gameScene || !gameScene.active) return;
-  // إذا كان الهدف هو أحد الأزرار، لا تفعل شيئاً (الأزرار تتعامل مع نفسها)
-  if (e.target.closest('#fireBtn') || e.target.closest('#movePad')) return;
-  swipeActive = true;
-  window.K.F = true; // إطلاق نار تلقائي عند لمس الشاشة
-}, { capture: true, passive: false });
-
-wrapEl.addEventListener('pointermove', (e) => {
-  if (!swipeActive || !gameScene || !gameScene.active) return;
-  e.preventDefault();
-  const rect = wrapEl.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  // تحريك اللاعب مباشرة بناءً على مكان اللمس
-  if (gameScene.player) {
-    gameScene.player.x = Phaser.Math.Clamp(x, 20, GW - 20);
-  }
-}, { capture: true, passive: false });
-
-wrapEl.addEventListener('pointerup', () => {
-  swipeActive = false;
-  window.K.F = false;
-}, { capture: true, passive: false });
-
-wrapEl.addEventListener('pointercancel', () => {
-  swipeActive = false;
-  window.K.F = false;
-}, { capture: true, passive: false });
-
-// ═══════════════════════════════════════════
-// PHASER GAME
-// ═══════════════════════════════════════════
-let gameScene = null;
-const ENEMY_VARIANTS=[{emoji:'👾',col:0xff4444,scl:1.0,spd:1.1,pts:10},{emoji:'🤖',col:0xff8800,scl:1.25,spd:0.85,pts:20},{emoji:'👽',col:0x44ff44,scl:0.95,spd:1.3,pts:15},{emoji:'💀',col:0xcc44ff,scl:1.5,spd:0.7,pts:35,isBoss:!0}];
-
-class BootScene extends Phaser.Scene {
-  constructor(){super('Boot')}
-  create(){
-    const g=this.make.graphics({add:!1});g.fillStyle(0x030310);g.fillRect(0,0,512,512);
-    for(let i=0;i<350;i++){g.fillStyle(0xffffff,Math.random()*0.7);g.fillRect(Math.random()*512|0,Math.random()*512|0,1,1)}
-    g.generateTexture('stars',512,512);g.destroy();
-    const pg=this.make.graphics({add:!1});pg.fillStyle(CFG.accN,0.3);pg.fillEllipse(18,48,24,16);pg.fillStyle(0xd0d8f0,1);pg.fillTriangle(18,0,34,40,2,40);pg.fillStyle(CFG.accN,0.9);pg.fillEllipse(18,18,14,22);pg.fillStyle(0xffffff,0.6);pg.fillEllipse(15,14,5,8);pg.generateTexture('player',36,52);pg.destroy();
-    ENEMY_VARIANTS.forEach((v,i)=>{
-      const eg=this.make.graphics({add:!1});eg.fillStyle(v.col,1);eg.fillEllipse(14,11,22*v.scl,18*v.scl);eg.fillStyle(0xffffff,0.8);eg.fillCircle(10,8,5*v.scl);eg.fillStyle(0x000000,0.7);eg.fillCircle(11,7,2*v.scl);
-      if(v.isBoss){eg.fillStyle(0xffcc00,0.9);eg.fillCircle(3,5,4);eg.fillCircle(25,5,4)}
-      eg.generateTexture('enemy_'+i,28,22);eg.destroy();
-    });
-    const bg=this.make.graphics({add:!1});bg.fillStyle(CFG.accN,1);bg.fillRect(0,0,4,20);bg.fillStyle(0xffffff,0.9);bg.fillRect(1,0,2,3);bg.generateTexture('bullet',4,20);bg.destroy();
-    const px=this.make.graphics({add:!1});px.fillStyle(0xffffff);px.fillRect(0,0,4,4);px.generateTexture('px',4,4);px.destroy();
-    this.scene.start('Game');
-  }
+function renderBoard(cols) {
+  const root = document.getElementById('main-area');
+  root.innerHTML = `<div class="grid" style="grid-template-columns:repeat(${cols},1fr)" id="gameGrid"></div>`;
+  const grid = document.getElementById('gameGrid');
+  G.cards.forEach((c,i)=>{
+    const div = document.createElement('div');
+    div.className = 'card' + (c.flipped?' flipped':'') + (c.matched?' matched':'');
+    div.textContent = c.flipped||c.matched ? c.emoji : '';
+    div.addEventListener('click', ()=>flipCard(i));
+    grid.appendChild(div);
+  });
 }
 
-class GameScene extends Phaser.Scene {
-  constructor(){super('Game')}
-  create(){
-    this.score=0;this.hp=3;this.maxHp=3;this.levelIndex=0;this.active=!1;this.invincible=0;this.killed=0;this.lastFire=0;this.fireRate=180;
-    this.bg1=this.add.tileSprite(GW/2,GH/2,GW,GH,'stars').setDepth(0);this.bg2=this.add.tileSprite(GW/2,GH/2,GW,GH,'stars').setAlpha(0.4).setTilePosition(300,200).setDepth(0);
-    this.player=this.physics.add.image(GW/2,GH-80,'player').setDepth(5).setCollideWorldBounds(!0);this.player.body.setSize(24,40).setOffset(6,6);
-    this.bullets=this.physics.add.group({defaultKey:'bullet'});this.enemies=this.physics.add.group();
-    this.cursors=this.input.keyboard?.createCursorKeys();
-    this.input.on('pointerdown',()=>{if(this.active)this.fireBullet()});
-    this.explosionFx=this.add.particles(0,0,'px',{speed:{min:60,max:250},angle:{min:0,max:360},scale:{start:1.2,end:0},alpha:{start:1,end:0},tint:[0xff6600,0xffcc00,0xff3300,0xffffff],lifespan:500,blendMode:'ADD',emitting:!1}).setDepth(8);
-    this.hitFx=this.add.particles(0,0,'px',{speed:{min:20,max:80},angle:{min:0,max:360},scale:{start:0.7,end:0},alpha:{start:0.8,end:0},tint:[CFG.accN,0xffffff],lifespan:250,blendMode:'ADD',emitting:!1}).setDepth(8);
-    gameScene=this;this._updateHUD();
-  }
-  startLevel(){
-    this.active=!0;this.killed=0;this.enemies.clear(!0,!0);this.bullets.clear(!0,!0);const lv=getLevelData(this.levelIndex);const cnt=lv.enemyCount,spd=lv.enemySpeed,types=lv.enemyTypes;
-    for(let i=0;i<cnt;i++){const x=Phaser.Math.Between(30,GW-30);const y=-20-Math.random()*60;const variant=types[Phaser.Math.Between(0,types.length-1)];const enemy=this.enemies.create(x,y,'enemy_'+variant);enemy.setDepth(4);enemy.body.setSize(22,16).setOffset(3,3);enemy.body.velocity.y=spd*30*ENEMY_VARIANTS[variant].spd;enemy._health=lv.enemyHealth*(ENEMY_VARIANTS[variant].isBoss?3:1);enemy._variant=variant;enemy._scoreValue=ENEMY_VARIANTS[variant].pts}
-    const flash=document.getElementById('lvFlash');flash.textContent='المستوى '+(this.levelIndex+1);flash.style.display='block';setTimeout(()=>flash.style.display='none',1500);this._updateHUD();
-  }
-  fireBullet(){if(!this.active||!this.player)return;const b=this.bullets.create(this.player.x,this.player.y-30,'bullet');b.setDepth(6);b.body.velocity.y=-650;this.hitFx.setPosition(this.player.x,this.player.y-30).explode(3)}
-  update(time,delta){
-    if(!this.active)return;
-    this.bg1.tilePositionY-=1.0;this.bg2.tilePositionY-=0.5;
-
-    // ⚡ تحسين: دمج مدخلات لوحة المفاتيح مع مدخلات اللمس (window.K) بسلاسة
-    const L=this.cursors?.left.isDown||(window.K&&window.K.L);
-    const R=this.cursors?.right.isDown||(window.K&&window.K.R);
-    
-    // دعم السحب على الشاشة: إذا كان السحب نشطاً، لا نحرك اللاعب بالسرعة الثابتة لأن السحب يحركه مباشرة
-    if (swipeActive) {
-      // لا نقوم بتحديث السرعة لأن السحب يغير player.x مباشرة
-    } else {
-      if(L)this.player.body.velocity.x=-320;
-      else if(R)this.player.body.velocity.x=320;
-      else this.player.body.velocity.x=0;
+function flipCard(i) {
+  if(G.lock || G.cards[i].matched || G.cards[i].flipped || i===G.first) return;
+  G.cards[i].flipped = true;
+  renderBoard(getLvl(G.level).cols||4);
+  
+  if(G.first === null) { G.first = i; return; }
+  G.second = i; G.moves++;
+  document.getElementById('movesVal').textContent = G.moves;
+  
+  if(G.cards[G.first].emoji === G.cards[G.second].emoji) {
+    G.cards[G.first].matched = G.cards[G.second].matched = true;
+    G.found++; G.first = G.second = null;
+    renderBoard(getLvl(G.level).cols || 4); // ✅ إصلاح 2: تحديث الشكل فور التطابق
+    document.getElementById('pairsVal').textContent = `${G.found}/${getLvl(G.level).pairs}`;
+    if(G.found === getLvl(G.level).pairs) {
+      if(G.level < (CFG.lvls.length||5)-1) { G.level++; setTimeout(startGame, 600); }
+      else { document.getElementById('overlayWin').classList.remove('hidden'); }
     }
-
-    if(this.invincible>0){this.invincible-=delta/1000;this.player.setAlpha(0.4+0.6*Math.abs(Math.sin(time*0.015)))}else this.player.setAlpha(1);
-    const firePressed=this.cursors?.space?.isDown||(window.K&&window.K.F);
-    if(firePressed&&time-this.lastFire>this.fireRate){this.fireBullet();this.lastFire=time}
-    this.bullets.getChildren().forEach(b=>{if(b.y<-20||b.y>GH+20)b.destroy()});
-    this.enemies.getChildren().forEach(enemy=>{if(!enemy.active)return;enemy.x+=Math.sin(time*0.003+enemy.y*0.01)*1.2;if(enemy.y>GH+40){if(this.invincible<=0)this.damagePlayer(1);enemy.destroy()}});
-    this.physics.overlap(this.bullets,this.enemies,(bullet,enemy)=>{bullet.destroy();enemy._health--;this.hitFx.setPosition(enemy.x,enemy.y).explode(6);if(enemy._health<=0){this.explosionFx.setPosition(enemy.x,enemy.y).explode(12);this.cameras.main.shake(80,0.005);this.score+=enemy._scoreValue||10;this.killed++;enemy.destroy()}this._updateHUD()});
-    if(this.killed>=this.enemies.getLength()&&this.enemies.getLength()===0){this.active=!1;this.time.delayedCall(600,()=>{this.levelIndex++;if(this.levelIndex>=(CFG.lvls.length||5)){this.endGame(!0)}else{this.startLevel()}})}
+  } else {
+    G.lock = true;
+    setTimeout(()=>{ G.cards[G.first].flipped = G.cards[G.second].flipped = false; G.first = G.second = null; G.lock = false; renderBoard(getLvl(G.level).cols||4); }, 600);
   }
-  damagePlayer(amt){if(this.invincible>0)return;this.hp-=amt;this.invincible=1.5;this.cameras.main.shake(180,0.012);this.explosionFx.setPosition(this.player.x,this.player.y).explode(6);this._updateHUD();if(this.hp<=0){this.active=!1;this.time.delayedCall(500,()=>this.endGame(!1))}}
-  endGame(won){this.active=!1;this.enemies.clear(!0,!0);this.bullets.clear(!0,!0);stopInputPolling();document.getElementById('hud').style.display='none';document.getElementById('fireBtn').style.display='none';document.getElementById('movePad').style.display='none';const e=document.getElementById('sEnd');e.querySelector('.g-title').textContent=won?'أحسنت!':'انتهت اللعبة';document.getElementById('finalScore').textContent='النقاط: '+this.score;e.classList.add('on')}
-  resetGame(){this.score=0;this.hp=this.maxHp;this.levelIndex=0;this.active=!1;this.invincible=0;this.killed=0;this.enemies.clear(!0,!0);this.bullets.clear(!0,!0);this.player.setPosition(GW/2,GH-80).setAlpha(1);this._updateHUD()}
-  _updateHUD(){document.getElementById('hudScore').textContent=this.score;document.getElementById('hudLevel').textContent=this.levelIndex+1;document.getElementById('hpFill').style.width=(Math.max(0,this.hp/this.maxHp)*100)+'%'}
 }
 
-new Phaser.Game({type:Phaser.AUTO,width:GW,height:GH,backgroundColor:0x000000,physics:{default:'arcade',arcade:{gravity:{y:0},debug:!1}},scene:[BootScene,GameScene],parent:'wrap',scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH}});
+document.getElementById('hintVal').addEventListener('click', ()=>{
+  if(G.lock || G.hintsLeft<=0) return;
+  const unflipped = G.cards.reduce((a,c,i)=>!c.flipped&&!c.matched?a.concat(i):a,[]);
+  if(unflipped.length<2) return;
+  const i1 = unflipped[Math.floor(Math.random()*unflipped.length)];
+  const pair = G.cards.findIndex((c,idx)=>idx!==i1&&c.emoji===G.cards[i1].emoji&&!c.flipped&&!c.matched);
+  if(pair>-1) {
+    G.cards[i1].flipped = G.cards[pair].flipped = true; G.hintsLeft--;
+    document.getElementById('hintVal').textContent = `💡 ${G.hintsLeft}`;
+    renderBoard(getLvl(G.level).cols||4);
+    setTimeout(()=>{ G.cards[i1].flipped = G.cards[pair].flipped = false; renderBoard(getLvl(G.level).cols||4); }, 800);
+  }
+});
 
-function startGame(){
-  document.getElementById('sStart').classList.remove('on');document.getElementById('sEnd').classList.remove('on');
-  document.getElementById('hud').style.display='flex';
-  if(isMob()){document.getElementById('fireBtn').style.display='flex';document.getElementById('movePad').style.display='flex';startInputPolling();}
-  if(gameScene){gameScene.resetGame();gameScene.startLevel();}
-}
+document.getElementById('btnStart').addEventListener('click', startGame);
+document.getElementById('btnRestart').addEventListener('click', ()=>{ G.level=0; startGame(); });
 </script>
 </body>
 </html>
