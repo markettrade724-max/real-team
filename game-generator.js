@@ -14,6 +14,7 @@
  * - دعم القوالب الجديدة: enhanced-memory-game, sports-master
  * - دعم GAME_TYPE, SPORT_TYPE, SHOOT_LBL, PASS_LBL, GRADIENT
  * - إصلاح: تعريف filename قبل استخدامه في console.warn
+ * - إضافة TOTAL_LAPS, MAX_SPEED, OPPONENT_COUNT, TRACK_COUNT لقالب السباق
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -114,7 +115,6 @@ const SMART_RULES = [
 
 // ─ـ حل القالب بذكاء ─────────────────────────────────────────
 function resolveTemplate(product) {
-  // الأولوية القصوى: templateFile المخزّن (من template-engineer)
   if (product.templateFile) {
     const tplPath = join(__dirname, 'templates', product.templateFile);
     if (existsSync(tplPath)) {
@@ -125,16 +125,11 @@ function resolveTemplate(product) {
   }
 
   const typeRaw = (product.type || '').toLowerCase().trim();
-
-  // 1. مطابقة حرفية مباشرة
   if (TEMPLATE_MAP[typeRaw]) return TEMPLATE_MAP[typeRaw];
-
-  // 2. الـ type يحتوي على كلمة مفتاحية من الخريطة
   for (const [key, tpl] of Object.entries(TEMPLATE_MAP)) {
     if (typeRaw.includes(key)) return tpl;
   }
 
-  // 3. تحليل الكلمات الكاملة (type + tags + slug)
   const corpus = [
     typeRaw,
     (product.slug || '').toLowerCase().replace(/-/g,' '),
@@ -149,7 +144,6 @@ function resolveTemplate(product) {
     if (score > bestScore) { bestScore = score; bestTemplate = rule.template; }
   }
 
-  // 4. Fallback حسب category
   if (!bestTemplate || bestScore === 0) {
     bestTemplate = product.category === 'game'
       ? 'phaser-game.html'
@@ -205,7 +199,6 @@ const LABELS = {
     COINS_LBL:'عملات', DIST_LBL:'المسافة',
     SLIDE_LBL:'انزلاق', JUMP_LBL:'قفز',
     SHOOT_LBL:'تسديد', PASS_LBL:'تمرير',
-    // سباقات
     LAP_LBL:'لفّة', LAPS_LBL:'اللفّات', SPEED_LBL:'السرعة',
     POSITION_LBL:'المركز', BEST_LAP_LBL:'أفضل لفّة', FINISH_LBL:'النهاية',
     RACE_START_LBL:'انطلق!', RACE_OVER_LBL:'انتهى السباق',
@@ -213,13 +206,11 @@ const LABELS = {
     TRACK_LBL:'المضمار', OPPONENT_LBL:'المنافس', QUALIFY_LBL:'التأهل',
     RACE_WIN_LBL:'فزت بالسباق!', RACE_LOSE_LBL:'حاول في المرة القادمة',
     BEST_TIME_LBL:'أفضل وقت', KMH_LBL:'كم/س',
-    // رياضات
     TEAM_LBL:'الفريق', MATCH_LBL:'المباراة', GOAL_LBL:'هدف!',
     HALF_LBL:'الشوط', PLAYER_LBL:'اللاعب', STADIUM_LBL:'الملعب',
     CHAMPIONSHIP_LBL:'البطولة', SCORE_HOME_LBL:'المضيف', SCORE_AWAY_LBL:'الضيف',
     FOUL_LBL:'خطأ', PENALTY_LBL:'ركلة جزاء', MATCH_OVER_LBL:'نهاية المباراة',
     WIN_MATCH_LBL:'فريقك فاز!', DRAW_LBL:'تعادل', LOSE_MATCH_LBL:'خسرت',
-    // مغامرات وRPG
     HERO_LBL:'البطل', ATTACK_LBL:'هجوم', MAGIC_LBL:'سحر', DEFEND_LBL:'دفاع', ITEM_LBL:'عنصر',
     NARRATOR_LBL:'الراوي', ELDER_LBL:'الشيخ', MERCHANT_LBL:'التاجر',
     COMBAT_START_LBL:'المعركة بدأت!', DEFEND_MSG_LBL:'أنت في وضع الدفاع',
@@ -242,11 +233,9 @@ const LABELS = {
     SCENE_TREASURE:'وجدت حجرة مليئة بالذهب والجواهر!',
     SCENE_VICTORY:'هزمت ملك الظلام وأنقذت المملكة!',
     SCENE_DEFEAT:'سقطت في المعركة... قم وحاول مجدداً!',
-    // تطبيقات
     FOCUS_LBL:'تركيز', SHORT_LBL:'استراحة', LONG_LBL:'استراحة طويلة',
     START_LBL2:'ابدأ', PAUSE_LBL:'توقف', SESSIONS_LBL:'جلسات',
     MINUTES_LBL:'دقيقة', STREAK_LBL:'متواصل', DONE_LBL:'انتهت الجلسة!',
-    // فن وإبداع
     ART_PLACEHOLDER:'صف مشاعرك أو فكرتك...',
     ART_GEN_BTN:'✨ توليد', ART_LOADING:'جاري الإنشاء...',
     ART_RESULT_LBL:'إبداعك',
@@ -264,7 +253,6 @@ const LABELS = {
     CREATIVE_PLACEHOLDER:'أدخل فكرتك...',
     CREATIVE_BTN:'ابدأ الإبداع', CREATIVE_LOADING:'جاري التوليد...',
   },
-
   en:{ dir:'ltr',
     START_LBL:'Play Now', SHOP_LBL:'Shop', BEST_LBL:'Best Score',
     SCORE_LBL:'Score', LEVEL_LBL:'Level', LIVES_LBL:'Lives',
@@ -333,7 +321,6 @@ const LABELS = {
     CREATIVE_PLACEHOLDER:'Enter your idea...',
     CREATIVE_BTN:'Create', CREATIVE_LOADING:'Generating...',
   },
-
   fr:{ dir:'ltr',
     START_LBL:'Jouer', SHOP_LBL:'Boutique', BEST_LBL:'Meilleur score',
     SCORE_LBL:'Score', LEVEL_LBL:'Niveau', LIVES_LBL:'Vies',
@@ -401,7 +388,6 @@ const LABELS = {
     CREATIVE_PLACEHOLDER:'Entrez votre idée...',
     CREATIVE_BTN:'Créer', CREATIVE_LOADING:'Génération...',
   },
-
   es:{ dir:'ltr',
     START_LBL:'Jugar', SHOP_LBL:'Tienda', BEST_LBL:'Mejor puntuación',
     SCORE_LBL:'Puntos', LEVEL_LBL:'Nivel', LIVES_LBL:'Vidas',
@@ -469,7 +455,6 @@ const LABELS = {
     CREATIVE_PLACEHOLDER:'Ingresa tu idea...',
     CREATIVE_BTN:'Crear', CREATIVE_LOADING:'Generando...',
   },
-
   de:{ dir:'ltr',
     START_LBL:'Spielen', SHOP_LBL:'Shop', BEST_LBL:'Bestes Ergebnis',
     SCORE_LBL:'Punkte', LEVEL_LBL:'Level', LIVES_LBL:'Leben',
@@ -537,7 +522,6 @@ const LABELS = {
     CREATIVE_PLACEHOLDER:'Gib deine Idee ein...',
     CREATIVE_BTN:'Erstellen', CREATIVE_LOADING:'Generierung...',
   },
-
   zh:{ dir:'ltr',
     START_LBL:'开始游戏', SHOP_LBL:'商店', BEST_LBL:'最高分',
     SCORE_LBL:'分数', LEVEL_LBL:'等级', LIVES_LBL:'生命',
@@ -689,7 +673,6 @@ function generate(product) {
     hintsStart = first.hints || 2;
   }
 
-  // إعدادات الرياضة
   let sportType = product.type || 'football';
   let matchDuration = 120;
   let difficulty = 'medium';
@@ -699,7 +682,6 @@ function generate(product) {
     difficulty = first.difficulty || 'medium';
   }
 
-  // إعدادات نوع اللعبة للذاكرة المحسنة
   let gameType = product.type || 'memory-match';
   if (tplName === 'enhanced-memory-game.html') {
     if (product.gameType) gameType = product.gameType;
@@ -716,12 +698,10 @@ function generate(product) {
     const name = safeName[lang];
     const desc = safeDesc[lang];
 
-    // تحديد اسم الملف
     const filename = lang === 'ar'
       ? `${product.slug}.html`
       : `${product.slug}-${lang}.html`;
 
-    // تجهيز تسميات آمنة مع escaping
     const safeLbl = {};
     if (lbl) {
       for (const [k, v] of Object.entries(lbl)) {
@@ -762,14 +742,17 @@ function generate(product) {
       SPORT_TYPE:    sportType,
       MATCH_DURATION: matchDuration,
       DIFFICULTY:    difficulty,
-      ...safeLbl,      // التسميات المؤمنة
+      TOTAL_LAPS:    product.laps || '3',
+      MAX_SPEED:     product.maxSpeed || '280',
+      OPPONENT_COUNT: product.opponents || '3',
+      TRACK_COUNT:   product.tracks || '5',
+      ...safeLbl,
     };
 
     Object.entries(vars).forEach(([k, v]) => {
       out = out.split(`{{${k}}}`).join(String(v ?? ''));
     });
 
-    // تحذير في حال وجود export (الآن filename معرف مسبقاً)
     if (/\bexport\b/.test(out.replace(/\/\/.*|\/\*[\s\S]*?\*\//g, ''))) {
       console.warn(`  ⚠️  Possible 'export' keyword in ${filename}`);
     }
