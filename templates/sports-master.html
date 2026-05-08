@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>{{GAME_NAME}}</title>
+<style>
+  :root {
+    --acc: {{ACCENT}};
+    --acc-rgb: {{ACCENT_RGB}};
+    --bg: #0a0f14;
+    --surface: #111820;
+    --text: #f0eaf0;
+    --text2: #7a8a9a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Segoe UI', Tajawal, sans-serif;
+    min-height: 100dvh; overflow: hidden;
+    display: flex; flex-direction: column;
+    user-select: none; -webkit-user-select: none;
+  }
+  #header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .5rem 1rem;
+    background: linear-gradient(180deg, rgba(var(--acc-rgb),.12) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(var(--acc-rgb),.2); z-index: 10;
+  }
+  #back-btn {
+    background: none; border: 1px solid rgba(var(--acc-rgb),.35);
+    color: var(--acc); padding: .3rem .8rem; border-radius: 6px;
+    cursor: pointer; font-family: inherit; font-size: .75rem;
+  }
+  #game-title {
+    font-weight: 900; font-size: 1rem; color: var(--acc);
+    text-shadow: 0 0 20px var(--acc); letter-spacing: .05em;
+  }
+  #hud {
+    display: flex; gap: 1rem; align-items: center;
+    padding: .35rem 1rem; background: var(--surface);
+    border-bottom: 1px solid rgba(var(--acc-rgb),.1);
+    font-size: .75rem; letter-spacing: .05em; z-index: 10;
+  }
+  .hud-item { display: flex; align-items: center; gap: .4rem; }
+  .hud-label { color: var(--text2); text-transform: uppercase; font-size: .65rem; }
+  .hud-val { color: var(--acc); font-family: monospace; font-weight: 700; font-size: .85rem; }
+  #canvas-wrap {
+    flex: 1; position: relative; display: flex;
+    align-items: center; justify-content: center; overflow: hidden;
+  }
+  canvas { display: block; touch-action: none; }
+  #controls {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: .6rem 1rem; background: var(--surface);
+    border-top: 1px solid rgba(var(--acc-rgb),.1); gap: 1rem; z-index: 10;
+  }
+  .dpad { display: grid; grid-template-areas:'. u .' 'l . r' '. d .'; gap:4px; }
+  .dpad-btn {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(var(--acc-rgb),.3);
+    border-radius: 8px; color: var(--acc); font-size:1.2rem;
+    width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:all .1s;
+  }
+  .dpad-btn:active, .dpad-btn.pressed { background: rgba(var(--acc-rgb),.3); transform:scale(.92); }
+  #btn-up{grid-area:u}#btn-left{grid-area:l}#btn-right{grid-area:r}#btn-down{grid-area:d}
+  .action-btn {
+    padding: .6rem 1.4rem; border-radius: 8px; border: 2px solid;
+    font-weight: 700; font-size: .7rem; letter-spacing: .05em;
+    cursor: pointer; transition: all .15s; text-transform: uppercase;
+  }
+  #btn-shoot { background: rgba(255,56,96,.15); border-color: #ff3860; color: #ff3860; }
+  #btn-shoot:active { background: rgba(255,56,96,.4); }
+  #btn-pass { background: rgba(var(--acc-rgb),.15); border-color: var(--acc); color: var(--acc); }
+  #btn-pass:active { background: rgba(var(--acc-rgb),.4); }
+  .overlay {
+    position: absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1rem;
+    background: rgba(10,15,20,.92); backdrop-filter:blur(10px); z-index:20;
+  }
+  .overlay.hidden { display:none; }
+  .overlay-icon { font-size:4rem; }
+  .overlay-title { font-size:2rem; font-weight:900; color:var(--acc); }
+  .score-board { display:flex; gap:2rem; font-size:2rem; font-weight:900; }
+  .btn {
+    padding:.7rem 2rem; border-radius:8px; border:none; cursor:pointer;
+    font-family:inherit; font-weight:700; font-size:.85rem;
+  }
+  .btn-primary { background:var(--acc); color:#000; box-shadow:0 0 20px rgba(var(--acc-rgb),.5); }
+</style>
+</head>
+<body>
+<div id="header">
+  <button id="back-btn" onclick="history.back()">← {{BACK_LBL}}</button>
+  <div id="game-title">{{EMOJI}} {{GAME_NAME}}</div>
+  <div style="width:50px"></div>
+</div>
+<div id="hud">
+  <div class="hud-item"><span class="hud-label">{{SCORE_LBL}}</span><span class="hud-val" id="scoreVal">0</span></div>
+  <div class="hud-item"><span class="hud-label">{{TIME_LBL}}</span><span class="hud-val" id="timeVal">0:00</span></div>
+</div>
+<div id="canvas-wrap">
+  <canvas id="gameCanvas"></canvas>
+  <div class="overlay" id="overlayStart">
+    <div class="overlay-icon">{{EMOJI}}</div>
+    <div class="overlay-title">{{GAME_NAME}}</div>
+    <p style="color:var(--text2)">{{GAME_DESC}}</p>
+    <button class="btn btn-primary" id="btnStart">{{START_LBL}}</button>
+  </div>
+  <div class="overlay hidden" id="overlayEnd">
+    <div class="overlay-icon" id="endIcon"></div>
+    <div class="overlay-title" id="endTitle"></div>
+    <div class="score-board"><span id="endScore">0-0</span></div>
+    <button class="btn btn-primary" id="btnRestart">{{RETRY_LBL}}</button>
+  </div>
+</div>
+<div id="controls">
+  <div class="dpad">
+    <button class="dpad-btn" id="btn-up">▲</button>
+    <button class="dpad-btn" id="btn-left">◄</button>
+    <button class="dpad-btn" id="btn-right">►</button>
+    <button class="dpad-btn" id="btn-down">▼</button>
+  </div>
+  <button class="action-btn" id="btn-shoot">⚽ {{SHOOT_LBL}}</button>
+  <button class="action-btn" id="btn-pass">🔄 {{PASS_LBL}}</button>
+</div>
+<script>
+// ═══════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════
+const CFG = {
+  pid: '{{PRODUCT_ID}}',
+  lang: '{{LANG}}',
+  acc: '{{ACCENT}}',
+  sport: '{{SPORT_TYPE}}' || 'football', // football, basketball, tennis
+  matchDuration: Number('{{MATCH_DURATION}}') || 120,
+  difficulty: '{{DIFFICULTY}}' || 'medium',
+};
+const SK = 'rt_' + CFG.pid;
+const S = () => JSON.parse(localStorage.getItem(SK) || '{}');
+
+// ═══════════════════════════════════════
+// CANVAS & STATE
+// ═══════════════════════════════════════
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, GAME;
+
+function resize() {
+  const wrap = document.getElementById('canvas-wrap');
+  W = canvas.width = wrap.clientWidth;
+  H = canvas.height = wrap.clientHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ═══════════════════════════════════════
+// GAME LOGIC (Footbal, Basketball, Tennis)
+// ═══════════════════════════════════════
+class SportsGame {
+  constructor() {
+    this.player = { x: W/2, y: H*0.7, r: 16, vx: 0, vy: 0, speed: 3.5 };
+    this.opponent = { x: W/2, y: H*0.3, r: 16, vx: 0, vy: 0, speed: 2.2 + (CFG.difficulty==='hard'?0.8:0) };
+    this.ball = { x: W/2, y: H/2, r: 10, vx: 0, vy: 0 };
+    this.score = { player: 0, opponent: 0 };
+    this.timeLeft = CFG.matchDuration;
+    this.running = false;
+    this.keys = { up:false, down:false, left:false, right:false, shoot:false, pass:false };
+    this.field = { x: 10, y: 40, w: W-20, h: H-80 };
+  }
+
+  reset() {
+    this.player.x = W/2; this.player.y = H*0.7; this.player.vx = 0; this.player.vy = 0;
+    this.opponent.x = W/2; this.opponent.y = H*0.3; this.opponent.vx = 0; this.opponent.vy = 0;
+    this.ball.x = W/2; this.ball.y = H/2; this.ball.vx = 0; this.ball.vy = 0;
+    this.score = { player:0, opponent:0 };
+    this.timeLeft = CFG.matchDuration;
+  }
+
+  update() {
+    if (!this.running) return;
+    // Player movement
+    const p = this.player;
+    if (this.keys.left) p.vx = -p.speed;
+    else if (this.keys.right) p.vx = p.speed;
+    else p.vx *= 0.8;
+    if (this.keys.up) p.vy = -p.speed;
+    else if (this.keys.down) p.vy = p.speed;
+    else p.vy *= 0.8;
+    p.x = Math.max(this.field.x+p.r, Math.min(this.field.x+this.field.w-p.r, p.x + p.vx));
+    p.y = Math.max(this.field.y+p.r, Math.min(this.field.y+this.field.h-p.r, p.y + p.vy));
+
+    // Opponent AI (chases ball)
+    const o = this.opponent;
+    const dx = this.ball.x - o.x, dy = this.ball.y - o.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    o.vx = (dx/dist) * o.speed * 0.8;
+    o.vy = (dy/dist) * o.speed * 0.8;
+    o.x = Math.max(this.field.x+o.r, Math.min(this.field.x+this.field.w-o.r, o.x + o.vx));
+    o.y = Math.max(this.field.y+o.r, Math.min(this.field.y+this.field.h-o.r, o.y + o.vy));
+
+    // Ball physics
+    const b = this.ball;
+    b.vx *= 0.98; b.vy *= 0.98;
+    b.x += b.vx; b.y += b.vy;
+    // Wall bounce
+    if (b.x-b.r < this.field.x || b.x+b.r > this.field.x+this.field.w) { b.vx *= -0.7; b.x = Math.max(this.field.x+b.r, Math.min(this.field.x+this.field.w-b.r, b.x)); }
+    if (b.y-b.r < this.field.y) { 
+      // Top goal (opponent scores)
+      if (CFG.sport==='football' || CFG.sport==='basketball') {
+        if (Math.abs(b.x - W/2) < W*0.2) { this.score.opponent++; this._resetBall(); }
+      }
+      b.vy *= -0.7; b.y = this.field.y + b.r;
+    }
+    if (b.y+b.r > this.field.y+this.field.h) {
+      // Bottom goal (player scores)
+      if (CFG.sport==='football' || CFG.sport==='basketball') {
+        if (Math.abs(b.x - W/2) < W*0.2) { this.score.player++; this._resetBall(); }
+      }
+      b.vy *= -0.7; b.y = this.field.y+this.field.h - b.r;
+    }
+
+    // Kicking / Shooting
+    if (Math.hypot(b.x-p.x, b.y-p.y) < 30) {
+      if (this.keys.shoot) {
+        const angle = Math.atan2(this.field.y - b.y, (W/2) - b.x);
+        const power = 8;
+        b.vx = Math.cos(angle) * power;
+        b.vy = Math.sin(angle) * power;
+      } else if (this.keys.pass) {
+        // gentle push towards opponent goal
+        b.vy = -4;
+        b.vx += (W/2 - b.x) * 0.1;
+      }
+    }
+
+    // Timer
+    this.timeLeft -= 0.016;
+    if (this.timeLeft <= 0) this.endGame();
+  }
+
+  _resetBall() {
+    this.ball.x = W/2; this.ball.y = H/2;
+    this.ball.vx = (Math.random()-0.5)*3;
+    this.ball.vy = (Math.random()-0.5)*3;
+  }
+
+  endGame() {
+    this.running = false;
+    const overlay = document.getElementById('overlayEnd');
+    overlay.classList.remove('hidden');
+    document.getElementById('endScore').textContent = `${this.score.player} - ${this.score.opponent}`;
+    if (this.score.player > this.score.opponent) {
+      document.getElementById('endIcon').textContent = '🏆';
+      document.getElementById('endTitle').textContent = '{{WIN_MATCH_LBL}}';
+    } else if (this.score.player < this.score.opponent) {
+      document.getElementById('endIcon').textContent = '😞';
+      document.getElementById('endTitle').textContent = '{{LOSE_MATCH_LBL}}';
+    } else {
+      document.getElementById('endIcon').textContent = '🤝';
+      document.getElementById('endTitle').textContent = '{{DRAW_LBL}}';
+    }
+  }
+
+  render() {
+    ctx.clearRect(0,0,W,H);
+    // Field
+    ctx.fillStyle = CFG.sport==='basketball' ? '#c48b4c' : '#2d6a4f';
+    ctx.fillRect(this.field.x, this.field.y, this.field.w, this.field.h);
+    // Lines
+    ctx.strokeStyle = '#ffffff33';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(this.field.x, this.field.y, this.field.w, this.field.h);
+    ctx.beginPath(); ctx.moveTo(this.field.x, this.field.y+this.field.h/2); ctx.lineTo(this.field.x+this.field.w, this.field.y+this.field.h/2); ctx.stroke();
+    // Goals
+    ctx.fillStyle = '#ffffff15';
+    ctx.fillRect(W/2-W*0.1, this.field.y-6, W*0.2, 10);
+    ctx.fillRect(W/2-W*0.1, this.field.y+this.field.h-4, W*0.2, 10);
+    // Players
+    this._drawPlayer(this.player, '👤', '#4ade80');
+    this._drawPlayer(this.opponent, '🤖', '#f87171');
+    // Ball
+    ctx.font = `${this.ball.r*2}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(CFG.sport==='basketball'?'🏀':CFG.sport==='tennis'?'🎾':'⚽', this.ball.x, this.ball.y);
+    // HUD update
+    document.getElementById('scoreVal').textContent = `${this.score.player}-${this.score.opponent}`;
+    document.getElementById('timeVal').textContent = `${Math.ceil(this.timeLeft)}s`;
+  }
+
+  _drawPlayer(p, defaultEmoji, color) {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    // Glow
+    ctx.shadowBlur = 15; ctx.shadowColor = color;
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(0, 0, p.r, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+    // Emoji
+    ctx.font = `${p.r*1.5}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(defaultEmoji, 0, 0);
+    ctx.restore();
+  }
+}
+
+// ═══════════════════════════════════════
+// INIT & LOOP
+// ═══════════════════════════════════════
+GAME = new SportsGame();
+
+function gameLoop() {
+  GAME.update();
+  GAME.render();
+  requestAnimationFrame(gameLoop);
+}
+
+// ═══════════════════════════════════════
+// CONTROL BINDINGS
+// ═══════════════════════════════════════
+function bindDpad(id, key) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('pointerdown', (e) => { e.preventDefault(); GAME.keys[key] = true; el.classList.add('pressed'); });
+  el.addEventListener('pointerup', (e) => { e.preventDefault(); GAME.keys[key] = false; el.classList.remove('pressed'); });
+  el.addEventListener('pointerleave', (e) => { GAME.keys[key] = false; el.classList.remove('pressed'); });
+}
+bindDpad('btn-up', 'up'); bindDpad('btn-down', 'down');
+bindDpad('btn-left', 'left'); bindDpad('btn-right', 'right');
+document.getElementById('btn-shoot')?.addEventListener('pointerdown', (e) => { e.preventDefault(); GAME.keys.shoot = true; });
+document.getElementById('btn-shoot')?.addEventListener('pointerup', () => { GAME.keys.shoot = false; });
+document.getElementById('btn-pass')?.addEventListener('pointerdown', (e) => { e.preventDefault(); GAME.keys.pass = true; });
+document.getElementById('btn-pass')?.addEventListener('pointerup', () => { GAME.keys.pass = false; });
+
+window.addEventListener('keydown', (e) => {
+  const map = { ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right', ' ':'shoot', 'p':'pass' };
+  if (map[e.key]) { e.preventDefault(); GAME.keys[map[e.key]] = true; }
+});
+window.addEventListener('keyup', (e) => {
+  const map = { ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right', ' ':'shoot', 'p':'pass' };
+  if (map[e.key]) { GAME.keys[map[e.key]] = false; }
+});
+
+document.getElementById('btnStart').addEventListener('click', () => {
+  document.getElementById('overlayStart').classList.add('hidden');
+  GAME.reset();
+  GAME.running = true;
+});
+document.getElementById('btnRestart').addEventListener('click', () => {
+  document.getElementById('overlayEnd').classList.add('hidden');
+  GAME.reset();
+  GAME.running = true;
+});
+
+// Start render loop
+gameLoop();
+</script>
+</body>
+</html>
