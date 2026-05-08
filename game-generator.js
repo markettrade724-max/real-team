@@ -15,6 +15,7 @@
  * - دعم GAME_TYPE, SPORT_TYPE, SHOOT_LBL, PASS_LBL, GRADIENT
  * - إصلاح: تعريف filename قبل استخدامه في console.warn
  * - إضافة TOTAL_LAPS, MAX_SPEED, OPPONENT_COUNT, TRACK_COUNT لقالب السباق
+ * - دعم القوالب الجديدة: habit-tracker, breathing-tool, sound-board
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -56,6 +57,10 @@ const TEMPLATE_MAP = {
   'enhanced-memory':'enhanced-memory-game.html',
   // ألعاب رياضية متقدمة
   'sports-master':'sports-master.html',
+  // أدوات جديدة
+  'habit-tracker':'habit-tracker.html',
+  'breathing':'breathing-tool.html',
+  'sound-board':'sound-board.html',
 };
 
 // ─ـ كلمات مفتاحية للكشف الذكي (مُحسَّنة) ─────────────────────
@@ -110,6 +115,21 @@ const SMART_RULES = [
     template: 'sports-master.html',
     keywords: ['sports-master','sport-pro','football-pro',
                'basketball-pro','tennis-pro','multi-sport'],
+  },
+  {
+    template: 'habit-tracker.html',
+    keywords: ['habit','tracker','streak','daily','routine','checklist',
+               'habit-tracker','habit-hero','daily-streak','morning-routine'],
+  },
+  {
+    template: 'breathing-tool.html',
+    keywords: ['breathing','breath','meditate','calm','relax','inhale','exhale',
+               'breathing-tool','calm-breath','energy-boost','sleep-breath'],
+  },
+  {
+    template: 'sound-board.html',
+    keywords: ['sound','board','meme','fart','noise','audio','effect',
+               'sound-board','meme-sounds','cinema-board','fart-piano'],
   },
 ];
 
@@ -654,6 +674,12 @@ function generate(product) {
         { matchDuration: 90, difficulty: 'medium', speed: 2.5 },
         { matchDuration: 120, difficulty: 'hard', speed: 3.0 },
       ];
+    } else if (tplName === 'habit-tracker.html') {
+      levels = [{ habits:4, daysBack:7 }];
+    } else if (tplName === 'breathing-tool.html') {
+      levels = [{ pattern:'calm', cycles:4 }];
+    } else if (tplName === 'sound-board.html') {
+      levels = [{ sounds:9 }];
     } else {
       levels = [];
     }
@@ -670,7 +696,7 @@ function generate(product) {
     const first = levels[0];
     pairs = first.pairs || 4;
     cols = Math.min(6, Math.ceil(Math.sqrt(pairs * 2)));
-    hintsStart = first.hints || 2;
+    hintsStart = first.hints ?? 2;
   }
 
   let sportType = product.type || 'football';
