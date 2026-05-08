@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>{{GAME_NAME}}</title>
+<style>
+  :root {
+    --acc: {{ACCENT}};
+    --acc-rgb: {{ACCENT_RGB}};
+    --bg: #08080f;
+    --surface: #101018;
+    --surface2: #181820;
+    --text: #f0eaf0;
+    --text2: #7a7a8a;
+    --danger: #ff3860;
+    --success: #23d18b;
+    --glow: 0 0 20px rgba(var(--acc-rgb),0.7);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Tajawal, sans-serif;
+    min-height: 100dvh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+  }
+  #header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .5rem 1rem;
+    background: linear-gradient(180deg, rgba(var(--acc-rgb),.12) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(var(--acc-rgb),.2);
+    z-index: 10;
+  }
+  #back-btn {
+    background: none; border: 1px solid rgba(var(--acc-rgb),.35);
+    color: var(--acc); padding: .3rem .8rem; border-radius: 6px; cursor: pointer;
+    font-family: inherit; font-size: .75rem; letter-spacing: .05em;
+  }
+  #game-title {
+    font-family: 'Orbitron', monospace; font-weight: 900;
+    font-size: 1rem; color: var(--acc); text-shadow: var(--glow);
+    letter-spacing: .1em; text-transform: uppercase;
+  }
+  #hud {
+    display: flex; gap: 1rem; align-items: center;
+    padding: .35rem 1rem; background: var(--surface);
+    border-bottom: 1px solid rgba(var(--acc-rgb),.1);
+    font-size: .75rem; letter-spacing: .05em; z-index: 10;
+  }
+  .hud-item { display: flex; align-items: center; gap: .4rem; }
+  .hud-label { color: var(--text2); text-transform: uppercase; font-size: .65rem; }
+  .hud-val { color: var(--acc); font-family: monospace; font-weight: 700; font-size: .85rem; }
+  #main-area {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative; padding: 10px;
+  }
+  /* memory-match */
+  .grid { display: grid; gap: 8px; justify-content: center; width: 100%; max-width: 340px; }
+  .card {
+    aspect-ratio: 1; font-size: 3rem; display: flex; align-items: center; justify-content: center;
+    background: var(--surface2); border-radius: 12px; cursor: pointer;
+    transition: transform .2s, background .2s; border: 1px solid transparent;
+  }
+  .card.flipped { background: rgba(var(--acc-rgb),.25); transform: scale(1.05); border-color: var(--acc); }
+  .card.matched { opacity: .4; pointer-events: none; background: rgba(var(--acc-rgb),.1); }
+  /* simon-says */
+  .simon-pad { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 200px; height: 200px; }
+  .simon-btn { border-radius: 10px; cursor: pointer; opacity: 0.6; transition: all 0.15s; }
+  .simon-btn.active { opacity: 1; transform: scale(1.08); filter: brightness(1.6); }
+  .simon-btn:active { filter: brightness(2); }
+  /* sliding-puzzle */
+  .slider-grid { display: grid; gap: 3px; background: var(--surface2); border-radius: 10px; padding: 4px; }
+  .slider-tile {
+    aspect-ratio: 1; background: var(--surface); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; cursor: pointer; transition: transform .15s;
+  }
+  .slider-tile.empty { background: transparent; cursor: default; }
+  /* buttons */
+  .btn {
+    padding: .7rem 1.5rem; border-radius: 8px; border: none; cursor: pointer;
+    font-family: inherit; font-weight: 700; font-size: .85rem;
+    transition: all .2s; letter-spacing: .04em;
+  }
+  .btn-primary { background: var(--acc); color: #000; box-shadow: var(--glow); }
+  .btn-primary:active { transform: scale(.96); }
+  .overlay {
+    position: absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1rem;
+    background: rgba(8,8,15,.92); backdrop-filter:blur(10px); z-index:20;
+  }
+  .overlay.hidden { display:none; }
+  .result-title { font-size: 2rem; font-weight: 900; color: var(--acc); }
+</style>
+</head>
+<body>
+<div id="header">
+  <button id="back-btn" onclick="history.back()">← {{BACK_LBL}}</button>
+  <div id="game-title">{{EMOJI}} {{GAME_NAME}}</div>
+  <div style="width:50px"></div>
+</div>
+<div id="hud">
+  <div class="hud-item"><span class="hud-label">{{SCORE_LBL}}</span><span class="hud-val" id="scoreVal">0</span></div>
+  <div class="hud-item"><span class="hud-label">{{LEVEL_LBL}}</span><span class="hud-val" id="levelVal">1</span></div>
+  <div class="hud-item" style="margin-left:auto"><span class="hud-label" id="movesLabel">{{MOVES_LBL}}</span><span class="hud-val" id="movesVal">0</span></div>
+</div>
+<div id="main-area"></div>
+
+<script>
+const CFG = {
+  pid: '{{PRODUCT_ID}}',
+  lang: '{{LANG}}',
+  acc: '{{ACCENT}}',
+  iaps: {{IAPS_JSON}} || [],
+  lvls: {{LEVELS_JSON}} || [],
+  emojis: {{EMOJIS_JSON}} || [],
+  gameType: '{{GAME_TYPE}}' || 'memory-match',
+};
+const SK = 'rt_' + CFG.pid;
+const S = () => JSON.parse(localStorage.getItem(SK) || '{}');
+
+// ─── GAME STATE ────────────────────────────
+let G = { score:0, level:0, running:false, moves:0 };
+let currentGame = null;
+
+// ─── LEVEL DATA HELPER ─────────────────────
+function getLvl() {
+  const lvls = CFG.lvls;
+  if (Array.isArray(lvls) && lvls.length > 0) {
+    return lvls[Math.min(G.level, lvls.length - 1)];
+  }
+  // fallback per game type
+  if (CFG.gameType === 'memory-match') return { pairs: 4, cols: 4, hints: 2 };
+  if (CFG.gameType === 'simon-says') return { sequenceLength: 3, speed: 600 };
+  if (CFG.gameType === 'sliding-puzzle') return { size: 3, moves: 50 };
+  return {};
+}
+
+// ─── HUD ──────────────────────────────────
+function updateHUD() {
+  document.getElementById('scoreVal').textContent = G.score;
+  document.getElementById('levelVal').textContent = G.level + 1;
+  document.getElementById('movesVal').textContent = G.moves;
+}
+
+// ═══════════════════════════════════════
+// 1. MEMORY MATCH
+// ═══════════════════════════════════════
+class MemoryMatch {
+  constructor(root) { this.root = root; }
+  start() {
+    const lv = getLvl();
+    this.pairs = lv.pairs || 4;
+    this.cols = lv.cols || 4;
+    this.hintsLeft = lv.hints || 2;
+    this.found = 0; this.lock = false; this.first = null; this.second = null;
+    const emojis = CFG.emojis.length ? CFG.emojis.slice(0, this.pairs) : ['⭐','🌟','💫','✨','🎯','🔮','💎','🌈'];
+    this.cards = this._shuffle([...emojis,...emojis].map((e,i)=>({emoji:e,id:i,matched:false,flipped:false})));
+    this._render();
+    updateHUD();
+  }
+  _shuffle(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+  _render() {
+    this.root.innerHTML = `<div class="grid" style="grid-template-columns:repeat(${this.cols},1fr)"></div>`;
+    const grid = this.root.querySelector('.grid');
+    this.cards.forEach((c,i)=>{
+      const d=document.createElement('div'); d.className='card'+(c.flipped?' flipped':'')+(c.matched?' matched':'');
+      d.textContent = c.flipped||c.matched ? c.emoji : '';
+      d.addEventListener('click', ()=>this._flip(i));
+      grid.appendChild(d);
+    });
+  }
+  _flip(i) {
+    if(this.lock||this.cards[i].matched||this.cards[i].flipped||i===this.first) return;
+    this.cards[i].flipped=true; this._render();
+    if(this.first===null){this.first=i;return;}
+    this.second=i; G.moves++; updateHUD();
+    if(this.cards[this.first].emoji===this.cards[this.second].emoji){
+      this.cards[this.first].matched=this.cards[this.second].matched=true; this.found++;
+      this.first=this.second=null; this._render();
+      if(this.found===this.pairs){ this._win(); }
+    }else{
+      this.lock=true;
+      setTimeout(()=>{this.cards[this.first].flipped=this.cards[this.second].flipped=false;this.first=this.second=null;this.lock=false;this._render();},700);
+    }
+  }
+  _win() {
+    G.score += this.pairs * 10;
+    if (G.level < (CFG.lvls.length||5)-1) { G.level++; this.start(); }
+    else { alert('{{WIN_TITLE}}'); }
+  }
+}
+
+// ═══════════════════════════════════════
+// 2. SIMON SAYS
+// ═══════════════════════════════════════
+class SimonSays {
+  constructor(root) { this.root = root; }
+  start() {
+    const lv = getLvl();
+    this.seqLen = lv.sequenceLength || 3;
+    this.speed = lv.speed || 600;
+    this.sequence = [];
+    this.playerIdx = 0;
+    this.phase = 'computer'; // 'computer' | 'player'
+    this._render();
+    this._generateSequence();
+  }
+  _render() {
+    this.root.innerHTML = `
+      <div class="simon-pad" id="simonPad">
+        <div class="simon-btn" data-id="0" style="background:#ef4444"></div>
+        <div class="simon-btn" data-id="1" style="background:#22c55e"></div>
+        <div class="simon-btn" data-id="2" style="background:#3b82f6"></div>
+        <div class="simon-btn" data-id="3" style="background:#facc15"></div>
+      </div>`;
+    document.querySelectorAll('.simon-btn').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        if(this.phase!=='player') return;
+        const id = parseInt(b.dataset.id);
+        this._highlight(id);
+        if(id !== this.sequence[this.playerIdx]) { this._lose(); return; }
+        this.playerIdx++;
+        if(this.playerIdx >= this.sequence.length) { this._win(); }
+      });
+    });
+    updateHUD();
+  }
+  _generateSequence() {
+    this.sequence = Array.from({length:this.seqLen}, ()=>Math.floor(Math.random()*4));
+    this.playerIdx = 0;
+    this.phase = 'computer';
+    this._playSequence();
+  }
+  _playSequence() {
+    let delay = 0;
+    this.sequence.forEach((id,i)=>{
+      setTimeout(()=>this._highlight(id), delay);
+      delay += this.speed;
+    });
+    setTimeout(()=>{ this.phase = 'player'; }, delay + 300);
+  }
+  _highlight(id) {
+    const btn = document.querySelector(`.simon-btn[data-id="${id}"]`);
+    btn.classList.add('active');
+    setTimeout(()=>btn.classList.remove('active'), 200);
+  }
+  _win() {
+    G.score += this.seqLen * 5; G.moves++;
+    if (G.level < (CFG.lvls.length||5)-1) { G.level++; this.start(); }
+    else { alert('{{WIN_TITLE}}'); }
+  }
+  _lose() {
+    alert('{{GAMEOVER_LBL}}');
+    G.level = 0; G.score = 0; this.start();
+  }
+}
+
+// ═══════════════════════════════════════
+// 3. SLIDING PUZZLE
+// ═══════════════════════════════════════
+class SlidingPuzzle {
+  constructor(root) { this.root = root; }
+  start() {
+    const lv = getLvl();
+    this.size = lv.size || 3;
+    this.maxMoves = lv.moves || 50;
+    this.tiles = Array.from({length:this.size*this.size-1},(_,i)=>i+1).concat(0);
+    this.emptyIdx = this.tiles.length-1;
+    this._shuffleTiles();
+    this._render();
+    G.moves = 0; updateHUD();
+    document.getElementById('movesLabel').textContent = '{{MOVES_LBL}}';
+  }
+  _shuffleTiles() {
+    for(let i=0;i<200;i++){
+      const neighbors = this._getNeighbors(this.emptyIdx);
+      const swap = neighbors[Math.floor(Math.random()*neighbors.length)];
+      [this.tiles[this.emptyIdx], this.tiles[swap]] = [this.tiles[swap], this.tiles[this.emptyIdx]];
+      this.emptyIdx = swap;
+    }
+  }
+  _getNeighbors(idx) {
+    const r = Math.floor(idx/this.size), c = idx%this.size;
+    const n = [];
+    if(r>0) n.push(idx-this.size);
+    if(r<this.size-1) n.push(idx+this.size);
+    if(c>0) n.push(idx-1);
+    if(c<this.size-1) n.push(idx+1);
+    return n;
+  }
+  _render() {
+    this.root.innerHTML = `<div class="slider-grid" style="grid-template-columns:repeat(${this.size},1fr);width:${this.size*70}px"></div>`;
+    const grid = this.root.querySelector('.slider-grid');
+    this.tiles.forEach((t,i)=>{
+      const d = document.createElement('div');
+      d.className = 'slider-tile' + (t===0?' empty':'');
+      d.textContent = t===0?'':t;
+      if(t!==0) d.addEventListener('click', ()=>this._move(i));
+      grid.appendChild(d);
+    });
+  }
+  _move(i) {
+    if(!this._getNeighbors(this.emptyIdx).includes(i)) return;
+    [this.tiles[this.emptyIdx], this.tiles[i]] = [this.tiles[i], this.tiles[this.emptyIdx]];
+    this.emptyIdx = i;
+    G.moves++; updateHUD();
+    this._render();
+    if(this._isSolved()) this._win();
+    if(G.moves >= this.maxMoves) { alert('{{GAMEOVER_LBL}}'); this.start(); }
+  }
+  _isSolved() {
+    for(let i=0;i<this.tiles.length-1;i++) if(this.tiles[i]!==i+1) return false;
+    return true;
+  }
+  _win() {
+    G.score += 50;
+    if (G.level < (CFG.lvls.length||5)-1) { G.level++; this.start(); }
+    else { alert('{{WIN_TITLE}}'); }
+  }
+}
+
+// ─── INIT ─────────────────────────────────
+function initGame() {
+  const root = document.getElementById('main-area');
+  root.innerHTML = '';
+  G = { score:0, level:0, running:true, moves:0 };
+  const type = CFG.gameType || 'memory-match';
+  const map = {
+    'memory-match': MemoryMatch,
+    'simon-says': SimonSays,
+    'sliding-puzzle': SlidingPuzzle,
+    'memory': MemoryMatch,
+    'puzzle': SlidingPuzzle,
+  };
+  const GameClass = map[type] || MemoryMatch;
+  currentGame = new GameClass(root);
+  currentGame.start();
+}
+
+window.addEventListener('DOMContentLoaded', initGame);
+</script>
+</body>
+</html>
