@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>{{GAME_NAME}}</title>
+<style>
+:root{--acc:{{ACCENT}};--acc-rgb:{{ACCENT_RGB}};--bg:#0a0a14;--text:#f1f5f9;--text2:#7a7a8a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',Tajawal,sans-serif;color:var(--text);}
+#app{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:420px;height:100dvh;margin:0 auto;gap:20px;padding:20px;}
+#circle-wrap{position:relative;width:220px;height:220px;}
+#breath-circle{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(var(--acc-rgb),0.4),rgba(var(--acc-rgb),0.1));transition:transform 1s ease;display:flex;align-items:center;justify-content:center;}
+#breath-text{font-size:1.5rem;font-weight:900;color:var(--acc);}
+#timer-display{font-size:3rem;font-weight:900;font-family:monospace;color:var(--text);}
+.phase-label{font-size:1rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;}
+#pattern-select{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.pattern-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:8px 16px;border-radius:20px;cursor:pointer;font-family:inherit;font-size:0.8rem;transition:all 0.2s;}
+.pattern-btn.active{background:var(--acc);color:#000;border-color:var(--acc);}
+.btn{background:var(--acc);color:#000;border:none;padding:12px 28px;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="pattern-select">
+    <button class="pattern-btn active" onclick="setPattern('calm')">😌 Calm (4-7-8)</button>
+    <button class="pattern-btn" onclick="setPattern('energy')">⚡ Energy (6-2-4)</button>
+    <button class="pattern-btn" onclick="setPattern('sleep')">😴 Sleep (4-4-4)</button>
+  </div>
+  <div id="circle-wrap">
+    <div id="breath-circle"><span id="breath-text">Breathe</span></div>
+  </div>
+  <div id="timer-display">0:00</div>
+  <div class="phase-label" id="phaseLabel">Ready</div>
+  <button class="btn" id="startBtn" onclick="toggleBreathing()">▶ Start</button>
+</div>
+<script>
+const PATTERNS = {
+  calm:  { inhale:4, hold:7, exhale:8, cycles:4 },
+  energy:{ inhale:6, hold:2, exhale:4, cycles:6 },
+  sleep: { inhale:4, hold:4, exhale:4, cycles:8 },
+};
+let current = 'calm';
+let active = false;
+let phase = 'inhale';
+let timer = 0;
+let cycleCount = 0;
+let intervalId = null;
+
+const circle = document.getElementById('breath-circle');
+const breathText = document.getElementById('breath-text');
+const timerDisp = document.getElementById('timer-display');
+const phaseLabel = document.getElementById('phaseLabel');
+
+function setPattern(p) {
+  current = p;
+  document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.pattern-btn[onclick*="${p}"]`).classList.add('active');
+  resetState();
+}
+
+function resetState() {
+  active = false;
+  phase = 'inhale';
+  timer = 0;
+  cycleCount = 0;
+  clearInterval(intervalId);
+  circle.style.transform = 'scale(1)';
+  breathText.textContent = 'Breathe';
+  timerDisp.textContent = '0:00';
+  phaseLabel.textContent = 'Ready';
+  document.getElementById('startBtn').textContent = '▶ Start';
+}
+
+function toggleBreathing() {
+  if (active) { resetState(); return; }
+  active = true;
+  document.getElementById('startBtn').textContent = '⏹ Stop';
+  runPhase();
+}
+
+function runPhase() {
+  if (!active) return;
+  const p = PATTERNS[current];
+  const times = { inhale: p.inhale, hold: p.hold, exhale: p.exhale };
+  const secs = times[phase];
+  timer = secs;
+  timerDisp.textContent = `0:0${secs}`;
+  phaseLabel.textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
+
+  if (phase === 'inhale') {
+    circle.style.transition = `transform ${secs}s linear`;
+    circle.style.transform = 'scale(1.5)';
+    breathText.textContent = 'In';
+  } else if (phase === 'hold') {
+    circle.style.transition = 'none';
+    circle.style.transform = 'scale(1.5)';
+    breathText.textContent = 'Hold';
+  } else {
+    circle.style.transition = `transform ${secs}s linear`;
+    circle.style.transform = 'scale(1)';
+    breathText.textContent = 'Out';
+  }
+
+  let remaining = secs;
+  intervalId = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(intervalId);
+      advancePhase();
+    } else {
+      timerDisp.textContent = `0:0${remaining}`;
+    }
+  }, 1000);
+}
+
+function advancePhase() {
+  if (phase === 'inhale') phase = 'hold';
+  else if (phase === 'hold') phase = 'exhale';
+  else {
+    phase = 'inhale';
+    cycleCount++;
+    if (cycleCount >= PATTERNS[current].cycles) {
+      resetState();
+      phaseLabel.textContent = 'Done! 🎉';
+      breathText.textContent = 'Done';
+      return;
+    }
+  }
+  runPhase();
+}
+</script>
+</body>
+</html>
