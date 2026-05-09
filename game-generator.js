@@ -331,7 +331,7 @@ const LABELS = {
     NEW_BEST_LBL:'Nuevo récord', BACK_LBL:'Volver',
     TIME_LBL:'Tiempo', RESTART_LBL:'Nuevo juego', WIN_TITLE:'¡Ganaste!',
     PLAY_AGAIN_LBL:'Jugar de nuevo', AD_LABEL:'Los anuncios apoyan al equipo',
-    AD_REMOVE_LBL:'Eliminar $1.99',
+    AD_REMOVE_LABEL:'Eliminar $1.99',
     MOVES_LBL:'Movimientos', PAIRS_LBL:'Pares', HINT_LBL:'Pista',
     HINT_LEFT_LBL:'Pistas restantes', COINS_LBL:'Monedas', DIST_LBL:'Distancia',
     SLIDE_LBL:'Deslizar', JUMP_LBL:'Saltar', SHOOT_LBL:'Disparar', PASS_LBL:'Pasar',
