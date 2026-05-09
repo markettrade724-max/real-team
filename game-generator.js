@@ -1,21 +1,8 @@
 /**
  * game-generator.js — يولّد الألعاب والتطبيقات بـ 6 لغات من القوالب
  * 
- * التحسينات:
- * - الأولوية لـ product.templateFile (اختيار template-engineer)
- * - قواعد SMART_RULES مُحسَّنة لمنع التوجيه الخاطئ
- * - مستويات افتراضية احتياطية (fallback) لجميع القوالب
- * - معالجة آمنة للقيم المفقودة (emojis, levels, translations...)
- * - إضافة متغيرات STORY_JSON و LABELS_JSON لتمرير القصة والتسميات
- * - إضافة متغيرات خاصة بقالب memory-game (MOVES_LBL, PAIRS_LBL, HINT_LBL...)
- * - إصلاح: levels أصبحت دائماً مصفوفة (تجنب TypeError)
- * - إضافة تسميات endless-runner: COINS_LBL, DIST_LBL, SLIDE_LBL, JUMP_LBL
- * - إضافة حماية escaping لمنع كسر JavaScript بسبب علامات التنصيص
- * - دعم القوالب الجديدة: enhanced-memory-game, sports-master
- * - دعم GAME_TYPE, SPORT_TYPE, SHOOT_LBL, PASS_LBL, GRADIENT
- * - إصلاح: تعريف filename قبل استخدامه في console.warn
- * - إضافة TOTAL_LAPS, MAX_SPEED, OPPONENT_COUNT, TRACK_COUNT لقالب السباق
- * - دعم القوالب الجديدة: habit-tracker, breathing-tool, sound-board
+ * المراجعة النهائية – جميع القوالب مدعومة، جميع المتغيرات محقونة،
+ * escaping كامل، معالجة أخطاء، مستويات افتراضية ذكية، وقواعد توجيه متطورة.
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -23,7 +10,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ─ـ خريطة القوالب (مطابقة حرفية) ─────────────────────────────
+// ── خريطة القوالب (مطابقة حرفية) ─────────────────────────────
 const TEMPLATE_MAP = {
   // ألعاب ذاكرة وألغاز
   memory:'memory-game.html', puzzle:'memory-game.html',
@@ -61,76 +48,28 @@ const TEMPLATE_MAP = {
   'habit-tracker':'habit-tracker.html',
   'breathing':'breathing-tool.html',
   'sound-board':'sound-board.html',
+  // ألعاب شعبية جديدة
+  'block-blast':'block-blast.html',
+  'word-scapes':'word-scapes.html',
+  'alchemy-lab':'alchemy-lab.html',
 };
 
-// ─ـ كلمات مفتاحية للكشف الذكي (مُحسَّنة) ─────────────────────
+// ── كلمات مفتاحية للكشف الذكي (مُحسَّنة) ─────────────────────
 const SMART_RULES = [
-  {
-    template: 'racing-game.html',
-    keywords: ['racing','race','speed','car','drift','moto','drive',
-               'vehicle','kart','formula','nascar','rally','turbo','lap'],
-  },
-  {
-    template: 'sports-game.html',
-    keywords: ['sport','football','soccer','basketball','tennis',
-               'baseball','hockey','cricket','golf','rugby','match',
-               'stadium','goal','league','championship'],
-  },
-  {
-    template: 'phaser-game.html',
-    keywords: ['shooter','shoot','bullet','blast','enemy','wave',
-               'invasion','defense','tower','arena','space','alien',
-               'battle','combat','fighter','retro','pixel','survival',
-               'mischief','chaos','punchline'],
-  },
-  {
-    template: 'adventure-rpg.html',
-    keywords: ['rpg','adventure','quest','dungeon','hero','sword',
-               'magic','fantasy','myth','legend','saga','lore',
-               'kingdom','character','role'],
-  },
-  {
-    template: 'tool-app.html',
-    keywords: ['tool','app','timer','focus','pomodoro','tracker',
-               'journal','art','creative','generative','visual',
-               'paint','draw','ai','generator','create','design',
-               'mood','emotion','identity','avatar','mirror','prism',
-               'echo','vibe','aura','luminal','moment','reality',
-               'weaver','mythos','anima','alternate','universe',
-               'genre','shift','creator','content','viral','meme'],
-  },
-  {
-    template: 'memory-game.html',
-    keywords: ['memory','puzzle','quiz','matching','trivia','word',
-               'brain','logic','illusion','perspective','optical',
-               'glimmerglass','paradox','gravity','causality',
-               'uninvention','memory-match','simon-says','sliding-puzzle'],
-  },
-  {
-    template: 'enhanced-memory-game.html',
-    keywords: ['enhanced-memory','multi-memory','memory-master',
-               'simon','sliding','memory-match-pro'],
-  },
-  {
-    template: 'sports-master.html',
-    keywords: ['sports-master','sport-pro','football-pro',
-               'basketball-pro','tennis-pro','multi-sport'],
-  },
-  {
-    template: 'habit-tracker.html',
-    keywords: ['habit','tracker','streak','daily','routine','checklist',
-               'habit-tracker','habit-hero','daily-streak','morning-routine'],
-  },
-  {
-    template: 'breathing-tool.html',
-    keywords: ['breathing','breath','meditate','calm','relax','inhale','exhale',
-               'breathing-tool','calm-breath','energy-boost','sleep-breath'],
-  },
-  {
-    template: 'sound-board.html',
-    keywords: ['sound','board','meme','fart','noise','audio','effect',
-               'sound-board','meme-sounds','cinema-board','fart-piano'],
-  },
+  { template: 'racing-game.html', keywords: ['racing','race','speed','car','drift','moto','drive','vehicle','kart','formula','nascar','rally','turbo','lap'] },
+  { template: 'sports-game.html', keywords: ['sport','football','soccer','basketball','tennis','baseball','hockey','cricket','golf','rugby','match','stadium','goal','league','championship'] },
+  { template: 'phaser-game.html', keywords: ['shooter','shoot','bullet','blast','enemy','wave','invasion','defense','tower','arena','space','alien','battle','combat','fighter','retro','pixel','survival','mischief','chaos','punchline'] },
+  { template: 'adventure-rpg.html', keywords: ['rpg','adventure','quest','dungeon','hero','sword','magic','fantasy','myth','legend','saga','lore','kingdom','character','role'] },
+  { template: 'tool-app.html', keywords: ['tool','app','timer','focus','pomodoro','tracker','journal','art','creative','generative','visual','paint','draw','ai','generator','create','design','mood','emotion','identity','avatar','mirror','prism','echo','vibe','aura','luminal','moment','reality','weaver','mythos','anima','alternate','universe','genre','shift','creator','content','viral','meme'] },
+  { template: 'memory-game.html', keywords: ['memory','puzzle','quiz','matching','trivia','word','brain','logic','illusion','perspective','optical','glimmerglass','paradox','gravity','causality','uninvention','memory-match','simon-says','sliding-puzzle'] },
+  { template: 'enhanced-memory-game.html', keywords: ['enhanced-memory','multi-memory','memory-master','simon','sliding','memory-match-pro'] },
+  { template: 'sports-master.html', keywords: ['sports-master','sport-pro','football-pro','basketball-pro','tennis-pro','multi-sport'] },
+  { template: 'habit-tracker.html', keywords: ['habit','tracker','streak','daily','routine','checklist','habit-tracker','habit-hero','daily-streak','morning-routine'] },
+  { template: 'breathing-tool.html', keywords: ['breathing','breath','meditate','calm','relax','inhale','exhale','breathing-tool','calm-breath','energy-boost','sleep-breath'] },
+  { template: 'sound-board.html', keywords: ['sound','board','meme','fart','noise','audio','effect','sound-board','meme-sounds','cinema-board','fart-piano'] },
+  { template: 'block-blast.html', keywords: ['block','blast','cube','tetris','match','puzzle','blocks','wood','blast','block-blast'] },
+  { template: 'word-scapes.html', keywords: ['word','words','cross','scapes','search','spelling','vocabulary','language','letters','word-scapes','wordscapes'] },
+  { template: 'alchemy-lab.html', keywords: ['alchemy','lab','combine','merge','elements','discover','craft','mix','alchemy-lab','little-alchemy'] },
 ];
 
 // ─ـ حل القالب بذكاء ─────────────────────────────────────────
@@ -159,20 +98,16 @@ function resolveTemplate(product) {
 
   let bestTemplate = null, bestScore = 0;
   for (const rule of SMART_RULES) {
-    const score = rule.keywords.reduce((s, kw) =>
-      corpus.includes(kw) ? s + 1 : s, 0);
+    const score = rule.keywords.reduce((s, kw) => corpus.includes(kw) ? s + 1 : s, 0);
     if (score > bestScore) { bestScore = score; bestTemplate = rule.template; }
   }
 
   if (!bestTemplate || bestScore === 0) {
-    bestTemplate = product.category === 'game'
-      ? 'phaser-game.html'
-      : 'tool-app.html';
+    bestTemplate = product.category === 'game' ? 'phaser-game.html' : 'tool-app.html';
     console.warn(`  ⚠️  Fallback: "${product.type}" → ${bestTemplate}`);
   } else {
     console.log(`  🧠 Smart resolve: → ${bestTemplate} (score:${bestScore})`);
   }
-
   return bestTemplate;
 }
 
@@ -215,10 +150,8 @@ const LABELS = {
     PLAY_AGAIN_LBL:'مرة أخرى', AD_LABEL:'الإعلانات تدعم الفريق',
     AD_REMOVE_LABEL:'إزالة $1.99',
     MOVES_LBL:'حركات', PAIRS_LBL:'أزواج', HINT_LBL:'تلميح',
-    HINT_LEFT_LBL:'تلميحات متبقية',
-    COINS_LBL:'عملات', DIST_LBL:'المسافة',
-    SLIDE_LBL:'انزلاق', JUMP_LBL:'قفز',
-    SHOOT_LBL:'تسديد', PASS_LBL:'تمرير',
+    HINT_LEFT_LBL:'تلميحات متبقية', COINS_LBL:'عملات', DIST_LBL:'المسافة',
+    SLIDE_LBL:'انزلاق', JUMP_LBL:'قفز', SHOOT_LBL:'تسديد', PASS_LBL:'تمرير',
     LAP_LBL:'لفّة', LAPS_LBL:'اللفّات', SPEED_LBL:'السرعة',
     POSITION_LBL:'المركز', BEST_LAP_LBL:'أفضل لفّة', FINISH_LBL:'النهاية',
     RACE_START_LBL:'انطلق!', RACE_OVER_LBL:'انتهى السباق',
@@ -235,8 +168,7 @@ const LABELS = {
     NARRATOR_LBL:'الراوي', ELDER_LBL:'الشيخ', MERCHANT_LBL:'التاجر',
     COMBAT_START_LBL:'المعركة بدأت!', DEFEND_MSG_LBL:'أنت في وضع الدفاع',
     NO_MP_LBL:'نقاط السحر ناضبة', NO_ITEM_LBL:'لا عناصر متبقية',
-    NO_GOLD_LBL:'الذهب غير كافٍ',
-    ENEMY_WOLF:'الذئب المتوحش', ENEMY_BOSS:'ملك الظلام',
+    NO_GOLD_LBL:'الذهب غير كافٍ', ENEMY_WOLF:'الذئب المتوحش', ENEMY_BOSS:'ملك الظلام',
     CHOICE_ENTER:'ادخل القرية', CHOICE_CAMP:'أقم معسكراً',
     CHOICE_REST:'استرح (استعادة 30 HP)', CHOICE_ACCEPT:'اقبل المهمة',
     CHOICE_SHOP:'تفضل للمتجر', CHOICE_LEAVE:'غادر',
@@ -256,9 +188,8 @@ const LABELS = {
     FOCUS_LBL:'تركيز', SHORT_LBL:'استراحة', LONG_LBL:'استراحة طويلة',
     START_LBL2:'ابدأ', PAUSE_LBL:'توقف', SESSIONS_LBL:'جلسات',
     MINUTES_LBL:'دقيقة', STREAK_LBL:'متواصل', DONE_LBL:'انتهت الجلسة!',
-    ART_PLACEHOLDER:'صف مشاعرك أو فكرتك...',
-    ART_GEN_BTN:'✨ توليد', ART_LOADING:'جاري الإنشاء...',
-    ART_RESULT_LBL:'إبداعك',
+    ART_PLACEHOLDER:'صف مشاعرك أو فكرتك...', ART_GEN_BTN:'✨ توليد',
+    ART_LOADING:'جاري الإنشاء...', ART_RESULT_LBL:'إبداعك',
     STORY_PLACEHOLDER:'ماذا تفعل؟', STORY_SEND_BTN:'أرسل',
     STORY_THINKING:'الراوي يفكر...', PLAYER_LBL:'أنت',
     ID_Q1:'أي لون يعبر عنك؟', ID_Q2:'قوتك الداخلية؟',
@@ -266,12 +197,10 @@ const LABELS = {
     ID_PROGRESS_LBL:'الاكتشاف', ID_RETRY_LBL:'حاول مجدداً',
     ID_TITLE_1:'🌟 الرائي', ID_TITLE_2:'⚡ المحرّك',
     ID_TITLE_3:'🌊 الحالم', ID_TITLE_4:'🔮 الحكيم',
-    ID_DESC_1:'ترى ما يخفى على الآخرين.',
-    ID_DESC_2:'تشعل التغيير أينما ذهبت.',
-    ID_DESC_3:'خيالك لا حدود له.',
-    ID_DESC_4:'الحكمة القديمة تجري في عروقك.',
-    CREATIVE_PLACEHOLDER:'أدخل فكرتك...',
-    CREATIVE_BTN:'ابدأ الإبداع', CREATIVE_LOADING:'جاري التوليد...',
+    ID_DESC_1:'ترى ما يخفى على الآخرين.', ID_DESC_2:'تشعل التغيير أينما ذهبت.',
+    ID_DESC_3:'خيالك لا حدود له.', ID_DESC_4:'الحكمة القديمة تجري في عروقك.',
+    CREATIVE_PLACEHOLDER:'أدخل فكرتك...', CREATIVE_BTN:'ابدأ الإبداع',
+    CREATIVE_LOADING:'جاري التوليد...', NEXT_LBL:'التالي',
   },
   en:{ dir:'ltr',
     START_LBL:'Play Now', SHOP_LBL:'Shop', BEST_LBL:'Best Score',
@@ -282,10 +211,8 @@ const LABELS = {
     PLAY_AGAIN_LBL:'Play Again', AD_LABEL:'Ads support our team',
     AD_REMOVE_LABEL:'Remove $1.99',
     MOVES_LBL:'Moves', PAIRS_LBL:'Pairs', HINT_LBL:'Hint',
-    HINT_LEFT_LBL:'Hints left',
-    COINS_LBL:'Coins', DIST_LBL:'Distance',
-    SLIDE_LBL:'Slide', JUMP_LBL:'Jump',
-    SHOOT_LBL:'Shoot', PASS_LBL:'Pass',
+    HINT_LEFT_LBL:'Hints left', COINS_LBL:'Coins', DIST_LBL:'Distance',
+    SLIDE_LBL:'Slide', JUMP_LBL:'Jump', SHOOT_LBL:'Shoot', PASS_LBL:'Pass',
     LAP_LBL:'Lap', LAPS_LBL:'Laps', SPEED_LBL:'Speed',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Best Lap', FINISH_LBL:'Finish',
     RACE_START_LBL:'Go!', RACE_OVER_LBL:'Race Over',
@@ -298,12 +225,10 @@ const LABELS = {
     CHAMPIONSHIP_LBL:'Championship', SCORE_HOME_LBL:'Home', SCORE_AWAY_LBL:'Away',
     FOUL_LBL:'Foul', PENALTY_LBL:'Penalty', MATCH_OVER_LBL:'Full Time',
     WIN_MATCH_LBL:'Your team won!', DRAW_LBL:'Draw', LOSE_MATCH_LBL:'You lost',
-    HERO_LBL:'Hero', NARRATOR_LBL:'Narrator', ELDER_LBL:'Elder',
-    MERCHANT_LBL:'Merchant',
+    HERO_LBL:'Hero', NARRATOR_LBL:'Narrator', ELDER_LBL:'Elder', MERCHANT_LBL:'Merchant',
     ATTACK_LBL:'Attack', MAGIC_LBL:'Magic', DEFEND_LBL:'Defend', ITEM_LBL:'Item',
     COMBAT_START_LBL:'Battle begins!', DEFEND_MSG_LBL:'You are defending',
-    NO_MP_LBL:'Not enough MP', NO_ITEM_LBL:'No items left',
-    NO_GOLD_LBL:'Not enough gold',
+    NO_MP_LBL:'Not enough MP', NO_ITEM_LBL:'No items left', NO_GOLD_LBL:'Not enough gold',
     ENEMY_WOLF:'Wild Wolf', ENEMY_BOSS:'Dark King',
     CHOICE_ENTER:'Enter the village', CHOICE_CAMP:'Set up camp',
     CHOICE_REST:'Rest (restore 30 HP)', CHOICE_ACCEPT:'Accept the quest',
@@ -324,9 +249,8 @@ const LABELS = {
     FOCUS_LBL:'Focus', SHORT_LBL:'Short Break', LONG_LBL:'Long Break',
     START_LBL2:'Start', PAUSE_LBL:'Pause', SESSIONS_LBL:'Sessions',
     MINUTES_LBL:'Minutes', STREAK_LBL:'Streak', DONE_LBL:'Session done!',
-    ART_PLACEHOLDER:'Describe your mood or idea...',
-    ART_GEN_BTN:'✨ Generate', ART_LOADING:'Creating...',
-    ART_RESULT_LBL:'Your Creation',
+    ART_PLACEHOLDER:'Describe your mood or idea...', ART_GEN_BTN:'✨ Generate',
+    ART_LOADING:'Creating...', ART_RESULT_LBL:'Your Creation',
     STORY_PLACEHOLDER:'What do you do?', STORY_SEND_BTN:'Send',
     STORY_THINKING:'Narrating...', PLAYER_LBL:'You',
     ID_Q1:'Which color speaks to you?', ID_Q2:'Your inner power?',
@@ -334,12 +258,10 @@ const LABELS = {
     ID_PROGRESS_LBL:'Discovery', ID_RETRY_LBL:'Try Again',
     ID_TITLE_1:'🌟 The Visionary', ID_TITLE_2:'⚡ The Catalyst',
     ID_TITLE_3:'🌊 The Dreamer', ID_TITLE_4:'🔮 The Sage',
-    ID_DESC_1:'You see what others miss.',
-    ID_DESC_2:'You ignite change wherever you go.',
-    ID_DESC_3:'Your imagination knows no limits.',
-    ID_DESC_4:'Ancient wisdom flows through you.',
-    CREATIVE_PLACEHOLDER:'Enter your idea...',
-    CREATIVE_BTN:'Create', CREATIVE_LOADING:'Generating...',
+    ID_DESC_1:'You see what others miss.', ID_DESC_2:'You ignite change wherever you go.',
+    ID_DESC_3:'Your imagination knows no limits.', ID_DESC_4:'Ancient wisdom flows through you.',
+    CREATIVE_PLACEHOLDER:'Enter your idea...', CREATIVE_BTN:'Create',
+    CREATIVE_LOADING:'Generating...', NEXT_LBL:'Next',
   },
   fr:{ dir:'ltr',
     START_LBL:'Jouer', SHOP_LBL:'Boutique', BEST_LBL:'Meilleur score',
@@ -350,10 +272,8 @@ const LABELS = {
     PLAY_AGAIN_LBL:'Rejouer', AD_LABEL:'Les pubs soutiennent l\'équipe',
     AD_REMOVE_LABEL:'Supprimer 1,99$',
     MOVES_LBL:'Coups', PAIRS_LBL:'Paires', HINT_LBL:'Indice',
-    HINT_LEFT_LBL:'Indices restants',
-    COINS_LBL:'Pièces', DIST_LBL:'Distance',
-    SLIDE_LBL:'Glisser', JUMP_LBL:'Sauter',
-    SHOOT_LBL:'Tirer', PASS_LBL:'Passer',
+    HINT_LEFT_LBL:'Indices restants', COINS_LBL:'Pièces', DIST_LBL:'Distance',
+    SLIDE_LBL:'Glisser', JUMP_LBL:'Sauter', SHOOT_LBL:'Tirer', PASS_LBL:'Passer',
     LAP_LBL:'Tour', LAPS_LBL:'Tours', SPEED_LBL:'Vitesse',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Meilleur tour', FINISH_LBL:'Arrivée',
     RACE_START_LBL:'Partez!', RACE_OVER_LBL:'Course terminée',
@@ -366,12 +286,10 @@ const LABELS = {
     CHAMPIONSHIP_LBL:'Championnat', SCORE_HOME_LBL:'Domicile', SCORE_AWAY_LBL:'Extérieur',
     FOUL_LBL:'Faute', PENALTY_LBL:'Penalty', MATCH_OVER_LBL:'Fin du match',
     WIN_MATCH_LBL:'Votre équipe a gagné!', DRAW_LBL:'Match nul', LOSE_MATCH_LBL:'Vous avez perdu',
-    HERO_LBL:'Héros', NARRATOR_LBL:'Narrateur', ELDER_LBL:'Ancien',
-    MERCHANT_LBL:'Marchand',
+    HERO_LBL:'Héros', NARRATOR_LBL:'Narrateur', ELDER_LBL:'Ancien', MERCHANT_LBL:'Marchand',
     ATTACK_LBL:'Attaque', MAGIC_LBL:'Magie', DEFEND_LBL:'Défense', ITEM_LBL:'Objet',
     COMBAT_START_LBL:'Le combat commence!', DEFEND_MSG_LBL:'Vous défendez',
-    NO_MP_LBL:'Pas assez de MP', NO_ITEM_LBL:'Plus d\'objets',
-    NO_GOLD_LBL:'Pas assez d\'or',
+    NO_MP_LBL:'Pas assez de MP', NO_ITEM_LBL:'Plus d\'objets', NO_GOLD_LBL:'Pas assez d\'or',
     ENEMY_WOLF:'Loup Sauvage', ENEMY_BOSS:'Roi des Ténèbres',
     CHOICE_ENTER:'Entrer au village', CHOICE_CAMP:'Établir un camp',
     CHOICE_REST:'Se reposer (+30 HP)', CHOICE_ACCEPT:'Accepter la quête',
@@ -392,8 +310,8 @@ const LABELS = {
     FOCUS_LBL:'Focus', SHORT_LBL:'Pause courte', LONG_LBL:'Pause longue',
     START_LBL2:'Démarrer', PAUSE_LBL:'Pause', SESSIONS_LBL:'Sessions',
     MINUTES_LBL:'Minutes', STREAK_LBL:'Série', DONE_LBL:'Session terminée!',
-    ART_PLACEHOLDER:'Décrivez votre humeur ou idée...',
-    ART_GEN_BTN:'✨ Générer', ART_LOADING:'Création...', ART_RESULT_LBL:'Votre Création',
+    ART_PLACEHOLDER:'Décrivez votre humeur ou idée...', ART_GEN_BTN:'✨ Générer',
+    ART_LOADING:'Création...', ART_RESULT_LBL:'Votre Création',
     STORY_PLACEHOLDER:'Que faites-vous?', STORY_SEND_BTN:'Envoyer',
     STORY_THINKING:'Le narrateur réfléchit...', PLAYER_LBL:'Vous',
     ID_Q1:'Quelle couleur vous parle?', ID_Q2:'Votre pouvoir intérieur?',
@@ -401,12 +319,10 @@ const LABELS = {
     ID_PROGRESS_LBL:'Découverte', ID_RETRY_LBL:'Réessayer',
     ID_TITLE_1:'🌟 Le Visionnaire', ID_TITLE_2:'⚡ Le Catalyseur',
     ID_TITLE_3:'🌊 Le Rêveur', ID_TITLE_4:'🔮 Le Sage',
-    ID_DESC_1:'Vous voyez ce que les autres manquent.',
-    ID_DESC_2:'Vous allumez le changement partout.',
-    ID_DESC_3:'Votre imagination est sans limites.',
-    ID_DESC_4:'La sagesse ancienne coule en vous.',
-    CREATIVE_PLACEHOLDER:'Entrez votre idée...',
-    CREATIVE_BTN:'Créer', CREATIVE_LOADING:'Génération...',
+    ID_DESC_1:'Vous voyez ce que les autres manquent.', ID_DESC_2:'Vous allumez le changement partout.',
+    ID_DESC_3:'Votre imagination est sans limites.', ID_DESC_4:'La sagesse ancienne coule en vous.',
+    CREATIVE_PLACEHOLDER:'Entrez votre idée...', CREATIVE_BTN:'Créer',
+    CREATIVE_LOADING:'Génération...', NEXT_LBL:'Suivant',
   },
   es:{ dir:'ltr',
     START_LBL:'Jugar', SHOP_LBL:'Tienda', BEST_LBL:'Mejor puntuación',
@@ -415,12 +331,10 @@ const LABELS = {
     NEW_BEST_LBL:'Nuevo récord', BACK_LBL:'Volver',
     TIME_LBL:'Tiempo', RESTART_LBL:'Nuevo juego', WIN_TITLE:'¡Ganaste!',
     PLAY_AGAIN_LBL:'Jugar de nuevo', AD_LABEL:'Los anuncios apoyan al equipo',
-    AD_REMOVE_LABEL:'Eliminar $1.99',
+    AD_REMOVE_LBL:'Eliminar $1.99',
     MOVES_LBL:'Movimientos', PAIRS_LBL:'Pares', HINT_LBL:'Pista',
-    HINT_LEFT_LBL:'Pistas restantes',
-    COINS_LBL:'Monedas', DIST_LBL:'Distancia',
-    SLIDE_LBL:'Deslizar', JUMP_LBL:'Saltar',
-    SHOOT_LBL:'Disparar', PASS_LBL:'Pasar',
+    HINT_LEFT_LBL:'Pistas restantes', COINS_LBL:'Monedas', DIST_LBL:'Distancia',
+    SLIDE_LBL:'Deslizar', JUMP_LBL:'Saltar', SHOOT_LBL:'Disparar', PASS_LBL:'Pasar',
     LAP_LBL:'Vuelta', LAPS_LBL:'Vueltas', SPEED_LBL:'Velocidad',
     POSITION_LBL:'Posición', BEST_LAP_LBL:'Mejor vuelta', FINISH_LBL:'Meta',
     RACE_START_LBL:'¡Arranca!', RACE_OVER_LBL:'Carrera terminada',
@@ -433,12 +347,10 @@ const LABELS = {
     CHAMPIONSHIP_LBL:'Campeonato', SCORE_HOME_LBL:'Local', SCORE_AWAY_LBL:'Visitante',
     FOUL_LBL:'Falta', PENALTY_LBL:'Penalti', MATCH_OVER_LBL:'Fin del partido',
     WIN_MATCH_LBL:'¡Tu equipo ganó!', DRAW_LBL:'Empate', LOSE_MATCH_LBL:'Perdiste',
-    HERO_LBL:'Héroe', NARRATOR_LBL:'Narrador', ELDER_LBL:'Anciano',
-    MERCHANT_LBL:'Mercader',
+    HERO_LBL:'Héroe', NARRATOR_LBL:'Narrador', ELDER_LBL:'Anciano', MERCHANT_LBL:'Mercader',
     ATTACK_LBL:'Ataque', MAGIC_LBL:'Magia', DEFEND_LBL:'Defensa', ITEM_LBL:'Objeto',
     COMBAT_START_LBL:'¡Comienza la batalla!', DEFEND_MSG_LBL:'Estás defendiendo',
-    NO_MP_LBL:'No hay suficiente MP', NO_ITEM_LBL:'No quedan objetos',
-    NO_GOLD_LBL:'No hay suficiente oro',
+    NO_MP_LBL:'No hay suficiente MP', NO_ITEM_LBL:'No quedan objetos', NO_GOLD_LBL:'No hay suficiente oro',
     ENEMY_WOLF:'Lobo Salvaje', ENEMY_BOSS:'Rey Oscuro',
     CHOICE_ENTER:'Entrar al pueblo', CHOICE_CAMP:'Establecer campamento',
     CHOICE_REST:'Descansar (+30 HP)', CHOICE_ACCEPT:'Aceptar la misión',
@@ -459,8 +371,8 @@ const LABELS = {
     FOCUS_LBL:'Enfoque', SHORT_LBL:'Pausa corta', LONG_LBL:'Pausa larga',
     START_LBL2:'Iniciar', PAUSE_LBL:'Pausar', SESSIONS_LBL:'Sesiones',
     MINUTES_LBL:'Minutos', STREAK_LBL:'Racha', DONE_LBL:'¡Sesión completa!',
-    ART_PLACEHOLDER:'Describe tu humor o idea...',
-    ART_GEN_BTN:'✨ Generar', ART_LOADING:'Creando...', ART_RESULT_LBL:'Tu Creación',
+    ART_PLACEHOLDER:'Describe tu humor o idea...', ART_GEN_BTN:'✨ Generar',
+    ART_LOADING:'Creando...', ART_RESULT_LBL:'Tu Creación',
     STORY_PLACEHOLDER:'¿Qué haces?', STORY_SEND_BTN:'Enviar',
     STORY_THINKING:'El narrador piensa...', PLAYER_LBL:'Tú',
     ID_Q1:'¿Qué color te habla?', ID_Q2:'¿Tu poder interior?',
@@ -468,12 +380,10 @@ const LABELS = {
     ID_PROGRESS_LBL:'Descubrimiento', ID_RETRY_LBL:'Intentar de nuevo',
     ID_TITLE_1:'🌟 El Visionario', ID_TITLE_2:'⚡ El Catalizador',
     ID_TITLE_3:'🌊 El Soñador', ID_TITLE_4:'🔮 El Sabio',
-    ID_DESC_1:'Ves lo que otros pierden.',
-    ID_DESC_2:'Enciendes el cambio donde vayas.',
-    ID_DESC_3:'Tu imaginación no tiene límites.',
-    ID_DESC_4:'La sabiduría antigua fluye en ti.',
-    CREATIVE_PLACEHOLDER:'Ingresa tu idea...',
-    CREATIVE_BTN:'Crear', CREATIVE_LOADING:'Generando...',
+    ID_DESC_1:'Ves lo que otros pierden.', ID_DESC_2:'Enciendes el cambio donde vayas.',
+    ID_DESC_3:'Tu imaginación no tiene límites.', ID_DESC_4:'La sabiduría antigua fluye en ti.',
+    CREATIVE_PLACEHOLDER:'Ingresa tu idea...', CREATIVE_BTN:'Crear',
+    CREATIVE_LOADING:'Generando...', NEXT_LBL:'Siguiente',
   },
   de:{ dir:'ltr',
     START_LBL:'Spielen', SHOP_LBL:'Shop', BEST_LBL:'Bestes Ergebnis',
@@ -484,10 +394,8 @@ const LABELS = {
     PLAY_AGAIN_LBL:'Nochmal', AD_LABEL:'Anzeigen unterstützen das Team',
     AD_REMOVE_LABEL:'Entfernen 1,99$',
     MOVES_LBL:'Züge', PAIRS_LBL:'Paare', HINT_LBL:'Hinweis',
-    HINT_LEFT_LBL:'Hinweise übrig',
-    COINS_LBL:'Münzen', DIST_LBL:'Distanz',
-    SLIDE_LBL:'Rutschen', JUMP_LBL:'Springen',
-    SHOOT_LBL:'Schießen', PASS_LBL:'Passen',
+    HINT_LEFT_LBL:'Hinweise übrig', COINS_LBL:'Münzen', DIST_LBL:'Distanz',
+    SLIDE_LBL:'Rutschen', JUMP_LBL:'Springen', SHOOT_LBL:'Schießen', PASS_LBL:'Passen',
     LAP_LBL:'Runde', LAPS_LBL:'Runden', SPEED_LBL:'Geschwindigkeit',
     POSITION_LBL:'Position', BEST_LAP_LBL:'Beste Runde', FINISH_LBL:'Ziel',
     RACE_START_LBL:'Los!', RACE_OVER_LBL:'Rennen beendet',
@@ -500,12 +408,10 @@ const LABELS = {
     CHAMPIONSHIP_LBL:'Meisterschaft', SCORE_HOME_LBL:'Heim', SCORE_AWAY_LBL:'Gast',
     FOUL_LBL:'Foul', PENALTY_LBL:'Elfmeter', MATCH_OVER_LBL:'Spielende',
     WIN_MATCH_LBL:'Dein Team hat gewonnen!', DRAW_LBL:'Unentschieden', LOSE_MATCH_LBL:'Verloren',
-    HERO_LBL:'Held', NARRATOR_LBL:'Erzähler', ELDER_LBL:'Ältester',
-    MERCHANT_LBL:'Händler',
+    HERO_LBL:'Held', NARRATOR_LBL:'Erzähler', ELDER_LBL:'Ältester', MERCHANT_LBL:'Händler',
     ATTACK_LBL:'Angriff', MAGIC_LBL:'Magie', DEFEND_LBL:'Verteidigung', ITEM_LBL:'Item',
     COMBAT_START_LBL:'Der Kampf beginnt!', DEFEND_MSG_LBL:'Du verteidigst',
-    NO_MP_LBL:'Nicht genug MP', NO_ITEM_LBL:'Keine Items mehr',
-    NO_GOLD_LBL:'Nicht genug Gold',
+    NO_MP_LBL:'Nicht genug MP', NO_ITEM_LBL:'Keine Items mehr', NO_GOLD_LBL:'Nicht genug Gold',
     ENEMY_WOLF:'Wilder Wolf', ENEMY_BOSS:'Dunkler König',
     CHOICE_ENTER:'Dorf betreten', CHOICE_CAMP:'Lager aufschlagen',
     CHOICE_REST:'Ausruhen (+30 HP)', CHOICE_ACCEPT:'Quest annehmen',
@@ -526,8 +432,8 @@ const LABELS = {
     FOCUS_LBL:'Fokus', SHORT_LBL:'Kurze Pause', LONG_LBL:'Lange Pause',
     START_LBL2:'Starten', PAUSE_LBL:'Pause', SESSIONS_LBL:'Sitzungen',
     MINUTES_LBL:'Minuten', STREAK_LBL:'Serie', DONE_LBL:'Sitzung abgeschlossen!',
-    ART_PLACEHOLDER:'Beschreibe deine Stimmung oder Idee...',
-    ART_GEN_BTN:'✨ Generieren', ART_LOADING:'Erstellen...', ART_RESULT_LBL:'Deine Kreation',
+    ART_PLACEHOLDER:'Beschreibe deine Stimmung oder Idee...', ART_GEN_BTN:'✨ Generieren',
+    ART_LOADING:'Erstellen...', ART_RESULT_LBL:'Deine Kreation',
     STORY_PLACEHOLDER:'Was tust du?', STORY_SEND_BTN:'Senden',
     STORY_THINKING:'Der Erzähler denkt...', PLAYER_LBL:'Du',
     ID_Q1:'Welche Farbe spricht dich an?', ID_Q2:'Deine innere Kraft?',
@@ -535,12 +441,10 @@ const LABELS = {
     ID_PROGRESS_LBL:'Entdeckung', ID_RETRY_LBL:'Nochmal',
     ID_TITLE_1:'🌟 Der Visionär', ID_TITLE_2:'⚡ Der Katalysator',
     ID_TITLE_3:'🌊 Der Träumer', ID_TITLE_4:'🔮 Der Weise',
-    ID_DESC_1:'Du siehst, was andere übersehen.',
-    ID_DESC_2:'Du zündest den Wandel an.',
-    ID_DESC_3:'Deine Fantasie kennt keine Grenzen.',
-    ID_DESC_4:'Alte Weisheit fließt durch dich.',
-    CREATIVE_PLACEHOLDER:'Gib deine Idee ein...',
-    CREATIVE_BTN:'Erstellen', CREATIVE_LOADING:'Generierung...',
+    ID_DESC_1:'Du siehst, was andere übersehen.', ID_DESC_2:'Du zündest den Wandel an.',
+    ID_DESC_3:'Deine Fantasie kennt keine Grenzen.', ID_DESC_4:'Alte Weisheit fließt durch dich.',
+    CREATIVE_PLACEHOLDER:'Gib deine Idee ein...', CREATIVE_BTN:'Erstellen',
+    CREATIVE_LOADING:'Generierung...', NEXT_LBL:'Weiter',
   },
   zh:{ dir:'ltr',
     START_LBL:'开始游戏', SHOP_LBL:'商店', BEST_LBL:'最高分',
@@ -551,10 +455,8 @@ const LABELS = {
     PLAY_AGAIN_LBL:'再玩', AD_LABEL:'广告支持我们的团队',
     AD_REMOVE_LABEL:'去除广告 $1.99',
     MOVES_LBL:'步数', PAIRS_LBL:'对数', HINT_LBL:'提示',
-    HINT_LEFT_LBL:'剩余提示',
-    COINS_LBL:'金币', DIST_LBL:'距离',
-    SLIDE_LBL:'滑行', JUMP_LBL:'跳跃',
-    SHOOT_LBL:'射门', PASS_LBL:'传球',
+    HINT_LEFT_LBL:'剩余提示', COINS_LBL:'金币', DIST_LBL:'距离',
+    SLIDE_LBL:'滑行', JUMP_LBL:'跳跃', SHOOT_LBL:'射门', PASS_LBL:'传球',
     LAP_LBL:'圈', LAPS_LBL:'圈数', SPEED_LBL:'速度',
     POSITION_LBL:'名次', BEST_LAP_LBL:'最快圈速', FINISH_LBL:'终点',
     RACE_START_LBL:'出发！', RACE_OVER_LBL:'比赛结束',
@@ -567,12 +469,10 @@ const LABELS = {
     CHAMPIONSHIP_LBL:'锦标赛', SCORE_HOME_LBL:'主队', SCORE_AWAY_LBL:'客队',
     FOUL_LBL:'犯规', PENALTY_LBL:'点球', MATCH_OVER_LBL:'比赛结束',
     WIN_MATCH_LBL:'你的球队赢了！', DRAW_LBL:'平局', LOSE_MATCH_LBL:'你输了',
-    HERO_LBL:'英雄', NARRATOR_LBL:'旁白', ELDER_LBL:'长老',
-    MERCHANT_LBL:'商人',
+    HERO_LBL:'英雄', NARRATOR_LBL:'旁白', ELDER_LBL:'长老', MERCHANT_LBL:'商人',
     ATTACK_LBL:'攻击', MAGIC_LBL:'魔法', DEFEND_LBL:'防御', ITEM_LBL:'物品',
     COMBAT_START_LBL:'战斗开始！', DEFEND_MSG_LBL:'你正在防御',
-    NO_MP_LBL:'MP不足', NO_ITEM_LBL:'没有物品了',
-    NO_GOLD_LBL:'金币不足',
+    NO_MP_LBL:'MP不足', NO_ITEM_LBL:'没有物品了', NO_GOLD_LBL:'金币不足',
     ENEMY_WOLF:'野狼', ENEMY_BOSS:'黑暗之王',
     CHOICE_ENTER:'进入村庄', CHOICE_CAMP:'建立营地',
     CHOICE_REST:'休息（恢复30HP）', CHOICE_ACCEPT:'接受任务',
@@ -593,8 +493,8 @@ const LABELS = {
     FOCUS_LBL:'专注', SHORT_LBL:'短暂休息', LONG_LBL:'长时间休息',
     START_LBL2:'开始', PAUSE_LBL:'暂停', SESSIONS_LBL:'次数',
     MINUTES_LBL:'分钟', STREAK_LBL:'连续', DONE_LBL:'专注完成！',
-    ART_PLACEHOLDER:'描述你的心情或想法...',
-    ART_GEN_BTN:'✨ 生成', ART_LOADING:'创作中...', ART_RESULT_LBL:'你的创作',
+    ART_PLACEHOLDER:'描述你的心情或想法...', ART_GEN_BTN:'✨ 生成',
+    ART_LOADING:'创作中...', ART_RESULT_LBL:'你的创作',
     STORY_PLACEHOLDER:'你做什么？', STORY_SEND_BTN:'发送',
     STORY_THINKING:'叙述者思考中...', PLAYER_LBL:'你',
     ID_Q1:'哪种颜色代表你？', ID_Q2:'你的内在力量？',
@@ -602,12 +502,10 @@ const LABELS = {
     ID_PROGRESS_LBL:'发现', ID_RETRY_LBL:'再试一次',
     ID_TITLE_1:'🌟 远见者', ID_TITLE_2:'⚡ 催化者',
     ID_TITLE_3:'🌊 梦想家', ID_TITLE_4:'🔮 智者',
-    ID_DESC_1:'你看到别人错过的东西。',
-    ID_DESC_2:'你点燃所到之处的变革。',
-    ID_DESC_3:'你的想象力没有界限。',
-    ID_DESC_4:'古老的智慧在你身上流淌。',
-    CREATIVE_PLACEHOLDER:'输入你的想法...',
-    CREATIVE_BTN:'创建', CREATIVE_LOADING:'生成中...',
+    ID_DESC_1:'你看到别人错过的东西。', ID_DESC_2:'你点燃所到之处的变革。',
+    ID_DESC_3:'你的想象力没有界限。', ID_DESC_4:'古老的智慧在你身上流淌。',
+    CREATIVE_PLACEHOLDER:'输入你的想法...', CREATIVE_BTN:'创建',
+    CREATIVE_LOADING:'生成中...', NEXT_LBL:'下一个',
   },
 };
 
@@ -680,6 +578,12 @@ function generate(product) {
       levels = [{ pattern:'calm', cycles:4 }];
     } else if (tplName === 'sound-board.html') {
       levels = [{ sounds:9 }];
+    } else if (tplName === 'block-blast.html') {
+      levels = [{ scoreTarget: 500 }];
+    } else if (tplName === 'word-scapes.html') {
+      levels = [{ words:5, difficulty:'easy' }];
+    } else if (tplName === 'alchemy-lab.html') {
+      levels = [{ startingElements:4 }];
     } else {
       levels = [];
     }
