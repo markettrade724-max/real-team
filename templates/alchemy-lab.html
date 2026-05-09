@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}" dir="{{DIR}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>{{GAME_NAME}}</title>
+<style>
+:root{--acc:{{ACCENT}};--acc-rgb:{{ACCENT_RGB}};--bg:#0b0b10;--surface:#15151f;--text:#f0eaf0;--text2:#7a7a8a;--card-bg:rgba(255,255,255,0.04);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI',Tajawal,sans-serif;color:var(--text);user-select:none;-webkit-user-select:none;}
+#app{display:flex;flex-direction:column;width:100%;max-width:420px;height:100dvh;margin:0 auto;position:relative;}
+#header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.05);z-index:10;}
+#back-btn{background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text2);padding:4px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.7rem;}
+#game-title{font-weight:900;font-size:1rem;color:var(--acc);text-shadow:0 0 20px rgba(var(--acc-rgb),0.4);}
+#stats-bar{display:flex;gap:16px;padding:8px 16px;background:rgba(0,0,0,0.3);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.04);}
+.stat-item{display:flex;align-items:center;gap:6px;font-size:0.75rem;}
+.stat-label{color:var(--text2);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;}
+.stat-value{color:var(--acc);font-weight:900;font-family:monospace;font-size:0.9rem;}
+#merge-area{display:flex;align-items:center;justify-content:center;gap:20px;padding:12px 16px;min-height:70px;background:rgba(0,0,0,0.25);border-bottom:1px solid rgba(255,255,255,0.04);}
+.merge-slot{width:60px;height:60px;border-radius:14px;border:2px dashed rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.8rem;transition:all 0.2s;position:relative;}
+.merge-slot.filled{border-color:var(--acc);background:rgba(var(--acc-rgb),0.1);box-shadow:0 0 18px rgba(var(--acc-rgb),0.2);}
+.merge-plus{font-size:1.3rem;color:var(--text2);}
+#merge-btn{padding:6px 16px;border-radius:8px;background:var(--acc);color:#000;border:none;font-weight:700;font-size:0.75rem;cursor:pointer;font-family:inherit;opacity:0.4;transition:all 0.2s;letter-spacing:0.04em;}
+#merge-btn.active{opacity:1;box-shadow:0 0 16px rgba(var(--acc-rgb),0.4);}
+#merge-btn:active{transform:scale(0.96);}
+#elements-grid{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;justify-content:center;}
+.element-card{width:72px;height:82px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.04);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:all 0.2s;position:relative;}
+.element-card:active{transform:scale(0.94);}
+.element-card.selected{border-color:var(--acc);box-shadow:0 0 14px rgba(var(--acc-rgb),0.3);background:rgba(var(--acc-rgb),0.08);}
+.element-emoji{font-size:1.8rem;transition:transform 0.2s;}
+.element-name{font-size:0.62rem;color:var(--text2);text-align:center;line-height:1.2;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@keyframes discoverPop{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.new-discovery{animation:discoverPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;}
+.discovery-toast{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:var(--acc);color:#000;padding:10px 22px;border-radius:30px;font-weight:900;font-size:0.9rem;z-index:100;box-shadow:0 0 25px rgba(var(--acc-rgb),0.5);animation:toastUp 1.5s ease forwards;}
+@keyframes toastUp{0%{opacity:0;transform:translateX(-50%) translateY(20px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <button id="back-btn" onclick="history.back()">← {{BACK_LBL}}</button>
+    <div id="game-title">{{EMOJI}} {{GAME_NAME}}</div>
+    <div style="width:50px"></div>
+  </div>
+  <div id="stats-bar">
+    <div class="stat-item"><span class="stat-label">{{SCORE_LBL}}</span><span class="stat-value" id="scoreVal">0</span></div>
+    <div class="stat-item"><span class="stat-label">{{LEVEL_LBL}}</span><span class="stat-value" id="discovVal">0</span></div>
+  </div>
+  <div id="merge-area">
+    <div class="merge-slot" id="slot1"></div>
+    <div class="merge-plus">+</div>
+    <div class="merge-slot" id="slot2"></div>
+    <button id="merge-btn" onclick="doMerge()">⚗️ Merge</button>
+  </div>
+  <div id="elements-grid"></div>
+</div>
+<div id="toast-container" style="position:fixed;bottom:20px;left:50%;z-index:200;pointer-events:none;"></div>
+<script>
+const SK = 'rt_alchemy_{{PRODUCT_ID}}';
+const S = () => JSON.parse(localStorage.getItem(SK) || '{}');
+const sv = d => localStorage.setItem(SK, JSON.stringify({...S(),...d}));
+
+// Multi-language element names (minimal set — more combinations will use English as fallback)
+const NAMES = {
+  ar: { water:'ماء', fire:'نار', earth:'تراب', air:'هواء', steam:'بخار', mud:'طين', lava:'حمم', stone:'حجر', sand:'رمل', glass:'زجاج', metal:'معدن', energy:'طاقة', plant:'نبات', swamp:'مستنقع', life:'حياة', human:'إنسان', tool:'أداة', wheel:'عجلة', car:'سيارة', bicycle:'دراجة', boat:'قارب', sky:'سماء', bird:'طائر', fish:'سمكة', tree:'شجرة', forest:'غابة', mountain:'جبل', volcano:'بركان', ocean:'محيط', river:'نهر', cloud:'سحاب', rain:'مطر', snow:'ثلج', ice:'جليد', crystal:'كريستال', diamond:'ألماس', gold:'ذهب', silver:'فضة', bronze:'برونز', sword:'سيف', shield:'درع', house:'بيت', city:'مدينة', country:'دولة', planet:'كوكب', star:'نجم', galaxy:'مجرة', universe:'كون', time:'زمن', clock:'ساعة', book:'كتاب', paper:'ورق', pen:'قلم', ink:'حبر', paint:'طلاء', art:'فن', music:'موسيقى', sound:'صوت', light:'ضوء', darkness:'ظلام', shadow:'ظل', death:'موت', ghost:'شبح', zombie:'زومبي', vampire:'مصاص دماء', werewolf:'مستذئب', magic:'سحر', wizard:'ساحر', potion:'جرعة', spell:'تعويذة', dragon:'تنين', phoenix:'طائر الفينيق', robot:'روبوت', computer:'حاسوب', internet:'إنترنت', phone:'هاتف', camera:'كاميرا', movie:'فيلم', game:'لعبة', love:'حب', hate:'كراهية', war:'حرب', peace:'سلام' },
+  en: { water:'Water', fire:'Fire', earth:'Earth', air:'Air', steam:'Steam', mud:'Mud', lava:'Lava', stone:'Stone', sand:'Sand', glass:'Glass', metal:'Metal', energy:'Energy', plant:'Plant', swamp:'Swamp', life:'Life', human:'Human', tool:'Tool', wheel:'Wheel', car:'Car', bicycle:'Bicycle', boat:'Boat', sky:'Sky', bird:'Bird', fish:'Fish', tree:'Tree', forest:'Forest', mountain:'Mountain', volcano:'Volcano', ocean:'Ocean', river:'River', cloud:'Cloud', rain:'Rain', snow:'Snow', ice:'Ice', crystal:'Crystal', diamond:'Diamond', gold:'Gold', silver:'Silver', bronze:'Bronze', sword:'Sword', shield:'Shield', house:'House', city:'City', country:'Country', planet:'Planet', star:'Star', galaxy:'Galaxy', universe:'Universe', time:'Time', clock:'Clock', book:'Book', paper:'Paper', pen:'Pen', ink:'Ink', paint:'Paint', art:'Art', music:'Music', sound:'Sound', light:'Light', darkness:'Darkness', shadow:'Shadow', death:'Death', ghost:'Ghost', zombie:'Zombie', vampire:'Vampire', werewolf:'Werewolf', magic:'Magic', wizard:'Wizard', potion:'Potion', spell:'Spell', dragon:'Dragon', phoenix:'Phoenix', robot:'Robot', computer:'Computer', internet:'Internet', phone:'Phone', camera:'Camera', movie:'Movie', game:'Game', love:'Love', hate:'Hate', war:'War', peace:'Peace' },
+  fr: { water:'Eau', fire:'Feu', earth:'Terre', air:'Air', steam:'Vapeur', mud:'Boue', lava:'Lave', stone:'Pierre', sand:'Sable', glass:'Verre', metal:'Métal', energy:'Énergie', plant:'Plante', swamp:'Marais', life:'Vie', human:'Humain', tool:'Outil', wheel:'Roue', car:'Voiture', bicycle:'Vélo', boat:'Bateau', sky:'Ciel', bird:'Oiseau', fish:'Poisson', tree:'Arbre', forest:'Forêt', mountain:'Montagne', volcano:'Volcan', ocean:'Océan', river:'Rivière', cloud:'Nuage', rain:'Pluie', snow:'Neige', ice:'Glace', crystal:'Cristal', diamond:'Diamant', gold:'Or', silver:'Argent', bronze:'Bronze', sword:'Épée', shield:'Bouclier', house:'Maison', city:'Ville', country:'Pays', planet:'Planète', star:'Étoile', galaxy:'Galaxie', universe:'Univers', time:'Temps', clock:'Horloge', book:'Livre', paper:'Papier', pen:'Stylo', ink:'Encre', paint:'Peinture', art:'Art', music:'Musique', sound:'Son', light:'Lumière', darkness:'Ténèbres', shadow:'Ombre', death:'Mort', ghost:'Fantôme', zombie:'Zombie', vampire:'Vampire', werewolf:'Loup-garou', magic:'Magie', wizard:'Sorcier', potion:'Potion', spell:'Sort', dragon:'Dragon', phoenix:'Phénix', robot:'Robot', computer:'Ordinateur', internet:'Internet', phone:'Téléphone', camera:'Caméra', movie:'Film', game:'Jeu', love:'Amour', hate:'Haine', war:'Guerre', peace:'Paix' }
+};
+// Spanish, German, Chinese similar short dict for brevity — will fallback to English
+const LANG = '{{LANG}}';
+const dict = NAMES[LANG] || NAMES.en;
+
+// Combination dictionary (unordered pairs of element keys)
+const COMBOS = {
+  'water+fire': { id:'steam', emoji:'💨' },
+  'water+earth': { id:'mud', emoji:'🟤' },
+  'fire+earth': { id:'lava', emoji:'🌋' },
+  'fire+air': { id:'energy', emoji:'⚡' },
+  'water+air': { id:'rain', emoji:'🌧️' },
+  'earth+air': { id:'dust', emoji:'💨' },
+  'lava+water': { id:'stone', emoji:'🪨' },
+  'mud+fire': { id:'brick', emoji:'🧱' },
+  'stone+fire': { id:'metal', emoji:'🔩' },
+  'sand+fire': { id:'glass', emoji:'🥛' },
+  'water+stone': { id:'sand', emoji:'🏖️' },
+  'energy+air': { id:'light', emoji:'💡' },
+  'earth+water': { id:'plant', emoji:'🌱' },
+  'plant+water': { id:'swamp', emoji:'🪷' },
+  'swamp+energy': { id:'life', emoji:'❤️' },
+  'life+earth': { id:'human', emoji:'🧑' },
+  'human+stone': { id:'tool', emoji:'🔧' },
+  'tool+metal': { id:'sword', emoji:'🗡️' },
+  'metal+tool': { id:'shield', emoji:'🛡️' },
+  'human+plant': { id:'farmer', emoji:'👨‍🌾' },
+  'human+energy': { id:'wizard', emoji:'🧙' },
+  'wizard+energy': { id:'magic', emoji:'✨' },
+  'magic+water': { id:'potion', emoji:'🧪' },
+  'magic+fire': { id:'spell', emoji:'🔥' },
+  'plant+earth': { id:'tree', emoji:'🌳' },
+  'tree+tree': { id:'forest', emoji:'🌲' },
+  'stone+stone': { id:'mountain', emoji:'⛰️' },
+  'mountain+lava': { id:'volcano', emoji:'🌋' },
+  'water+water': { id:'ocean', emoji:'🌊' },
+  'ocean+water': { id:'river', emoji:'🏞️' },
+  'air+water': { id:'cloud', emoji:'☁️' },
+  'cloud+water': { id:'rain', emoji:'🌧️' },
+  'rain+cold': { id:'snow', emoji:'❄️' },
+  'snow+water': { id:'ice', emoji:'🧊' },
+  'ice+stone': { id:'crystal', emoji:'💎' },
+  'crystal+fire': { id:'diamond', emoji:'💎' },
+  'metal+fire': { id:'gold', emoji:'🥇' },
+  'metal+water': { id:'silver', emoji:'🥈' },
+  'copper+tin': { id:'bronze', emoji:'🥉' },
+  'human+tool': { id:'worker', emoji:'👷' },
+  'tool+wood': { id:'wheel', emoji:'⚙️' },
+  'wheel+metal': { id:'car', emoji:'🚗' },
+  'wheel+wood': { id:'bicycle', emoji:'🚲' },
+  'wood+water': { id:'boat', emoji:'⛵' },
+  'air+bird': { id:'sky', emoji:'🌤️' },
+  'life+air': { id:'bird', emoji:'🐦' },
+  'life+water': { id:'fish', emoji:'🐟' },
+  'human+house': { id:'family', emoji:'👨‍👩‍👧‍👦' },
+  'house+house': { id:'city', emoji:'🏙️' },
+  'city+city': { id:'country', emoji:'🌍' },
+  'earth+planet': { id:'planet', emoji:'🪐' },
+  'star+star': { id:'galaxy', emoji:'🌌' },
+  'galaxy+galaxy': { id:'universe', emoji:'🌀' },
+  'time+clock': { id:'time', emoji:'⏳' },
+  'book+book': { id:'library', emoji:'📚' },
+  'paper+ink': { id:'pen', emoji:'🖊️' },
+  'ink+water': { id:'paint', emoji:'🎨' },
+  'paint+canvas': { id:'art', emoji:'🖼️' },
+  'sound+music': { id:'music', emoji:'🎵' },
+  'light+darkness': { id:'shadow', emoji:'👤' },
+  'life+death': { id:'ghost', emoji:'👻' },
+  'ghost+human': { id:'zombie', emoji:'🧟' },
+  'human+bat': { id:'vampire', emoji:'🧛' },
+  'human+wolf': { id:'werewolf', emoji:'🐺' },
+  'dragon+fire': { id:'phoenix', emoji:'🐦‍🔥' },
+  'metal+electricity': { id:'robot', emoji:'🤖' },
+  'robot+electricity': { id:'computer', emoji:'💻' },
+  'computer+computer': { id:'internet', emoji:'🌐' },
+  'internet+phone': { id:'phone', emoji:'📱' },
+  'camera+phone': { id:'camera', emoji:'📸' },
+  'movie+camera': { id:'movie', emoji:'🎬' },
+  'game+computer': { id:'game', emoji:'🎮' },
+  'human+human': { id:'love', emoji:'💕' },
+  'love+hate': { id:'war', emoji:'⚔️' },
+  'war+peace': { id:'peace', emoji:'☮️' }
+};
+
+let discovered = { water:true, fire:true, earth:true, air:true };
+let selected = [];
+
+function getKey(el1, el2) {
+  const arr = [el1,el2].sort();
+  return arr.join('+');
+}
+
+function getName(key) {
+  return dict[key] || key.charAt(0).toUpperCase()+key.slice(1);
+}
+
+function renderAll() {
+  const grid = document.getElementById('elements-grid');
+  const slots = [document.getElementById('slot1'), document.getElementById('slot2')];
+  const mergeBtn = document.getElementById('merge-btn');
+  grid.innerHTML = '';
+  Object.keys(discovered).forEach(key => {
+    const combo = Object.values(COMBOS).find(c => c.id === key);
+    const emoji = combo ? combo.emoji : '❓';
+    const name = getName(key);
+    const card = document.createElement('div');
+    card.className = 'element-card' + (selected.includes(key) ? ' selected' : '');
+    card.innerHTML = `<span class="element-emoji">${emoji}</span><span class="element-name">${name}</span>`;
+    card.addEventListener('click', () => toggleSelect(key, card));
+    grid.appendChild(card);
+  });
+  // Update slots
+  slots[0].innerHTML = selected[0] ? `<span style="font-size:1.8rem">${Object.values(COMBOS).find(c=>c.id===selected[0])?.emoji||'❓'}</span>` : '';
+  slots[0].classList.toggle('filled', !!selected[0]);
+  slots[1].innerHTML = selected[1] ? `<span style="font-size:1.8rem">${Object.values(COMBOS).find(c=>c.id===selected[1])?.emoji||'❓'}</span>` : '';
+  slots[1].classList.toggle('filled', !!selected[1]);
+  mergeBtn.classList.toggle('active', selected.length === 2);
+  document.getElementById('scoreVal').textContent = Object.keys(discovered).length;
+  document.getElementById('discovVal').textContent = Object.keys(discovered).length;
+}
+
+function toggleSelect(key, card) {
+  if (selected.includes(key)) {
+    selected = selected.filter(s => s !== key);
+  } else if (selected.length < 2) {
+    selected.push(key);
+  } else {
+    selected = [key];
+  }
+  renderAll();
+}
+
+function doMerge() {
+  if (selected.length !== 2) return;
+  const [a,b] = selected;
+  const comboKey = getKey(a,b);
+  const result = COMBOS[comboKey];
+  if (!result) {
+    // No combination — deselect
+    selected = [];
+    renderAll();
+    return;
+  }
+  if (!discovered[result.id]) {
+    discovered[result.id] = true;
+    // Save
+    const saved = S();
+    saved.discovered = Object.keys(discovered);
+    sv(saved);
+    // Show toast
+    const toast = document.createElement('div');
+    toast.className = 'discovery-toast';
+    toast.textContent = `✨ ${getName(result.id)} discovered!`;
+    document.getElementById('app').appendChild(toast);
+    setTimeout(() => toast.remove(), 1500);
+  }
+  selected = [];
+  renderAll();
+}
+
+// Load saved
+(function init() {
+  const saved = S();
+  if (saved.discovered) {
+    saved.discovered.forEach(k => discovered[k] = true);
+  }
+  renderAll();
+})();
+</script>
+</body>
+</html>
