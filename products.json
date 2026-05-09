@@ -1,5 +1,152 @@
 [
   {
+    "id": "abyssal-echoes",
+    "slug": "abyssal-echoes",
+    "type": "shooter",
+    "category": "game",
+    "status": "available",
+    "emoji": "🦑",
+    "accent": "#1A535C",
+    "accentRgb": "26,83,92",
+    "gradient": "135deg,#0d1f2d,#020b12",
+    "emojis": [
+      "🦑",
+      "💥",
+      "🌊"
+    ],
+    "name": {
+      "ar": "أصداء الأعماق",
+      "en": "Abyssal Echoes",
+      "fr": "Échos Abyssal",
+      "es": "Abyssal Echoes",
+      "de": "Abyssal Echoes",
+      "zh": "Abyssal Echoes"
+    },
+    "desc": {
+      "ar": "اكتشف أسرار الأعماق، حارب كائنات متحولة بالانفجارات الصوتية.",
+      "en": "Unravel deep-sea mysteries, battle mutated creatures with sonic blasts.",
+      "fr": "Démêlez mystères abyssal, combattez créatures mutantes avec ondes sonores.",
+      "es": "Unravel deep-sea mysteries, battle mutated creatures with sonic blasts.",
+      "de": "Unravel deep-sea mysteries, battle mutated creatures with sonic blasts.",
+      "zh": "Unravel deep-sea mysteries, battle mutated creatures with sonic blasts."
+    },
+    "tags": [
+      "Underwater",
+      "Mystery",
+      "Creature Combat"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ],
+    "levels": [
+      {
+        "enemyCount": 8,
+        "enemySpeed": 1.1,
+        "enemyHealth": 1,
+        "enemyTypes": [
+          0,
+          1
+        ],
+        "bossLevel": false,
+        "spawnPattern": "waves",
+        "name": {
+          "ar": "البداية",
+          "en": "First Contact"
+        }
+      },
+      {
+        "enemyCount": 14,
+        "enemySpeed": 1.5,
+        "enemyHealth": 2,
+        "enemyTypes": [
+          0,
+          1,
+          2
+        ],
+        "bossLevel": false,
+        "spawnPattern": "zigzag",
+        "name": {
+          "ar": "المقاومة",
+          "en": "Resistance"
+        }
+      },
+      {
+        "enemyCount": 20,
+        "enemySpeed": 1.9,
+        "enemyHealth": 3,
+        "enemyTypes": [
+          1,
+          2,
+          3
+        ],
+        "bossLevel": false,
+        "spawnPattern": "storm",
+        "name": {
+          "ar": "العاصفة",
+          "en": "The Storm"
+        }
+      },
+      {
+        "enemyCount": 8,
+        "enemySpeed": 1.3,
+        "enemyHealth": 8,
+        "enemyTypes": [
+          3
+        ],
+        "bossLevel": true,
+        "spawnPattern": "boss",
+        "name": {
+          "ar": "الحارس",
+          "en": "The Guardian"
+        }
+      },
+      {
+        "enemyCount": 30,
+        "enemySpeed": 2.3,
+        "enemyHealth": 5,
+        "enemyTypes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "bossLevel": false,
+        "spawnPattern": "chaos",
+        "name": {
+          "ar": "الفوضى العظمى",
+          "en": "Grand Chaos"
+        }
+      }
+    ]
+  },
+  {
     "id": "derelict-drive",
     "slug": "derelict-drive",
     "type": "car",
