@@ -185,7 +185,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
   <!-- AD -->
   <div id="ad">
     <span>📢 Los anuncios apoyan al equipo</span>
-    <button class="bb" onclick="buyRemoveAds()">Eliminar $1.99</button>
+    <button class="bb" onclick="buyRemoveAds()">{{AD_REMOVE_LABEL}}</button>
   </div>
 
   <!-- SHOP -->
@@ -630,7 +630,7 @@ function openShop(){
   if(!cur.adsRemoved){
     const d = document.createElement('div'); d.className = 'si';
     d.innerHTML =
-      `<div><div class="si-n">🚫 Los anuncios apoyan al equipo</div><div class="si-p">Eliminar $1.99</div></div>` +
+      `<div><div class="si-n">🚫 Los anuncios apoyan al equipo</div><div class="si-p">{{AD_REMOVE_LABEL}}</div></div>` +
       `<button class="bb" onclick="buyRemoveAds()">Tienda</button>`;
     list.appendChild(d);
   }
