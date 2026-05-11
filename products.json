@@ -1,5 +1,78 @@
 [
   {
+    "id": "sonic-surge-arena",
+    "slug": "sonic-surge-arena",
+    "type": "sport",
+    "category": "game",
+    "status": "available",
+    "emoji": "🔊",
+    "accent": "#00BFFF",
+    "accentRgb": "0,191,255",
+    "gradient": "135deg,#007ACC,#00BFFF",
+    "emojis": [
+      "🔊",
+      "⚡",
+      "🎶"
+    ],
+    "name": {
+      "ar": "ساحة الاندفاع الصوتي",
+      "en": "Sonic Surge Arena",
+      "fr": "Arène de la Vague Sonique",
+      "es": "Sonic Surge Arena",
+      "de": "Sonic Surge Arena",
+      "zh": "Sonic Surge Arena"
+    },
+    "desc": {
+      "ar": "سباق ومعارك موجات صوتية إيقاعية في ساحة ديناميكية.",
+      "en": "Rhythm-based sound wave racing and battling in a dynamic arena.",
+      "fr": "Course et combat sonores rythmiques en arène dynamique.",
+      "es": "Rhythm-based sound wave racing and battling in a dynamic arena.",
+      "de": "Rhythm-based sound wave racing and battling in a dynamic arena.",
+      "zh": "Rhythm-based sound wave racing and battling in a dynamic arena."
+    },
+    "tags": [
+      "music",
+      "rhythm",
+      "sound",
+      "waves",
+      "sport",
+      "arena",
+      "racing",
+      "battle",
+      "competitive"
+    ],
+    "iap": [
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
+    ]
+  },
+  {
     "id": "abyssal-echoes",
     "slug": "abyssal-echoes",
     "type": "shooter",
