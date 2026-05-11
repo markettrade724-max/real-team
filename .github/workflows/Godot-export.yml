@@ -1,0 +1,72 @@
+name: Godot Export to HTML5
+
+on:
+  push:
+    paths:
+      - 'godot-projects/**'
+      - 'base-godot-project/**'
+  workflow_dispatch:
+    inputs:
+      project-slug:
+        description: 'مُعرّف المشروع (slug) لتصديره (اتركه فارغاً لتصدير الكل)'
+        required: false
+
+jobs:
+  export-godot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot Engine
+        id: cache-godot
+        uses: actions/cache@v3
+        with:
+          path: /opt/godot
+          key: godot-4.2.1-linux-x86_64
+
+      - name: Download Godot Engine
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p /opt/godot
+          wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip -O /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /opt/godot
+          chmod +x /opt/godot/Godot_v4.2.1-stable_linux.x86_64
+
+      - name: Export Godot projects
+        run: |
+          if [ -n "${{ github.event.inputs.project-slug }}" ]; then
+            PROJECTS=$(ls -d godot-projects/${{ github.event.inputs.project-slug }} 2>/dev/null || echo "")
+          else
+            PROJECTS=$(ls -d godot-projects/* 2>/dev/null || echo "")
+          fi
+
+          if [ -z "$PROJECTS" ]; then
+            echo "No Godot projects found"
+            exit 0
+          fi
+
+          for proj in $PROJECTS; do
+            slug=$(basename "$proj")
+            echo "➡️ Exporting $slug ..."
+            mkdir -p "public/games/godot/$slug"
+            /opt/godot/Godot_v4.2.1-stable_linux.x86_64 \
+              --headless \
+              --path "./godot-projects/$slug" \
+              --export-release "HTML5" "./public/games/godot/$slug/index.html"
+            echo "✅ $slug exported"
+          done
+
+      - name: Commit exported files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/games/godot/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🎮 Auto-export Godot games [skip ci]"
+            git pull --rebase origin main || git rebase --abort
+            git push origin main
+          fi
