@@ -1,8 +1,25 @@
 /**
  * game-generator.js — يولّد الألعاب والتطبيقات بـ 6 لغات من القوالب
  * 
- * المراجعة النهائية – جميع القوالب مدعومة، جميع المتغيرات محقونة،
- * escaping كامل، معالجة أخطاء، مستويات افتراضية ذكية، وقواعد توجيه متطورة.
+ * التحسينات النهائية:
+ * - الأولوية لـ product.templateFile (اختيار template-engineer)
+ * - قواعد SMART_RULES مُحسَّنة لمنع التوجيه الخاطئ (بدون تكرار أو تعارض)
+ * - مستويات افتراضية احتياطية (fallback) مفصلة ومتنوعة لجميع القوالب
+ * - معالجة آمنة للقيم المفقودة (emojis, levels, translations...)
+ * - إضافة متغيرات STORY_JSON و LABELS_JSON لتمرير القصة والتسميات
+ * - إضافة متغيرات خاصة بقالب memory-game (MOVES_LBL, PAIRS_LBL, HINT_LBL...)
+ * - إصلاح: levels أصبحت دائماً مصفوفة (تجنب TypeError)
+ * - إضافة تسميات endless-runner: COINS_LBL, DIST_LBL, SLIDE_LBL, JUMP_LBL
+ * - إضافة حماية escaping لمنع كسر JavaScript بسبب علامات التنصيص
+ * - دعم القوالب الجديدة: enhanced-memory-game, sports-master, godot-wrapper
+ * - دعم GAME_TYPE, SPORT_TYPE, SHOOT_LBL, PASS_LBL, GRADIENT
+ * - إصلاح: تعريف filename قبل استخدامه في console.warn
+ * - إضافة TOTAL_LAPS, MAX_SPEED, OPPONENT_COUNT, TRACK_COUNT لقالب السباق
+ * - دعم القوالب الجديدة: habit-tracker, breathing-tool, sound-board
+ * - دعم القوالب الجديدة: block-blast, word-scapes, alchemy-lab
+ * - دعم GODOT_SLUG لقالب godot-wrapper
+ * - إصلاح: إزالة تكرار كلمة blast في قاعدة block-blast
+ * - إصلاح: إزالة تعارض كلمة racing من قاعدة godot-wrapper
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -10,7 +27,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ── خريطة القوالب (مطابقة حرفية) ─────────────────────────────
+// ─ـ خريطة القوالب (مطابقة حرفية) ─────────────────────────────
 const TEMPLATE_MAP = {
   // ألعاب ذاكرة وألغاز
   memory:'memory-game.html', puzzle:'memory-game.html',
@@ -52,9 +69,12 @@ const TEMPLATE_MAP = {
   'block-blast':'block-blast.html',
   'word-scapes':'word-scapes.html',
   'alchemy-lab':'alchemy-lab.html',
+  // Godot
+  'godot':'godot-wrapper.html',
+  'godot-wrapper':'godot-wrapper.html',
 };
 
-// ── كلمات مفتاحية للكشف الذكي (مُحسَّنة) ─────────────────────
+// ─ـ كلمات مفتاحية للكشف الذكي (مُحسَّنة) ─────────────────────
 const SMART_RULES = [
   { template: 'racing-game.html', keywords: ['racing','race','speed','car','drift','moto','drive','vehicle','kart','formula','nascar','rally','turbo','lap'] },
   { template: 'sports-game.html', keywords: ['sport','football','soccer','basketball','tennis','baseball','hockey','cricket','golf','rugby','match','stadium','goal','league','championship'] },
@@ -67,9 +87,10 @@ const SMART_RULES = [
   { template: 'habit-tracker.html', keywords: ['habit','tracker','streak','daily','routine','checklist','habit-tracker','habit-hero','daily-streak','morning-routine'] },
   { template: 'breathing-tool.html', keywords: ['breathing','breath','meditate','calm','relax','inhale','exhale','breathing-tool','calm-breath','energy-boost','sleep-breath'] },
   { template: 'sound-board.html', keywords: ['sound','board','meme','fart','noise','audio','effect','sound-board','meme-sounds','cinema-board','fart-piano'] },
-  { template: 'block-blast.html', keywords: ['block','blast','cube','tetris','match','puzzle','blocks','wood','blast','block-blast'] },
+  { template: 'block-blast.html', keywords: ['block','blast','cube','tetris','match','puzzle','blocks','wood','block-blast'] },
   { template: 'word-scapes.html', keywords: ['word','words','cross','scapes','search','spelling','vocabulary','language','letters','word-scapes','wordscapes'] },
   { template: 'alchemy-lab.html', keywords: ['alchemy','lab','combine','merge','elements','discover','craft','mix','alchemy-lab','little-alchemy'] },
+  { template: 'godot-wrapper.html', keywords: ['godot','sonic','arena','rhythm','surge','physics','3d','wasm'] },
 ];
 
 // ─ـ حل القالب بذكاء ─────────────────────────────────────────
@@ -325,13 +346,13 @@ const LABELS = {
     CREATIVE_LOADING:'Génération...', NEXT_LBL:'Suivant',
   },
   es:{ dir:'ltr',
-   START_LBL:'Jugar', SHOP_LBL:'Tienda', BEST_LBL:'Mejor puntuación',
+    START_LBL:'Jugar', SHOP_LBL:'Tienda', BEST_LBL:'Mejor puntuación',
     SCORE_LBL:'Puntos', LEVEL_LBL:'Nivel', LIVES_LBL:'Vidas',
     GAMEOVER_LBL:'Game Over', RETRY_LBL:'Intentar de nuevo', HOME_LBL:'Inicio',
     NEW_BEST_LBL:'Nuevo récord', BACK_LBL:'Volver',
     TIME_LBL:'Tiempo', RESTART_LBL:'Nuevo juego', WIN_TITLE:'¡Ganaste!',
     PLAY_AGAIN_LBL:'Jugar de nuevo', AD_LABEL:'Los anuncios apoyan al equipo',
-    AD_REMOVE_LABEL:'Eliminar $1.99',
+    AD_REMOVE_LBL:'Eliminar $1.99',
     MOVES_LBL:'Movimientos', PAIRS_LBL:'Pares', HINT_LBL:'Pista',
     HINT_LEFT_LBL:'Pistas restantes', COINS_LBL:'Monedas', DIST_LBL:'Distancia',
     SLIDE_LBL:'Deslizar', JUMP_LBL:'Saltar', SHOOT_LBL:'Disparar', PASS_LBL:'Pasar',
@@ -584,6 +605,8 @@ function generate(product) {
       levels = [{ words:5, difficulty:'easy' }];
     } else if (tplName === 'alchemy-lab.html') {
       levels = [{ startingElements:4 }];
+    } else if (tplName === 'godot-wrapper.html') {
+      levels = [{}];
     } else {
       levels = [];
     }
@@ -676,6 +699,7 @@ function generate(product) {
       MAX_SPEED:     product.maxSpeed || '280',
       OPPONENT_COUNT: product.opponents || '3',
       TRACK_COUNT:   product.tracks || '5',
+      GODOT_SLUG:    product.godotSlug || product.slug || '',
       ...safeLbl,
     };
 
