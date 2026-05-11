@@ -325,7 +325,7 @@ const LABELS = {
     CREATIVE_LOADING:'Génération...', NEXT_LBL:'Suivant',
   },
   es:{ dir:'ltr',
-    START_LBL:'Jugar', SHOP_LBL:'Tienda', BEST_LBL:'Mejor puntuación',
+   START_LBL:'Jugar', SHOP_LBL:'Tienda', BEST_LBL:'Mejor puntuación',
     SCORE_LBL:'Puntos', LEVEL_LBL:'Nivel', LIVES_LBL:'Vidas',
     GAMEOVER_LBL:'Game Over', RETRY_LBL:'Intentar de nuevo', HOME_LBL:'Inicio',
     NEW_BEST_LBL:'Nuevo récord', BACK_LBL:'Volver',
