@@ -58,15 +58,18 @@ jobs:
             echo "✅ $slug exported"
           done
 
-      - name: Commit exported files
+           - name: Commit exported files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/games/godot/
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
+          # إضافة المجلد فقط إذا كان موجوداً وغير فارغ
+          if [ -d "public/games/godot/" ] && [ "$(ls -A public/games/godot/ 2>/dev/null)" ]; then
+            git add public/games/godot/
+          fi
+          if ! git diff --staged --quiet; then
             git commit -m "🎮 Auto-export Godot games [skip ci]"
             git pull --rebase origin main || git rebase --abort
             git push origin main
+          else
+            echo "No changes to commit"
           fi
