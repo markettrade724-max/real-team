@@ -145,7 +145,7 @@ body{font-family:'Segoe UI',Tajawal,sans-serif;color:var(--txt);}
 
   <div id="ad">
     <span>📢 Los anuncios apoyan al equipo</span>
-    <button class="bb" onclick="buyRemoveAds()">{{AD_REMOVE_LABEL}}</button>
+    <button class="bb" onclick="buyRemoveAds()">Eliminar $1.99</button>
   </div>
 
   <div id="main"></div>
@@ -167,7 +167,7 @@ const CFG = {
   emoji:  '🌌',
   iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}] || [],   // 🔥 إصلاح: حماية من القيمة الفارغة
   name:   'MomentVerse',
-  desc:   '¡Descubre el arte oculto en tu día a día! Introduce tus sentimientos para ver un mundo único cobrar vida.',
+  desc:   '¡Descubre el arte oculto en tu día a día!',
   gemini: '',
 };
 const SK = 'rt_' + CFG.pid;
@@ -577,7 +577,7 @@ function buildCreative(root){
     <div style="text-align:center;padding:8px 0">
       <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">🌌</div>
       <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">MomentVerse</div>
-      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">¡Descubre el arte oculto en tu día a día! Introduce tus sentimientos para ver un mundo único cobrar vida.</div>
+      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">¡Descubre el arte oculto en tu día a día!</div>
     </div>
     <div class="inp-wrap">
       <textarea id="creInput" rows="3" placeholder="Ingresa tu idea..."></textarea>
@@ -622,7 +622,7 @@ function openShop(){
   });
   if(!cur.adsRemoved){
     const d=document.createElement('div'); d.className='si';
-    d.innerHTML=`<div><div class="si-n">🚫 Los anuncios apoyan al equipo</div><div class="si-p">{{AD_REMOVE_LABEL}}</div></div>`+
+    d.innerHTML=`<div><div class="si-n">🚫 Los anuncios apoyan al equipo</div><div class="si-p">Eliminar $1.99</div></div>`+
       `<button class="bb" onclick="buyRemoveAds()">Tienda</button>`;
     list.appendChild(d);
   }

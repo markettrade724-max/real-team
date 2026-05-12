@@ -44,7 +44,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   <div class="overlay" id="overlayStart">
     <div style="font-size:4rem">🎬</div>
     <div class="overlay-title">GenreShift KI</div>
-    <p style="color:var(--text2)">Hast du dir jemals gewünscht, dein Morgenpendel wäre ein Science-Fiction-Epos? GenreShift KI verwandelt dein Alltagsleben in filmische Meisterwerke.</p>
+    <p style="color:var(--text2)">Hast du dir jemals gewünscht, dein Morgenpendel wäre ein Science-Fiction-Epos?</p>
     <button class="btn" id="btnStart">Spielen</button>
   </div>
   <div class="overlay hidden" id="overlayWin">
@@ -61,7 +61,7 @@ const CFG = {
   acc: '#f472b6',
   iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}] || [],
   emojis: ["🎮","⭐","🔥","💎","🚀","🌟","🎯","🎪","🎨","🎭","🔮","💡"] || ['⭐','🌟','💫','✨','🎯','🔮','💎','🌈','🎨','🎭'],
-  lvls: [{"enemyCount":8,"enemySpeed":1.1,"enemyHealth":1,"enemyTypes":[0,1],"bossLevel":false,"spawnPattern":"waves","name":{"ar":"البداية","en":"First Contact"}},{"enemyCount":14,"enemySpeed":1.5,"enemyHealth":2,"enemyTypes":[0,1,2],"bossLevel":false,"spawnPattern":"zigzag","name":{"ar":"المقاومة","en":"Resistance"}},{"enemyCount":20,"enemySpeed":1.9,"enemyHealth":3,"enemyTypes":[1,2,3],"bossLevel":false,"spawnPattern":"storm","name":{"ar":"العاصفة","en":"The Storm"}},{"enemyCount":8,"enemySpeed":1.3,"enemyHealth":8,"enemyTypes":[3],"bossLevel":true,"spawnPattern":"boss","name":{"ar":"الحارس","en":"The Guardian"}},{"enemyCount":30,"enemySpeed":2.3,"enemyHealth":5,"enemyTypes":[0,1,2,3],"bossLevel":false,"spawnPattern":"chaos","name":{"ar":"الفوضى العظمى","en":"Grand Chaos"}}] || [{pairs:4,cols:4,hints:2},{pairs:6,cols:4,hints:1},{pairs:8,cols:5,hints:1},{pairs:10,cols:5,hints:0},{pairs:12,cols:6,hints:0}]
+  lvls: [{"number":1,"name":{"ar":"١","en":"1"},"difficulty":"easy","pairs":4,"timeLimit":60},{"number":2,"name":{"ar":"٢","en":"2"},"difficulty":"medium","pairs":6,"timeLimit":50},{"number":3,"name":{"ar":"٣","en":"3"},"difficulty":"medium","pairs":8,"timeLimit":45},{"number":4,"name":{"ar":"٤","en":"4"},"difficulty":"hard","pairs":10,"timeLimit":40},{"number":5,"name":{"ar":"٥","en":"5"},"difficulty":"expert","pairs":12,"timeLimit":35}] || [{pairs:4,cols:4,hints:2},{pairs:6,cols:4,hints:1},{pairs:8,cols:5,hints:1},{pairs:10,cols:5,hints:0},{pairs:12,cols:6,hints:0}]
 };
 
 function getLvl(idx) {

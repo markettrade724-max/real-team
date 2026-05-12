@@ -167,7 +167,7 @@ const CFG = {
   emoji:  '🎭',
   iaps:   [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}] || [],   // 🔥 إصلاح: حماية من القيمة الفارغة
   name:   'Auteur Absurde IA',
-  desc:   'Devenez le réalisateur de votre propre univers comique. Tapez une invite et regardez des vidéos surréalistes.',
+  desc:   'Devenez le réalisateur de votre propre univers comique.',
   gemini: '',
 };
 const SK = 'rt_' + CFG.pid;
@@ -577,7 +577,7 @@ function buildCreative(root){
     <div style="text-align:center;padding:8px 0">
       <div style="font-size:3.5rem;filter:drop-shadow(0 0 20px var(--acc))">🎭</div>
       <div style="font-size:1.2rem;font-weight:900;color:var(--acc);margin-top:8px">Auteur Absurde IA</div>
-      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">Devenez le réalisateur de votre propre univers comique. Tapez une invite et regardez des vidéos surréalistes.</div>
+      <div style="color:var(--mut);font-size:.83rem;line-height:1.6;margin-top:6px;max-width:300px;margin-inline:auto">Devenez le réalisateur de votre propre univers comique.</div>
     </div>
     <div class="inp-wrap">
       <textarea id="creInput" rows="3" placeholder="Entrez votre idée..."></textarea>

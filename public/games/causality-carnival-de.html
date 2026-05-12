@@ -44,7 +44,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Segoe UI
   <div class="overlay" id="overlayStart">
     <div style="font-size:4rem">🎢</div>
     <div class="overlay-title">Der Kausalitäts-Karneval</div>
-    <p style="color:var(--text2)">Entfesseln Sie Ihren inneren verrückten Wissenschaftler in einer lebendigen Sandbox, in der Logik hinter absurden Apparaturen zurücktritt. Bauen Sie komplizierte Maschinen, erleben Sie spektakuläre Fehlschläge oder unwahrscheinliche Erfolge und fordern Sie Freunde heraus, Ihre absurdesten Erfindungen für die ultimativen Prahlereien zu übertreffen.</p>
+    <p style="color:var(--text2)">Entfesseln Sie Ihren inneren verrückten Wissenschaftler in einer lebendigen Sandbox.</p>
     <button class="btn" id="btnStart">Spielen</button>
   </div>
   <div class="overlay hidden" id="overlayWin">
@@ -61,7 +61,7 @@ const CFG = {
   acc: '#2dd4bf',
   iaps: [{"id":"no-ads","type":"remove_ads","price":1.99,"emoji":"🚫","name":{"ar":"إزالة الإعلانات","en":"Remove Ads","fr":"Sans pub","es":"Sin anuncios","de":"Werbefrei","zh":"去广告"}},{"id":"hint-pack","type":"consumable","price":0.99,"emoji":"💡","name":{"ar":"10 تلميحات","en":"10 Hints","fr":"10 indices","es":"10 pistas","de":"10 Hinweise","zh":"10个提示"}},{"id":"theme-pack","type":"cosmetic","price":1.49,"emoji":"🎨","name":{"ar":"حزمة الثيمات","en":"Themes Pack","fr":"Pack thèmes","es":"Pack temas","de":"Theme-Paket","zh":"主题包"}},{"id":"full-unlock","type":"unlock","price":2.99,"emoji":"⭐","name":{"ar":"فتح كل المحتوى","en":"Unlock All","fr":"Tout débloquer","es":"Desbloquear todo","de":"Alles freischalten","zh":"解锁全部"}}] || [],
   emojis: ["🎮","⭐","🔥","💎","🚀","🌟","🎯","🎪","🎨","🎭","🔮","💡"] || ['⭐','🌟','💫','✨','🎯','🔮','💎','🌈','🎨','🎭'],
-  lvls: [{"number":1,"name":{"ar":"معضلة الدومينو","en":"The Domino Dilemma"},"difficulty":"easy","pairs":4,"timeLimit":60},{"number":2,"name":{"ar":"انفجار البالون العظيم","en":"The Great Balloon Burst"},"difficulty":"medium","pairs":6,"timeLimit":50},{"number":3,"name":{"ar":"لغز ساعة الوقواق","en":"The Cuckoo Clock Conundrum"},"difficulty":"medium","pairs":8,"timeLimit":45},{"number":4,"name":{"ar":"نزهة الحركة الدائمة","en":"The Perpetual Motion Picnic"},"difficulty":"hard","pairs":10,"timeLimit":40},{"number":5,"name":{"ar":"السمفونية الكونية الكبرى","en":"The Grand Cosmic Symphony"},"difficulty":"expert","pairs":12,"timeLimit":35}] || [{pairs:4,cols:4,hints:2},{pairs:6,cols:4,hints:1},{pairs:8,cols:5,hints:1},{pairs:10,cols:5,hints:0},{pairs:12,cols:6,hints:0}]
+  lvls: [{"number":1,"name":{"ar":"١","en":"1"},"difficulty":"easy","pairs":4,"timeLimit":60},{"number":2,"name":{"ar":"٢","en":"2"},"difficulty":"medium","pairs":6,"timeLimit":50},{"number":3,"name":{"ar":"٣","en":"3"},"difficulty":"medium","pairs":8,"timeLimit":45},{"number":4,"name":{"ar":"٤","en":"4"},"difficulty":"hard","pairs":10,"timeLimit":40},{"number":5,"name":{"ar":"٥","en":"5"},"difficulty":"expert","pairs":12,"timeLimit":35}] || [{pairs:4,cols:4,hints:2},{pairs:6,cols:4,hints:1},{pairs:8,cols:5,hints:1},{pairs:10,cols:5,hints:0},{pairs:12,cols:6,hints:0}]
 };
 
 function getLvl(idx) {
