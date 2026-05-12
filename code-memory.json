@@ -2,7 +2,25 @@
   "version": "1.0.3",
   "description": "ذاكرة الكود – تحتوي على أجزاء الكود الحيوية التي تم إصلاحها أو تحسينها. تُستخدم لتطبيق تصحيحات جراحية دقيقة دون إعادة كتابة الملفات بالكامل.",
   "patches": {
-    "phaser-detailed-levels": {
+        "es-ad-remove-label-typo": {
+      "description": "يُصلح الخطأ الإملائي AD_REMOVE_LBL → AD_REMOVE_LABEL في اللغة الإسبانية",
+      "category": "game-generator/labels",
+      "replace": {
+        "file": "game-generator.js",
+        "find": "AD_REMOVE_LBL:'Eliminar $1.99',",
+        "with": "AD_REMOVE_LABEL:'Eliminar $1.99',"
+      }
+    },
+    "de-ad-remove-label-typo": {
+      "description": "يُصلح الخطأ الإملائي AD_REMOVE_LBL → AD_REMOVE_LABEL في اللغة الألمانية",
+      "category": "game-generator/labels",
+      "replace": {
+        "file": "game-generator.js",
+        "find": "AD_REMOVE_LBL:'Entfernen 1,99$',",
+        "with": "AD_REMOVE_LABEL:'Entfernen 1,99$',"
+      }
+    
+        "phaser-detailed-levels": {
       "description": "المستويات الخمسة المفصلة لألعاب الأكشن (Phaser) مع الزعماء وتأخير الظهور والأسماء",
       "category": "game-generator/levels",
       "replace": {
