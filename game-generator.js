@@ -1,25 +1,8 @@
 /**
  * game-generator.js — يولّد الألعاب والتطبيقات بـ 6 لغات من القوالب
  * 
- * التحسينات النهائية:
- * - الأولوية لـ product.templateFile (اختيار template-engineer)
- * - قواعد SMART_RULES مُحسَّنة لمنع التوجيه الخاطئ (بدون تكرار أو تعارض)
- * - مستويات افتراضية احتياطية (fallback) مفصلة ومتنوعة لجميع القوالب
- * - معالجة آمنة للقيم المفقودة (emojis, levels, translations...)
- * - إضافة متغيرات STORY_JSON و LABELS_JSON لتمرير القصة والتسميات
- * - إضافة متغيرات خاصة بقالب memory-game (MOVES_LBL, PAIRS_LBL, HINT_LBL...)
- * - إصلاح: levels أصبحت دائماً مصفوفة (تجنب TypeError)
- * - إضافة تسميات endless-runner: COINS_LBL, DIST_LBL, SLIDE_LBL, JUMP_LBL
- * - إضافة حماية escaping لمنع كسر JavaScript بسبب علامات التنصيص
- * - دعم القوالب الجديدة: enhanced-memory-game, sports-master, godot-wrapper
- * - دعم GAME_TYPE, SPORT_TYPE, SHOOT_LBL, PASS_LBL, GRADIENT
- * - إصلاح: تعريف filename قبل استخدامه في console.warn
- * - إضافة TOTAL_LAPS, MAX_SPEED, OPPONENT_COUNT, TRACK_COUNT لقالب السباق
- * - دعم القوالب الجديدة: habit-tracker, breathing-tool, sound-board
- * - دعم القوالب الجديدة: block-blast, word-scapes, alchemy-lab
- * - دعم GODOT_SLUG لقالب godot-wrapper
- * - إصلاح: إزالة تكرار كلمة blast في قاعدة block-blast
- * - إصلاح: إزالة تعارض كلمة racing من قاعدة godot-wrapper
+ * النسخة الكاملة والمُحسَّنة – جميع القوالب مدعومة، جميع المتغيرات محقونة،
+ * escaping كامل، معالجة أخطاء، مستويات افتراضية ذكية، وقواعد توجيه متطورة.
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
@@ -352,7 +335,7 @@ const LABELS = {
     NEW_BEST_LBL:'Nuevo récord', BACK_LBL:'Volver',
     TIME_LBL:'Tiempo', RESTART_LBL:'Nuevo juego', WIN_TITLE:'¡Ganaste!',
     PLAY_AGAIN_LBL:'Jugar de nuevo', AD_LABEL:'Los anuncios apoyan al equipo',
-    AD_REMOVE_LBL:'Eliminar $1.99',
+    AD_REMOVE_LABEL:'Eliminar $1.99',
     MOVES_LBL:'Movimientos', PAIRS_LBL:'Pares', HINT_LBL:'Pista',
     HINT_LEFT_LBL:'Pistas restantes', COINS_LBL:'Monedas', DIST_LBL:'Distancia',
     SLIDE_LBL:'Deslizar', JUMP_LBL:'Saltar', SHOOT_LBL:'Disparar', PASS_LBL:'Pasar',
@@ -559,11 +542,11 @@ function generate(product) {
   if (!Array.isArray(levels) || levels.length === 0) {
     if (tplName === 'phaser-game.html' || tplName === 'action-shooter.html') {
       levels = [
-        { enemyCount:8,  enemySpeed:1.3, enemyHealth:1 },
-        { enemyCount:11, enemySpeed:1.6, enemyHealth:1 },
-        { enemyCount:14, enemySpeed:1.9, enemyHealth:2 },
-        { enemyCount:17, enemySpeed:2.2, enemyHealth:2 },
-        { enemyCount:20, enemySpeed:2.5, enemyHealth:3 },
+        { enemyCount:8,  enemySpeed:1.2, enemyHealth:1, enemyTypes:[0,1], spawnDelay:900, bossLevel:false, name:{ar:'البداية',en:'First Contact'} },
+        { enemyCount:12, enemySpeed:1.5, enemyHealth:2, enemyTypes:[0,1,2], spawnDelay:750, bossLevel:false, name:{ar:'المقاومة',en:'Resistance'} },
+        { enemyCount:16, enemySpeed:1.9, enemyHealth:2, enemyTypes:[1,2,3], spawnDelay:600, bossLevel:false, name:{ar:'العاصفة',en:'The Storm'} },
+        { enemyCount:8,  enemySpeed:1.5, enemyHealth:8, enemyTypes:[3],   spawnDelay:450, bossLevel:true,  name:{ar:'الزعيم',en:'Boss Fight'} },
+        { enemyCount:25, enemySpeed:2.4, enemyHealth:4, enemyTypes:[0,1,2,3], spawnDelay:350, bossLevel:false, name:{ar:'الفوضى',en:'Chaos'} },
       ];
     } else if (tplName === 'memory-game.html') {
       levels = [
@@ -580,6 +563,14 @@ function generate(product) {
         { pairs: 8, cols: 5, hints: 1, sequenceLength: 7, speed: 450, size: 4, moves: 80 },
         { pairs: 10, cols: 5, hints: 0, sequenceLength: 9, speed: 350, size: 4, moves: 60 },
         { pairs: 12, cols: 6, hints: 0, sequenceLength: 12, speed: 250, size: 5, moves: 120 },
+      ];
+    } else if (tplName === 'racing-game.html') {
+      levels = [
+        { laps: 3, trackDifficulty: 'easy',    opponents: 2, maxSpeed: 200, nitroDrain: 0.5 },
+        { laps: 4, trackDifficulty: 'medium',  opponents: 3, maxSpeed: 240, nitroDrain: 0.7 },
+        { laps: 5, trackDifficulty: 'hard',    opponents: 3, maxSpeed: 260, nitroDrain: 0.8 },
+        { laps: 5, trackDifficulty: 'hard',    opponents: 4, maxSpeed: 280, nitroDrain: 0.9 },
+        { laps: 6, trackDifficulty: 'extreme', opponents: 4, maxSpeed: 300, nitroDrain: 1.0 },
       ];
     } else if (tplName === 'adventure-rpg.html') {
       levels = [{}];
