@@ -1,4 +1,5 @@
 {
+  {
   "id": "godot-test",
   "slug": "godot-test",
   "type": "godot",
@@ -24,41 +25,45 @@
     "de": "Erstes Godot-Spiel, das automatisch generiert und bereitgestellt wurde.",
     "zh": "第一个自动生成并部署的 Godot 游戏。"
   },
-  "godotSlug": "godot-test"
+  "tags": ["godot", "test", "3d"],
+  "iap": [],
+  "godotSlug": "godot-test",
+  "levels": [],
+  "generated": true,
+  "generatedAt": "2026-05-11T23:00:00.000Z"
+},
+{
+  "id": "sonic-surge-arena",
+  "slug": "sonic-surge-arena",
+  "templateFile": "phaser-game.html",
+  "type": "sport",
+  "category": "game",
+  "status": "available",
+  "emoji": "🔊",
+  "accent": "#00BFFF",
+  "accentRgb": "0,191,255",
+  "gradient": "135deg,#007ACC,#00BFFF",
+  "emojis": ["🔊","⚡","🎶"],
+  "name": {
+    "ar": "ساحة الاندفاع الصوتي",
+    "en": "Sonic Surge Arena",
+    "fr": "Arène de la Vague Sonique",
+    "es": "Sonic Surge Arena",
+    "de": "Sonic Surge Arena",
+    "zh": "Sonic Surge Arena"
+  },
+  "desc": {
+    "ar": "سباق ومعارك موجات صوتية إيقاعية في ساحة ديناميكية.",
+    "en": "Rhythm-based sound wave racing and battling in a dynamic arena.",
+    "fr": "Course et combat basés sur le rythme dans une arène dynamique.",
+    "es": "Carreras y combates rítmicos en una arena dinámica.",
+    "de": "Rhythmusbasierte Renn- und Kampfspiele in einer dynamischen Arena.",
+    "zh": "在动态竞技场中进行的基于节奏的音波赛车与战斗。"
+  },
+  "tags": ["rhythm", "racing", "sound", "battle"],
+  "iap": [],
+  "levels": []
 }
-[
-  {
-    "id": "sonic-surge-arena",
-    "slug": "sonic-surge-arena",
-    "templateFile": "phaser-game.html",
-    "type": "sport",
-    "category": "game",
-    "status": "available",
-    "emoji": "🔊",
-    "accent": "#00BFFF",
-    "accentRgb": "0,191,255",
-    "gradient": "135deg,#007ACC,#00BFFF",
-    "emojis": [
-      "🔊",
-      "⚡",
-      "🎶"
-    ],
-    "name": {
-      "ar": "ساحة الاندفاع الصوتي",
-      "en": "Sonic Surge Arena",
-      "fr": "Arène de la Vague Sonique",
-      "es": "Sonic Surge Arena",
-      "de": "Sonic Surge Arena",
-      "zh": "Sonic Surge Arena"
-    },
-    "desc": {
-      "ar": "سباق ومعارك موجات صوتية إيقاعية في ساحة ديناميكية.",
-      "en": "Rhythm-based sound wave racing and battling in a dynamic arena.",
-      "fr": "Course et combat sonores rythmiques en arène dynamique.",
-      "es": "Rhythm-based sound wave racing and battling in a dynamic arena.",
-      "de": "Rhythm-based sound wave racing and battling in a dynamic arena.",
-      "zh": "Rhythm-based sound wave racing and battling in a dynamic arena."
-    },
     "tags": [
       "music",
       "rhythm",
