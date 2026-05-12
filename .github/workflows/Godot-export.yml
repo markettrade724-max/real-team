@@ -58,7 +58,7 @@ jobs:
             echo "✅ $slug exported"
           done
 
-           - name: Commit exported files
+      - name: Commit exported files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
