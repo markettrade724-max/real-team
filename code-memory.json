@@ -1,26 +1,38 @@
 {
-  "version": "1.0.3",
-  "description": "ذاكرة الكود – تحتوي على أجزاء الكود الحيوية التي تم إصلاحها أو تحسينها. تُستخدم لتطبيق تصحيحات جراحية دقيقة دون إعادة كتابة الملفات بالكامل.",
-  "patches": {
-        "es-ad-remove-label-typo": {
-      "description": "يُصلح الخطأ الإملائي AD_REMOVE_LBL → AD_REMOVE_LABEL في اللغة الإسبانية",
-      "category": "game-generator/labels",
-      "replace": {
-        "file": "game-generator.js",
-        "find": "AD_REMOVE_LBL:'Eliminar $1.99',",
-        "with": "AD_REMOVE_LABEL:'Eliminar $1.99',"
-      }
+  "version": "1.1.0",
+  "description": "قاعدة المعرفة والتصحيحات – تحتوي على جميع أجزاء الكود التي تم إصلاحها، وسجل الأخطاء للرجوع إليها.",
+  "error-log": [
+    {
+      "id": "err-001",
+      "date": "2026-05-12",
+      "description": "خطأ إملائي AD_REMOVE_LBL → AD_REMOVE_LABEL في الإسبانية والألمانية",
+      "files": ["game-generator.js"],
+      "fixed": true
     },
-    "de-ad-remove-label-typo": {
-      "description": "يُصلح الخطأ الإملائي AD_REMOVE_LBL → AD_REMOVE_LABEL في اللغة الألمانية",
-      "category": "game-generator/labels",
-      "replace": {
-        "file": "game-generator.js",
-        "find": "AD_REMOVE_LBL:'Entfernen 1,99$',",
-        "with": "AD_REMOVE_LABEL:'Entfernen 1,99$',"
-      }
-    
-        "phaser-detailed-levels": {
+    {
+      "id": "err-002",
+      "date": "2026-05-12",
+      "description": "كائن sonic-surge-arena مقطوع وبيانات يتيمة في products.json",
+      "files": ["products.json"],
+      "fixed": true
+    },
+    {
+      "id": "err-003",
+      "date": "2026-05-12",
+      "description": "مستويات phaser-game و racing-game الافتراضية مفقودة أو غير مكتملة",
+      "files": ["game-generator.js"],
+      "fixed": true
+    },
+    {
+      "id": "err-004",
+      "date": "2026-05-12",
+      "description": "تعارض type/category في genres-shift-ai وحقول ناقصة في منتجات أخرى",
+      "files": ["products.json"],
+      "fixed": true
+    }
+  ],
+  "patches": {
+    "phaser-detailed-levels": {
       "description": "المستويات الخمسة المفصلة لألعاب الأكشن (Phaser) مع الزعماء وتأخير الظهور والأسماء",
       "category": "game-generator/levels",
       "replace": {
@@ -36,6 +48,42 @@
         "file": "game-generator.js",
         "find": "} else if (tplName === 'endless-runner.html') {",
         "with": "} else if (tplName === 'racing-game.html') {\n      levels = [\n        { laps: 3, trackDifficulty: 'easy',   opponents: 2, maxSpeed: 200, nitroDrain: 0.5 },\n        { laps: 4, trackDifficulty: 'medium', opponents: 3, maxSpeed: 240, nitroDrain: 0.7 },\n        { laps: 5, trackDifficulty: 'hard',   opponents: 3, maxSpeed: 260, nitroDrain: 0.8 },\n        { laps: 5, trackDifficulty: 'hard',   opponents: 4, maxSpeed: 280, nitroDrain: 0.9 },\n        { laps: 6, trackDifficulty: 'extreme', opponents: 4, maxSpeed: 300, nitroDrain: 1.0 },\n      ];\n    } else if (tplName === 'endless-runner.html') {"
+      }
+    },
+    "fix-genres-shift-ai": {
+      "description": "يُصلح تعارض type/category في genres-shift-ai",
+      "category": "products-json/fix",
+      "replace": {
+        "file": "products.json",
+        "find": "\"type\": \"arcade\",\n    \"category\": \"app\",",
+        "with": "\"type\": \"app\",\n    \"category\": \"app\","
+      }
+    },
+    "add-gradient-godot-test": {
+      "description": "إضافة حقل gradient إلى godot-test",
+      "category": "products-json/fix",
+      "replace": {
+        "file": "products.json",
+        "find": "\"templateFile\": \"godot-wrapper.html\",\n    \"name\": {",
+        "with": "\"templateFile\": \"godot-wrapper.html\",\n    \"gradient\": \"135deg,#0f172a,#1e293b\",\n    \"name\": {"
+      }
+    },
+    "add-generated-fields": {
+      "description": "إضافة generated و generatedAt إلى focus-tool, word-storm, godot-test, sonic-surge-arena",
+      "category": "products-json/fix",
+      "replace": {
+        "file": "products.json",
+        "find": "\"levels\": []\n  }",
+        "with": "\"levels\": [],\n    \"generated\": true,\n    \"generatedAt\": \"2026-05-12T00:00:00.000Z\"\n  }"
+      }
+    },
+    "add-iap-defaults": {
+      "description": "إضافة iap افتراضي لـ word-storm, godot-test, sonic-surge-arena",
+      "category": "products-json/fix",
+      "replace": {
+        "file": "products.json",
+        "find": "\"iap\": []",
+        "with": "\"iap\": [\n      { \"id\": \"no-ads\", \"type\": \"remove_ads\", \"price\": 1.99, \"emoji\": \"🚫\", \"name\": { \"ar\": \"إزالة الإعلانات\", \"en\": \"Remove Ads\", \"fr\": \"Sans pub\", \"es\": \"Sin anuncios\", \"de\": \"Werbefrei\", \"zh\": \"去广告\" } },\n      { \"id\": \"full-unlock\", \"type\": \"unlock\", \"price\": 2.99, \"emoji\": \"⭐\", \"name\": { \"ar\": \"فتح كل المحتوى\", \"en\": \"Unlock All\", \"fr\": \"Tout débloquer\", \"es\": \"Desbloquear todo\", \"de\": \"Alles freischalten\", \"zh\": \"解锁全部\" } }\n    ]"
       }
     }
   }
