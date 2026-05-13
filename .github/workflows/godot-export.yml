@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'godot-projects/**'
-      - 'base-godot-project/**'
   workflow_dispatch:
     inputs:
       project-slug:
@@ -115,6 +114,7 @@ jobs:
 
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
+              # تم إصلاح التنسيق هنا
               cat > "$proj_dir/export_presets.cfg" << 'EOF'
 [preset.0]
 name="HTML5"
