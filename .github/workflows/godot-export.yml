@@ -14,7 +14,8 @@ jobs:
   export-godot:
     runs-on: windows-latest
     timeout-minutes: 25
-
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
