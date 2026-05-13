@@ -149,7 +149,8 @@ jobs:
             fi
             echo ""
 
-            OUTPUT_DIR="public/games/godot/$slug"
+            # ✅ استخدام مسار مطلق لضمان فهم Godot له
+            OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
             echo "📤 Output directory: $OUTPUT_DIR"
             echo ""
