@@ -35,16 +35,34 @@ jobs:
           unzip -q /c/godot/godot.zip -d /c/godot
           rm /c/godot/godot.zip
 
+      # ✅ إضافة: تنزيل Export Templates (كانت ناقصة)
+      - name: Cache Godot Export Templates
+        id: cache-templates
+        uses: actions/cache@v3
+        with:
+          path: C:\Users\runneradmin\AppData\Roaming\Godot\export_templates\4.2.1.stable
+          key: godot-templates-4.2.1-stable
+
+      - name: Download Godot Export Templates
+        if: steps.cache-templates.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.2.1.stable"
+          mkdir -p "$TEMPLATES_DIR"
+          echo "📥 Downloading Export Templates..."
+          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
+          unzip -q /tmp/templates.tpz -d /tmp/templates
+          mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
+          rm -rf /tmp/templates /tmp/templates.tpz
+          echo "✅ Templates installed in: $TEMPLATES_DIR"
+          ls -la "$TEMPLATES_DIR/" | head -10
+
       - name: Export Godot projects
         shell: bash
         run: |
           echo "🔍=== START GODOT DIAGNOSTIC ==="
           echo "📁 Current directory: $(pwd)"
-          echo "📁 Files in godot-projects/:"
-          ls -la godot-projects/ 2>/dev/null || echo "  (folder not found)"
-          echo ""
 
-          # Check Godot executable
           GODOT_BIN="/c/godot/Godot_v4.2.1-stable_win64.exe"
           if [ ! -f "$GODOT_BIN" ]; then
             echo "❌ GODOT EXECUTABLE NOT FOUND: $GODOT_BIN"
@@ -54,41 +72,34 @@ jobs:
           echo "✅ Godot found: $GODOT_BIN"
           echo ""
 
-          # Determine which projects to export
-          if [ -n "${{ github.event.inputs.project-slug }}" ]; then
-            PROJECTS=$(ls -d godot-projects/${{ github.event.inputs.project-slug }} 2>/dev/null || echo "")
-          else
-            PROJECTS=$(find godot-projects -mindepth 1 -maxdepth 1 -type d 2>/dev/null || echo "")
-          fi
+          echo "🔎 Scanning for project.godot files anywhere in the repository..."
+          FOUND_PROJECTS=$(find . -name "project.godot" -type f 2>/dev/null)
 
-          if [ -z "$PROJECTS" ]; then
-            echo "❌ NO GODOT PROJECT FOUND IN godot-projects/"
+          if [ -z "$FOUND_PROJECTS" ]; then
+            echo "❌ NO GODOT PROJECT FOUND ANYWHERE IN THE REPOSITORY"
+            ls -laR godot-projects/ 2>/dev/null || echo "  (folder not found)"
+            find . -maxdepth 1 -name "*.gd" -o -name "*.tscn" -o -name "*.godot" 2>/dev/null || echo "  (no Godot files in root)"
             exit 1
           fi
+
+          echo "✅ Found Godot projects:"
+          echo "$FOUND_PROJECTS"
+          echo ""
 
           export EXPORT_COUNT=0
           export FAILED_COUNT=0
 
-          for proj_dir in $PROJECTS; do
-            # Remove trailing slash
-            proj_dir="${proj_dir%/}"
+          for proj_file in $FOUND_PROJECTS; do
+            proj_dir=$(dirname "$proj_file")
             slug=$(basename "$proj_dir")
 
             echo ""
             echo "🎯=== EXPORTING: $slug ==="
-
-            # Validate project structure
-            if [ ! -f "$proj_dir/project.godot" ]; then
-              echo "❌ Missing project.godot in $proj_dir"
-              FAILED_COUNT=$((FAILED_COUNT + 1))
-              continue
-            fi
-
+            echo "📁 Project directory: $proj_dir"
             echo "📁 Contents of $proj_dir/:"
             ls -la "$proj_dir/"
             echo ""
 
-            # Check export presets
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
               echo '[preset.0]' > "$proj_dir/export_presets.cfg"
@@ -128,17 +139,16 @@ jobs:
             fi
             echo ""
 
-            # Create output directory
             OUTPUT_DIR="public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
             echo "📤 Output directory: $OUTPUT_DIR"
             echo ""
 
-            # Run Godot export
             echo "⚙️  Running Godot export (this may take a minute)..."
             LOG_FILE="/tmp/godot-export-$slug.log"
 
-            timeout 300 "$GODOT_BIN" \
+            # ✅ إصلاح: timeout لا يعمل على Windows، تم حذفه
+            "$GODOT_BIN" \
               --headless \
               --path "$proj_dir" \
               --export-release "HTML5" "$OUTPUT_DIR/index.html" \
@@ -146,10 +156,7 @@ jobs:
 
             GODOT_EXIT=$?
 
-            if [ $GODOT_EXIT -eq 124 ]; then
-              echo "❌ GODOT EXPORT TIMEOUT (exceeded 5 minutes)"
-              FAILED_COUNT=$((FAILED_COUNT + 1))
-            elif [ $GODOT_EXIT -ne 0 ]; then
+            if [ $GODOT_EXIT -ne 0 ]; then
               echo "❌ GODOT EXPORT FAILED (exit code: $GODOT_EXIT)"
               echo "📋 Godot output:"
               cat "$LOG_FILE"
@@ -159,18 +166,13 @@ jobs:
               EXPORT_COUNT=$((EXPORT_COUNT + 1))
             fi
 
-            # Check output files
             echo ""
             echo "📁 Output files:"
             if [ -d "$OUTPUT_DIR" ]; then
               ls -lh "$OUTPUT_DIR/"
-
-              # Verify required files exist
               if [ ! -f "$OUTPUT_DIR/index.html" ]; then
                 echo "⚠️  WARNING: index.html not found!"
               fi
-
-              # Calculate total size
               SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
               echo "💾 Total size: $SIZE"
             else
@@ -179,7 +181,6 @@ jobs:
             echo ""
           done
 
-          # Summary
           echo "════════════════════════════════════"
           echo "🎉 GODOT EXPORT SUMMARY"
           echo "════════════════════════════════════"
@@ -201,7 +202,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # إضافة المجلد فقط إذا كان موجوداً وغير فارغ
           if [ -d "public/games/godot/" ] && [ "$(ls -A public/games/godot/ 2>/dev/null)" ]; then
             git add public/games/godot/
           fi
