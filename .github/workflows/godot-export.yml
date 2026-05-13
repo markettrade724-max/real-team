@@ -1,0 +1,161 @@
+      - name: Export Godot projects
+        run: |
+          echo "🔍=== START GODOT DIAGNOSTIC ==="
+          echo "📁 Current directory: $(pwd)"
+          echo "📁 Files in godot-projects/:"
+          ls -la godot-projects/ 2>/dev/null || echo "  (folder not found)"
+          echo ""
+
+          # Check Godot executable
+          GODOT_BIN="/opt/godot/Godot_v4.2.1-stable_linux.x86_64"
+          if [ ! -x "$GODOT_BIN" ]; then
+            echo "❌ GODOT EXECUTABLE NOT FOUND: $GODOT_BIN"
+            ls -la /opt/godot/ 2>/dev/null || echo "  /opt/godot/ does not exist"
+            exit 1
+          fi
+          echo "✅ Godot found: $GODOT_BIN"
+          echo ""
+
+          # Determine which projects to export
+          if [ -n "${{ github.event.inputs.project-slug }}" ]; then
+            PROJECTS=$(ls -d godot-projects/${{ github.event.inputs.project-slug }} 2>/dev/null || echo "")
+          else
+            PROJECTS=$(find godot-projects -mindepth 1 -maxdepth 1 -type d 2>/dev/null || echo "")
+          fi
+
+          if [ -z "$PROJECTS" ]; then
+            echo "❌ NO GODOT PROJECT FOUND IN godot-projects/"
+            exit 1
+          fi
+
+          export EXPORT_COUNT=0
+          export FAILED_COUNT=0
+
+          for proj_dir in $PROJECTS; do
+            # Remove trailing slash
+            proj_dir="${proj_dir%/}"
+            slug=$(basename "$proj_dir")
+
+            echo ""
+            echo "🎯=== EXPORTING: $slug ==="
+
+            # Validate project structure
+            if [ ! -f "$proj_dir/project.godot" ]; then
+              echo "❌ Missing project.godot in $proj_dir"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+              continue
+            fi
+
+            echo "📁 Contents of $proj_dir/:"
+            ls -la "$proj_dir/"
+            echo ""
+
+            # Check export presets
+            if [ ! -f "$proj_dir/export_presets.cfg" ]; then
+              echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
+              cat > "$proj_dir/export_presets.cfg" << 'EOF'
+[preset.0]
+name="HTML5"
+platform="Web"
+runnable=true
+custom_features=""
+export_filter="all_resources"
+include_filter=""
+exclude_filter=""
+export_path="./index.html"
+encryption_include_filters=""
+encryption_exclude_filters=""
+script_encryption_key=""
+
+[preset.0.options]
+html/export_presets=""
+html/custom_html_shell=""
+html/head_include=""
+html/canvas_resize_policy=2
+html/focus_canvas_on_start=true
+html/experimental_ear_clipping=false
+progressive_web_app/enabled=false
+progressive_web_app/offline_page=""
+progressive_web_app/display=1
+progressive_web_app/orientation=0
+progressive_web_app/icon_144x144=""
+progressive_web_app/icon_180x180=""
+progressive_web_app/icon_maskable_192x192=""
+progressive_web_app/icon_maskable_512x512=""
+progressive_web_app/background_color=Color(0, 0, 0, 1)
+html/use_html5=true
+html/use_thread=true
+EOF
+              echo "✅ Default export_presets.cfg created"
+            else
+              echo "✅ export_presets.cfg found"
+            fi
+            echo ""
+
+            # Create output directory
+            OUTPUT_DIR="public/games/godot/$slug"
+            mkdir -p "$OUTPUT_DIR"
+            echo "📤 Output directory: $OUTPUT_DIR"
+            echo ""
+
+            # Run Godot export
+            echo "⚙️  Running Godot export (this may take a minute)..."
+            LOG_FILE="/tmp/godot-export-$slug.log"
+
+            timeout 300 "$GODOT_BIN" \
+              --headless \
+              --path "$proj_dir" \
+              --export-release "HTML5" "$OUTPUT_DIR/index.html" \
+              > "$LOG_FILE" 2>&1
+
+            GODOT_EXIT=$?
+
+            if [ $GODOT_EXIT -eq 124 ]; then
+              echo "❌ GODOT EXPORT TIMEOUT (exceeded 5 minutes)"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            elif [ $GODOT_EXIT -ne 0 ]; then
+              echo "❌ GODOT EXPORT FAILED (exit code: $GODOT_EXIT)"
+              echo "📋 Godot output:"
+              cat "$LOG_FILE"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            else
+              echo "✅ Export successful!"
+              EXPORT_COUNT=$((EXPORT_COUNT + 1))
+            fi
+
+            # Check output files
+            echo ""
+            echo "📁 Output files:"
+            if [ -d "$OUTPUT_DIR" ]; then
+              ls -lh "$OUTPUT_DIR/"
+
+              # Verify required files exist
+              if [ ! -f "$OUTPUT_DIR/index.html" ]; then
+                echo "⚠️  WARNING: index.html not found!"
+              fi
+
+              # Calculate total size
+              SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
+              echo "💾 Total size: $SIZE"
+            else
+              echo "❌ Output directory not created"
+            fi
+            echo ""
+          done
+
+          # Summary
+          echo "════════════════════════════════════"
+          echo "🎉 GODOT EXPORT SUMMARY"
+          echo "════════════════════════════════════"
+          echo "✅ Successful exports: $EXPORT_COUNT"
+          echo "❌ Failed exports: $FAILED_COUNT"
+
+          if [ $FAILED_COUNT -gt 0 ]; then
+            echo ""
+            echo "❌ EXPORT COMPLETED WITH ERRORS"
+            exit 1
+          else
+            echo ""
+            echo "✅ ALL EXPORTS COMPLETED SUCCESSFULLY"
+            exit 0
+          fi
