@@ -3,8 +3,9 @@
  * 
  * النسخة الكاملة والمُحسَّنة – جميع القوالب مدعومة، جميع المتغيرات محقونة،
  * escaping كامل، معالجة أخطاء، مستويات افتراضية ذكية، وقواعد توجيه متطورة.
+ * + إصلاح: مجلد Godot لا يُمسح أثناء إعادة البناء.
  */
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -731,8 +732,19 @@ function main() {
   }
 
   const gamesDir = join(__dirname, 'public', 'games');
-  rmSync(gamesDir, { recursive: true, force: true });
-  console.log('🗑️  Cleaned old games directory\n');
+  
+  // 🔧 حماية مجلد Godot من المسح
+  if (existsSync(gamesDir)) {
+    const items = readdirSync(gamesDir, { withFileTypes: true });
+    for (const item of items) {
+      if (item.name === 'godot') continue;
+      const itemPath = join(gamesDir, item.name);
+      rmSync(itemPath, { recursive: true, force: true });
+    }
+  } else {
+    mkdirSync(gamesDir, { recursive: true });
+  }
+  console.log('🗑️  Cleaned old games directory (godot/ preserved)\n');
 
   let ok = 0;
   list.forEach(p => {
