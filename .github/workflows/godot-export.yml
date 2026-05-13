@@ -54,8 +54,25 @@ jobs:
           unzip -q /tmp/templates.tpz -d /tmp/templates
           mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
           rm -rf /tmp/templates /tmp/templates.tpz
-          echo "✅ Templates installed in: $TEMPLATES_DIR"
-          ls -la "$TEMPLATES_DIR/" | head -10
+          echo "✅ Templates installed"
+          ls -la "$TEMPLATES_DIR/"
+
+      # ✅ إضافة: التحقق من أن Templates موجودة فعلاً قبل التصدير
+      - name: Verify Export Templates
+        shell: bash
+        run: |
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.2.1.stable"
+          echo "🔍 Checking templates in: $TEMPLATES_DIR"
+          if [ ! -d "$TEMPLATES_DIR" ]; then
+            echo "❌ Templates directory not found!"
+            exit 1
+          fi
+          if [ -z "$(ls -A $TEMPLATES_DIR)" ]; then
+            echo "❌ Templates directory is empty!"
+            exit 1
+          fi
+          echo "✅ Templates found:"
+          ls -lh "$TEMPLATES_DIR/" | grep -E "web|html" || ls -lh "$TEMPLATES_DIR/"
 
       - name: Export Godot projects
         shell: bash
@@ -158,6 +175,12 @@ jobs:
 
             if [ $GODOT_EXIT -ne 0 ]; then
               echo "❌ GODOT EXPORT FAILED (exit code: $GODOT_EXIT)"
+              echo "📋 Godot output:"
+              cat "$LOG_FILE"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            # ✅ إصلاح: التحقق من وجود index.html وليس فقط exit code
+            elif [ ! -f "$OUTPUT_DIR/index.html" ]; then
+              echo "❌ GODOT EXPORT FAILED (exit 0 but no index.html)"
               echo "📋 Godot output:"
               cat "$LOG_FILE"
               FAILED_COUNT=$((FAILED_COUNT + 1))
