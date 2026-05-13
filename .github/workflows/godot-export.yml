@@ -4,92 +4,122 @@ on:
   push:
     paths:
       - 'godot-projects/**'
-      - 'base-godot-project/**'
+      - '.github/workflows/godot-export.yml'
   workflow_dispatch:
     inputs:
       project-slug:
         description: 'مُعرّف المشروع (slug) لتصديره (اتركه فارغاً لتصدير الكل)'
         required: false
+        default: ''
+
+env:
+  GODOT_VERSION: "4.2.1"
+  GODOT_FILENAME: "Godot_v4.2.1-stable_linux.x86_64"
+  GODOT_PATH: "/opt/godot"
 
 jobs:
   export-godot:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
+    
+    permissions:
+      contents: write
+      
+    strategy:
+      fail-fast: false
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Cache Godot Engine
+      - name: 📦 Cache Godot Engine
         id: cache-godot
         uses: actions/cache@v3
         with:
-          path: /opt/godot
-          key: godot-4.2.1-linux-x86_64
+          path: ${{ env.GODOT_PATH }}
+          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64-v1
+          restore-keys: |
+            godot-${{ env.GODOT_VERSION }}-linux-x86_64
 
-      - name: Download Godot Engine
+      - name: ⬇️ Download Godot Engine
         if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
-          mkdir -p /opt/godot
-          wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip -O /tmp/godot.zip
-          unzip -q /tmp/godot.zip -d /opt/godot
-          chmod +x /opt/godot/Godot_v4.2.1-stable_linux.x86_64
+          echo "📥 Downloading Godot ${{ env.GODOT_VERSION }}..."
+          mkdir -p ${{ env.GODOT_PATH }}
+          wget -q --show-progress \
+            "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/${{ env.GODOT_FILENAME }}.zip" \
+            -O /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d ${{ env.GODOT_PATH }}
+          rm -f /tmp/godot.zip
+          chmod +x "${{ env.GODOT_PATH }}/${{ env.GODOT_FILENAME }}"
+          echo "✅ Godot downloaded successfully"
 
-      - name: Export Godot projects
+      - name: ✅ Verify Godot Installation
         run: |
-          echo "🔍=== START GODOT DIAGNOSTIC ==="
-          echo "📁 Current directory: $(pwd)"
-          echo "📁 Files in godot-projects/:"
-          ls -la godot-projects/ 2>/dev/null || echo "  (folder not found)"
-          echo ""
-
-          # Check Godot executable
-          GODOT_BIN="/opt/godot/Godot_v4.2.1-stable_linux.x86_64"
+          GODOT_BIN="${{ env.GODOT_PATH }}/${{ env.GODOT_FILENAME }}"
           if [ ! -x "$GODOT_BIN" ]; then
-            echo "❌ GODOT EXECUTABLE NOT FOUND: $GODOT_BIN"
-            ls -la /opt/godot/ 2>/dev/null || echo "  /opt/godot/ does not exist"
+            echo "❌ Godot executable not found or not executable"
+            ls -la "${{ env.GODOT_PATH }}/" || echo "Directory doesn't exist"
             exit 1
           fi
-          echo "✅ Godot found: $GODOT_BIN"
-          echo ""
+          echo "✅ Godot executable found and executable"
+          "$GODOT_BIN" --version
 
-          # Determine which projects to export
-          if [ -n "${{ github.event.inputs.project-slug }}" ]; then
-            PROJECTS=$(ls -d godot-projects/${{ github.event.inputs.project-slug }} 2>/dev/null || echo "")
+      - name: 🎮 Export Godot projects
+        id: export
+        run: |
+          set +e  # Don't exit on error immediately
+          
+          GODOT_BIN="${{ env.GODOT_PATH }}/${{ env.GODOT_FILENAME }}"
+          PROJECT_SLUG="${{ github.event.inputs.project-slug }}"
+          EXPORT_COUNT=0
+          FAILED_COUNT=0
+          FAILED_PROJECTS=""
+          
+          echo "🔍 Starting Godot export process..."
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          # Find projects
+          if [ -n "$PROJECT_SLUG" ]; then
+            PROJECTS=$(find godot-projects -mindepth 1 -maxdepth 1 -type d -name "$PROJECT_SLUG" 2>/dev/null)
           else
-            PROJECTS=$(find godot-projects -mindepth 1 -maxdepth 1 -type d 2>/dev/null || echo "")
+            PROJECTS=$(find godot-projects -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort)
           fi
-
+          
           if [ -z "$PROJECTS" ]; then
-            echo "❌ NO GODOT PROJECT FOUND IN godot-projects/"
+            echo "❌ No Godot projects found in godot-projects/"
+            if [ -d "godot-projects" ]; then
+              echo "📁 Current content:"
+              ls -la godot-projects/
+            fi
             exit 1
           fi
-
-          export EXPORT_COUNT=0
-          export FAILED_COUNT=0
-
+          
+          # Process each project
           for proj_dir in $PROJECTS; do
-            # Remove trailing slash
             proj_dir="${proj_dir%/}"
             slug=$(basename "$proj_dir")
-
+            
             echo ""
-            echo "🎯=== EXPORTING: $slug ==="
-
-            # Validate project structure
+            echo "🎯 Processing: $slug"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            
+            # Validate project
             if [ ! -f "$proj_dir/project.godot" ]; then
-              echo "❌ Missing project.godot in $proj_dir"
+              echo "❌ [$slug] Missing project.godot file"
+              FAILED_PROJECTS="$FAILED_PROJECTS $slug"
               FAILED_COUNT=$((FAILED_COUNT + 1))
               continue
             fi
-
-            echo "📁 Contents of $proj_dir/:"
-            ls -la "$proj_dir/"
-            echo ""
-
-            # Check export presets
+            
+            echo "✅ [$slug] Found project.godot"
+            
+            # Ensure export presets exist
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
-              echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
-              cat > "$proj_dir/export_presets.cfg" << 'EOF'
+              echo "⚠️  [$slug] Creating default export_presets.cfg..."
+              cat > "$proj_dir/export_presets.cfg" << 'PRESETS'
 [preset.0]
 name="HTML5"
 platform="Web"
@@ -121,93 +151,143 @@ progressive_web_app/icon_maskable_512x512=""
 progressive_web_app/background_color=Color(0, 0, 0, 1)
 html/use_html5=true
 html/use_thread=true
-EOF
-              echo "✅ Default export_presets.cfg created"
+PRESETS
             else
-              echo "✅ export_presets.cfg found"
+              echo "✅ [$slug] Found export_presets.cfg"
             fi
-            echo ""
-
-            # Create output directory
+            
+            # Prepare output directory
             OUTPUT_DIR="public/games/godot/$slug"
+            rm -rf "$OUTPUT_DIR"
             mkdir -p "$OUTPUT_DIR"
-            echo "📤 Output directory: $OUTPUT_DIR"
-            echo ""
-
-            # Run Godot export
-            echo "⚙️  Running Godot export (this may take a minute)..."
+            
+            echo "📤 [$slug] Output: $OUTPUT_DIR"
+            
+            # Run export with timeout
+            echo "⚙️  [$slug] Exporting to HTML5..."
             LOG_FILE="/tmp/godot-export-$slug.log"
-
+            
+            START_TIME=$(date +%s)
             timeout 300 "$GODOT_BIN" \
               --headless \
               --path "$proj_dir" \
               --export-release "HTML5" "$OUTPUT_DIR/index.html" \
               > "$LOG_FILE" 2>&1
-
-            GODOT_EXIT=$?
-
-            if [ $GODOT_EXIT -eq 124 ]; then
-              echo "❌ GODOT EXPORT TIMEOUT (exceeded 5 minutes)"
+            
+            EXPORT_STATUS=$?
+            END_TIME=$(date +%s)
+            DURATION=$((END_TIME - START_TIME))
+            
+            # Check export result
+            if [ $EXPORT_STATUS -eq 124 ]; then
+              echo "❌ [$slug] Export TIMEOUT (> 5 minutes)"
+              FAILED_PROJECTS="$FAILED_PROJECTS $slug"
               FAILED_COUNT=$((FAILED_COUNT + 1))
-            elif [ $GODOT_EXIT -ne 0 ]; then
-              echo "❌ GODOT EXPORT FAILED (exit code: $GODOT_EXIT)"
-              echo "📋 Godot output:"
-              cat "$LOG_FILE"
+            elif [ $EXPORT_STATUS -ne 0 ]; then
+              echo "❌ [$slug] Export FAILED (exit code: $EXPORT_STATUS)"
+              echo ""
+              echo "📋 Error output:"
+              tail -30 "$LOG_FILE" | sed 's/^/  /'
+              FAILED_PROJECTS="$FAILED_PROJECTS $slug"
               FAILED_COUNT=$((FAILED_COUNT + 1))
             else
-              echo "✅ Export successful!"
-              EXPORT_COUNT=$((EXPORT_COUNT + 1))
-            fi
-
-            # Check output files
-            echo ""
-            echo "📁 Output files:"
-            if [ -d "$OUTPUT_DIR" ]; then
-              ls -lh "$OUTPUT_DIR/"
-
-              # Verify required files exist
-              if [ ! -f "$OUTPUT_DIR/index.html" ]; then
-                echo "⚠️  WARNING: index.html not found!"
+              # Verify output files
+              if [ -f "$OUTPUT_DIR/index.html" ]; then
+                SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
+                FILE_COUNT=$(find "$OUTPUT_DIR" -type f | wc -l)
+                echo "✅ [$slug] Export SUCCESS! (${SIZE}, $FILE_COUNT files, ${DURATION}s)"
+                EXPORT_COUNT=$((EXPORT_COUNT + 1))
+              else
+                echo "❌ [$slug] Export completed but index.html not found"
+                echo "📁 Output directory contents:"
+                ls -la "$OUTPUT_DIR" 2>/dev/null || echo "  (empty)"
+                FAILED_PROJECTS="$FAILED_PROJECTS $slug"
+                FAILED_COUNT=$((FAILED_COUNT + 1))
               fi
-
-              # Calculate total size
-              SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
-              echo "💾 Total size: $SIZE"
-            else
-              echo "❌ Output directory not created"
             fi
-            echo ""
+            
+            rm -f "$LOG_FILE"
           done
-
+          
           # Summary
-          echo "════════════════════════════════════"
-          echo "🎉 GODOT EXPORT SUMMARY"
-          echo "════════════════════════════════════"
-          echo "✅ Successful exports: $EXPORT_COUNT"
-          echo "❌ Failed exports: $FAILED_COUNT"
-
+          echo ""
+          echo "════════════════════════════════════════════════"
+          echo "📊 EXPORT SUMMARY"
+          echo "════════════════════════════════════════════════"
+          echo "✅ Successful: $EXPORT_COUNT"
+          echo "❌ Failed: $FAILED_COUNT"
+          
           if [ $FAILED_COUNT -gt 0 ]; then
             echo ""
-            echo "❌ EXPORT COMPLETED WITH ERRORS"
-            exit 1
-          else
+            echo "Failed projects:$FAILED_PROJECTS"
             echo ""
-            echo "✅ ALL EXPORTS COMPLETED SUCCESSFULLY"
-            exit 0
+            echo "::error::Export failed for some projects"
+          fi
+          echo "════════════════════════════════════════════════"
+          
+          # Set outputs for next step
+          echo "export_count=$EXPORT_COUNT" >> "$GITHUB_OUTPUT"
+          echo "failed_count=$FAILED_COUNT" >> "$GITHUB_OUTPUT"
+          
+          [ $FAILED_COUNT -eq 0 ]
+
+      - name: 📊 Check changes
+        id: check-changes
+        run: |
+          if [ -d "public/games/godot/" ] && [ "$(find public/games/godot -type f 2>/dev/null | wc -l)" -gt 0 ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "✅ Changes detected in public/games/godot/"
+            find public/games/godot -type f | sed 's/^/  /'
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  No changes to commit"
           fi
 
-      - name: Commit exported files
+      - name: 🚀 Commit and push changes
+        if: steps.check-changes.outputs.has_changes == 'true'
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          # إضافة المجلد فقط إذا كان موجوداً وغير فارغ
-          if [ -d "public/games/godot/" ] && [ "$(ls -A public/games/godot/ 2>/dev/null)" ]; then
-            git add public/games/godot/
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/games/godot/
+          
+          COMMIT_MSG="🎮 Auto-export Godot games"
+          if [ -n "${{ github.event.inputs.project-slug }}" ]; then
+            COMMIT_MSG="$COMMIT_MSG [${{ github.event.inputs.project-slug }}]"
           fi
-          if ! git diff --staged --quiet; then
-            git commit -m "🎮 Auto-export Godot games [skip ci]"
-            git pull --rebase origin main || git rebase --abort
-            git push origin main
-          else
-            echo "No changes to commit"
+          COMMIT_MSG="$COMMIT_MSG (✅ ${{ steps.export.outputs.export_count }} succeeded)"
+          
+          git commit -m "$COMMIT_MSG [skip ci]"
+          
+          # Pull latest changes and rebase
+          git pull --rebase origin main --quiet || {
+            echo "⚠️  Rebase failed, attempting simple pull..."
+            git rebase --abort
+            git pull origin main --quiet
+          }
+          
+          git push origin main --quiet
+          echo "✅ Changes pushed to main"
+
+      - name: 🔔 Create summary
+        if: always()
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## 🎮 Godot Export Summary
+          
+          **Status:** $( [ "${{ job.status }}" == "success" ] && echo "✅ Success" || echo "❌ Failed" )
+          
+          - ✅ Exported: ${{ steps.export.outputs.export_count }}
+          - ❌ Failed: ${{ steps.export.outputs.failed_count }}
+          
+          **Output Directory:** \`public/games/godot/\`
+          
+          EOF
+          
+          if [ -d "public/games/godot/" ]; then
+            echo "### 📁 Exported Projects" >> $GITHUB_STEP_SUMMARY
+            find public/games/godot -mindepth 1 -maxdepth 1 -type d | while read dir; do
+              slug=$(basename "$dir")
+              size=$(du -sh "$dir" | cut -f1)
+              echo "- **$slug** ($size)" >> $GITHUB_STEP_SUMMARY
+            done
           fi
