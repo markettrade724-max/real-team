@@ -1,3 +1,76 @@
+name: Godot Export to HTML5
+
+on:
+  push:
+    paths:
+      - 'godot-projects/**'
+  workflow_dispatch:
+    inputs:
+      project-slug:
+        description: 'مُعرّف المشروع (slug) لتصديره (اتركه فارغاً لتصدير الكل)'
+        required: false
+
+jobs:
+  export-godot:
+    runs-on: windows-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot Engine
+        id: cache-godot
+        uses: actions/cache@v3
+        with:
+          path: C:\godot
+          key: godot-4.6.2-windows-x86_64
+
+      - name: Download Godot Engine
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          mkdir -p /c/godot
+          curl -L -o /c/godot/godot.zip https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_win64.exe.zip
+          unzip -q /c/godot/godot.zip -d /c/godot
+          rm /c/godot/godot.zip
+
+      - name: Cache Godot Export Templates
+        id: cache-templates
+        uses: actions/cache@v3
+        with:
+          path: C:\Users\runneradmin\AppData\Roaming\Godot\export_templates\4.6.2.stable
+          key: godot-templates-4.6.2-stable
+
+      - name: Download Godot Export Templates
+        if: steps.cache-templates.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
+          mkdir -p "$TEMPLATES_DIR"
+          echo "📥 Downloading Export Templates..."
+          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz
+          unzip -q /tmp/templates.tpz -d /tmp/templates
+          mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
+          rm -rf /tmp/templates /tmp/templates.tpz
+          echo "✅ Templates installed"
+          ls -la "$TEMPLATES_DIR/"
+
+      - name: Verify Export Templates
+        shell: bash
+        run: |
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
+          echo "🔍 Checking templates in: $TEMPLATES_DIR"
+          if [ ! -d "$TEMPLATES_DIR" ]; then
+            echo "❌ Templates directory not found!"
+            exit 1
+          fi
+          if [ -z "$(ls -A $TEMPLATES_DIR)" ]; then
+            echo "❌ Templates directory is empty!"
+            exit 1
+          fi
+          echo "✅ Templates found:"
+          ls -lh "$TEMPLATES_DIR/" | grep -E "web|html" || ls -lh "$TEMPLATES_DIR/"
+
       - name: Export Godot projects
         shell: bash
         run: |
@@ -37,10 +110,39 @@
             ls -la "$proj_dir/"
             echo ""
 
-            # إنشاء export_presets.cfg إذا كان مفقودًا
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "⚠️  export_presets.cfg missing, creating default..."
-              # ... (نفس كود الإنشاء الافتراضي السابق)
+              echo '[preset.0]' > "$proj_dir/export_presets.cfg"
+              echo 'name="HTML5"' >> "$proj_dir/export_presets.cfg"
+              echo 'platform="Web"' >> "$proj_dir/export_presets.cfg"
+              echo 'runnable=true' >> "$proj_dir/export_presets.cfg"
+              echo 'custom_features=""' >> "$proj_dir/export_presets.cfg"
+              echo 'export_filter="all_resources"' >> "$proj_dir/export_presets.cfg"
+              echo 'include_filter=""' >> "$proj_dir/export_presets.cfg"
+              echo 'exclude_filter=""' >> "$proj_dir/export_presets.cfg"
+              echo 'export_path="./index.html"' >> "$proj_dir/export_presets.cfg"
+              echo 'encryption_include_filters=""' >> "$proj_dir/export_presets.cfg"
+              echo 'encryption_exclude_filters=""' >> "$proj_dir/export_presets.cfg"
+              echo 'script_encryption_key=""' >> "$proj_dir/export_presets.cfg"
+              echo '' >> "$proj_dir/export_presets.cfg"
+              echo '[preset.0.options]' >> "$proj_dir/export_presets.cfg"
+              echo 'html/export_presets=""' >> "$proj_dir/export_presets.cfg"
+              echo 'html/custom_html_shell=""' >> "$proj_dir/export_presets.cfg"
+              echo 'html/head_include=""' >> "$proj_dir/export_presets.cfg"
+              echo 'html/canvas_resize_policy=2' >> "$proj_dir/export_presets.cfg"
+              echo 'html/focus_canvas_on_start=true' >> "$proj_dir/export_presets.cfg"
+              echo 'html/experimental_ear_clipping=false' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/enabled=false' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/offline_page=""' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/display=1' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/orientation=0' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/icon_144x144=""' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/icon_180x180=""' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/icon_maskable_192x192=""' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/icon_maskable_512x512=""' >> "$proj_dir/export_presets.cfg"
+              echo 'progressive_web_app/background_color=Color(0, 0, 0, 1)' >> "$proj_dir/export_presets.cfg"
+              echo 'html/use_html5=true' >> "$proj_dir/export_presets.cfg"
+              echo 'html/use_thread=true' >> "$proj_dir/export_presets.cfg"
               echo "✅ Default export_presets.cfg created"
             else
               echo "✅ export_presets.cfg found"
@@ -53,12 +155,10 @@
             echo ""
 
             echo "⚙️  Running Godot export..."
-            # 🔥 التعديل هنا: عرض الأخطاء مباشرة وعدم إخفائها في ملف
             "$GODOT_BIN" \
               --headless \
               --path "$proj_dir" \
               --export-release "HTML5" "$OUTPUT_DIR/index.html" 2>&1
-
             GODOT_EXIT=$?
 
             if [ $GODOT_EXIT -ne 0 ]; then
@@ -100,4 +200,20 @@
             echo ""
             echo "✅ ALL EXPORTS COMPLETED SUCCESSFULLY"
             exit 0
+          fi
+
+      - name: Commit exported files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -d "public/games/godot/" ] && [ "$(ls -A public/games/godot/ 2>/dev/null)" ]; then
+            git add public/games/godot/
+          fi
+          if ! git diff --staged --quiet; then
+            git commit -m "🎮 Auto-export Godot games [skip ci]"
+            git pull --rebase origin main || git rebase --abort
+            git push origin main
+          else
+            echo "No changes to commit"
           fi
