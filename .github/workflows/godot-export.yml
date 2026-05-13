@@ -13,7 +13,7 @@ on:
 
 jobs:
   export-godot:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 25
 
     steps:
@@ -23,47 +23,54 @@ jobs:
         id: cache-godot
         uses: actions/cache@v3
         with:
-          path: /opt/godot
-          key: godot-4.2.1-linux-x86_64
+          path: C:\godot
+          key: godot-4.2.1-windows-x86_64
 
       - name: Download Godot Engine
         if: steps.cache-godot.outputs.cache-hit != 'true'
+        shell: bash
         run: |
-          mkdir -p /opt/godot
-          wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip -O /tmp/godot.zip
-          unzip -q /tmp/godot.zip -d /opt/godot
-          chmod +x /opt/godot/Godot_v4.2.1-stable_linux.x86_64
-          rm /tmp/godot.zip
+          mkdir -p /c/godot
+          curl -L -o /c/godot/godot.zip https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_win64.exe.zip
+          unzip -q /c/godot/godot.zip -d /c/godot
+          rm /c/godot/godot.zip
 
       - name: Cache Godot Export Templates
         id: cache-templates
         uses: actions/cache@v3
         with:
-          path: ~/.local/share/godot/export_templates/4.2.1.stable
+          path: C:\Users\runneradmin\AppData\Roaming\Godot\export_templates\4.2.1.stable
           key: godot-templates-4.2.1-stable
 
       - name: Download Godot Export Templates
         if: steps.cache-templates.outputs.cache-hit != 'true'
+        shell: bash
         run: |
-          TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/4.2.1.stable"
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.2.1.stable"
           mkdir -p "$TEMPLATES_DIR"
           echo "📥 Downloading Export Templates..."
-          wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz -O /tmp/templates.tpz
+          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
           unzip -q /tmp/templates.tpz -d /tmp/templates
           mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
           rm -rf /tmp/templates /tmp/templates.tpz
-          echo "✅ Templates installed:"
-          ls "$TEMPLATES_DIR/" | grep web
+          echo "✅ Templates installed"
+          ls -la "$TEMPLATES_DIR/"
 
       - name: Verify Export Templates
+        shell: bash
         run: |
-          TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/4.2.1.stable"
-          if [ ! -f "$TEMPLATES_DIR/web_release.zip" ]; then
-            echo "❌ web_release.zip not found in templates!"
-            ls "$TEMPLATES_DIR/" || echo "(empty)"
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.2.1.stable"
+          echo "🔍 Checking templates in: $TEMPLATES_DIR"
+          if [ ! -d "$TEMPLATES_DIR" ]; then
+            echo "❌ Templates directory not found!"
             exit 1
           fi
-          echo "✅ Web templates verified"
+          if [ -z "$(ls -A $TEMPLATES_DIR)" ]; then
+            echo "❌ Templates directory is empty!"
+            exit 1
+          fi
+          echo "✅ Templates found:"
+          ls -lh "$TEMPLATES_DIR/" | grep -E "web|html" || ls -lh "$TEMPLATES_DIR/"
 
       - name: Export Godot projects
         shell: bash
@@ -80,13 +87,12 @@ jobs:
           echo "✅ Godot found: $GODOT_BIN"
           echo ""
 
-          echo "🔎 Scanning for project.godot files anywhere in the repository..."
-          FOUND_PROJECTS=$(find . -name "project.godot" -type f 2>/dev/null)
+          echo "🔎 Scanning for project.godot files in godot-projects/..."
+          FOUND_PROJECTS=$(find godot-projects -name "project.godot" -type f 2>/dev/null)
 
           if [ -z "$FOUND_PROJECTS" ]; then
-            echo "❌ NO GODOT PROJECT FOUND ANYWHERE IN THE REPOSITORY"
+            echo "❌ NO GODOT PROJECT FOUND IN godot-projects/"
             ls -laR godot-projects/ 2>/dev/null || echo "  (folder not found)"
-            find . -maxdepth 1 -name "*.gd" -o -name "*.tscn" -o -name "*.godot" 2>/dev/null || echo "  (no Godot files in root)"
             exit 1
           fi
 
@@ -104,43 +110,36 @@ jobs:
             echo ""
             echo "🎯=== EXPORTING: $slug ==="
             echo "📁 Project directory: $proj_dir"
-            echo "📁 Contents of $proj_dir/:"
             ls -la "$proj_dir/"
             echo ""
 
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
-              echo '[preset.0]' > "$proj_dir/export_presets.cfg"
-              echo 'name="HTML5"' >> "$proj_dir/export_presets.cfg"
-              echo 'platform="Web"' >> "$proj_dir/export_presets.cfg"
-              echo 'runnable=true' >> "$proj_dir/export_presets.cfg"
-              echo 'custom_features=""' >> "$proj_dir/export_presets.cfg"
-              echo 'export_filter="all_resources"' >> "$proj_dir/export_presets.cfg"
-              echo 'include_filter=""' >> "$proj_dir/export_presets.cfg"
-              echo 'exclude_filter=""' >> "$proj_dir/export_presets.cfg"
-              echo 'export_path="./index.html"' >> "$proj_dir/export_presets.cfg"
-              echo 'encryption_include_filters=""' >> "$proj_dir/export_presets.cfg"
-              echo 'encryption_exclude_filters=""' >> "$proj_dir/export_presets.cfg"
-              echo 'script_encryption_key=""' >> "$proj_dir/export_presets.cfg"
-              echo '' >> "$proj_dir/export_presets.cfg"
-              echo '[preset.0.options]' >> "$proj_dir/export_presets.cfg"
-              echo 'html/export_presets=""' >> "$proj_dir/export_presets.cfg"
-              echo 'html/custom_html_shell=""' >> "$proj_dir/export_presets.cfg"
-              echo 'html/head_include=""' >> "$proj_dir/export_presets.cfg"
-              echo 'html/canvas_resize_policy=2' >> "$proj_dir/export_presets.cfg"
-              echo 'html/focus_canvas_on_start=true' >> "$proj_dir/export_presets.cfg"
-              echo 'html/experimental_ear_clipping=false' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/enabled=false' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/offline_page=""' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/display=1' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/orientation=0' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/icon_144x144=""' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/icon_180x180=""' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/icon_maskable_192x192=""' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/icon_maskable_512x512=""' >> "$proj_dir/export_presets.cfg"
-              echo 'progressive_web_app/background_color=Color(0, 0, 0, 1)' >> "$proj_dir/export_presets.cfg"
-              echo 'html/use_html5=true' >> "$proj_dir/export_presets.cfg"
-              echo 'html/use_thread=true' >> "$proj_dir/export_presets.cfg"
+              cat > "$proj_dir/export_presets.cfg" << 'EOF'
+[preset.0]
+name="HTML5"
+platform="Web"
+runnable=true
+custom_features=""
+export_filter="all_resources"
+include_filter=""
+exclude_filter=""
+export_path="./index.html"
+encryption_include_filters=""
+encryption_exclude_filters=""
+script_encryption_key=""
+
+[preset.0.options]
+html/export_presets=""
+html/custom_html_shell=""
+html/head_include=""
+html/canvas_resize_policy=2
+html/focus_canvas_on_start=true
+html/experimental_ear_clipping=false
+progressive_web_app/enabled=false
+html/use_html5=true
+html/use_thread=true
+EOF
               echo "✅ Default export_presets.cfg created"
             else
               echo "✅ export_presets.cfg found"
@@ -152,10 +151,9 @@ jobs:
             echo "📤 Output directory: $OUTPUT_DIR"
             echo ""
 
-            echo "⚙️  Running Godot export (this may take a minute)..."
+            echo "⚙️  Running Godot export..."
             LOG_FILE="/tmp/godot-export-$slug.log"
 
-            # ✅ إصلاح: timeout لا يعمل على Windows، تم حذفه
             "$GODOT_BIN" \
               --headless \
               --path "$proj_dir" \
@@ -169,7 +167,6 @@ jobs:
               echo "📋 Godot output:"
               cat "$LOG_FILE"
               FAILED_COUNT=$((FAILED_COUNT + 1))
-            # ✅ إصلاح: التحقق من وجود index.html وليس فقط exit code
             elif [ ! -f "$OUTPUT_DIR/index.html" ]; then
               echo "❌ GODOT EXPORT FAILED (exit 0 but no index.html)"
               echo "📋 Godot output:"
@@ -184,11 +181,10 @@ jobs:
             echo "📁 Output files:"
             if [ -d "$OUTPUT_DIR" ]; then
               ls -lh "$OUTPUT_DIR/"
-              if [ ! -f "$OUTPUT_DIR/index.html" ]; then
-                echo "⚠️  WARNING: index.html not found!"
+              if [ -f "$OUTPUT_DIR/index.html" ]; then
+                SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
+                echo "💾 Total size: $SIZE"
               fi
-              SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
-              echo "💾 Total size: $SIZE"
             else
               echo "❌ Output directory not created"
             fi
