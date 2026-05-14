@@ -204,6 +204,17 @@ jobs:
             exit 0
           fi
 
+      - name: Fix module script in Godot HTML
+        shell: bash
+        run: |
+          echo "🔧 Fixing module scripts in exported HTML..."
+          find public/games/godot -name "index.html" -type f | while read file; do
+            if grep -q '<script src="index.js">' "$file"; then
+              sed -i 's|<script src="index.js">|<script type="module" src="index.js">|g' "$file"
+              echo "✅ Fixed: $file"
+            fi
+          done
+
       - name: Commit exported files
         shell: bash
         run: |
