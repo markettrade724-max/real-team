@@ -6,25 +6,6 @@
         { "key": "Cross-Origin-Embedder-Policy", "value": "require-corp" },
         { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
       ]
-    },
-    {
-      "source": "/games/godot/(.*)\\.(wasm|pck)",
-      "headers": [
-        { "key": "Content-Type", "value": "application/wasm" },
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "/games/godot/(.*)\\.js",
-      "headers": [
-        { "key": "Content-Type", "value": "application/javascript" }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/games/:game",
-      "destination": "/games/:game.html"
     }
   ]
 }
