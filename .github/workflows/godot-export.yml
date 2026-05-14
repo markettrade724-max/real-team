@@ -76,7 +76,6 @@ jobs:
           GODOT_BIN="/c/godot/Godot_v4.6-stable_win64.exe"
           if [ ! -f "$GODOT_BIN" ]; then
             echo "❌ GODOT EXECUTABLE NOT FOUND: $GODOT_BIN"
-            ls -la /c/godot/ 2>/dev/null || echo "  /c/godot/ does not exist"
             exit 1
           fi
           echo "✅ Godot found: $GODOT_BIN"
@@ -87,8 +86,6 @@ jobs:
 
           if [ -z "$FOUND_PROJECTS" ]; then
             echo "❌ NO GODOT PROJECT FOUND ANYWHERE IN THE REPOSITORY"
-            ls -laR godot-projects/ 2>/dev/null || echo "  (folder not found)"
-            find . -maxdepth 1 -name "*.gd" -o -name "*.tscn" -o -name "*.godot" 2>/dev/null || echo "  (no Godot files in root)"
             exit 1
           fi
 
@@ -106,7 +103,6 @@ jobs:
             echo ""
             echo "🎯=== EXPORTING: $slug ==="
             echo "📁 Project directory: $proj_dir"
-            echo "📁 Contents of $proj_dir/:"
             ls -la "$proj_dir/"
             echo ""
 
@@ -114,7 +110,7 @@ jobs:
               echo "✅ export_presets.cfg found"
             elif [ -f "$proj_dir/export-presets.cfg" ]; then
               cp "$proj_dir/export-presets.cfg" "$proj_dir/export_presets.cfg"
-              echo "✅ export-presets.cfg found (copied to export_presets.cfg)"
+              echo "✅ export-presets.cfg found (copied)"
             else
               echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
               cat > "$proj_dir/export_presets.cfg" << 'EOF'
@@ -162,7 +158,7 @@ EOF
             echo "📤 Output directory: $OUTPUT_DIR"
             echo ""
 
-            echo "⚙️  Running Godot export (this may take a minute)..."
+            echo "⚙️  Running Godot export..."
             LOG_FILE="/tmp/godot-export-$slug.log"
 
             "$GODOT_BIN" \
@@ -176,19 +172,14 @@ EOF
             if [ -f "$OUTPUT_DIR/index.html" ]; then
               curl -sL -o "$OUTPUT_DIR/coi-serviceworker.js" \
                 "https://cdn.jsdelivr.net/npm/coi-serviceworker@0.1.7/coi-serviceworker.min.js"
-              sed -i 's|^[[:space:]]*<head>|<head><script src="coi-serviceworker.js"></script>|' \
-                "$OUTPUT_DIR/index.html"
             fi
 
             if [ $GODOT_EXIT -ne 0 ]; then
               echo "❌ GODOT EXPORT FAILED (exit code: $GODOT_EXIT)"
-              echo "📋 Godot output:"
               cat "$LOG_FILE"
               FAILED_COUNT=$((FAILED_COUNT + 1))
             elif [ ! -f "$OUTPUT_DIR/index.html" ]; then
               echo "❌ GODOT EXPORT FAILED (exit 0 but no index.html)"
-              echo "📋 Godot output:"
-              cat "$LOG_FILE"
               FAILED_COUNT=$((FAILED_COUNT + 1))
             else
               echo "✅ Export successful!"
@@ -199,11 +190,10 @@ EOF
             echo "📁 Output files:"
             if [ -d "$OUTPUT_DIR" ]; then
               ls -lh "$OUTPUT_DIR/"
-              if [ ! -f "$OUTPUT_DIR/index.html" ]; then
-                echo "⚠️  WARNING: index.html not found!"
+              if [ -f "$OUTPUT_DIR/index.html" ]; then
+                SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
+                echo "💾 Total size: $SIZE"
               fi
-              SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
-              echo "💾 Total size: $SIZE"
             else
               echo "❌ Output directory not created"
             fi
