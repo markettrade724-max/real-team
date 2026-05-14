@@ -31,7 +31,7 @@ func _input(event):
 
 func _physics_process(delta):
     velocity.y -= gravity * delta
-    if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+    if Input.is_action_just_pressed("jump") and is_on_floor():
         velocity.y = jump_velocity
     var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
     var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -46,5 +46,4 @@ func _physics_process(delta):
 func take_damage(amount: float):
     health -= amount
     if health <= 0:
-        print("Player died!")
         get_tree().reload_current_scene()
