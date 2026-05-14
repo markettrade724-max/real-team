@@ -176,16 +176,18 @@ EOF
             if [ -f "$OUTPUT_DIR/index.html" ]; then
               curl -sL -o "$OUTPUT_DIR/coi-serviceworker.js" \
                 "https://cdn.jsdelivr.net/npm/coi-serviceworker@0.1.7/coi-serviceworker.min.js"
-              python3 -c "
+              cat > /tmp/inject_coi.py << 'PYEOF'
 import sys
 path = sys.argv[1]
 with open(path, 'r', encoding='utf-8') as f:
     content = f.read()
-content = content.replace('</head>', '<script src=\"coi-serviceworker.js\"></script>\n</head>', 1)
+content = content.replace('</head>', '<script src="coi-serviceworker.js"></script>\n</head>', 1)
 with open(path, 'w', encoding='utf-8') as f:
     f.write(content)
 print('✅ coi-serviceworker injected')
-" "$OUTPUT_DIR/index.html"
+PYEOF
+              python3 /tmp/inject_coi.py "$OUTPUT_DIR/index.html"
+              rm -f /tmp/inject_coi.py
             fi
 
             if [ $GODOT_EXIT -ne 0 ]; then
