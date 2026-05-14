@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://enemy"]
+
+[ext_resource type="Script" path="res://Enemy.gd" id="1_script"]
+
+[sub_resource type="CapsuleShape3D" id="1_shape"]
+radius = 0.5
+height = 1.8
+
+[node name="Enemy" type="CharacterBody3D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("1_shape")
+position = Vector3(0, 0.9, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = CapsuleMesh.new()
