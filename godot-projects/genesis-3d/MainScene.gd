@@ -6,9 +6,7 @@ extends Node3D
 var game_started = false
 
 func _ready():
-	# إظهار مؤشر الماوس وانتظار النقر
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	# إيقاف الفيزياء مؤقتًا حتى يبدأ اللاعب
 	get_tree().paused = true
 
 func _input(event):
@@ -18,6 +16,5 @@ func _input(event):
 func start_game():
 	game_started = true
 	get_tree().paused = false
-	# إخفاء المؤشر وتفعيل التحكم الكامل
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	print("Game Started!")
