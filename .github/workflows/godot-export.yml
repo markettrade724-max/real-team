@@ -214,8 +214,8 @@ jobs:
           fi
           if ! git diff --staged --quiet; then
             git commit -m "🎮 Auto-export Godot games [skip ci]"
-            git pull --rebase origin main || git rebase --abort
-            git push origin main
+            # استخدام force-with-lease لتجنب تضارب الملفات الثنائية
+            git push origin main --force-with-lease
           else
             echo "No changes to commit"
           fi
