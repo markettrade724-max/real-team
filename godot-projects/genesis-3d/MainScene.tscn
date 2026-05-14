@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://mainscene"]
+[gd_scene load_steps=6 format=3 uid="uid://mainscene"]
 
 [ext_resource type="PackedScene" uid="uid://player" path="res://Player.tscn" id="1_player"]
 [ext_resource type="PackedScene" uid="uid://enemy" path="res://Enemy.tscn" id="2_enemy"]
@@ -6,6 +6,11 @@
 [sub_resource type="Environment" id="1_env"]
 background_mode = 1
 background_color = Color(0.2, 0.2, 0.3, 1)
+
+[sub_resource type="PlaneMesh" id="2_plane"]
+size = Vector2(1, 1)
+
+[sub_resource type="WorldBoundaryShape3D" id="3_plane"]
 
 [node name="MainScene" type="Node3D"]
 
@@ -19,9 +24,9 @@ shadow_enabled = true
 [node name="Ground" type="StaticBody3D" parent="."]
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
 transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, -0.5, 0)
-mesh = PlaneMesh.new()
+mesh = SubResource("2_plane")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
-shape = WorldBoundaryShape3D.new()
+shape = SubResource("3_plane")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 
