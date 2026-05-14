@@ -110,18 +110,13 @@ jobs:
             ls -la "$proj_dir/"
             echo ""
 
-            # ✅ إصلاح 1: البحث عن export_presets.cfg بكلا الاسمين (بشرطة أو underscore)
-            PRESETS_FILE=""
             if [ -f "$proj_dir/export_presets.cfg" ]; then
-              PRESETS_FILE="$proj_dir/export_presets.cfg"
               echo "✅ export_presets.cfg found"
             elif [ -f "$proj_dir/export-presets.cfg" ]; then
               cp "$proj_dir/export-presets.cfg" "$proj_dir/export_presets.cfg"
-              PRESETS_FILE="$proj_dir/export_presets.cfg"
               echo "✅ export-presets.cfg found (copied to export_presets.cfg)"
             else
               echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
-              # ✅ إصلاح 2: محتوى صحيح لـ Godot 4
               cat > "$proj_dir/export_presets.cfg" << 'EOF'
 [preset.0]
 name="HTML5"
@@ -178,12 +173,19 @@ EOF
 
             GODOT_EXIT=$?
 
-            # ✅ إضافة coi-serviceworker لحل مشكلة cross-origin isolation في iframe
             if [ -f "$OUTPUT_DIR/index.html" ]; then
               curl -sL -o "$OUTPUT_DIR/coi-serviceworker.js" \
                 "https://cdn.jsdelivr.net/npm/coi-serviceworker@0.1.7/coi-serviceworker.min.js"
-              sed -i 's|</head>|<script src="coi-serviceworker.js"></script>\n</head>|' \
-                "$OUTPUT_DIR/index.html"
+              python3 -c "
+import sys
+path = sys.argv[1]
+with open(path, 'r', encoding='utf-8') as f:
+    content = f.read()
+content = content.replace('</head>', '<script src=\"coi-serviceworker.js\"></script>\n</head>', 1)
+with open(path, 'w', encoding='utf-8') as f:
+    f.write(content)
+print('✅ coi-serviceworker injected')
+" "$OUTPUT_DIR/index.html"
             fi
 
             if [ $GODOT_EXIT -ne 0 ]; then
