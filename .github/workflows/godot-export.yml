@@ -204,15 +204,23 @@ jobs:
             exit 0
           fi
 
-      - name: Fix module script in Godot HTML
+      - name: Fix Godot HTML for Vercel (Engine not defined)
         shell: bash
         run: |
-          echo "🔧 Fixing module scripts in exported HTML..."
+          echo "🔧 Fixing Godot HTML module loading..."
           find public/games/godot -name "index.html" -type f | while read file; do
-            if grep -q '<script src="index.js">' "$file"; then
-              sed -i 's|<script src="index.js">|<script type="module" src="index.js">|g' "$file"
-              echo "✅ Fixed: $file"
-            fi
+            echo "📄 Processing: $file"
+            
+            # 1. إزالة وسم script من body إن وجد
+            sed -i '/<script src="index.js"><\/script>/d' "$file"
+            sed -i '/<script src="index.js" type="module"><\/script>/d' "$file"
+            
+            # 2. إضافة وسم script مع type="module" في نهاية head (قبل </head>)
+            sed -i '/<\/head>/i <script type="module" src="index.js"></script>' "$file"
+            
+            echo "✅ Fixed: $file"
+            echo "📋 Head section preview:"
+            grep -A 2 'script type="module"' "$file" || echo "⚠️ Script tag not found after fix!"
           done
 
       - name: Commit exported files
