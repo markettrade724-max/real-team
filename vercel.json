@@ -1,6 +1,13 @@
 {
   "headers": [
     {
+      "source": "/games/godot/(.*)",
+      "headers": [
+        { "key": "Cross-Origin-Embedder-Policy", "value": "require-corp" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+      ]
+    },
+    {
       "source": "/games/godot/(.*)\\.(wasm|pck)",
       "headers": [
         { "key": "Content-Type", "value": "application/wasm" },
@@ -8,16 +15,10 @@
       ]
     },
     {
-      "source": "/games/godot/(.*)\\.(js|html)",
+      "source": "/games/godot/(.*)\\.js",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache" }
+        { "key": "Content-Type", "value": "application/javascript" }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/games/:game",
-      "destination": "/games/:game.html"
     }
   ]
 }
