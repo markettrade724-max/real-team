@@ -1,5 +1,5 @@
 [
-  {
+ {
   "id": "genesis-3d",
   "slug": "genesis-3d",
   "type": "godot",
@@ -8,17 +8,25 @@
   "emoji": "🚀",
   "templateFile": "godot-wrapper.html",
   "godotSlug": "genesis-3d",
-  "name": { "ar": "جينيسيس 3D", "en": "Genesis 3D" },
-  "desc": { "ar": "أول لعبة 3D", "en": "First 3D game" },
+  "name": {
+    "ar": "جينيسيس 3D",
+    "en": "Genesis 3D",
+    "fr": "Genèse 3D",
+    "es": "Génesis 3D",
+    "de": "Genesis 3D",
+    "zh": "创世纪 3D"
+  },
+  "desc": {
+    "ar": "أول لعبة إطلاق نار ثلاثية الأبعاد على المنصة",
+    "en": "First 3D shooter game on the platform",
+    "fr": "Premier jeu de tir 3D sur la plateforme",
+    "es": "Primer juego de disparos 3D en la plataforma",
+    "de": "Erstes 3D-Shooter-Spiel auf der Plattform",
+    "zh": "平台上的首款3D射击游戏"
+  },
   "tags": ["3d", "fps", "shooter"],
   "iap": [],
-  "levels": [],
-  "controls": {
-    "move": "WASD",
-    "look": "Mouse",
-    "fire": "Left Click",
-    "jump": "Space"
-  }
+  "levels": []
 },
   {
     "id": "ephemeral-epic-generator",
