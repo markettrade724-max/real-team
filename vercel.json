@@ -20,5 +20,11 @@
         { "key": "Content-Type", "value": "application/javascript" }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/games/:game",
+      "destination": "/games/:game.html"
+    }
   ]
 }
