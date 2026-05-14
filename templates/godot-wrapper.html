@@ -67,18 +67,22 @@
   </div>
 
   <script type="module">
-    // استيراد محرك Godot من ملف اللعبة المُصدَّر
-    import { Engine } from '/games/godot/{{GODOT_SLUG}}/index.js';
+    // Godot 4.6.2 قد يستخدم default export أو يضع Engine كدالة عامة
+    // نستخدم الاستيراد الافتراضي (default import) للتوافق
+    import godot from '/games/godot/{{GODOT_SLUG}}/index.js';
+    
+    // إذا كان godot دالة (default export للمحرك)
+    const EngineClass = typeof godot === 'function' ? godot : godot.default || godot.Engine;
+    
+    if (!EngineClass) {
+      throw new Error('Cannot find Godot Engine export');
+    }
 
     const canvas = document.getElementById('canvas');
-
-    // تهيئة المحرك
-    const engine = new Engine({
+    const engine = new EngineClass({
       canvas: canvas,
       executable: '/games/godot/{{GODOT_SLUG}}/index',
-      // اختياري: إضافة دوال للتحكم بالتركيز والرؤية
     });
-
     engine.startGame();
   </script>
 </body>
