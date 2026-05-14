@@ -48,7 +48,6 @@ jobs:
         run: |
           TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.stable"
           mkdir -p "$TEMPLATES_DIR"
-          echo "📥 Downloading Export Templates..."
           curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_export_templates.tpz
           unzip -q /tmp/templates.tpz -d /tmp/templates
           mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
@@ -71,8 +70,6 @@ jobs:
         shell: bash
         run: |
           echo "🔍=== START GODOT DIAGNOSTIC ==="
-          echo "📁 Current directory: $(pwd)"
-
           GODOT_BIN="/c/godot/Godot_v4.6-stable_win64.exe"
           if [ ! -f "$GODOT_BIN" ]; then
             echo "❌ GODOT EXECUTABLE NOT FOUND: $GODOT_BIN"
@@ -81,17 +78,11 @@ jobs:
           echo "✅ Godot found: $GODOT_BIN"
           echo ""
 
-          echo "🔎 Scanning for project.godot files anywhere in the repository..."
           FOUND_PROJECTS=$(find . -name "project.godot" -type f 2>/dev/null)
-
           if [ -z "$FOUND_PROJECTS" ]; then
-            echo "❌ NO GODOT PROJECT FOUND ANYWHERE IN THE REPOSITORY"
+            echo "❌ NO GODOT PROJECT FOUND"
             exit 1
           fi
-
-          echo "✅ Found Godot projects:"
-          echo "$FOUND_PROJECTS"
-          echo ""
 
           export EXPORT_COUNT=0
           export FAILED_COUNT=0
@@ -99,20 +90,13 @@ jobs:
           for proj_file in $FOUND_PROJECTS; do
             proj_dir=$(dirname "$proj_file")
             slug=$(basename "$proj_dir")
-
             echo ""
             echo "🎯=== EXPORTING: $slug ==="
-            echo "📁 Project directory: $proj_dir"
             ls -la "$proj_dir/"
             echo ""
 
-            if [ -f "$proj_dir/export_presets.cfg" ]; then
-              echo "✅ export_presets.cfg found"
-            elif [ -f "$proj_dir/export-presets.cfg" ]; then
-              cp "$proj_dir/export-presets.cfg" "$proj_dir/export_presets.cfg"
-              echo "✅ export-presets.cfg found (copied)"
-            else
-              echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
+            if [ ! -f "$proj_dir/export_presets.cfg" ]; then
+              echo "⚠️  Creating default export_presets.cfg..."
               cat > "$proj_dir/export_presets.cfg" << 'EOF'
 [preset.0]
 name="HTML5"
@@ -160,13 +144,11 @@ EOF
 
             echo "⚙️  Running Godot export..."
             LOG_FILE="/tmp/godot-export-$slug.log"
-
             "$GODOT_BIN" \
               --headless \
               --path "$proj_dir" \
               --export-release "HTML5" "$OUTPUT_DIR/index.html" \
               > "$LOG_FILE" 2>&1
-
             GODOT_EXIT=$?
 
             if [ -f "$OUTPUT_DIR/index.html" ]; then
