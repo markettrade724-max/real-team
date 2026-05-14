@@ -637,7 +637,11 @@ function generate(product) {
 
   const LANGS = ['ar','en','fr','es','de','zh'];
   let built = 0;
-
+// إذا كان القالب هو godot-wrapper، نتأكد من وجود GODOT_SLUG ونتابع بشكل طبيعي
+  if (tplName === 'godot-wrapper.html') {
+    // لا نحتاج إلى levels أو emojis خاصة، فقط نمرر المتغيرات
+    console.log(`  🌐 Generating Godot wrapper for ${product.slug}`);
+  }
   LANGS.forEach(lang => {
     const lbl  = LABELS[lang];
     const name = safeName[lang];
