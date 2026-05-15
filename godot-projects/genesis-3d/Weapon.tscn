@@ -1,3 +1,5 @@
+ ── Weapon.tscn ──────────────────────────────────────────────
+; ✅ إصلاح: إضافة ext_resource للـ bullet كان ناقصاً (load_steps كان 3 والآن 4)
 [gd_scene load_steps=4 format=3 uid="uid://weapon"]
 
 [ext_resource type="Script" path="res://Weapon.gd" id="1_script"]
