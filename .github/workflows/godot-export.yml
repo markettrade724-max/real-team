@@ -86,11 +86,12 @@ jobs:
             slug=$(basename "$proj_dir")
             echo "🎯 Exporting: $slug"
 
-            # ✅ التصحيح: استخدام مسار مطلق
+            # مسار مطلق
             OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
 
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
+              # إنشاء export_presets.cfg افتراضي بدون heredoc
               echo "[preset.0]" > "$proj_dir/export_presets.cfg"
               echo "name=\"HTML5\"" >> "$proj_dir/export_presets.cfg"
               echo "platform=\"Web\"" >> "$proj_dir/export_presets.cfg"
@@ -130,6 +131,14 @@ jobs:
 
             "$GODOT_BIN" --headless --path "$proj_dir" --export-release "HTML5" "$OUTPUT_DIR/index.html"
 
+            # ✅ فحص سلامة الملفات الأساسية (القاعدة 029)
+            if [ ! -s "$OUTPUT_DIR/index.wasm" ] || [ ! -s "$OUTPUT_DIR/index.pck" ]; then
+              echo "❌ فشل: أحد الملفات الأساسية (.wasm أو .pck) فارغ أو غير موجود"
+              exit 1
+            fi
+            echo "✅ الملفات الأساسية سليمة"
+
+            # تحميل coi-serviceworker.js
             if [ -f "$OUTPUT_DIR/index.html" ]; then
               curl -sL -o "$OUTPUT_DIR/coi-serviceworker.js" \
                 "https://cdn.jsdelivr.net/npm/coi-serviceworker@0.1.7/coi-serviceworker.min.js"
