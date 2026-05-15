@@ -10,7 +10,7 @@ background_color = Color(0.2, 0.2, 0.3, 1)
 
 [sub_resource type="PlaneMesh" id="2_plane"]
 size = Vector2(1, 1)
-orientation = 1          ;; <-- هذا هو الحل: 1 = FACE_Y (أرض)
+orientation = 1          ; ← يجعل الأرضية أفقية
 
 [sub_resource type="WorldBoundaryShape3D" id="3_plane"]
 
