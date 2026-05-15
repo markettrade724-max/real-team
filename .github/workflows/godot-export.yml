@@ -15,6 +15,8 @@ jobs:
   export-godot:
     runs-on: windows-latest
     timeout-minutes: 25
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -24,14 +26,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: C:\godot
-          key: godot-4.6-windows-x86_64
+          key: godot-4.6.2-windows-x86_64
 
       - name: Download Godot Engine
         if: steps.cache-godot.outputs.cache-hit != 'true'
         shell: bash
         run: |
           mkdir -p /c/godot
-          curl -L -o /c/godot/godot.zip https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_win64.exe.zip
+          curl -L -o /c/godot/godot.zip https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_win64.exe.zip
           unzip -q /c/godot/godot.zip -d /c/godot
           rm /c/godot/godot.zip
 
@@ -39,64 +41,53 @@ jobs:
         id: cache-templates
         uses: actions/cache@v3
         with:
-          path: C:\Users\runneradmin\AppData\Roaming\Godot\export_templates\4.6.stable
-          key: godot-templates-4.6-stable
+          path: C:\Users\runneradmin\AppData\Roaming\Godot\export_templates\4.6.2.stable
+          key: godot-templates-4.6.2-stable
 
       - name: Download Godot Export Templates
         if: steps.cache-templates.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.stable"
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
           mkdir -p "$TEMPLATES_DIR"
-          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_export_templates.tpz
+          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz
           unzip -q /tmp/templates.tpz -d /tmp/templates
           mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
           rm -rf /tmp/templates /tmp/templates.tpz
-          echo "✅ Templates installed"
-          ls -la "$TEMPLATES_DIR/"
 
       - name: Verify Export Templates
         shell: bash
         run: |
-          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.stable"
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
           if [ ! -d "$TEMPLATES_DIR" ] || [ -z "$(ls -A $TEMPLATES_DIR)" ]; then
-            echo "❌ Templates directory not found or empty!"
+            echo "❌ Templates not found!"
             exit 1
           fi
-          echo "✅ Templates found:"
-          ls -lh "$TEMPLATES_DIR/" | grep -E "web|html" || ls -lh "$TEMPLATES_DIR/"
+          echo "✅ Templates found"
 
       - name: Export Godot projects
         shell: bash
         run: |
-          echo "🔍=== START GODOT DIAGNOSTIC ==="
-          GODOT_BIN="/c/godot/Godot_v4.6-stable_win64.exe"
+          GODOT_BIN="/c/godot/Godot_v4.6.2-stable_win64.exe"
           if [ ! -f "$GODOT_BIN" ]; then
-            echo "❌ GODOT EXECUTABLE NOT FOUND: $GODOT_BIN"
+            echo "❌ Godot not found!"
             exit 1
           fi
-          echo "✅ Godot found: $GODOT_BIN"
-          echo ""
 
-          FOUND_PROJECTS=$(find . -name "project.godot" -type f 2>/dev/null)
+          FOUND_PROJECTS=$(find godot-projects -name "project.godot" -type f 2>/dev/null)
           if [ -z "$FOUND_PROJECTS" ]; then
-            echo "❌ NO GODOT PROJECT FOUND"
+            echo "❌ No projects"
             exit 1
           fi
-
-          export EXPORT_COUNT=0
-          export FAILED_COUNT=0
 
           for proj_file in $FOUND_PROJECTS; do
             proj_dir=$(dirname "$proj_file")
             slug=$(basename "$proj_dir")
-            echo ""
-            echo "🎯=== EXPORTING: $slug ==="
-            ls -la "$proj_dir/"
-            echo ""
+            echo "🎯 Exporting: $slug"
+            OUTPUT_DIR="public/games/godot/$slug"
+            mkdir -p "$OUTPUT_DIR"
 
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
-              echo "⚠️  Creating default export_presets.cfg..."
               cat > "$proj_dir/export_presets.cfg" << 'EOF'
 [preset.0]
 name="HTML5"
@@ -133,70 +124,19 @@ progressive_web_app/icon_maskable_192x192=""
 progressive_web_app/icon_maskable_512x512=""
 progressive_web_app/background_color=Color(0, 0, 0, 1)
 EOF
-              echo "✅ Default export_presets.cfg created"
             fi
-            echo ""
 
-            OUTPUT_DIR="public/games/godot/$slug"
-            mkdir -p "$OUTPUT_DIR"
-            echo "📤 Output directory: $OUTPUT_DIR"
-            echo ""
-
-            echo "⚙️  Running Godot export..."
-            LOG_FILE="/tmp/godot-export-$slug.log"
-            "$GODOT_BIN" \
-              --headless \
-              --path "$proj_dir" \
-              --export-release "HTML5" "$OUTPUT_DIR/index.html" \
-              > "$LOG_FILE" 2>&1
-            GODOT_EXIT=$?
+            "$GODOT_BIN" --headless --path "$proj_dir" --export-release "HTML5" "$OUTPUT_DIR/index.html"
 
             if [ -f "$OUTPUT_DIR/index.html" ]; then
               curl -sL -o "$OUTPUT_DIR/coi-serviceworker.js" \
                 "https://cdn.jsdelivr.net/npm/coi-serviceworker@0.1.7/coi-serviceworker.min.js"
-            fi
-
-            if [ $GODOT_EXIT -ne 0 ]; then
-              echo "❌ GODOT EXPORT FAILED (exit code: $GODOT_EXIT)"
-              cat "$LOG_FILE"
-              FAILED_COUNT=$((FAILED_COUNT + 1))
-            elif [ ! -f "$OUTPUT_DIR/index.html" ]; then
-              echo "❌ GODOT EXPORT FAILED (exit 0 but no index.html)"
-              FAILED_COUNT=$((FAILED_COUNT + 1))
+              echo "✅ Export successful"
             else
-              echo "✅ Export successful!"
-              EXPORT_COUNT=$((EXPORT_COUNT + 1))
+              echo "❌ Export failed"
+              exit 1
             fi
-
-            echo ""
-            echo "📁 Output files:"
-            if [ -d "$OUTPUT_DIR" ]; then
-              ls -lh "$OUTPUT_DIR/"
-              if [ -f "$OUTPUT_DIR/index.html" ]; then
-                SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
-                echo "💾 Total size: $SIZE"
-              fi
-            else
-              echo "❌ Output directory not created"
-            fi
-            echo ""
           done
-
-          echo "════════════════════════════════════"
-          echo "🎉 GODOT EXPORT SUMMARY"
-          echo "════════════════════════════════════"
-          echo "✅ Successful exports: $EXPORT_COUNT"
-          echo "❌ Failed exports: $FAILED_COUNT"
-
-          if [ $FAILED_COUNT -gt 0 ]; then
-            echo ""
-            echo "❌ EXPORT COMPLETED WITH ERRORS"
-            exit 1
-          else
-            echo ""
-            echo "✅ ALL EXPORTS COMPLETED SUCCESSFULLY"
-            exit 0
-          fi
 
       - name: Commit exported files
         shell: bash
@@ -211,5 +151,5 @@ EOF
             git pull --rebase origin main || git rebase --abort
             git push origin main --force-with-lease
           else
-            echo "No changes to commit"
+            echo "No changes"
           fi
