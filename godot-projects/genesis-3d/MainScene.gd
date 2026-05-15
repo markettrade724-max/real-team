@@ -1,14 +1,10 @@
 extends Node3D
 
-@export var enemy_scene: PackedScene
-@export var spawn_points: Array[Node3D] = []
-
 var game_started = false
 
 func _ready():
+    # إعداد المؤشر المرئي وإيقاف اللعبة فوراً (بدون await)
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-    # نؤجل الإيقاف حتى الإطار التالي لتجنب تعارضات التحميل
-    await get_tree().process_frame
     get_tree().paused = true
 
 func _input(event):
