@@ -15,6 +15,8 @@ jobs:
   export-godot:
     runs-on: windows-latest
     timeout-minutes: 25
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -48,190 +50,96 @@ jobs:
         run: |
           TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
           mkdir -p "$TEMPLATES_DIR"
-          echo "📥 Downloading Export Templates..."
-          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_export_templates.tpz
+          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz
           unzip -q /tmp/templates.tpz -d /tmp/templates
           mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
           rm -rf /tmp/templates /tmp/templates.tpz
           echo "✅ Templates installed"
-          ls -la "$TEMPLATES_DIR/"
 
       - name: Verify Export Templates
         shell: bash
         run: |
-          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.stable"
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
           if [ ! -d "$TEMPLATES_DIR" ] || [ -z "$(ls -A $TEMPLATES_DIR)" ]; then
-            echo "❌ Templates directory not found or empty!"
+            echo "❌ Templates not found!"
             exit 1
           fi
-          echo "✅ Templates found:"
-          ls -lh "$TEMPLATES_DIR/" | grep -E "web|html" || ls -lh "$TEMPLATES_DIR/"
+          echo "✅ Templates found"
 
       - name: Export Godot projects
         shell: bash
         run: |
-          echo "🔍=== START GODOT DIAGNOSTIC ==="
-          echo "📁 Current directory: $(pwd)"
-
           GODOT_BIN="/c/godot/Godot_v4.6.2-stable_win64.exe"
           if [ ! -f "$GODOT_BIN" ]; then
-            echo "❌ GODOT EXECUTABLE NOT FOUND: $GODOT_BIN"
-            ls -la /c/godot/ 2>/dev/null || echo "  /c/godot/ does not exist"
+            echo "❌ Godot not found!"
             exit 1
           fi
-          echo "✅ Godot found: $GODOT_BIN"
-          echo ""
 
-          echo "🔎 Scanning for project.godot files anywhere in the repository..."
-          FOUND_PROJECTS=$(find . -name "project.godot" -type f 2>/dev/null)
-
+          FOUND_PROJECTS=$(find godot-projects -name "project.godot" -type f 2>/dev/null)
           if [ -z "$FOUND_PROJECTS" ]; then
-            echo "❌ NO GODOT PROJECT FOUND ANYWHERE IN THE REPOSITORY"
-            ls -laR godot-projects/ 2>/dev/null || echo "  (folder not found)"
-            find . -maxdepth 1 -name "*.gd" -o -name "*.tscn" -o -name "*.godot" 2>/dev/null || echo "  (no Godot files in root)"
+            echo "❌ No projects"
             exit 1
           fi
-
-          echo "✅ Found Godot projects:"
-          echo "$FOUND_PROJECTS"
-          echo ""
-
-          export EXPORT_COUNT=0
-          export FAILED_COUNT=0
 
           for proj_file in $FOUND_PROJECTS; do
             proj_dir=$(dirname "$proj_file")
             slug=$(basename "$proj_dir")
+            echo "🎯 Exporting: $slug"
 
-            echo ""
-            echo "🎯=== EXPORTING: $slug ==="
-            echo "📁 Project directory: $proj_dir"
-            echo "📁 Contents of $proj_dir/:"
-            ls -la "$proj_dir/"
-            echo ""
-
-            if [ -f "$proj_dir/export_presets.cfg" ]; then
-              echo "✅ export_presets.cfg found"
-            elif [ -f "$proj_dir/export-presets.cfg" ]; then
-              cp "$proj_dir/export-presets.cfg" "$proj_dir/export_presets.cfg"
-              echo "✅ export-presets.cfg found (copied to export_presets.cfg)"
-            else
-              echo "⚠️  WARNING: export_presets.cfg not found. Creating default..."
-              cat > "$proj_dir/export_presets.cfg" << 'EOF'
-[preset.0]
-name="HTML5"
-platform="Web"
-runnable=true
-custom_features=""
-export_filter="all_resources"
-include_filter=""
-exclude_filter=""
-export_path="./index.html"
-encryption_include_filters=""
-encryption_exclude_filters=""
-script_encryption_key=""
-patches=PackedStringArray()
-
-[preset.0.options]
-custom_template/debug=""
-custom_template/release=""
-variant/extensions_support=false
-vram_texture_compression/for_mobile=false
-html/export_icon=true
-html/custom_html_shell=""
-html/head_include=""
-html/canvas_resize_policy=2
-html/focus_canvas_on_start=true
-html/experimental_virtual_keyboard=false
-progressive_web_app/enabled=false
-progressive_web_app/offline_page=""
-progressive_web_app/display=1
-progressive_web_app/orientation=0
-progressive_web_app/icon_144x144=""
-progressive_web_app/icon_180x180=""
-progressive_web_app/icon_maskable_192x192=""
-progressive_web_app/icon_maskable_512x512=""
-progressive_web_app/background_color=Color(0, 0, 0, 1)
-EOF
-              echo "✅ Default export_presets.cfg created"
-            fi
-            echo ""
-
-            OUTPUT_DIR="public/games/godot/$slug"
+            # مسار مطلق
+            OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
-            echo "📤 Output directory: $OUTPUT_DIR"
-            echo ""
 
-            echo "⚙️  Running Godot export (this may take a minute)..."
-            LOG_FILE="/tmp/godot-export-$slug.log"
-
-            "$GODOT_BIN" \
-              --headless \
-              --path "$proj_dir" \
-              --export-release "HTML5" "$OUTPUT_DIR/index.html" \
-              > "$LOG_FILE" 2>&1
-
-            GODOT_EXIT=$?
-
-            # ✅ التحقق من الملفات الأربعة المطلوبة
-            if [ -f "$OUTPUT_DIR/index.html" ]; then
-              echo "✅ index.html"
-            else
-              echo "❌ index.html MISSING"
-            fi
-            for f in index.js index.wasm index.pck; do
-              if [ -f "$OUTPUT_DIR/$f" ]; then
-                echo "✅ $f"
-              else
-                echo "❌ $f MISSING"
-              fi
-            done
-
-            if [ $GODOT_EXIT -ne 0 ]; then
-              echo "❌ GODOT EXPORT FAILED (exit code: $GODOT_EXIT)"
-              echo "📋 Godot output:"
-              cat "$LOG_FILE"
-              FAILED_COUNT=$((FAILED_COUNT + 1))
-            elif [ ! -f "$OUTPUT_DIR/index.html" ]; then
-              echo "❌ GODOT EXPORT FAILED (exit 0 but no index.html)"
-              echo "📋 Godot output:"
-              cat "$LOG_FILE"
-              FAILED_COUNT=$((FAILED_COUNT + 1))
-            else
-              echo "✅ Export successful!"
-              EXPORT_COUNT=$((EXPORT_COUNT + 1))
+            if [ ! -f "$proj_dir/export_presets.cfg" ]; then
+              # إنشاء export_presets.cfg افتراضي (أحادي الخيط)
+              echo "[preset.0]" > "$proj_dir/export_presets.cfg"
+              echo "name=\"HTML5\"" >> "$proj_dir/export_presets.cfg"
+              echo "platform=\"Web\"" >> "$proj_dir/export_presets.cfg"
+              echo "runnable=true" >> "$proj_dir/export_presets.cfg"
+              echo "custom_features=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "export_filter=\"all_resources\"" >> "$proj_dir/export_presets.cfg"
+              echo "include_filter=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "exclude_filter=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "export_path=\"./index.html\"" >> "$proj_dir/export_presets.cfg"
+              echo "encryption_include_filters=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "encryption_exclude_filters=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "script_encryption_key=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "patches=PackedStringArray()" >> "$proj_dir/export_presets.cfg"
+              echo "" >> "$proj_dir/export_presets.cfg"
+              echo "[preset.0.options]" >> "$proj_dir/export_presets.cfg"
+              echo "custom_template/debug=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "custom_template/release=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "variant/extensions_support=false" >> "$proj_dir/export_presets.cfg"
+              echo "vram_texture_compression/for_mobile=false" >> "$proj_dir/export_presets.cfg"
+              echo "html/export_icon=true" >> "$proj_dir/export_presets.cfg"
+              echo "html/custom_html_shell=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "html/head_include=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "html/canvas_resize_policy=2" >> "$proj_dir/export_presets.cfg"
+              echo "html/focus_canvas_on_start=true" >> "$proj_dir/export_presets.cfg"
+              echo "html/experimental_virtual_keyboard=false" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/enabled=false" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/offline_page=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/display=1" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/orientation=0" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/icon_144x144=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/icon_180x180=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/icon_maskable_192x192=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/icon_maskable_512x512=\"\"" >> "$proj_dir/export_presets.cfg"
+              echo "progressive_web_app/background_color=Color(0, 0, 0, 1)" >> "$proj_dir/export_presets.cfg"
+              echo "✅ Default export_presets.cfg created (single-threaded)"
             fi
 
-            echo ""
-            echo "📁 Output files:"
-            if [ -d "$OUTPUT_DIR" ]; then
-              ls -lh "$OUTPUT_DIR/"
-              if [ ! -f "$OUTPUT_DIR/index.html" ]; then
-                echo "⚠️  WARNING: index.html not found!"
-              fi
-              SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
-              echo "💾 Total size: $SIZE"
-            else
-              echo "❌ Output directory not created"
+            "$GODOT_BIN" --headless --path "$proj_dir" --export-release "HTML5" "$OUTPUT_DIR/index.html"
+
+            # ✅ فحص الملفات الأربعة الأساسية
+            if [ ! -s "$OUTPUT_DIR/index.html" ] || [ ! -s "$OUTPUT_DIR/index.js" ] || [ ! -s "$OUTPUT_DIR/index.wasm" ] || [ ! -s "$OUTPUT_DIR/index.pck" ]; then
+              echo "❌ فشل: أحد الملفات الأساسية (index.html, index.js, index.wasm, index.pck) فارغ أو غير موجود"
+              exit 1
             fi
-            echo ""
+            echo "✅ جميع الملفات الأساسية سليمة (أحادي الخيط)"
+
+            echo "✅ Export successful (single-threaded, no coi-serviceworker needed)"
           done
-
-          echo "════════════════════════════════════"
-          echo "🎉 GODOT EXPORT SUMMARY"
-          echo "════════════════════════════════════"
-          echo "✅ Successful exports: $EXPORT_COUNT"
-          echo "❌ Failed exports: $FAILED_COUNT"
-
-          if [ $FAILED_COUNT -gt 0 ]; then
-            echo ""
-            echo "❌ EXPORT COMPLETED WITH ERRORS"
-            exit 1
-          else
-            echo ""
-            echo "✅ ALL EXPORTS COMPLETED SUCCESSFULLY"
-            exit 0
-          fi
 
       - name: Commit exported files
         shell: bash
@@ -242,9 +150,9 @@ EOF
             git add public/games/godot/
           fi
           if ! git diff --staged --quiet; then
-            git commit -m "🎮 Auto-export Godot games [skip ci]"
+            git commit -m "🎮 Auto-export Godot games (single-threaded) [skip ci]"
             git pull --rebase origin main || git rebase --abort
             git push origin main --force-with-lease
           else
-            echo "No changes to commit"
+            echo "No changes"
           fi
