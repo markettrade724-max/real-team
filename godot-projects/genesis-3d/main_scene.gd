@@ -3,7 +3,6 @@ extends Node3D
 var game_started = false
 
 func _ready():
-    # إعداد المؤشر المرئي وإيقاف اللعبة فوراً (بدون await)
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
     get_tree().paused = true
 
