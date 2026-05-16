@@ -4,7 +4,6 @@ var damage = 25.0
 var lifetime = 2.0
 
 func _ready():
-    # تدمير الرصاصة بعد فترة
     await get_tree().create_timer(lifetime).timeout
     queue_free()
 
