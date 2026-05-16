@@ -10,13 +10,11 @@ func shoot():
     if not can_fire or not bullet_scene or not muzzle_point:
         return
     can_fire = false
-    # إنشاء الرصاصة
     var bullet = bullet_scene.instantiate()
     get_tree().root.add_child(bullet)
     bullet.global_transform = muzzle_point.global_transform
     if bullet.has_method("launch"):
         var direction = -muzzle_point.global_transform.basis.z.normalized()
         bullet.launch(direction * 20.0)
-    # منع إطلاق متكرر
     await get_tree().create_timer(fire_rate).timeout
     can_fire = true
