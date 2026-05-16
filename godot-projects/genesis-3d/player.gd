@@ -8,8 +8,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready():
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-    # إنشاء السلاح وإضافته إلى نقطة الفوهة
-    var weapon_scene = preload("res://Weapon.tscn")
+    var weapon_scene = preload("res://weapon.tscn")
     var weapon = weapon_scene.instantiate()
     $Muzzle.add_child(weapon)
 
