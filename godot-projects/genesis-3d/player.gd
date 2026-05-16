@@ -10,7 +10,7 @@ func _ready():
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
     var weapon_scene = preload("res://weapon.tscn")
     var weapon = weapon_scene.instantiate()
-    $Muzzle.add_child(weapon)
+    $Camera3D/Muzzle.add_child(weapon)
 
 func _input(event):
     if Input.is_action_just_pressed("ui_cancel"):
@@ -19,12 +19,6 @@ func _input(event):
         rotate_y(-event.relative.x * mouse_sensitivity)
         $Camera3D.rotate_x(-event.relative.y * mouse_sensitivity)
         $Camera3D.rotation.x = clamp($Camera3D.rotation.x, -PI/2, PI/2)
-    if Input.is_action_just_pressed("fire"):
-        var muzzle = $Muzzle
-        if muzzle and muzzle.get_child_count() > 0:
-            var weapon = muzzle.get_child(0)
-            if weapon and weapon.has_method("shoot"):
-                weapon.shoot()
 
 func _physics_process(delta):
     velocity.y -= gravity * delta
@@ -39,3 +33,11 @@ func _physics_process(delta):
         velocity.x = move_toward(velocity.x, 0, speed)
         velocity.z = move_toward(velocity.z, 0, speed)
     move_and_slide()
+
+    # إطلاق النار داخل الفيزياء لضمان الاستجابة
+    if Input.is_action_just_pressed("fire"):
+        var muzzle = $Camera3D/Muzzle
+        if muzzle and muzzle.get_child_count() > 0:
+            var weapon = muzzle.get_child(0)
+            if weapon and weapon.has_method("shoot"):
+                weapon.shoot()
