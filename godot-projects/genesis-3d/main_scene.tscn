@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://mainscene"]
+[gd_scene load_steps=7 format=3 uid="uid://mainscene"]
 
 [ext_resource type="PackedScene" uid="uid://player" path="res://player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://main_scene.gd" id="2_script"]
+[ext_resource type="PackedScene" uid="uid://target" path="res://target.tscn" id="3_target"]
 
 [sub_resource type="Environment" id="1_env"]
 background_mode = 1
@@ -31,3 +32,6 @@ mesh = SubResource("2_plane")
 shape = SubResource("3_plane")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
+
+[node name="Target" parent="." instance=ExtResource("3_target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -5)
