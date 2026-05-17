@@ -78,6 +78,15 @@ async function main() {
 
   logger.info(`💡 New idea: "${data.idea.name?.en}" (type: ${data.idea.type})`);
 
+// ── Phase 2.5: وثيقة الروح (Gemini #3) ──────────────────────
+log.soul = await run('Soul Agent', './agents/soul-agent.js',
+  [data.idea, data.story]);
+if (log.soul?.success) {
+  data.soul = log.soul.data;
+  save('soul.json', data.soul);
+  logger.info(`🌌 Soul: "${data.soul?.essence?.slice(0,50)}"`);
+}
+  
   // ── Phase 3: هوية بصرية (Gemini #2) ──────────────────────────
   log.art = await run('Art Agent', './agents/art-agent.js', [data.idea]);
   if (log.art?.success) { data.art = log.art.data; save('art.json', data.art); }
