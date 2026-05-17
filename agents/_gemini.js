@@ -1,27 +1,54 @@
 /**
- * _gemini.js — مصحح نهائياً
+ * _gemini.js — Gemini 2.5 Flash
  */
 import { GoogleGenAI } from '@google/genai';
 import { logger }      from '../logger.js';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-export async function askGemini(prompt, temperature = 0.9) {
-  const response = await ai.models.generateContent({
-    model:   'gemini-2.5-flash',
-    contents: prompt,
-    config: {
-      temperature,
-      maxOutputTokens:  4096,
-      responseMimeType: 'application/json',
-    },
-  });
+/**
+ * @param {string} prompt
+ * @param {number} temperature
+ * @param {object} options - معاملات إضافية اختيارية
+ *   topP, topK, maxOutputTokens, frequencyPenalty, presencePenalty
+ */
+export async function askGemini(prompt, temperature = 0.9, options = {}) {
+  const {
+    topP               = undefined,
+    topK               = undefined,
+    maxOutputTokens    = 4096,
+    frequencyPenalty   = undefined,
+    presencePenalty    = undefined,
+  } = options;
 
-  // دعم كل أشكال استخراج النص
+  // بناء config — نضيف فقط المعاملات الموجودة
+  const config = {
+    temperature,
+    maxOutputTokens,
+    responseMimeType: 'application/json',
+  };
+  if (topP             !== undefined) config.topP             = topP;
+  if (topK             !== undefined) config.topK             = topK;
+  if (frequencyPenalty !== undefined) config.frequencyPenalty = frequencyPenalty;
+  if (presencePenalty  !== undefined) config.presencePenalty  = presencePenalty;
+
+  let response;
+  try {
+    response = await ai.models.generateContent({
+      model:    'gemini-2.5-flash',
+      contents: prompt,
+      config,
+    });
+  } catch (err) {
+    logger.error('Gemini API call failed', { error: err.message });
+    throw new Error('Gemini API call failed: ' + err.message);
+  }
+
+  // استخراج النص
   let text = '';
   try {
-    if (typeof response.text === 'function') text = response.text();
-    else if (typeof response.text === 'string') text = response.text;
+    if (typeof response.text === 'function')      text = response.text();
+    else if (typeof response.text === 'string')   text = response.text;
     else text = response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
   } catch {
     text = response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -30,7 +57,7 @@ export async function askGemini(prompt, temperature = 0.9) {
   if (!text || text.trim().length < 2)
     throw new Error('Empty response from Gemini');
 
-  // محاولات تحليل JSON
+  // تحليل JSON
   const clean = text.replace(/```json|```/g, '').trim();
   for (const s of [clean, text]) {
     try { return JSON.parse(s); } catch {}
