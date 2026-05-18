@@ -1,0 +1,166 @@
+name: Universe Evolution
+
+on:
+  # تشغيل يومي تلقائي
+  schedule:
+    - cron: '0 6 * * *'  # كل يوم الساعة 6 صباحاً
+
+  # تشغيل يدوي مع اختيار الوضع
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'وضع التشغيل'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+          - auto        # EVOLUTION — يضيف للكون
+          - birth       # BIRTH — يولد كوناً جديداً (مرة في السنة)
+
+jobs:
+  evolve:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Orchestrator
+        shell: bash
+        env:
+          GEMINI_API_KEY:           ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SITE_URL:                  ${{ secrets.SITE_URL }}
+          MODE:                      ${{ github.event.inputs.mode || 'auto' }}
+        run: node orchestrator.js
+
+      - name: Check results
+        shell: bash
+        run: |
+          echo "📊 Run Report:"
+          cat agent-results/run-report.json 2>/dev/null || echo "(no report)"
+          echo ""
+          echo "🌌 Universe Status:"
+          python -c "
+import json
+try:
+    u = json.load(open('universe.json'))
+    print(f'  ID:         {u.get(\"id\", \"\")}')
+    print(f'  Evolutions: {u.get(\"evolutions\", 0)}')
+    print(f'  Worlds:     {len(u.get(\"worlds\", []))}')
+    print(f'  Weapons:    {len(u.get(\"weapons\", []))}')
+    print(f'  Enemies:    {len(u.get(\"enemies\", []))}')
+    print(f'  Vehicles:   {len(u.get(\"vehicles\", []))}')
+    print(f'  Born:       {u.get(\"born\", \"\")}')
+    print(f'  Last:       {u.get(\"lastEvolved\", \"never\")}')
+except Exception as e:
+    print(f'  (no universe yet: {e})')
+" 2>/dev/null
+
+      # تشغيل Godot Export إذا كان في BIRTH MODE
+      - name: Trigger Godot Export (BIRTH only)
+        if: ${{ github.event.inputs.mode == 'birth' }}
+        shell: bash
+        run: |
+          echo "🎮 BIRTH MODE — triggering Godot export..."
+          python -c "
+import json
+try:
+    u = json.load(open('universe.json'))
+    print(f'GODOT_SLUG={u.get(\"id\", \"\")}')
+except:
+    print('GODOT_SLUG=')
+" >> $GITHUB_ENV
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          git config user.name  "universe-bot[bot]"
+          git config user.email "universe-bot[bot]@users.noreply.github.com"
+
+          # إضافة الملفات المتغيرة
+          git add universe.json          2>/dev/null || true
+          git add products.json          2>/dev/null || true
+          git add agent-results/         2>/dev/null || true
+          git add godot-projects/        2>/dev/null || true
+          git add public/                2>/dev/null || true
+
+          # التحقق من وجود تغييرات
+          if git diff --staged --quiet; then
+            echo "ℹ️ No changes to commit"
+            exit 0
+          fi
+
+          # رسالة commit ذكية
+          MODE="${{ github.event.inputs.mode || 'auto' }}"
+          python -c "
+import json
+try:
+    r = json.load(open('agent-results/run-report.json'))
+    u = json.load(open('universe.json'))
+    mode = '$MODE'
+    evo  = u.get('evolutions', 0)
+    if mode == 'birth':
+        msg = f'🌱 BIRTH: Universe \"{u.get(\"id\", \"\")}\" created'
+    else:
+        agents = list(r.get('agents', {}).keys())
+        if   'world'   in str(agents): kind = '🌍 New world'
+        elif 'weapon'  in str(agents): kind = '⚔️ New weapon'
+        elif 'enemy'   in str(agents): kind = '👾 New enemy'
+        elif 'vehicle' in str(agents): kind = '🚀 New vehicle'
+        else: kind = '⚡ Evolution'
+        msg = f'{kind} added — Evolution #{evo} [skip ci]'
+    print(msg)
+except Exception as e:
+    print('⚡ Universe evolution [skip ci]')
+" > commit_msg.txt
+
+          git commit -m "$(cat commit_msg.txt)"
+          rm commit_msg.txt
+          git pull --rebase origin main || git rebase --abort
+          git push origin main --force-with-lease
+          echo "✅ Committed successfully"
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          ## 🌌 Universe Evolution Report
+
+          EOF
+          python -c "
+import json
+try:
+    r = json.load(open('agent-results/run-report.json'))
+    u = json.load(open('universe.json'))
+    print(f'**Mode:** {r.get(\"mode\", \"\")}')
+    print(f'**Duration:** {r.get(\"totalDuration\", \"\")}')
+    print(f'**Gemini calls:** {r.get(\"geminiCalls\", 0)}')
+    print(f'**Passed:** {r.get(\"summary\", {}).get(\"passed\", 0)} / {r.get(\"summary\", {}).get(\"total\", 0)}')
+    print()
+    print(f'### 🌌 Universe: {u.get(\"name\", {}).get(\"en\", \"\")}')
+    print(f'- Evolutions: **{u.get(\"evolutions\", 0)}**')
+    print(f'- Worlds: **{len(u.get(\"worlds\",[]))}**')
+    print(f'- Weapons: **{len(u.get(\"weapons\",[]))}**')
+    print(f'- Enemies: **{len(u.get(\"enemies\",[]))}**')
+    print(f'- Vehicles: **{len(u.get(\"vehicles\",[]))}**')
+except Exception as e:
+    print(f'No data: {e}')
+" >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
