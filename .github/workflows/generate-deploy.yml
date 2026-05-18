@@ -1,11 +1,8 @@
 name: Universe Evolution
 
 on:
-  # تشغيل يومي تلقائي
   schedule:
-    - cron: '0 6 * * *'  # كل يوم الساعة 6 صباحاً
-
-  # تشغيل يدوي مع اختيار الوضع
+    - cron: '0 6 * * *'  # كل يوم 6 صباحاً بالتوقيت العالمي
   workflow_dispatch:
     inputs:
       mode:
@@ -14,8 +11,8 @@ on:
         default: 'auto'
         type: choice
         options:
-          - auto        # EVOLUTION — يضيف للكون
-          - birth       # BIRTH — يولد كوناً جديداً (مرة في السنة)
+          - auto        # EVOLUTION — إضافة عناصر للكون
+          - birth       # BIRTH — خلق كون جديد (مرة في السنة)
 
 jobs:
   evolve:
@@ -73,20 +70,29 @@ except Exception as e:
     print(f'  (no universe yet: {e})')
 " 2>/dev/null
 
-      # تشغيل Godot Export إذا كان في BIRTH MODE
       - name: Trigger Godot Export (BIRTH only)
         if: ${{ github.event.inputs.mode == 'birth' }}
         shell: bash
         run: |
           echo "🎮 BIRTH MODE — triggering Godot export..."
-          python -c "
+          # استخراج slug الكون (يجب أن يكون بالأحرف الصغيرة والآمنة)
+          SLUG=$(python -c "
 import json
 try:
     u = json.load(open('universe.json'))
-    print(f'GODOT_SLUG={u.get(\"id\", \"\")}')
+    slug = u.get('id', '').lower().replace(' ', '-')
+    print(slug)
 except:
-    print('GODOT_SLUG=')
-" >> $GITHUB_ENV
+    print('')
+")
+          if [ -z "$SLUG" ]; then
+            echo "❌ No valid slug found, skipping Godot export"
+            exit 0
+          fi
+          echo "GODOT_SLUG=$SLUG" >> $GITHUB_ENV
+          # هنا يمكنك استدعاء `godot-export.yml` عبر GitHub API إذا أردت
+          # مثال: gh workflow run godot-export.yml -f project-slug=$SLUG
+          # أو تشغيل Godot مباشرة إذا أضفت خطوة التصدير هنا.
 
       - name: Commit changes
         shell: bash
@@ -94,20 +100,17 @@ except:
           git config user.name  "universe-bot[bot]"
           git config user.email "universe-bot[bot]@users.noreply.github.com"
 
-          # إضافة الملفات المتغيرة
           git add universe.json          2>/dev/null || true
           git add products.json          2>/dev/null || true
           git add agent-results/         2>/dev/null || true
           git add godot-projects/        2>/dev/null || true
           git add public/                2>/dev/null || true
 
-          # التحقق من وجود تغييرات
           if git diff --staged --quiet; then
             echo "ℹ️ No changes to commit"
             exit 0
           fi
 
-          # رسالة commit ذكية
           MODE="${{ github.event.inputs.mode || 'auto' }}"
           python -c "
 import json
@@ -119,7 +122,7 @@ try:
     if mode == 'birth':
         msg = f'🌱 BIRTH: Universe \"{u.get(\"id\", \"\")}\" created'
     else:
-        agents = list(r.get('agents', {}).keys())
+        agents = list(r.get('agents', {}).keys()) if r.get('agents') else []
         if   'world'   in str(agents): kind = '🌍 New world'
         elif 'weapon'  in str(agents): kind = '⚔️ New weapon'
         elif 'enemy'   in str(agents): kind = '👾 New enemy'
@@ -153,14 +156,16 @@ try:
     print(f'**Mode:** {r.get(\"mode\", \"\")}')
     print(f'**Duration:** {r.get(\"totalDuration\", \"\")}')
     print(f'**Gemini calls:** {r.get(\"geminiCalls\", 0)}')
-    print(f'**Passed:** {r.get(\"summary\", {}).get(\"passed\", 0)} / {r.get(\"summary\", {}).get(\"total\", 0)}')
+    passed = r.get('summary', {}).get('passed', 0)
+    total  = r.get('summary', {}).get('total', 0)
+    print(f'**Passed:** {passed} / {total}')
     print()
     print(f'### 🌌 Universe: {u.get(\"name\", {}).get(\"en\", \"\")}')
     print(f'- Evolutions: **{u.get(\"evolutions\", 0)}**')
-    print(f'- Worlds: **{len(u.get(\"worlds\",[]))}**')
-    print(f'- Weapons: **{len(u.get(\"weapons\",[]))}**')
-    print(f'- Enemies: **{len(u.get(\"enemies\",[]))}**')
-    print(f'- Vehicles: **{len(u.get(\"vehicles\",[]))}**')
+    print(f'- Worlds: **{len(u.get(\"worlds\", []))}**')
+    print(f'- Weapons: **{len(u.get(\"weapons\", []))}**')
+    print(f'- Enemies: **{len(u.get(\"enemies\", []))}**')
+    print(f'- Vehicles: **{len(u.get(\"vehicles\", []))}**')
 except Exception as e:
     print(f'No data: {e}')
 " >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
