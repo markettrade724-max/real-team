@@ -1,27 +1,24 @@
 {
-  "runId": "2026-05-17T1448",
-  "timestamp": "2026-05-17T14:48:55.472Z",
+  "runId": "2026-05-18T1147",
+  "mode": "birth",
+  "timestamp": "2026-05-18T11:48:07.672Z",
   "totalDuration": "15.1s",
-  "geminiCalls": "0/6",
+  "geminiCalls": "0/8",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "56ms",
-      "attempts": 1,
+      "duration": "85ms",
       "error": null
     },
     "idea": {
       "success": false,
       "duration": "1ms",
-      "attempts": 1,
       "error": "loadJSON is not defined"
     }
   },
   "summary": {
     "total": 2,
     "passed": 1,
-    "failed": 1,
-    "newGame": null,
-    "template": null
+    "failed": 1
   }
 }
