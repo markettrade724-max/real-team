@@ -244,16 +244,30 @@ async function evolutionMode(universe, t0, runId) {
 
 // ── اختيار نوع التطور بذكاء ──────────────
 function pickEvolutionType(universe) {
+  const worldsCount = universe.worlds?.length || 0;
+  const dayOfYear   = getDayOfYear();
+
+  // العوالم لها أولوية مطلقة — هدف 365 عالماً في السنة
+  // إذا كنا متأخرين أو في الموعد → عالم
+  if (worldsCount < dayOfYear) {
+    return 'world';
+  }
+
+  // إذا العوالم في الموعد → نطور الأقل من الباقين
   const counts = {
-    world:   universe.worlds?.length   || 0,
     weapon:  universe.weapons?.length  || 0,
     enemy:   universe.enemies?.length  || 0,
     vehicle: universe.vehicles?.length || 0,
   };
 
-  // الأقل دائماً يحصل على التطور أولاً
   return Object.entries(counts)
     .sort((a, b) => a[1] - b[1])[0][0];
+}
+
+function getDayOfYear() {
+  const now   = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  return Math.floor((now - start) / 86400000);
 }
 
 // ════════════════════════════════════════════
