@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       project-slug:
-        description: 'مُعرّف المشروع (slug) لتصديره (اتركه فارغاً لتصدير الكل)'
+        description: 'مُعرّف المشروع (اتركه فارغاً لتصدير الكل)'
         required: false
 
 jobs:
@@ -32,7 +32,8 @@ jobs:
         shell: bash
         run: |
           mkdir -p /c/godot
-          curl -L -o /c/godot/godot.zip https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_win64.exe.zip
+          curl -L -o /c/godot/godot.zip \
+            https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_win64.exe.zip
           unzip -q /c/godot/godot.zip -d /c/godot
           rm /c/godot/godot.zip
 
@@ -49,38 +50,60 @@ jobs:
         run: |
           TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
           mkdir -p "$TEMPLATES_DIR"
-          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz
+          curl -L -o /tmp/templates.tpz \
+            https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz
           unzip -q /tmp/templates.tpz -d /tmp/templates
           mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
           rm -rf /tmp/templates /tmp/templates.tpz
-          echo "✅ Templates installed"
+          echo "Templates installed"
+          ls "$TEMPLATES_DIR/" | grep web || ls "$TEMPLATES_DIR/"
+
+      # ✅ إضافة: التحقق من Templates قبل التصدير
+      - name: Verify Export Templates
+        shell: bash
+        run: |
+          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
+          if [ ! -d "$TEMPLATES_DIR" ] || [ -z "$(ls -A $TEMPLATES_DIR 2>/dev/null)" ]; then
+            echo "Templates directory not found or empty"
+            exit 1
+          fi
+          echo "Templates verified:"
+          ls -lh "$TEMPLATES_DIR/" | grep -E "web|wasm" || ls -lh "$TEMPLATES_DIR/"
 
       - name: Export Godot projects
         shell: bash
         run: |
           GODOT_BIN="/c/godot/Godot_v4.6.2-stable_win64.exe"
           if [ ! -f "$GODOT_BIN" ]; then
-            echo "❌ Godot not found!"
+            echo "Godot not found: $GODOT_BIN"
+            exit 1
+          fi
+          echo "Godot found: $GODOT_BIN"
+
+          FOUND_PROJECTS=$(find godot-projects -name "project.godot" -type f 2>/dev/null)
+          if [ -z "$FOUND_PROJECTS" ]; then
+            echo "No projects found in godot-projects/"
             exit 1
           fi
 
-          # تحديد المشاريع المراد تصديرها
-          FOUND_PROJECTS=$(find godot-projects -name "project.godot" -type f 2>/dev/null)
-          if [ -z "$FOUND_PROJECTS" ]; then
-            echo "❌ No projects"
-            exit 1
-          fi
+          echo "Found projects:"
+          echo "$FOUND_PROJECTS"
+
+          EXPORT_COUNT=0
+          FAILED_COUNT=0
 
           for proj_file in $FOUND_PROJECTS; do
             proj_dir=$(dirname "$proj_file")
             slug=$(basename "$proj_dir")
-            echo "🎯 Exporting: $slug"
+            echo ""
+            echo "Exporting: $slug"
 
             OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
 
-            # إنشاء export_presets.cfg إذا لم يكن موجوداً (مع الاسم "Web" طبقاً للقاعدة 041)
+            # ✅ إصلاح: توحيد اسم preset على "Web" في كل مكان
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
+              echo "Creating default export_presets.cfg..."
               cat > "$proj_dir/export_presets.cfg" << 'EOF'
 [preset.0]
 name="Web"
@@ -100,6 +123,7 @@ patches=PackedStringArray()
 custom_template/debug=""
 custom_template/release=""
 variant/extensions_support=false
+vram_texture_compression/for_desktop=true
 vram_texture_compression/for_mobile=false
 html/export_icon=true
 html/custom_html_shell=""
@@ -117,33 +141,80 @@ progressive_web_app/icon_maskable_192x192=""
 progressive_web_app/icon_maskable_512x512=""
 progressive_web_app/background_color=Color(0, 0, 0, 1)
 EOF
-              echo "✅ Default export_presets.cfg created"
+              echo "export_presets.cfg created"
+            else
+              echo "export_presets.cfg found"
+              # ✅ إصلاح: تصحيح الاسم إذا كان HTML5 بدل Web
+              if grep -q 'name="HTML5"' "$proj_dir/export_presets.cfg"; then
+                sed -i 's/name="HTML5"/name="Web"/' "$proj_dir/export_presets.cfg"
+                echo "Preset name corrected: HTML5 -> Web"
+              fi
             fi
 
-            "$GODOT_BIN" --headless --path "$proj_dir" --export-release "Web" "$OUTPUT_DIR/index.html"
+            LOG_FILE="/tmp/godot-$slug.log"
+            "$GODOT_BIN" \
+              --headless \
+              --path "$proj_dir" \
+              --export-release "Web" "$OUTPUT_DIR/index.html" \
+              > "$LOG_FILE" 2>&1
 
-            # التحقق من الملفات الأربعة الأساسية (قاعدة 033)
-            if [ ! -s "$OUTPUT_DIR/index.html" ] || [ ! -s "$OUTPUT_DIR/index.js" ] || [ ! -s "$OUTPUT_DIR/index.wasm" ] || [ ! -s "$OUTPUT_DIR/index.pck" ]; then
-              echo "❌ فشل: أحد الملفات الأساسية (index.html, index.js, index.wasm, index.pck) فارغ أو غير موجود"
-              exit 1
+            GODOT_EXIT=$?
+
+            if [ $GODOT_EXIT -ne 0 ]; then
+              echo "Export FAILED (exit: $GODOT_EXIT)"
+              cat "$LOG_FILE"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+              continue
             fi
-            echo "✅ جميع الملفات الأساسية سليمة (أحادي الخيط)"
 
-            echo "✅ Export successful (single-threaded, no coi-serviceworker needed)"
+            # ✅ التحقق من الملفات الأربعة وحجمها
+            ALL_OK=true
+            for f in index.html index.js index.wasm index.pck; do
+              if [ ! -f "$OUTPUT_DIR/$f" ] || [ ! -s "$OUTPUT_DIR/$f" ]; then
+                echo "MISSING or EMPTY: $f"
+                ALL_OK=false
+              else
+                SIZE=$(du -sh "$OUTPUT_DIR/$f" | cut -f1)
+                echo "OK: $f ($SIZE)"
+              fi
+            done
+
+            if [ "$ALL_OK" = false ]; then
+              echo "Export incomplete for: $slug"
+              cat "$LOG_FILE"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            else
+              echo "Export successful: $slug"
+              EXPORT_COUNT=$((EXPORT_COUNT + 1))
+            fi
+
+            rm -f "$LOG_FILE"
           done
+
+          echo ""
+          echo "SUMMARY"
+          echo "Successful: $EXPORT_COUNT"
+          echo "Failed:     $FAILED_COUNT"
+
+          if [ $FAILED_COUNT -gt 0 ]; then
+            exit 1
+          fi
 
       - name: Commit exported files
         shell: bash
         run: |
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
           if [ -d "public/games/godot/" ] && [ "$(ls -A public/games/godot/ 2>/dev/null)" ]; then
             git add public/games/godot/
           fi
+
           if ! git diff --staged --quiet; then
-            git commit -m "🎮 Auto-export Godot games (single-threaded) [skip ci]"
+            git commit -m "Auto-export Godot games [skip ci]"
             git pull --rebase origin main || git rebase --abort
             git push origin main --force-with-lease
+            echo "Changes committed"
           else
             echo "No changes"
           fi
