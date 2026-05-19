@@ -34,30 +34,6 @@ jobs:
         shell: bash
         run: node game-generator.js
 
-      - name: Check results
-        shell: bash
-        run: |
-          echo "Run Report:"
-          cat agent-results/run-report.json 2>/dev/null || echo "(no report)"
-          echo ""
-          echo "Universe Status:"
-          python3 -c '
-import json
-try:
-    with open("universe.json") as f:
-        u = json.load(f)
-    print("  ID:         " + str(u.get("id", "")))
-    print("  Evolutions: " + str(u.get("evolutions", 0)))
-    print("  Worlds:     " + str(len(u.get("worlds", []))))
-    print("  Weapons:    " + str(len(u.get("weapons", []))))
-    print("  Enemies:    " + str(len(u.get("enemies", []))))
-    print("  Vehicles:   " + str(len(u.get("vehicles", []))))
-    print("  Born:       " + str(u.get("born", "")))
-    print("  Last:       " + str(u.get("lastEvolved", "never")))
-except Exception as e:
-    print("  (no universe yet: " + str(e) + ")")
-'
-
       - name: Commit changes
         shell: bash
         run: |
@@ -75,33 +51,7 @@ except Exception as e:
             exit 0
           fi
 
-          MODE="${{ github.event.inputs.mode || 'auto' }}"
-          python3 -c '
-import json
-try:
-    with open("agent-results/run-report.json") as f:
-        r = json.load(f)
-    with open("universe.json") as f:
-        u = json.load(f)
-    mode = "'"$MODE"'"
-    evo  = u.get("evolutions", 0)
-    if mode == "birth":
-        msg = "BIRTH: Universe \"" + str(u.get("id", "")) + "\" created"
-    else:
-        agents = list(r.get("agents", {}).keys())
-        if   "world"   in str(agents): kind = "New world"
-        elif "weapon"  in str(agents): kind = "New weapon"
-        elif "enemy"   in str(agents): kind = "New enemy"
-        elif "vehicle" in str(agents): kind = "New vehicle"
-        else: kind = "Evolution"
-        msg = kind + " added — Evolution #" + str(evo) + " [skip ci]"
-    print(msg)
-except Exception as e:
-    print("Universe evolution [skip ci]")
-' > commit_msg.txt
-
-          git commit -m "$(cat commit_msg.txt)"
-          rm commit_msg.txt
+          git commit -m "Deploy latest changes [skip ci]"
           git pull --rebase origin main || git rebase --abort
           git push origin main --force-with-lease
           echo "Committed successfully"
