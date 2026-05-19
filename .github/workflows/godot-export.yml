@@ -101,10 +101,10 @@ jobs:
             OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
 
-            # ✅ إصلاح: Python بدل heredoc (heredoc يكسر YAML syntax)
+            # ✅ إصلاح: python-3.14.5-amd64 بدل heredoc (heredoc يكسر YAML syntax)
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "Creating default export_presets.cfg..."
-              python3 -c "
+              python-3.14.5-amd64 -c "
 content = '''[preset.0]
 name=\"Web\"
 platform=\"Web\"
