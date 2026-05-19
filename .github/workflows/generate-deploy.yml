@@ -54,8 +54,8 @@ jobs:
           cat agent-results/run-report.json 2>/dev/null || echo "(no report)"
           echo ""
           echo "Universe Status:"
-          # ✅ إصلاح: python3 بدل python
-          python3 -c "
+          # ✅ إصلاح: python-3.14.5-amd64 بدل python
+          python-3.14.5-amd64 -c "
 import json
 try:
     u = json.load(open('universe.json'))
@@ -75,8 +75,8 @@ except Exception as e:
         if: ${{ github.event.inputs.mode == 'birth' }}
         shell: bash
         run: |
-          # ✅ إصلاح: python3 بدل python
-          SLUG=$(python3 -c "
+          # ✅ إصلاح: python-3.14.5-amd64 بدل python
+          SLUG=$(python-3.14.5-amd64 -c "
 import json
 try:
     u = json.load(open('universe.json'))
@@ -112,7 +112,7 @@ except:
           MODE="${{ github.event.inputs.mode || 'auto' }}"
 
           # ✅ إصلاح: variable مباشرة بدل /tmp/commit_msg.txt + إزالة الإيموجي
-          COMMIT_MSG=$(python3 -c "
+          COMMIT_MSG=$(python-3.14.5-amd64 -c "
 import json
 try:
     r = json.load(open('agent-results/run-report.json'))
@@ -143,8 +143,8 @@ except Exception as e:
         if: always()
         shell: bash
         run: |
-          # ✅ إصلاح: python3 + إزالة الإيموجي من التقرير
-          python3 -c "
+          # ✅ إصلاح: python-3.14.5-amd64 + إزالة الإيموجي من التقرير
+          python-3.14.5-amd64 -c "
 import json, sys
 try:
     r = json.load(open('agent-results/run-report.json'))
