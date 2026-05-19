@@ -32,12 +32,12 @@ jobs:
 
       - name: Download Godot Engine
         if: steps.cache-godot.outputs.cache-hit != 'true'
-        shell: bash
+        shell: pwsh
         run: |
-          mkdir -p /c/godot
-          curl -L -o /c/godot/godot.zip https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_win64.exe.zip
-          unzip -q /c/godot/godot.zip -d /c/godot
-          rm /c/godot/godot.zip
+          New-Item -ItemType Directory -Force -Path C:\godot
+          Invoke-WebRequest -Uri https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_win64.exe.zip -OutFile C:\godot\godot.zip
+          Expand-Archive -Path C:\godot\godot.zip -DestinationPath C:\godot
+          Remove-Item C:\godot\godot.zip
 
       - name: Cache Godot Export Templates
         id: cache-templates
@@ -48,63 +48,65 @@ jobs:
 
       - name: Download Godot Export Templates
         if: steps.cache-templates.outputs.cache-hit != 'true'
-        shell: bash
+        shell: pwsh
         run: |
-          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
-          mkdir -p "$TEMPLATES_DIR"
-          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz
-          unzip -q /tmp/templates.tpz -d /tmp/templates
-          mv /tmp/templates/templates/* "$TEMPLATES_DIR/"
-          rm -rf /tmp/templates /tmp/templates.tpz
-          echo "Templates installed"
+          $TemplatesDir = "$env:APPDATA\Godot\export_templates\4.6.2.stable"
+          New-Item -ItemType Directory -Force -Path $TemplatesDir
+          Invoke-WebRequest -Uri https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_export_templates.tpz -OutFile C:\templates.tpz
+          Expand-Archive -Path C:\templates.tpz -DestinationPath C:\templates_extracted
+          Get-ChildItem -Path C:\templates_extracted\templates\* | Move-Item -Destination $TemplatesDir -Force
+          Remove-Item C:\templates.tpz -Force
+          Remove-Item C:\templates_extracted -Recurse -Force
+          Write-Host "Templates installed"
 
       - name: Verify Export Templates
-        shell: bash
+        shell: pwsh
         run: |
-          TEMPLATES_DIR="/c/Users/runneradmin/AppData/Roaming/Godot/export_templates/4.6.2.stable"
-          if [ ! -d "$TEMPLATES_DIR" ] || [ -z "$(ls -A $TEMPLATES_DIR)" ]; then
-            echo "Templates not found!"
+          $TemplatesDir = "$env:APPDATA\Godot\export_templates\4.6.2.stable"
+          if (-not (Test-Path $TemplatesDir) -or (Get-ChildItem $TemplatesDir | Measure-Object).Count -eq 0) {
+            Write-Host "Templates not found!"
             exit 1
-          fi
-          echo "Templates found"
+          }
+          Write-Host "Templates found"
 
       - name: Export Godot projects
-        shell: bash
+        shell: pwsh
         run: |
-          GODOT_BIN="/c/godot/Godot_v4.6.2-stable_win64.exe"
-          if [ ! -f "$GODOT_BIN" ]; then
-            echo "Godot not found!"
+          $GodotBin = "C:\godot\Godot_v4.6.2-stable_win64.exe"
+          if (-not (Test-Path $GodotBin)) {
+            Write-Host "Godot not found!"
             exit 1
-          fi
+          }
 
-          FOUND_PROJECTS=$(find godot-projects -name "project.godot" -type f 2>/dev/null)
-          if [ -z "$FOUND_PROJECTS" ]; then
-            echo "No projects"
+          $projects = Get-ChildItem -Path godot-projects -Filter project.godot -Recurse -File
+          if ($projects.Count -eq 0) {
+            Write-Host "No projects"
             exit 1
-          fi
+          }
 
-          for proj_file in $FOUND_PROJECTS; do
-            proj_dir=$(dirname "$proj_file")
-            slug=$(basename "$proj_dir")
-            echo "Exporting: $slug"
+          foreach ($proj in $projects) {
+            $projDir = $proj.DirectoryName
+            $slug = $proj.Directory.Name
+            Write-Host "Exporting: $slug"
 
-            OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
-            mkdir -p "$OUTPUT_DIR"
+            $OutputDir = "$pwd\public\games\godot\$slug"
+            New-Item -ItemType Directory -Force -Path $OutputDir
 
-            # كتابة export_presets.cfg باستخدام بايثون (لا heredoc بعد اليوم)
-            if [ ! -f "$proj_dir/export_presets.cfg" ]; then
-              echo "Creating default export_presets.cfg..."
-              python -c "
-cfg = '''[preset.0]
+            # كتابة export_presets.cfg عبر PowerShell (لا heredoc، لا Python)
+            $presetPath = Join-Path $projDir "export_presets.cfg"
+            if (-not (Test-Path $presetPath)) {
+              Write-Host "Creating default export_presets.cfg..."
+              @"
+[preset.0]
 
-name=\"Web\"
-platform=\"Web\"
+name="Web"
+platform="Web"
 runnable=true
-custom_features=\"\"
-export_filter=\"all_resources\"
-include_filter=\"\"
-exclude_filter=\"\"
-export_path=\"./index.html\"
+custom_features=""
+export_filter="all_resources"
+include_filter=""
+exclude_filter=""
+export_path="./index.html"
 
 [preset.0.options]
 
@@ -112,41 +114,51 @@ variant/extensions_support=false
 variant/thread_support=false
 vram_texture_compression/import_etc2_astc=true
 vram_texture_compression/import_s3tc_bptc=true
-html/custom_html_shell=\"\"
-html/head_include=\"\"
+html/custom_html_shell=""
+html/head_include=""
 html/canvas_resize_policy=2
 html/focus_canvas_on_start=true
 html/experimental_virtual_keyboard=false
 progress/as_bar=false
-'''
-with open('$proj_dir/export_presets.cfg', 'w') as f:
-    f.write(cfg)
-"
-              echo "Default export_presets.cfg created"
-            fi
+"@ | Out-File -FilePath $presetPath -Encoding utf8
+              Write-Host "Default export_presets.cfg created"
+            }
 
-            godot --headless --path "$proj_dir" --export-release "Web" "$OUTPUT_DIR/index.html"
+            & $GodotBin --headless --path $projDir --export-release "Web" "$OutputDir\index.html"
 
-            if [ ! -s "$OUTPUT_DIR/index.html" ] || [ ! -s "$OUTPUT_DIR/index.js" ] || [ ! -s "$OUTPUT_DIR/index.wasm" ] || [ ! -s "$OUTPUT_DIR/index.pck" ]; then
-              echo "FAILED: One of the essential files is empty or missing"
+            $filesToCheck = @("index.html", "index.js", "index.wasm", "index.pck")
+            $failed = $false
+            foreach ($file in $filesToCheck) {
+              $path = Join-Path $OutputDir $file
+              if (-not (Test-Path $path) -or (Get-Item $path).Length -eq 0) {
+                Write-Host "FAILED: $file is empty or missing"
+                $failed = $true
+              }
+            }
+            if ($failed) {
               exit 1
-            fi
-            echo "All essential files are intact (single-threaded)"
-            echo "Export successful"
-          done
+            }
+            Write-Host "All essential files are intact (single-threaded)"
+            Write-Host "Export successful"
+          }
 
       - name: Commit exported files
-        shell: bash
+        shell: pwsh
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -d "public/games/godot/" ] && [ "$(ls -A public/games/godot/ 2>/dev/null)" ]; then
+          if (Test-Path "public\games\godot" -PathType Container) {
             git add public/games/godot/
-          fi
-          if ! git diff --staged --quiet; then
-            git commit -m "Auto-export Godot games (single-threaded) [skip ci]"
-            git pull --rebase origin main || git rebase --abort
-            git push origin main --force-with-lease
-          else
-            echo "No changes"
-          fi
+          }
+          $diff = git diff --staged --quiet
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "No changes"
+            exit 0
+          }
+          git commit -m "Auto-export Godot games (single-threaded) [skip ci]"
+          git pull --rebase origin main
+          if ($LASTEXITCODE -ne 0) {
+            git rebase --abort
+            exit 1
+          }
+          git push origin main --force-with-lease
