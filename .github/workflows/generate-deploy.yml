@@ -1,30 +1,23 @@
-name: Universe Evolution
+name: Generate Games & Deploy
 
 on:
-  schedule:
-    - cron: '0 6 * * *'
+  push:
+    paths:
+      - 'game-generator.js'
+      - 'templates/**'
+      - 'products.json'
+      - 'public/games/godot/**'
   workflow_dispatch:
-    inputs:
-      mode:
-        description: 'وضع التشغيل'
-        required: true
-        default: 'auto'
-        type: choice
-        options:
-          - auto
-          - birth
 
 jobs:
-  evolve:
+  generate-deploy:
     runs-on: windows-latest
-    timeout-minutes: 30
-
+    timeout-minutes: 15
     permissions:
       contents: write
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -37,15 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Orchestrator
+      - name: Generate game pages
         shell: bash
-        env:
-          GEMINI_API_KEY:            ${{ secrets.GEMINI_API_KEY }}
-          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          SITE_URL:                  ${{ secrets.SITE_URL }}
-          MODE:                      ${{ github.event.inputs.mode || 'auto' }}
-        run: node orchestrator.js
+        run: node game-generator.js
 
       - name: Check results
         shell: bash
@@ -54,43 +41,39 @@ jobs:
           cat agent-results/run-report.json 2>/dev/null || echo "(no report)"
           echo ""
           echo "Universe Status:"
-          # ✅ إصلاح: python3 بدل python
-          python3 -c "
+          python3 -c '
 import json
 try:
-    u = json.load(open('universe.json'))
-    print('  ID:         ' + str(u.get('id', '')))
-    print('  Evolutions: ' + str(u.get('evolutions', 0)))
-    print('  Worlds:     ' + str(len(u.get('worlds', []))))
-    print('  Weapons:    ' + str(len(u.get('weapons', []))))
-    print('  Enemies:    ' + str(len(u.get('enemies', []))))
-    print('  Vehicles:   ' + str(len(u.get('vehicles', []))))
-    print('  Born:       ' + str(u.get('born', '')))
-    print('  Last:       ' + str(u.get('lastEvolved', 'never')))
+    with open("universe.json") as f:
+        u = json.load(f)
+    print("  ID:         " + str(u.get("id", "")))
+    print("  Evolutions: " + str(u.get("evolutions", 0)))
+    print("  Worlds:     " + str(len(u.get("worlds", []))))
+    print("  Weapons:    " + str(len(u.get("weapons", []))))
+    print("  Enemies:    " + str(len(u.get("enemies", []))))
+    print("  Vehicles:   " + str(len(u.get("vehicles", []))))
+    print("  Born:       " + str(u.get("born", "")))
+    print("  Last:       " + str(u.get("lastEvolved", "never")))
 except Exception as e:
-    print('  (no universe yet: ' + str(e) + ')')
-" 2>/dev/null || echo "(python3 not available)"
+    print("  (no universe yet: " + str(e) + ")")
+'
 
       - name: Trigger Godot Export (BIRTH only)
         if: ${{ github.event.inputs.mode == 'birth' }}
         shell: bash
         run: |
-          # ✅ إصلاح: python3 بدل python
-          SLUG=$(python3 -c "
-import json
+          echo "BIRTH MODE — triggering Godot export..."
+          python3 -c '
+import json, os
 try:
-    u = json.load(open('universe.json'))
-    slug = u.get('id', '').lower().replace(' ', '-')
-    print(slug)
-except:
-    print('')
-" 2>/dev/null)
-          if [ -z "$SLUG" ]; then
-            echo "No valid slug — skipping Godot export"
-            exit 0
-          fi
-          echo "GODOT_SLUG=$SLUG" >> $GITHUB_ENV
-          echo "Godot slug: $SLUG"
+    with open("universe.json") as f:
+        u = json.load(f)
+    if "GITHUB_ENV" in os.environ:
+        with open(os.environ["GITHUB_ENV"], "a") as env_file:
+            env_file.write("GODOT_SLUG=" + str(u.get("id", "")) + "\n")
+except Exception as e:
+    print("Error setting env: " + str(e))
+'
 
       - name: Commit changes
         shell: bash
@@ -110,62 +93,32 @@ except:
           fi
 
           MODE="${{ github.event.inputs.mode || 'auto' }}"
-
-          # ✅ إصلاح: variable مباشرة بدل /tmp/commit_msg.txt + إزالة الإيموجي
-          COMMIT_MSG=$(python3 -c "
+          python3 -c '
 import json
 try:
-    r = json.load(open('agent-results/run-report.json'))
-    u = json.load(open('universe.json'))
-    mode = '$MODE'
-    evo  = u.get('evolutions', 0)
-    if mode == 'birth':
-        msg = 'BIRTH: Universe ' + str(u.get('id', '')) + ' created'
+    with open("agent-results/run-report.json") as f:
+        r = json.load(f)
+    with open("universe.json") as f:
+        u = json.load(f)
+    mode = "'"$MODE"'"
+    evo  = u.get("evolutions", 0)
+    if mode == "birth":
+        msg = "BIRTH: Universe \"" + str(u.get("id", "")) + "\" created"
     else:
-        agents = list(r.get('agents', {}).keys()) if r.get('agents') else []
-        if   'world'   in str(agents): kind = 'New world'
-        elif 'weapon'  in str(agents): kind = 'New weapon'
-        elif 'enemy'   in str(agents): kind = 'New enemy'
-        elif 'vehicle' in str(agents): kind = 'New vehicle'
-        else: kind = 'Evolution'
-        msg = kind + ' added - Evolution #' + str(evo) + ' [skip ci]'
+        agents = list(r.get("agents", {}).keys())
+        if   "world"   in str(agents): kind = "New world"
+        elif "weapon"  in str(agents): kind = "New weapon"
+        elif "enemy"   in str(agents): kind = "New enemy"
+        elif "vehicle" in str(agents): kind = "New vehicle"
+        else: kind = "Evolution"
+        msg = kind + " added — Evolution #" + str(evo) + " [skip ci]"
     print(msg)
 except Exception as e:
-    print('Universe evolution [skip ci]')
-" 2>/dev/null || echo "Universe evolution [skip ci]")
+    print("Universe evolution [skip ci]")
+' > commit_msg.txt
 
-          git commit -m "$COMMIT_MSG"
+          git commit -m "$(cat commit_msg.txt)"
+          rm commit_msg.txt
           git pull --rebase origin main || git rebase --abort
           git push origin main --force-with-lease
-          echo "Committed: $COMMIT_MSG"
-
-      - name: Summary
-        if: always()
-        shell: bash
-        run: |
-          # ✅ إصلاح: python3 + إزالة الإيموجي من التقرير
-          python3 -c "
-import json, sys
-try:
-    r = json.load(open('agent-results/run-report.json'))
-    u = json.load(open('universe.json'))
-    lines = []
-    lines.append('## Universe Evolution Report')
-    lines.append('')
-    lines.append('**Mode:** ' + str(r.get('mode', '')))
-    lines.append('**Duration:** ' + str(r.get('totalDuration', '')))
-    lines.append('**Gemini calls:** ' + str(r.get('geminiCalls', 0)))
-    passed = r.get('summary', {}).get('passed', 0)
-    total  = r.get('summary', {}).get('total', 0)
-    lines.append('**Passed:** ' + str(passed) + ' / ' + str(total))
-    lines.append('')
-    lines.append('### Universe: ' + str(u.get('name', {}).get('en', '')))
-    lines.append('- Evolutions: **' + str(u.get('evolutions', 0)) + '**')
-    lines.append('- Worlds: **'   + str(len(u.get('worlds',   []))) + '**')
-    lines.append('- Weapons: **'  + str(len(u.get('weapons',  []))) + '**')
-    lines.append('- Enemies: **'  + str(len(u.get('enemies',  []))) + '**')
-    lines.append('- Vehicles: **' + str(len(u.get('vehicles', []))) + '**')
-    print('\n'.join(lines))
-except Exception as e:
-    print('No data: ' + str(e))
-" >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
+          echo "Committed successfully"
