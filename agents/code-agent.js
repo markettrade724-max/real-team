@@ -1,97 +1,42 @@
-// بداية الملف
-const PRODUCTS_PATH = join(__dirname, '..', 'products.json');
-const BACKUP_PATH = PRODUCTS_PATH + '.bak';
-const GENERATOR_SCRIPT = join(__dirname, '..', 'game-generator.js');
+// ✅ إصلاح: توحيد اسم preset على "Web" في كل مكان
+// كان: name="HTML5" — أصبح: name="Web"
+// السبب: godot-export.yml يبحث عن --export-release "Web"
 
-function readProductsSafely() {
-  try {
-    if (!existsSync(PRODUCTS_PATH)) {
-      logger.warn('products.json not found, creating new');
-      return [];
-    }
-    return JSON.parse(readFileSync(PRODUCTS_PATH, 'utf8'));
-  } catch (err) {
-    logger.error('Failed to read products.json', err);
-    // محاولة استرجاع النسخة الاحتياطية
-    if (existsSync(BACKUP_PATH)) {
-      logger.warn('Restoring from backup');
-      return JSON.parse(readFileSync(BACKUP_PATH, 'utf8'));
-    }
-    return [];
-  }
-}
+const EXPORT_PRESETS = `[preset.0]
+name="Web"
+platform="Web"
+runnable=true
+dedicated_server=false
+custom_features=""
+export_filter="all_resources"
+include_filter=""
+exclude_filter=""
+export_path="./index.html"
+patches=PackedStringArray()
+encryption_include_filter=""
+encryption_exclude_filter=""
+encrypt_pck=false
+encrypt_directory=false
 
-function writeProductsSafely(products) {
-  try {
-    // نسخ احتياطي
-    if (existsSync(PRODUCTS_PATH)) {
-      writeFileSync(BACKUP_PATH, readFileSync(PRODUCTS_PATH));
-    }
-    writeFileSync(PRODUCTS_PATH, JSON.stringify(products, null, 2), 'utf8');
-  } catch (err) {
-    logger.error('Failed to write products.json', err);
-    throw err; // دع المستدعي يتعامل معه
-  }
-}
-
-export async function run(idea, story, levels, art, templateData) {
-  const products = readProductsSafely();
-
-  if (products.find(p => p.id === idea.id)) {
-    logger.info('Product already exists — skipped', { id: idea.id });
-    return { skipped: true, id: idea.id };
-  }
-
-  const templateFile = selectTemplate(idea, templateData);
-  logger.info('Template selected', { id: idea.id, type: idea.type, template: templateFile });
-
-  const product = {
-    id: idea.id,
-    slug: idea.id,
-    type: idea.type,
-    category: idea.category,
-    status: 'available',
-    emoji: idea.emoji,
-    templateFile,
-    accent: art?.accent || '#facc15',
-    accentRgb: art?.accentRgb || '250,204,21',
-    gradient: art?.gradient || '135deg,#0f172a,#1e293b',
-    emojis: art?.emojis || templateData?.emojis || [],
-    name: idea.name,
-    desc: idea.desc,
-    tags: idea.tags || [],
-    iap: DEFAULT_IAPS, // بعد تصحيح 提示
-    story: story ? {
-      setting: story.setting,
-      mainCharacter: story.mainCharacter,
-      objective: story.objective,
-      intro: story.intro,
-      winMessage: story.winMessage,
-      loseMessage: story.loseMessage,
-    } : null,
-    levels: templateData?.levels || levels || null, // تبسيط
-    generated: true,
-    generatedAt: new Date().toISOString(),
-  };
-
-  products.push(product);
-  writeProductsSafely(products);
-  logger.info('Product added', { id: idea.id, template: templateFile });
-
-  // تشغيل game-generator (إذا كان موجوداً)
-  if (existsSync(GENERATOR_SCRIPT)) {
-    try {
-      execSync(`node ${GENERATOR_SCRIPT} ${idea.id}`, {
-        cwd: join(__dirname, '..'),
-        stdio: 'inherit',
-      });
-      logger.info('Game built', { id: idea.id });
-    } catch (err) {
-      logger.warn('game-generator failed', { error: err.message });
-    }
-  } else {
-    logger.warn('game-generator script not found, skipping build');
-  }
-
-  return { success: true, id: idea.id, template: templateFile };
-}
+[preset.0.options]
+custom_template/debug=""
+custom_template/release=""
+variant/extensions_support=false
+vram_texture_compression/for_desktop=true
+vram_texture_compression/for_mobile=false
+html/export_icon=true
+html/custom_html_shell=""
+html/head_include=""
+html/canvas_resize_policy=2
+html/focus_canvas_on_start=true
+html/experimental_virtual_keyboard=false
+progressive_web_app/enabled=false
+progressive_web_app/offline_page=""
+progressive_web_app/display=1
+progressive_web_app/orientation=0
+progressive_web_app/icon_144x144=""
+progressive_web_app/icon_180x180=""
+progressive_web_app/icon_maskable_192x512=""
+progressive_web_app/icon_maskable_512x512=""
+progressive_web_app/background_color=Color(0, 0, 0, 1)
+`;
