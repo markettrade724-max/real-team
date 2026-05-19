@@ -101,47 +101,51 @@ jobs:
             OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
 
-            # ✅ إصلاح: توحيد اسم preset على "Web" في كل مكان
+            # ✅ إصلاح: Python بدل heredoc (heredoc يكسر YAML syntax)
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "Creating default export_presets.cfg..."
-              cat > "$proj_dir/export_presets.cfg" << 'EOF'
-[preset.0]
-name="Web"
-platform="Web"
+              python3 -c "
+content = '''[preset.0]
+name=\"Web\"
+platform=\"Web\"
 runnable=true
-custom_features=""
-export_filter="all_resources"
-include_filter=""
-exclude_filter=""
-export_path="./index.html"
-encryption_include_filters=""
-encryption_exclude_filters=""
-script_encryption_key=""
+custom_features=\"\"
+export_filter=\"all_resources\"
+include_filter=\"\"
+exclude_filter=\"\"
+export_path=\"./index.html\"
+encryption_include_filters=\"\"
+encryption_exclude_filters=\"\"
+script_encryption_key=\"\"
 patches=PackedStringArray()
 
 [preset.0.options]
-custom_template/debug=""
-custom_template/release=""
+custom_template/debug=\"\"
+custom_template/release=\"\"
 variant/extensions_support=false
 vram_texture_compression/for_desktop=true
 vram_texture_compression/for_mobile=false
 html/export_icon=true
-html/custom_html_shell=""
-html/head_include=""
+html/custom_html_shell=\"\"
+html/head_include=\"\"
 html/canvas_resize_policy=2
 html/focus_canvas_on_start=true
 html/experimental_virtual_keyboard=false
 progressive_web_app/enabled=false
-progressive_web_app/offline_page=""
+progressive_web_app/offline_page=\"\"
 progressive_web_app/display=1
 progressive_web_app/orientation=0
-progressive_web_app/icon_144x144=""
-progressive_web_app/icon_180x180=""
-progressive_web_app/icon_maskable_192x192=""
-progressive_web_app/icon_maskable_512x512=""
+progressive_web_app/icon_144x144=\"\"
+progressive_web_app/icon_180x180=\"\"
+progressive_web_app/icon_maskable_192x192=\"\"
+progressive_web_app/icon_maskable_512x512=\"\"
 progressive_web_app/background_color=Color(0, 0, 0, 1)
-EOF
-              echo "export_presets.cfg created"
+'''
+import sys
+with open(sys.argv[1], 'w') as f:
+    f.write(content)
+print('export_presets.cfg created')
+" "$proj_dir/export_presets.cfg"
             else
               echo "export_presets.cfg found"
               # ✅ إصلاح: تصحيح الاسم إذا كان HTML5 بدل Web
