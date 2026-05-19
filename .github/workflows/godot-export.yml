@@ -92,7 +92,6 @@ jobs:
             $OutputDir = "$pwd\public\games\godot\$slug"
             New-Item -ItemType Directory -Force -Path $OutputDir
 
-            # كتابة export_presets.cfg عبر PowerShell (لا heredoc، لا Python)
             $presetPath = Join-Path $projDir "export_presets.cfg"
             if (-not (Test-Path $presetPath)) {
               Write-Host "Creating default export_presets.cfg..."
