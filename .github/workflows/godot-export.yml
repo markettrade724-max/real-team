@@ -17,6 +17,7 @@ jobs:
     timeout-minutes: 25
     permissions:
       contents: write
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -90,19 +91,20 @@ jobs:
             OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
 
+            # كتابة export_presets.cfg باستخدام بايثون (لا heredoc بعد اليوم)
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "Creating default export_presets.cfg..."
-              cat > "$proj_dir/export_presets.cfg" << 'END_OF_PRESET'
-[preset.0]
+              python -c "
+cfg = '''[preset.0]
 
-name="Web"
-platform="Web"
+name=\"Web\"
+platform=\"Web\"
 runnable=true
-custom_features=""
-export_filter="all_resources"
-include_filter=""
-exclude_filter=""
-export_path="./index.html"
+custom_features=\"\"
+export_filter=\"all_resources\"
+include_filter=\"\"
+exclude_filter=\"\"
+export_path=\"./index.html\"
 
 [preset.0.options]
 
@@ -110,13 +112,16 @@ variant/extensions_support=false
 variant/thread_support=false
 vram_texture_compression/import_etc2_astc=true
 vram_texture_compression/import_s3tc_bptc=true
-html/custom_html_shell=""
-html/head_include=""
+html/custom_html_shell=\"\"
+html/head_include=\"\"
 html/canvas_resize_policy=2
 html/focus_canvas_on_start=true
 html/experimental_virtual_keyboard=false
 progress/as_bar=false
-END_OF_PRESET
+'''
+with open('$proj_dir/export_presets.cfg', 'w') as f:
+    f.write(cfg)
+"
               echo "Default export_presets.cfg created"
             fi
 
