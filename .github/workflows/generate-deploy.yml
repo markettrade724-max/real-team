@@ -58,23 +58,6 @@ except Exception as e:
     print("  (no universe yet: " + str(e) + ")")
 '
 
-      - name: Trigger Godot Export (BIRTH only)
-        if: ${{ github.event.inputs.mode == 'birth' }}
-        shell: bash
-        run: |
-          echo "BIRTH MODE — triggering Godot export..."
-          python3 -c '
-import json, os
-try:
-    with open("universe.json") as f:
-        u = json.load(f)
-    if "GITHUB_ENV" in os.environ:
-        with open(os.environ["GITHUB_ENV"], "a") as env_file:
-            env_file.write("GODOT_SLUG=" + str(u.get("id", "")) + "\n")
-except Exception as e:
-    print("Error setting env: " + str(e))
-'
-
       - name: Commit changes
         shell: bash
         run: |
