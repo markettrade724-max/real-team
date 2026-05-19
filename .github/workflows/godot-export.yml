@@ -1,13 +1,14 @@
-name: Godot Export to HTML5
+name: godot-export
 
 on:
   push:
+    branches: [main]
     paths:
       - 'godot-projects/**'
   workflow_dispatch:
     inputs:
       project-slug:
-        description: 'مُعرّف المشروع (slug) لتصديره (اتركه فارغاً لتصدير الكل)'
+        description: 'Slug of project to export (leave empty for all)'
         required: false
 
 jobs:
@@ -16,9 +17,10 @@ jobs:
     timeout-minutes: 25
     permissions:
       contents: write
-
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Cache Godot Engine
         id: cache-godot
@@ -88,21 +90,19 @@ jobs:
             OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
 
-            # كتابة export_presets.cfg عبر بايثون لتجنب مشاكل heredoc تماماً
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "Creating default export_presets.cfg..."
-              python -c "
-import os
-cfg_content = '''[preset.0]
+              cat > "$proj_dir/export_presets.cfg" << 'END_OF_PRESET'
+[preset.0]
 
-name=\"Web\"
-platform=\"Web\"
+name="Web"
+platform="Web"
 runnable=true
-custom_features=\"\"
-export_filter=\"all_resources\"
-include_filter=\"\"
-exclude_filter=\"\"
-export_path=\"./index.html\"
+custom_features=""
+export_filter="all_resources"
+include_filter=""
+exclude_filter=""
+export_path="./index.html"
 
 [preset.0.options]
 
@@ -110,29 +110,23 @@ variant/extensions_support=false
 variant/thread_support=false
 vram_texture_compression/import_etc2_astc=true
 vram_texture_compression/import_s3tc_bptc=true
-html/custom_html_shell=\"\"
-html/head_include=\"\"
+html/custom_html_shell=""
+html/head_include=""
 html/canvas_resize_policy=2
 html/focus_canvas_on_start=true
 html/experimental_virtual_keyboard=false
 progress/as_bar=false
-'''
-with open(os.path.join('$proj_dir', 'export_presets.cfg'), 'w') as f:
-    f.write(cfg_content)
-"
+END_OF_PRESET
               echo "Default export_presets.cfg created"
             fi
 
-            # تشغيل التصدير
-            "$GODOT_BIN" --headless --path "$proj_dir" --export-release "Web" "$OUTPUT_DIR/index.html"
+            godot --headless --path "$proj_dir" --export-release "Web" "$OUTPUT_DIR/index.html"
 
-            # التحقق من الملفات الأساسية
             if [ ! -s "$OUTPUT_DIR/index.html" ] || [ ! -s "$OUTPUT_DIR/index.js" ] || [ ! -s "$OUTPUT_DIR/index.wasm" ] || [ ! -s "$OUTPUT_DIR/index.pck" ]; then
-              echo "FAILED: One of the essential files (index.html, index.js, index.wasm, index.pck) is empty or missing"
+              echo "FAILED: One of the essential files is empty or missing"
               exit 1
             fi
             echo "All essential files are intact (single-threaded)"
-
             echo "Export successful"
           done
 
