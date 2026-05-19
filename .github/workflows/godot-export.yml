@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       project-slug:
-        description: 'معرف المشروع (slug) لتصديره (اتركه فارغاً لتصدير الكل)'
+        description: 'معرف المشروع (slug) لتصديره'
         required: false
 
 jobs:
@@ -88,9 +88,10 @@ jobs:
             OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
 
+            # إنشاء export_presets.cfg إذا لم يكن موجوداً (مع الإعدادات المفقودة)
             if [ ! -f "$proj_dir/export_presets.cfg" ]; then
               echo "Creating default export_presets.cfg..."
-              cat << 'EOF' > "$proj_dir/export_presets.cfg"
+              cat > "$proj_dir/export_presets.cfg" << EOF
 [preset.0]
 
 name="Web"
@@ -104,6 +105,8 @@ export_path="./index.html"
 
 [preset.0.options]
 
+variant/extensions_support=false
+variant/thread_support=false
 vram_texture_compression/import_etc2_astc=true
 vram_texture_compression/import_s3tc_bptc=true
 html/custom_html_shell=""
@@ -116,15 +119,17 @@ EOF
               echo "Default export_presets.cfg created"
             fi
 
+            # تشغيل التصدير
             "$GODOT_BIN" --headless --path "$proj_dir" --export-release "Web" "$OUTPUT_DIR/index.html"
 
+            # التحقق من الملفات الأساسية
             if [ ! -s "$OUTPUT_DIR/index.html" ] || [ ! -s "$OUTPUT_DIR/index.js" ] || [ ! -s "$OUTPUT_DIR/index.wasm" ] || [ ! -s "$OUTPUT_DIR/index.pck" ]; then
-              echo "FAILED: One of the essential files (index.html, index.js, index.wasm, index.pck) is empty or missing"
+              echo "FAILED: One of the essential files is empty or missing"
               exit 1
             fi
             echo "All essential files are intact (single-threaded)"
 
-            echo "Export successful (single-threaded, no coi-serviceworker needed)"
+            echo "Export successful"
           done
 
       - name: Commit exported files
