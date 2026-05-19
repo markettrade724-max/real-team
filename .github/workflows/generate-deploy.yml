@@ -1,0 +1,63 @@
+name: Generate Games & Deploy
+
+on:
+  push:
+    paths:
+      - 'game-generator.js'
+      - 'templates/**'
+      - 'products.json'
+      - 'public/games/godot/**'
+  workflow_dispatch:
+
+jobs:
+  generate-deploy:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+        # إذا لم يكن لديك package-lock.json، استخدم npm install بدلاً من ذلك
+
+      - name: Generate game pages
+        shell: bash
+        run: node game-generator.js
+
+      - name: Commit and push changes
+        shell: bash
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # إضافة جميع الملفات التي قد تكون تغيرت
+          git add .
+
+          # التحقق مما إذا كانت هناك تغييرات
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          # إنشاء رسالة commit بسيطة
+          COMMIT_MSG="Deploy generated pages [skip ci]"
+          git commit -m "$COMMIT_MSG"
+
+          # سحب آخر التغييرات ودمجها
+          git pull --rebase origin main || git rebase --abort
+
+          # دفع التغييرات
+          git push origin main --force-with-lease
+          echo "Changes committed and pushed successfully."
