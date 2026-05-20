@@ -81,25 +81,24 @@ function generateRichLevels(productType) {
 
 function main() {
   const products = loadProducts();
-  if (!products.length) { console.log('❌ no products'); return; }
+  if (!products.length) { console.log('[INFO] No products found'); return; }
 
   let updated = 0;
   for (const p of products) {
     if (p.status !== 'available') continue;
-    // توليد المستويات الجديدة
     const newLevels = generateRichLevels(p.type);
     if (newLevels.length > 0) {
       p.levels = newLevels;
       updated++;
-      console.log(`✅ Updated levels for: ${p.slug} (${p.type})`);
+      console.log(`[OK] Updated levels for: ${p.slug} (${p.type})`);
     }
   }
 
   if (updated > 0) {
     saveProducts(products);
-    console.log(`\n🎯 Updated ${updated} products with rich levels.`);
+    console.log(`\n[OK] Updated ${updated} products with rich levels.`);
   } else {
-    console.log('ℹ️ No products needed level updates.');
+    console.log('[INFO] No products needed level updates.');
   }
 }
 
