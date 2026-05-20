@@ -1,24 +1,69 @@
 {
-  "runId": "2026-05-20T1646",
+  "runId": "2026-05-20T2302",
   "mode": "birth",
-  "timestamp": "2026-05-20T16:46:32.715Z",
-  "totalDuration": "17.7s",
-  "geminiCalls": "0/15",
+  "timestamp": "2026-05-20T23:05:12.548Z",
+  "totalDuration": "163.3s",
+  "geminiCalls": "6/15",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "99ms",
+      "duration": "42ms",
       "error": null
     },
     "idea": {
+      "success": true,
+      "duration": "5.0s",
+      "error": null
+    },
+    "story": {
+      "success": true,
+      "duration": "222ms",
+      "error": null
+    },
+    "soul": {
+      "success": true,
+      "duration": "13.2s",
+      "error": null
+    },
+    "art": {
       "success": false,
-      "duration": "2.6s",
-      "error": "Idea generation failed: Gemini API call failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"Thi"
+      "duration": "988ms",
+      "error": "PALETTES is not defined"
+    },
+    "template": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "8.3s",
+      "error": null
+    },
+    "code": {
+      "success": false,
+      "duration": "1ms",
+      "error": "mod.run is not a function"
+    },
+    "marketing": {
+      "success": true,
+      "duration": "10.3s",
+      "error": null
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "5.2s",
+      "error": null
+    },
+    "collision": {
+      "success": true,
+      "duration": "1ms",
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
-    "failed": 1
+    "total": 11,
+    "passed": 9,
+    "failed": 2
   }
 }
