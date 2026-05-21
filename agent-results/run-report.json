@@ -1,43 +1,43 @@
 {
-  "runId": "2026-05-21T1115",
+  "runId": "2026-05-21T1129",
   "mode": "birth",
-  "timestamp": "2026-05-21T11:18:16.879Z",
-  "totalDuration": "164.4s",
-  "geminiCalls": "6/15",
+  "timestamp": "2026-05-21T11:32:48.368Z",
+  "totalDuration": "176.3s",
+  "geminiCalls": "7/15",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "55ms",
+      "duration": "52ms",
       "error": null
     },
     "idea": {
       "success": true,
-      "duration": "5.8s",
+      "duration": "5.6s",
       "error": null
     },
     "story": {
       "success": true,
-      "duration": "181ms",
+      "duration": "225ms",
       "error": null
     },
     "soul": {
       "success": true,
-      "duration": "12.4s",
+      "duration": "13.8s",
       "error": null
     },
     "art": {
       "success": true,
-      "duration": "6.7s",
+      "duration": "7.6s",
       "error": null
     },
     "template": {
       "success": true,
-      "duration": "2ms",
+      "duration": "3ms",
       "error": null
     },
     "levels": {
       "success": true,
-      "duration": "10.2s",
+      "duration": "11.4s",
       "error": null
     },
     "code": {
@@ -46,13 +46,13 @@
       "error": "Unexpected end of input"
     },
     "marketing": {
-      "success": false,
-      "duration": "1.3s",
-      "error": "Gemini API call failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently exp"
+      "success": true,
+      "duration": "10.5s",
+      "error": null
     },
     "roadmap": {
       "success": true,
-      "duration": "7.6s",
+      "duration": "7.0s",
       "error": null
     },
     "collision": {
@@ -63,7 +63,7 @@
   },
   "summary": {
     "total": 11,
-    "passed": 9,
-    "failed": 2
+    "passed": 10,
+    "failed": 1
   }
 }
