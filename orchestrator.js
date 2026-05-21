@@ -1,7 +1,8 @@
 /**
- * orchestrator.js — v4.0
- * BIRTH MODE    : يولد الكون كاملاً (مرة في السنة)
- * EVOLUTION MODE: يضيف للكون الموجود (كل تشغيل)
+ * orchestrator.js — v5.0
+ * BIRTH MODE      : يولد الكون كاملاً (مرة في السنة)
+ * EVOLUTION MODE  : يضيف للكون الموجود (كل تشغيل)
+ * INVENTION MODE  : المخترع يعمل (مرة في الأسبوع)
  */
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -15,7 +16,7 @@ const UNIVERSE    = join(__dirname, 'universe.json');
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
 const DELAY   = 15000;
-const MAX_RPD = 15; // ✅ إصلاح 1: رفع الحد لاستيعاب BIRTH الكامل
+const MAX_RPD = 15;
 const TIMEOUT = 120000;
 
 let geminiCalls = 0;
@@ -33,24 +34,30 @@ function loadUniverse() {
 function saveUniverse(universe) {
   writeFileSync(UNIVERSE, JSON.stringify(universe, null, 2), 'utf8');
   logger.info('Universe saved', {
-    worlds:     universe.worlds?.length    || 0,
-    weapons:    universe.weapons?.length   || 0,
-    enemies:    universe.enemies?.length   || 0,
-    vehicles:   universe.vehicles?.length  || 0,
-    evolutions: universe.evolutions        || 0,
+    worlds:      universe.worlds?.length    || 0,
+    weapons:     universe.weapons?.length   || 0,
+    enemies:     universe.enemies?.length   || 0,
+    vehicles:    universe.vehicles?.length  || 0,
+    evolutions:  universe.evolutions        || 0,
+    inventions:  universe.inventions        || 0,
   });
 }
 
+// هل هذا يوم الاختراع؟ (كل أحد)
+function isInventionDay() {
+  return new Date().getDay() === 0;
+}
+
 async function run(name, agentPath, args = [], usesGemini = true) {
-  logger.info(`▶ ${name}`);
+  logger.info(`[RUN] ${name}`);
 
   if (usesGemini && geminiCalls >= MAX_RPD) {
-    logger.warn(`Quota limit — skipping ${name}`);
+    logger.warn(`[SKIP] Quota limit — ${name}`);
     return { success: false, error: 'QuotaLimit', duration: '0ms', attempts: 0 };
   }
 
   if (usesGemini) {
-    logger.debug(`Waiting ${DELAY/1000}s...`);
+    logger.debug(`[WAIT] ${DELAY/1000}s before ${name}...`);
     await sleep(DELAY);
   }
 
@@ -63,11 +70,11 @@ async function run(name, agentPath, args = [], usesGemini = true) {
     ]);
     if (usesGemini) geminiCalls++;
     const d = fmt(Date.now()-t0);
-    logger.info(`OK ${name}`, { duration: d, gemini: `${geminiCalls}/${MAX_RPD}` });
+    logger.info(`[OK] ${name}`, { duration: d, gemini: `${geminiCalls}/${MAX_RPD}` });
     return { success: true, data: result, duration: d, attempts: 1 };
   } catch(err) {
     const d = fmt(Date.now()-t0);
-    logger.error(`FAIL ${name}`, { error: err.message.slice(0,120), duration: d });
+    logger.error(`[FAIL] ${name}`, { error: err.message.slice(0,120), duration: d });
     return { success: false, error: err.message.slice(0,120), duration: d, attempts: 1 };
   }
 }
@@ -89,7 +96,7 @@ async function runWorldSensesAgent(universe, world, log) {
 // BIRTH MODE
 // ════════════════════════════════════════════
 async function birthMode(t0, runId) {
-  logger.info('BIRTH MODE — Creating universe from scratch');
+  logger.info('[BIRTH] Creating universe from scratch');
   const log = {}, data = {};
 
   // 1. Analytics
@@ -99,12 +106,12 @@ async function birthMode(t0, runId) {
   // 2. الفكرة
   log.idea = await run('Idea Agent', './agents/idea-agent.js', []);
   if (!log.idea?.success) {
-    logger.error('No idea — aborting BIRTH');
+    logger.error('[BIRTH] No idea — aborting');
     return saveReport(log, data, t0, runId, 'birth');
   }
   data.idea = log.idea.data;
   save('ideas.json', data.idea);
-  logger.info(`Universe idea: "${data.idea.name?.en}"`);
+  logger.info(`[BIRTH] Universe idea: "${data.idea.name?.en}"`);
 
   // 3. القصة
   log.story = await run('Story Agent', './agents/story-agent.js', [data.idea]);
@@ -115,7 +122,7 @@ async function birthMode(t0, runId) {
   if (log.soul?.success) {
     data.soul = log.soul.data;
     save('soul.json', data.soul);
-    logger.info(`Soul: "${data.soul?.essence?.slice(0,60)}"`);
+    logger.info(`[BIRTH] Soul: "${data.soul?.essence?.slice(0,60)}"`);
   }
 
   // 5. الهوية البصرية
@@ -133,7 +140,6 @@ async function birthMode(t0, runId) {
     data.levels = log.levels.data;
     save('levels.json', data.levels);
 
-    // وكيل الحواس على كل عالم
     const partialUniverse = { name: data.idea.name, soul: data.soul, art: data.art };
     if (data.levels.worlds) {
       for (const world of data.levels.worlds) {
@@ -170,15 +176,17 @@ async function birthMode(t0, runId) {
     enemies:     [],
     vehicles:    [],
     evolutions:  0,
+    inventions:  0,
     lastEvolved: null,
+    lastInvented: null,
   };
 
-  // 11. فحص التصادم (بعد بناء universe الكامل)
+  // 11. فحص التصادم
   log.collision = await run('Collision Check', './agents/collision-agent.js',
     [data.idea.id], false);
   if (log.collision?.success) { data.collision = log.collision.data; }
 
-  // ✅ إصلاح 2: تمرير universe الكامل لـ player-memory
+  // 12. ذاكرة اللاعب
   if (process.env.PLAYER_ID) {
     log.playerMemory = await run('Player Memory', './agents/player-memory.js',
       [universe, process.env.PLAYER_ID]);
@@ -192,14 +200,14 @@ async function birthMode(t0, runId) {
 // EVOLUTION MODE
 // ════════════════════════════════════════════
 async function evolutionMode(universe, t0, runId) {
-  logger.info('EVOLUTION MODE', {
+  logger.info('[EVOLUTION] Starting', {
     universe:   universe.id,
     evolutions: universe.evolutions,
   });
 
   const log = {}, data = { universe };
   const evolutionType = pickEvolutionType(universe);
-  logger.info(`Evolution type: ${evolutionType}`);
+  logger.info(`[EVOLUTION] Type: ${evolutionType}`);
 
   switch (evolutionType) {
 
@@ -209,10 +217,9 @@ async function evolutionMode(universe, t0, runId) {
         const newWorld = log.world.data;
         universe.worlds.push(newWorld);
         save('last-world.json', newWorld);
-        logger.info(`New world: "${newWorld.name?.en}"`);
+        logger.info(`[EVOLUTION] New world: "${newWorld.name?.en}"`);
         await runWorldSensesAgent(universe, newWorld, log);
 
-        // ✅ إصلاح 3: فحص التصادم فقط عند تطور العوالم
         log.collision = await run('Collision Check', './agents/collision-agent.js',
           [universe.id], false);
         if (log.collision?.success) { data.collision = log.collision.data; }
@@ -225,7 +232,7 @@ async function evolutionMode(universe, t0, runId) {
       if (log.weapon?.success) {
         universe.weapons.push(log.weapon.data);
         save('last-weapon.json', log.weapon.data);
-        logger.info(`New weapon: "${log.weapon.data.name?.en}"`);
+        logger.info(`[EVOLUTION] New weapon: "${log.weapon.data.name?.en}"`);
       }
       break;
     }
@@ -235,7 +242,7 @@ async function evolutionMode(universe, t0, runId) {
       if (log.enemy?.success) {
         universe.enemies.push(log.enemy.data);
         save('last-enemy.json', log.enemy.data);
-        logger.info(`New enemy: "${log.enemy.data.name?.en}"`);
+        logger.info(`[EVOLUTION] New enemy: "${log.enemy.data.name?.en}"`);
       }
       break;
     }
@@ -245,7 +252,7 @@ async function evolutionMode(universe, t0, runId) {
       if (log.vehicle?.success) {
         universe.vehicles.push(log.vehicle.data);
         save('last-vehicle.json', log.vehicle.data);
-        logger.info(`New vehicle: "${log.vehicle.data.name?.en}"`);
+        logger.info(`[EVOLUTION] New vehicle: "${log.vehicle.data.name?.en}"`);
       }
       break;
     }
@@ -260,6 +267,26 @@ async function evolutionMode(universe, t0, runId) {
   // تحديث الكون
   universe.evolutions++;
   universe.lastEvolved = new Date().toISOString();
+
+  // ════════════════════════════════════════
+  // INVENTION — كل أحد بعد EVOLUTION
+  // ════════════════════════════════════════
+  if (isInventionDay()) {
+    logger.info('[INVENTION] Sunday — The inventor awakens');
+    log.invention = await run('Inventor', './agents/inventor-agent.js',
+      [universe], true);
+
+    if (log.invention?.success) {
+      universe.inventions = (universe.inventions || 0) + 1;
+      universe.lastInvented = new Date().toISOString();
+      save('last-invention.json', log.invention.data);
+      logger.info('[INVENTION] New recipe added to the library', {
+        name:   log.invention.data?.name,
+        domain: log.invention.data?.domain,
+      });
+    }
+  }
+
   saveUniverse(universe);
 
   // تسويق
@@ -290,8 +317,8 @@ function pickEvolutionType(universe) {
 
 function getDayOfYear() {
   const now   = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  return Math.floor((now - start) / 86400000);
+  const start = new Date(now.getFullYear(), 0, 1);
+  return Math.floor((now - start) / 86400000) + 1;
 }
 
 // ════════════════════════════════════════════
@@ -303,10 +330,21 @@ async function main() {
   const mode     = process.env.MODE || 'auto';
   const universe = loadUniverse();
 
-  logger.info('Orchestrator started', { runId, mode, hasUniverse: !!universe });
+  logger.info('[START] Orchestrator', { runId, mode, hasUniverse: !!universe });
 
   if (mode === 'birth' || !universe) {
     await birthMode(t0, runId);
+  } else if (mode === 'invention') {
+    // تشغيل المخترع يدوياً
+    logger.info('[INVENTION] Manual mode');
+    const log = {};
+    log.invention = await run('Inventor', './agents/inventor-agent.js', [universe], true);
+    if (log.invention?.success) {
+      universe.inventions = (universe.inventions || 0) + 1;
+      universe.lastInvented = new Date().toISOString();
+      saveUniverse(universe);
+    }
+    return saveReport(log, {}, t0, runId, 'invention');
   } else {
     await evolutionMode(universe, t0, runId);
   }
@@ -334,7 +372,7 @@ function saveReport(log, data, t0, runId, mode) {
   writeFileSync(join(RESULTS_DIR, 'run-report.json'),
     JSON.stringify(report, null, 2), 'utf8');
 
-  logger.info('Done', {
+  logger.info('[DONE]', {
     mode,
     duration: report.totalDuration,
     passed:   report.summary.passed,
@@ -346,6 +384,6 @@ function saveReport(log, data, t0, runId, mode) {
 }
 
 main().catch(err => {
-  logger.error('Orchestrator crashed', { error: err.message });
+  logger.error('[CRASH] Orchestrator', { error: err.message });
   process.exit(1);
 });
