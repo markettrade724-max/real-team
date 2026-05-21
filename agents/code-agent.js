@@ -77,7 +77,7 @@ ${worlds ? `العوالم: ${worlds.worlds?.map(w => w.name?.en).join(', ')}` :
   "enemy.gd":      "...",
   "weapon.gd":     "...",
   "bullet.gd":     "..."
-}`, 0.7, { topP: 0.9 });
+}`, 0.7, { topP: 0.9, maxOutputTokens: 8192 });
 
     // قواعد آلية
     const required = ['main_scene.gd','player.gd','enemy.gd','weapon.gd','bullet.gd'];
@@ -118,7 +118,7 @@ async function generateScenes(idea, worlds, scripts) {
   "enemy.tscn":      "...",
   "weapon.tscn":     "...",
   "bullet.tscn":     "..."
-}`, 0.5);
+}`, 0.5, { maxOutputTokens: 8192 });
 
     for (const [name, content] of Object.entries(raw)) {
       raw[name] = fixLoadSteps(content);
