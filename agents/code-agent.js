@@ -9,7 +9,14 @@ import { logger }         from '../logger.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function run(idea, story, levels, art, templateData) {
-
+  logger.info('code-agent inputs', {
+    idea:     !!idea,
+    story:    !!story,
+    levels:   !!levels,
+    art:      !!art,
+    template: !!templateData,
+    ideaType: idea?.type,
+  });
   // ════════════════════════════════════════
   // ✅ مسار Godot
   // ════════════════════════════════════════
