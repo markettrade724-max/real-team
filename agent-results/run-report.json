@@ -1,19 +1,19 @@
 {
-  "runId": "2026-05-21T1157",
+  "runId": "2026-05-21T1634",
   "mode": "birth",
-  "timestamp": "2026-05-21T11:57:35.731Z",
-  "totalDuration": "15.4s",
+  "timestamp": "2026-05-21T16:35:08.335Z",
+  "totalDuration": "18.9s",
   "geminiCalls": "0/15",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "53ms",
+      "duration": "52ms",
       "error": null
     },
     "idea": {
       "success": false,
-      "duration": "318ms",
-      "error": "Idea generation failed: Gemini API call failed: got status: 429 Too Many Requests. {\"error\":{\"code\":429,\"message\":\"You e"
+      "duration": "3.8s",
+      "error": "Idea generation failed: Gemini API call failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"Thi"
     }
   },
   "summary": {
