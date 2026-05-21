@@ -1,90 +1,274 @@
 {
-  "version": "1.1.0",
-  "description": "قاعدة المعرفة والتصحيحات – تحتوي على جميع أجزاء الكود التي تم إصلاحها، وسجل الأخطاء للرجوع إليها.",
-  "error-log": [
+  "version": "1.0.0",
+  "description": "ذاكرة الوكلاء – أخطاء وقواعد خاصة بالوكلاء (مستخرجة من الكتاب الذهبي 4.3.0). يُستخدم لتغذية soulContext أو للتحقق قبل التشغيل.",
+  "errors": [
     {
-      "id": "err-001",
-      "date": "2026-05-12",
-      "description": "خطأ إملائي AD_REMOVE_LBL → AD_REMOVE_LABEL في الإسبانية والألمانية",
-      "files": ["game-generator.js"],
-      "fixed": true
+      "id": "err-070",
+      "severity": "high",
+      "description": "أداة _gemini.js كانت تتجاهل المعاملات الإضافية (topP, topK, frequencyPenalty, presencePenalty) التي يمررها story-agent. النتيجة: story-agent يعمل بإعدادات افتراضية فقط ويفقد إبداعه الكامل.",
+      "patch": "add-options-param-to-askGemini"
     },
     {
-      "id": "err-002",
-      "date": "2026-05-12",
-      "description": "كائن sonic-surge-arena مقطوع وبيانات يتيمة في products.json",
-      "files": ["products.json"],
-      "fixed": true
+      "id": "err-071",
+      "severity": "critical",
+      "description": "لا توجد وثيقة روح تربط الوكلاء. كل وكيل يعمل في جزيرة منفصلة دون معرفة الجوهر الفلسفي للكون. النتيجة: تضارب بصري وسردي بين مخرجات الوكلاء.",
+      "patch": "add-soul-agent-and-soul-context"
     },
     {
-      "id": "err-003",
-      "date": "2026-05-12",
-      "description": "مستويات phaser-game و racing-game الافتراضية مفقودة أو غير مكتملة",
-      "files": ["game-generator.js"],
-      "fixed": true
+      "id": "err-072",
+      "severity": "high",
+      "description": "template-engineer كان يعرف قالبين فقط من أصل 16 قالباً موجوداً. النتيجة: معظم الأفكار تذهب لقالب خاطئ أو افتراضي.",
+      "patch": "register-all-16-templates-with-scoring"
     },
     {
-      "id": "err-004",
-      "date": "2026-05-12",
-      "description": "تعارض type/category في genres-shift-ai وحقول ناقصة في منتجات أخرى",
-      "files": ["products.json"],
-      "fixed": true
+      "id": "err-073",
+      "severity": "critical",
+      "description": "تعارض اسم preset بين code-agent (name='HTML5') وgodot-export.yml (--export-release 'Web'). النتيجة: Godot لا يجد الـ preset ويفشل التصدير بصمت.",
+      "patch": "unify-preset-name-to-Web-everywhere"
+    },
+    {
+      "id": "err-078",
+      "severity": "critical",
+      "description": "orchestrator لا يفرق بين BIRTH MODE (توليد كون جديد) وEVOLUTION MODE (إضافة عناصر). النتيجة: كل تشغيل يولد لعبة جديدة بدل تطوير الكون الموجود.",
+      "patch": "add-birth-evolution-dual-mode"
+    },
+    {
+      "id": "err-079",
+      "severity": "high",
+      "description": "level-agent محدود بـ 5 عوالم ثابتة. لا يعرف أن الهدف 365 عالماً في السنة ولا في أي فصل يقع العالم الحالي.",
+      "patch": "add-365-worlds-yearly-target-with-chapters"
+    },
+    {
+      "id": "err-080",
+      "severity": "medium",
+      "description": "منطق اختيار نوع التطور كان يختار الأقل عدداً بشكل أعمى. العوالم لا تحصل على الأولوية مما يخل بهدف 365 عالم/سنة.",
+      "patch": "world-priority-based-on-day-of-year"
+    },
+    {
+      "id": "err-094",
+      "severity": "critical",
+      "description": "استدعاء askGemini ببارامترات temperature داخل كائن بدلاً من بارامتر ثانٍ مباشر. الصحيح: askGemini(prompt, temperature, options).",
+      "patch": "fix-askGemini-call-signature"
+    },
+    {
+      "id": "err-095",
+      "severity": "high",
+      "description": "استدعاء soulContext(universe) بدلاً من soulContext('agentName').",
+      "patch": "fix-soulContext-call"
+    },
+    {
+      "id": "err-096",
+      "severity": "critical",
+      "description": "shader-agent يطلب نصاً خاماً لكن _gemini.js يستخدم responseMimeType: 'application/json'. يجب طلب JSON دائماً.",
+      "patch": "fix-shader-agent-to-request-json"
+    },
+    {
+      "id": "err-097",
+      "severity": "critical",
+      "description": "collision-agent يتحقق من MeshInstance3D بدلاً من StaticBody3D/CharacterBody3D/RigidBody3D.",
+      "patch": "fix-collision-agent-check"
+    },
+    {
+      "id": "err-098",
+      "severity": "critical",
+      "description": "MAX_RPD=8 غير كافٍ مع إضافة الوكلاء الحسّيين (3 استدعاءات Gemini لكل عالم). تم رفعه إلى 15 ودمج الوكلاء الثلاثة في world-senses-agent.",
+      "patch": "raise-max-rpd-to-15-and-combine-senses-agents"
+    },
+    {
+      "id": "err-099",
+      "severity": "high",
+      "description": "وجود ثلاثة وكلاء منفصلين (noise, shader, audio) لكل عالم يضاعف عدد استدعاءات Gemini دون داعٍ. الحل: دمجهم في وكيل واحد world-senses-agent.",
+      "patch": "merge-senses-into-world-senses-agent"
+    },
+    {
+      "id": "err-100",
+      "severity": "high",
+      "description": "MAX_RPD=12 قد لا يكفي لـ BIRTH MODE الذي يولد 5 عوالم أو أكثر. تم رفعه إلى 15 لاستيعاب العدد الكامل لاستدعاءات Gemini.",
+      "patch": "increase-max-rpd-to-15"
+    },
+    {
+      "id": "err-101",
+      "severity": "critical",
+      "description": "في birthMode، كان player-memory يتلقى كائنًا جزئيًا ({ id, name }) بدلاً من universe الكامل. هذا يمنع الوكيل من الوصول إلى soul و art و worlds الموجودة، مما يحد من قدرته على التطور.",
+      "patch": "pass-full-universe-to-player-memory"
+    },
+    {
+      "id": "err-102",
+      "severity": "medium",
+      "description": "collision-agent كان يُستدعى في كل جولة EVOLUTION حتى عندما لا تكون هناك حاجة (مثل إضافة سلاح). تم جعله يعمل فقط عند تطور العوالم (case 'world') لتوفير الوقت.",
+      "patch": "run-collision-only-on-world-evolution"
+    },
+    {
+      "id": "err-104",
+      "severity": "medium",
+      "description": "idea-agent كان يتضمن حقل emoji في المخرجات، مما يخالف قاعدة rule-062 (منع الإيموجي في السجلات والبيانات الخلفية). تم حذف الحقل.",
+      "patch": "remove-emoji-from-idea-agent"
+    },
+    {
+      "id": "err-105",
+      "severity": "critical",
+      "description": "idea-agent يفشل بسبب loadJSON is not defined. الدالة كانت تُستدعى دون تعريف. تم إصلاح الملف بالكامل: تعريف loadJSON، تصحيح المسارات لـ ES modules، إضافة التحقق من تفرد المعرف، وإصلاح استدعاء askGemini.",
+      "patch": "fix-idea-agent-missing-loadjson"
+    },
+    {
+      "id": "err-113",
+      "severity": "critical",
+      "description": "code-agent.js كان يستخدم maxTokens بدلاً من maxOutputTokens، مما يمنع Gemini من استقبال الإعداد.",
+      "patch": "fix-maxTokens-to-maxOutputTokens"
+    },
+    {
+      "id": "err-114",
+      "severity": "critical",
+      "description": "code-agent.js كان يستخدم JSON.parse على مخرجات askGemini، لكن _gemini.js يعيد الكائن مباشرة لأن responseMimeType هو application/json.",
+      "patch": "remove-JSON-parse-call"
+    },
+    {
+      "id": "err-115",
+      "severity": "high",
+      "description": "code-agent.js كان يطلب plain text من Gemini لـ project.godot، لكن _gemini.js يجبر الرد على JSON. تم تعديل الطلب ليكون JSON مع مفتاح content.",
+      "patch": "request-json-for-project-godot"
     }
   ],
-  "patches": {
-    "phaser-detailed-levels": {
-      "description": "المستويات الخمسة المفصلة لألعاب الأكشن (Phaser) مع الزعماء وتأخير الظهور والأسماء",
-      "category": "game-generator/levels",
-      "replace": {
-        "file": "game-generator.js",
-        "find": "{ enemyCount:8,  enemySpeed:1.3, enemyHealth:1 },\n        { enemyCount:11, enemySpeed:1.6, enemyHealth:1 },\n        { enemyCount:14, enemySpeed:1.9, enemyHealth:2 },\n        { enemyCount:17, enemySpeed:2.2, enemyHealth:2 },\n        { enemyCount:20, enemySpeed:2.5, enemyHealth:3 }",
-        "with": "{ enemyCount:8,  enemySpeed:1.2, enemyHealth:1, enemyTypes:[0,1], spawnDelay:900, bossLevel:false, name:{ar:'البداية',en:'First Contact'} },\n        { enemyCount:12, enemySpeed:1.5, enemyHealth:2, enemyTypes:[0,1,2], spawnDelay:750, bossLevel:false, name:{ar:'المقاومة',en:'Resistance'} },\n        { enemyCount:16, enemySpeed:1.9, enemyHealth:2, enemyTypes:[1,2,3], spawnDelay:600, bossLevel:false, name:{ar:'العاصفة',en:'The Storm'} },\n        { enemyCount:8,  enemySpeed:1.5, enemyHealth:8, enemyTypes:[3],   spawnDelay:450, bossLevel:true,  name:{ar:'الزعيم',en:'Boss Fight'} },\n        { enemyCount:25, enemySpeed:2.4, enemyHealth:4, enemyTypes:[0,1,2,3], spawnDelay:350, bossLevel:false, name:{ar:'الفوضى',en:'Chaos'} }"
-      }
+  "rules": [
+    {
+      "id": "rule-055",
+      "description": "askGemini يجب أن تقبل دائماً معاملات إضافية (options) كـ topP, topK, frequencyPenalty, presencePenalty. لا تُحذف هذه المعاملات أو تُتجاهل."
     },
-    "racing-detailed-levels": {
-      "description": "مستويات السباق الخمسة مع صعوبة متدرجة واستهلاك النيترو (إدراج قبل endless-runner)",
-      "category": "game-generator/levels",
-      "replace": {
-        "file": "game-generator.js",
-        "find": "} else if (tplName === 'endless-runner.html') {",
-        "with": "} else if (tplName === 'racing-game.html') {\n      levels = [\n        { laps: 3, trackDifficulty: 'easy',   opponents: 2, maxSpeed: 200, nitroDrain: 0.5 },\n        { laps: 4, trackDifficulty: 'medium', opponents: 3, maxSpeed: 240, nitroDrain: 0.7 },\n        { laps: 5, trackDifficulty: 'hard',   opponents: 3, maxSpeed: 260, nitroDrain: 0.8 },\n        { laps: 5, trackDifficulty: 'hard',   opponents: 4, maxSpeed: 280, nitroDrain: 0.9 },\n        { laps: 6, trackDifficulty: 'extreme', opponents: 4, maxSpeed: 300, nitroDrain: 1.0 },\n      ];\n    } else if (tplName === 'endless-runner.html') {"
-      }
+    {
+      "id": "rule-056",
+      "description": "كل وكيل يجب أن يقرأ وثيقة الروح (soul.json) قبل بدء عمله عبر soulContext(). هذا يضمن تناسق المخرجات بين كل الوكلاء."
     },
-    "fix-genres-shift-ai": {
-      "description": "يُصلح تعارض type/category في genres-shift-ai",
-      "category": "products-json/fix",
-      "replace": {
-        "file": "products.json",
-        "find": "\"type\": \"arcade\",\n    \"category\": \"app\",",
-        "with": "\"type\": \"app\",\n    \"category\": \"app\","
-      }
+    {
+      "id": "rule-057",
+      "description": "template-engineer يجب أن يحتوي على خريطة كاملة لجميع القوالب الموجودة مع نظام تسجيل نقاط لاختيار الأنسب. لا يُضاف قالب جديد دون تسجيله في الخريطة."
     },
-    "add-gradient-godot-test": {
-      "description": "إضافة حقل gradient إلى godot-test",
-      "category": "products-json/fix",
-      "replace": {
-        "file": "products.json",
-        "find": "\"templateFile\": \"godot-wrapper.html\",\n    \"name\": {",
-        "with": "\"templateFile\": \"godot-wrapper.html\",\n    \"gradient\": \"135deg,#0f172a,#1e293b\",\n    \"name\": {"
-      }
+    {
+      "id": "rule-058",
+      "description": "اسم preset في export_presets.cfg يجب أن يكون 'Web' دائماً ويطابق --export-release في godot-export.yml. لا يُستخدم 'HTML5' في أي مكان."
     },
-    "add-generated-fields": {
-      "description": "إضافة generated و generatedAt إلى focus-tool, word-storm, godot-test, sonic-surge-arena",
-      "category": "products-json/fix",
-      "replace": {
-        "file": "products.json",
-        "find": "\"levels\": []\n  }",
-        "with": "\"levels\": [],\n    \"generated\": true,\n    \"generatedAt\": \"2026-05-12T00:00:00.000Z\"\n  }"
-      }
+    {
+      "id": "rule-059",
+      "description": "في GitHub Actions على Windows، استخدم python3 دائماً وليس python."
     },
-    "add-iap-defaults": {
-      "description": "إضافة iap افتراضي لـ word-storm, godot-test, sonic-surge-arena",
-      "category": "products-json/fix",
-      "replace": {
-        "file": "products.json",
-        "find": "\"iap\": []",
-        "with": "\"iap\": [\n      { \"id\": \"no-ads\", \"type\": \"remove_ads\", \"price\": 1.99, \"emoji\": \"🚫\", \"name\": { \"ar\": \"إزالة الإعلانات\", \"en\": \"Remove Ads\", \"fr\": \"Sans pub\", \"es\": \"Sin anuncios\", \"de\": \"Werbefrei\", \"zh\": \"去广告\" } },\n      { \"id\": \"full-unlock\", \"type\": \"unlock\", \"price\": 2.99, \"emoji\": \"⭐\", \"name\": { \"ar\": \"فتح كل المحتوى\", \"en\": \"Unlock All\", \"fr\": \"Tout débloquer\", \"es\": \"Desbloquear todo\", \"de\": \"Alles freischalten\", \"zh\": \"解锁全部\" } }\n    ]"
-      }
+    {
+      "id": "rule-060",
+      "description": "لا تستخدم ملفات مؤقتة في /tmp/ لتمرير بيانات بين أوامر bash في YAML. استخدم shell variables أو $GITHUB_ENV."
+    },
+    {
+      "id": "rule-061",
+      "description": "الإيموجي محظور في commit messages وفي agent logs الرسمية. يُسمح به فقط في بيانات اللعبة (name, desc) وواجهة المستخدم."
+    },
+    {
+      "id": "rule-063",
+      "description": "orchestrator يجب أن يعمل بوضعين منفصلين: BIRTH (مرة في السنة) وEVOLUTION (كل تشغيل). المتغير MODE يتحكم في الوضع."
+    },
+    {
+      "id": "rule-064",
+      "description": "العوالم لها أولوية مطلقة في EVOLUTION MODE. إذا كان عدد العوالم أقل من رقم اليوم من السنة، يُولد عالم جديد قبل أي شيء آخر."
+    },
+    {
+      "id": "rule-065",
+      "description": "الهدف السنوي للعوالم هو 365 عالماً. كل عالم ينتمي لفصل من 12 فصلاً (30 عالم لكل فصل). الوكيل يجب أن يعرف الفصل الحالي وطابعه."
+    },
+    {
+      "id": "rule-066",
+      "description": "وثيقة الروح (soul.json) تُنشأ مرة واحدة في BIRTH MODE وتبقى ثابتة طوال السنة. هي الدستور الكوني الذي لا يتغير."
+    },
+    {
+      "id": "rule-067",
+      "description": "لا تُضف قالباً HTML جديداً دون تحديث خريطة template-engineer فوراً مع تحديد type/category/genre المناسبة له."
+    },
+    {
+      "id": "rule-082",
+      "description": "أضف وكيل noise-agent لتعيين معاملات التشويش الإجرائية لكل عالم."
+    },
+    {
+      "id": "rule-083",
+      "description": "أضف وكيل shader-agent لكتابة كود GDScript بصري فريد لكل عالم."
+    },
+    {
+      "id": "rule-084",
+      "description": "أضف وكيل audio-agent لوصف البيئة الصوتية والموسيقية للعالم."
+    },
+    {
+      "id": "rule-085",
+      "description": "أضف وكيل player-memory لتذكر تفضيلات اللاعب وتطوير كونه الشخصي."
+    },
+    {
+      "id": "rule-086",
+      "description": "أضف وكيل collision-agent للتحقق من سلامة التصادم في جميع مشاهد المشروع قبل النشر."
+    },
+    {
+      "id": "rule-087",
+      "description": "استدعاء askGemini يجب أن يكون بالشكل askGemini(prompt, temperature, options) وليس بدمج temperature داخل الكائن."
+    },
+    {
+      "id": "rule-088",
+      "description": "استدعاء soulContext يجب أن يكون باسم الوكيل (string) وليس بكائن universe."
+    },
+    {
+      "id": "rule-089",
+      "description": "إذا كان _gemini.js يستخدم responseMimeType: 'application/json'، فيجب على جميع الوكلاء طلب JSON، وليس نصاً خاماً."
+    },
+    {
+      "id": "rule-090",
+      "description": "وكيل التصادم يجب أن يتحقق من StaticBody3D/CharacterBody3D/RigidBody3D وليس من MeshInstance3D."
+    },
+    {
+      "id": "rule-091",
+      "description": "وكيل التصادم يجب أن يتحقق أيضاً من load_steps ومن contact_monitor = true في RigidBody3D."
+    },
+    {
+      "id": "rule-092",
+      "description": "اجمع الوكلاء الذين يعملون على نفس قطعة البيانات (مثل الحواس الثلاث لكل عالم) في وكيل واحد لتقليل استدعاءات Gemini."
+    },
+    {
+      "id": "rule-093",
+      "description": "تأكد من أن MAX_RPD يحسب العدد الأقصى لاستدعاءات Gemini في أسوأ سيناريو (مثلاً BIRTH مع 7 عوالم = 7 استدعاءات world-senses + 10 استدعاءات أخرى = 17)."
+    },
+    {
+      "id": "rule-094",
+      "description": "وكيل player-memory يحتاج universe الكامل (soul, art, worlds, weapons...). لا تمرر له كائنًا جزئيًا أبدًا."
+    },
+    {
+      "id": "rule-095",
+      "description": "لا تستدعِ collision-agent في كل جولة. استدعِه فقط عند إضافة عوالم جديدة أو تعديل مشاهد."
+    },
+    {
+      "id": "rule-096",
+      "description": "خارطة طريق المنصة: المرحلة 0 (إصلاح الأخطاء الحالية) → المرحلة 1 (الأساس: world-senses + Supabase + test/monitor) → المرحلة 2 (اللاعب: auth + progress + player-memory + matchmaking) → المرحلة 3 (الأفلام: screenplay + voice + render) → المرحلة 4 (اللقاء: اندماج الأكوان). لا تنتقل لمرحلة قبل استقرار السابقة."
+    },
+    {
+      "id": "rule-097",
+      "description": "لا تغير نماذج Gemini (مثل gemini-2.5-flash) إطلاقاً إلا إذا طلب منك ذلك صراحة. هذه القاعدة ذهبية ولا يجوز تجاوزها."
+    },
+    {
+      "id": "rule-098",
+      "description": "جميع استدعاءات Gemini يجب أن تمر عبر askGemini في _gemini.js. لا تستخدم fetch مباشرة أبداً."
+    },
+    {
+      "id": "rule-099",
+      "description": "استخدم بادئات مثل [ERROR], [INFO], [OK] في console.log بدلاً من الإيموجي لتكون السجلات متوافقة مع بيئات CI ومتوافقة مع rule-062."
+    },
+    {
+      "id": "rule-100",
+      "description": "يجب أن يحتوي soulContext على القواعد ذات الصلة بالوكيل (من rules-index.json) لتكون جزءاً من سياقه الدائم. يعيد soulContext string."
+    },
+    {
+      "id": "rule-101",
+      "description": "استخدم maxOutputTokens وليس maxTokens في خيارات askGemini."
+    },
+    {
+      "id": "rule-102",
+      "description": "لا تستخدم JSON.parse مع askGemini لأن _gemini.js يعيد الكائن مباشرة."
+    },
+    {
+      "id": "rule-103",
+      "description": "إذا كان استدعاء Gemini يطلب عدة ملفات (مثلاً 8 ملفات .gd و .tscn) في آن واحد، قسّم الطلب إلى استدعاءين منفصلين (.gd أولاً، .tscn ثانياً) لتجنب تجاوز maxOutputTokens وانقطاع JSON الذي يسبب فشلاً صامتاً."
+    },
+    {
+      "id": "rule-104",
+      "description": "دالة soulContext يجب أن تُرجع string دائماً، لأن جميع الوكلاء يستخدمونها مباشرة داخل نصوص prompts. لا تُرجع كائناً أبداً."
     }
-  }
+  ]
 }
