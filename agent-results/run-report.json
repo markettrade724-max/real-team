@@ -1,69 +1,24 @@
 {
-  "runId": "2026-05-21T1129",
+  "runId": "2026-05-21T1157",
   "mode": "birth",
-  "timestamp": "2026-05-21T11:32:48.368Z",
-  "totalDuration": "176.3s",
-  "geminiCalls": "7/15",
+  "timestamp": "2026-05-21T11:57:35.731Z",
+  "totalDuration": "15.4s",
+  "geminiCalls": "0/15",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "52ms",
+      "duration": "53ms",
       "error": null
     },
     "idea": {
-      "success": true,
-      "duration": "5.6s",
-      "error": null
-    },
-    "story": {
-      "success": true,
-      "duration": "225ms",
-      "error": null
-    },
-    "soul": {
-      "success": true,
-      "duration": "13.8s",
-      "error": null
-    },
-    "art": {
-      "success": true,
-      "duration": "7.6s",
-      "error": null
-    },
-    "template": {
-      "success": true,
-      "duration": "3ms",
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "11.4s",
-      "error": null
-    },
-    "code": {
       "success": false,
-      "duration": "2ms",
-      "error": "Unexpected end of input"
-    },
-    "marketing": {
-      "success": true,
-      "duration": "10.5s",
-      "error": null
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "7.0s",
-      "error": null
-    },
-    "collision": {
-      "success": true,
-      "duration": "2ms",
-      "error": null
+      "duration": "318ms",
+      "error": "Idea generation failed: Gemini API call failed: got status: 429 Too Many Requests. {\"error\":{\"code\":429,\"message\":\"You e"
     }
   },
   "summary": {
-    "total": 11,
-    "passed": 10,
+    "total": 2,
+    "passed": 1,
     "failed": 1
   }
 }
