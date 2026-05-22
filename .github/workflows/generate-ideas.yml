@@ -43,3 +43,5 @@ jobs:
             git pull --rebase origin main || { git rebase --abort; exit 1; }
             git push origin main --force-with-lease
           fi
+      - name: Install dependencies
+        run: npm install
