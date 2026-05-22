@@ -1,0 +1,74 @@
+name: generate-deploy
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'products.json'
+      - 'templates/**'
+      - 'game-generator.js'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+        shell: pwsh
+
+      - name: Wait for Godot export if any
+        run: Start-Sleep -Seconds 5
+        shell: pwsh
+
+      - name: Generate all available games and apps
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node game-generator.js
+        shell: pwsh
+
+      - name: Verify output
+        shell: pwsh
+        run: |
+          $count = (Get-ChildItem -Path "public/games" -Filter "*.html" -Recurse -ErrorAction SilentlyContinue).Count
+          Write-Host "[INFO] Generated $count HTML files"
+          if ($count -eq 0) {
+            Write-Error "[FAIL] No files generated — aborting"
+            exit 1
+          }
+          Write-Host "[OK] Verification passed — $count files ready"
+
+      - name: Commit generated files
+        shell: pwsh
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/games/
+          $diff = git diff --staged --name-only
+          if (-not $diff) {
+            Write-Host "[INFO] No changes to commit — all games up to date"
+            exit 0
+          }
+          $date = Get-Date -Format "yyyy-MM-dd"
+          git commit -m "generate: auto-build games $date [skip ci]"
+          git pull --rebase origin main
+          if ($LASTEXITCODE -ne 0) {
+            git rebase --abort
+            Write-Error "[FAIL] Rebase failed"
+            exit 1
+          }
+          git push origin main
+          Write-Host "[OK] Changes pushed successfully"
