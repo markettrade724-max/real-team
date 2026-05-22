@@ -1,69 +1,24 @@
 {
-  "runId": "2026-05-22T1054",
+  "runId": "2026-05-22T1615",
   "mode": "birth",
-  "timestamp": "2026-05-22T10:57:54.607Z",
-  "totalDuration": "211.9s",
-  "geminiCalls": "7/15",
+  "timestamp": "2026-05-22T16:15:36.280Z",
+  "totalDuration": "16.3s",
+  "geminiCalls": "0/15",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "57ms",
+      "duration": "85ms",
       "error": null
     },
     "idea": {
-      "success": true,
-      "duration": "9.9s",
-      "error": null
-    },
-    "story": {
-      "success": true,
-      "duration": "248ms",
-      "error": null
-    },
-    "soul": {
-      "success": true,
-      "duration": "17.9s",
-      "error": null
-    },
-    "art": {
-      "success": true,
-      "duration": "4.4s",
-      "error": null
-    },
-    "template": {
-      "success": true,
-      "duration": "2ms",
-      "error": null
-    },
-    "levels": {
-      "success": true,
-      "duration": "9.2s",
-      "error": null
-    },
-    "code": {
       "success": false,
-      "duration": "33.1s",
-      "error": "Invalid JSON from Gemini: {\n  \"content\": \"; Engine configuration file.\\n; It's best edited using the editor UI to avoid "
-    },
-    "marketing": {
-      "success": true,
-      "duration": "11.5s",
-      "error": null
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "5.6s",
-      "error": null
-    },
-    "collision": {
-      "success": true,
-      "duration": "2ms",
-      "error": null
+      "duration": "1.3s",
+      "error": "Idea generation failed: Gemini API call failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"Thi"
     }
   },
   "summary": {
-    "total": 11,
-    "passed": 10,
+    "total": 2,
+    "passed": 1,
     "failed": 1
   }
 }
