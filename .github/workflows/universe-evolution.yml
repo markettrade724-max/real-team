@@ -1,0 +1,102 @@
+name: universe-evolution
+on:
+  schedule:
+    - cron: '0 2 * * *'   # كل يوم الساعة 2 صباحاً UTC
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'وضع التشغيل'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - birth
+          - invention
+
+jobs:
+  evolve:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Verify Gemini key
+        run: |
+          if (-not $env:GEMINI_API_KEY) {
+            Write-Error "[FATAL] GEMINI_API_KEY is not set"
+            exit 1
+          }
+          Write-Host "[OK] GEMINI_API_KEY is present"
+        shell: pwsh
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Run orchestrator
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
+          MODE:           ${{ github.event.inputs.mode || 'auto' }}
+        run: node orchestrator.js
+        shell: pwsh
+
+      - name: Verify universe was saved
+        run: |
+          if (Test-Path "universe.json") {
+            $size = (Get-Item "universe.json").Length
+            Write-Host "[OK] universe.json exists — size: $size bytes"
+            if ($size -lt 10) {
+              Write-Error "[FAIL] universe.json is too small — something went wrong"
+              exit 1
+            }
+          } else {
+            Write-Warning "[WARN] universe.json not found — BIRTH may have failed"
+          }
+        shell: pwsh
+
+      - name: Show run report
+        run: |
+          if (Test-Path "agent-results/run-report.json") {
+            Get-Content "agent-results/run-report.json"
+          } else {
+            Write-Warning "[WARN] No run report found"
+          }
+        shell: pwsh
+
+      - name: Commit universe changes
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add universe.json agent-results/ godot-projects/ godot-recipes/ products.json
+          $diff = git diff --staged --name-only
+          if (-not $diff) {
+            Write-Host "[INFO] No changes to commit"
+            exit 0
+          }
+          $mode = $env:MODE
+          $date = Get-Date -Format "yyyy-MM-dd"
+          git commit -m "universe: $mode evolution $date [skip ci]"
+          git pull --rebase origin main
+          if ($LASTEXITCODE -ne 0) {
+            git rebase --abort
+            exit 1
+          }
+          git push origin main
+        shell: pwsh
+        env:
+          MODE: ${{ github.event.inputs.mode || 'auto' }}
