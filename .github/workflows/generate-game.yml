@@ -11,7 +11,7 @@ on:
 
 jobs:
   generate:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: write
 
@@ -51,6 +51,6 @@ jobs:
             echo "No changes to commit — all games up to date"
             exit 0
           fi
-          git commit -m "🎮 Auto-generate games [skip ci]"
+          git commit -m " Auto-generate games [skip ci]"
           git pull --rebase origin main || { git rebase --abort; exit 1; }
           git push origin main
