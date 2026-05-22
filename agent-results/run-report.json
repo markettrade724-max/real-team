@@ -1,24 +1,69 @@
 {
-  "runId": "2026-05-22T1615",
+  "runId": "2026-05-22T2307",
   "mode": "birth",
-  "timestamp": "2026-05-22T16:15:36.280Z",
-  "totalDuration": "16.3s",
-  "geminiCalls": "0/15",
+  "timestamp": "2026-05-22T23:10:12.542Z",
+  "totalDuration": "149.9s",
+  "geminiCalls": "6/15",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "85ms",
+      "duration": "76ms",
       "error": null
     },
     "idea": {
+      "success": true,
+      "duration": "6.6s",
+      "error": null
+    },
+    "story": {
+      "success": true,
+      "duration": "241ms",
+      "error": null
+    },
+    "soul": {
+      "success": true,
+      "duration": "10.6s",
+      "error": null
+    },
+    "art": {
+      "success": true,
+      "duration": "6.6s",
+      "error": null
+    },
+    "template": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "5.4s",
+      "error": null
+    },
+    "code": {
       "success": false,
-      "duration": "1.3s",
-      "error": "Idea generation failed: Gemini API call failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"Thi"
+      "duration": "1ms",
+      "error": "Unexpected reserved word"
+    },
+    "marketing": {
+      "success": false,
+      "duration": "166ms",
+      "error": "Gemini API call failed: got status: 429 Too Many Requests. {\"error\":{\"code\":429,\"message\":\"You exceeded your current quo"
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "167ms",
+      "error": null
+    },
+    "collision": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
-    "failed": 1
+    "total": 11,
+    "passed": 9,
+    "failed": 2
   }
 }
