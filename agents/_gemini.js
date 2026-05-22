@@ -16,7 +16,7 @@ export async function askGemini(prompt, temperature = 0.9, options = {}) {
   const {
     topP               = undefined,
     topK               = undefined,
-    maxOutputTokens    = 4096,
+    maxOutputTokens    = 8192,
     frequencyPenalty   = undefined,
     presencePenalty    = undefined,
   } = options;
