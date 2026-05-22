@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate all available games & apps
         env:
-          GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node game-generator.js
 
       - name: Verify output
