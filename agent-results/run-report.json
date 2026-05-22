@@ -1,24 +1,69 @@
 {
-  "runId": "2026-05-21T2325",
+  "runId": "2026-05-22T1054",
   "mode": "birth",
-  "timestamp": "2026-05-21T23:26:03.932Z",
-  "totalDuration": "15.7s",
-  "geminiCalls": "0/15",
+  "timestamp": "2026-05-22T10:57:54.607Z",
+  "totalDuration": "211.9s",
+  "geminiCalls": "7/15",
   "agents": {
     "analytics": {
       "success": true,
-      "duration": "51ms",
+      "duration": "57ms",
       "error": null
     },
     "idea": {
+      "success": true,
+      "duration": "9.9s",
+      "error": null
+    },
+    "story": {
+      "success": true,
+      "duration": "248ms",
+      "error": null
+    },
+    "soul": {
+      "success": true,
+      "duration": "17.9s",
+      "error": null
+    },
+    "art": {
+      "success": true,
+      "duration": "4.4s",
+      "error": null
+    },
+    "template": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "levels": {
+      "success": true,
+      "duration": "9.2s",
+      "error": null
+    },
+    "code": {
       "success": false,
-      "duration": "654ms",
-      "error": "Idea generation failed: Gemini API call failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"Thi"
+      "duration": "33.1s",
+      "error": "Invalid JSON from Gemini: {\n  \"content\": \"; Engine configuration file.\\n; It's best edited using the editor UI to avoid "
+    },
+    "marketing": {
+      "success": true,
+      "duration": "11.5s",
+      "error": null
+    },
+    "roadmap": {
+      "success": true,
+      "duration": "5.6s",
+      "error": null
+    },
+    "collision": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 1,
+    "total": 11,
+    "passed": 10,
     "failed": 1
   }
 }
