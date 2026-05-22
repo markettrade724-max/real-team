@@ -1,10 +1,19 @@
-name: Run All Agents
-
+name: run-all-agents
 on:
   schedule:
-    - cron: '0 8  * * *'   # كل يوم 8 صباحاً — بدل أسبوعياً
-    - cron: '0 14 * * *'   # كل يوم 2 ظهراً — تشغيل ثانٍ
+    - cron: '0 8  * * *'   # كل يوم 8 صباحاً UTC
+    - cron: '0 14 * * *'   # كل يوم 2 ظهراً UTC
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'وضع التشغيل'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - birth
+          - invention
 
 jobs:
   orchestrate:
@@ -13,37 +22,80 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install dependencies
         run: npm install
+        shell: pwsh
 
       - name: Create agent-results directory
-        run: New-Item -ItemType Directory -Force -Path "agent-results"
+        run: New-Item -ItemType Directory -Force -Path "agent-results" | Out-Null
+        shell: pwsh
 
       - name: Run orchestrator
-        run: node orchestrator.js
+        shell: pwsh
         env:
           GEMINI_API_KEY:            ${{ secrets.GEMINI_API_KEY }}
           SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          SITE_URL: https://real-team.vercel.app
+          SITE_URL:                  https://real-team.vercel.app
+          MODE:                      ${{ github.event.inputs.mode || 'auto' }}
+        run: node orchestrator.js
 
       - name: Show results
+        shell: pwsh
         run: |
-          echo "=== agent-results ==="
-          ls -la agent-results/
-          echo "=== products count ==="
-          node -e "const p=JSON.parse(require('fs').readFileSync('products.json')); console.log('Products:', p.length)"
+          Write-Host "[INFO] === agent-results ==="
+          if (Test-Path "agent-results") {
+            Get-ChildItem "agent-results" | Select-Object Name, Length | Format-Table
+          } else {
+            Write-Warning "[WARN] agent-results not found"
+          }
+
+          Write-Host "[INFO] === run report ==="
+          if (Test-Path "agent-results/run-report.json") {
+            Get-Content "agent-results/run-report.json"
+          } else {
+            Write-Warning "[WARN] No run report found"
+          }
+
+          Write-Host "[INFO] === products count ==="
+          node -e "try { const p=JSON.parse(require('fs').readFileSync('products.json')); console.log('[OK] Products:', p.length); } catch(e) { console.error('[ERROR]', e.message); }"
 
       - name: Commit all changes
+        shell: pwsh
         run: |
           git config user.name  "agents-bot[bot]"
           git config user.email "agents-bot@users.noreply.github.com"
           git add -f agent-results/
-          git add products.json public/games/
-          git diff --staged --quiet && echo "No changes" || (git commit -m " Daily agents run [skip ci]" && git push)
+          git add products.json
+          if (Test-Path "public/games") { git add public/games/ }
+          if (Test-Path "universe.json") { git add universe.json }
+          if (Test-Path "godot-projects") { git add godot-projects/ }
+          if (Test-Path "godot-recipes")  { git add godot-recipes/ }
+          $diff = git diff --staged --name-only
+          if (-not $diff) {
+            Write-Host "[INFO] No changes to commit"
+            exit 0
+          }
+          $date = Get-Date -Format "yyyy-MM-dd HH:mm"
+          $mode = $env:MODE
+          git commit -m "agents: $mode run $date [skip ci]"
+          git pull --rebase origin main
+          if ($LASTEXITCODE -ne 0) {
+            git rebase --abort
+            Write-Error "[FAIL] Rebase failed"
+            exit 1
+          }
+          git push origin main
+          Write-Host "[OK] Changes pushed"
+        env:
+          MODE: ${{ github.event.inputs.mode || 'auto' }}
