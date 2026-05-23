@@ -74,7 +74,7 @@ ${soul}
     "sfx":         ["أصوات تأثيرية مميزة لهذا العالم"],
     "description": "وصف شامل للبيئة الصوتية"
   }
-}`, 0.85, { topP: 0.95, maxOutputTokens: 4096 });
+}`, 0.85, { topP: 0.95, maxOutputTokens: 8192 });
 
     // التحقق من اكتمال الحواس الثلاث
     if (!result.noise || !result.shader || !result.audio) {
