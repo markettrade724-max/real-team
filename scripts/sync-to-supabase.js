@@ -7,13 +7,15 @@ import { createClient }                    from '@supabase/supabase-js';
 import { readFileSync, existsSync }        from 'fs';
 import { join, dirname }                   from 'path';
 import { fileURLToPath }                   from 'url';
+import ws                                  from 'ws';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT      = join(__dirname, '..');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  { realtime: { transport: ws } }
 );
 
 function loadJSON(path) {
