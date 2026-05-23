@@ -70,13 +70,23 @@ jobs:
           Write-Host "[INFO] === products count ==="
           node -e "try { const p=JSON.parse(require('fs').readFileSync('products.json')); console.log('[OK] Products:', p.length); } catch(e) { console.error('[ERROR]', e.message); }"
 
+      - name: Copy products to public
+        shell: pwsh
+        run: |
+          if (Test-Path "products.json") {
+            Copy-Item products.json public/products.json -Force
+            Write-Host "[OK] products.json copied to public/"
+          } else {
+            Write-Warning "[WARN] products.json not found — skipping copy"
+          }
+
       - name: Commit all changes
         shell: pwsh
         run: |
           git config user.name  "agents-bot[bot]"
           git config user.email "agents-bot@users.noreply.github.com"
           git add -f agent-results/
-          git add products.json
+          git add products.json public/products.json
           if (Test-Path "public/games") { git add public/games/ }
           if (Test-Path "universe.json") { git add universe.json }
           if (Test-Path "godot-projects") { git add godot-projects/ }
@@ -99,13 +109,3 @@ jobs:
           Write-Host "[OK] Changes pushed"
         env:
           MODE: ${{ github.event.inputs.mode || 'auto' }}
-      - name: Sync to Supabase
-        shell: pwsh
-        env:
-          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: node scripts/sync-to-supabase.js
-
-      - name: Copy products to public
-        shell: pwsh
-        run: Copy-Item products.json public/products.json -Force
