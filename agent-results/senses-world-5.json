@@ -1,0 +1,32 @@
+{
+  "noise": {
+    "frequency": 0.05,
+    "amplitude": 1,
+    "octaves": 4,
+    "persistence": 0.5,
+    "lacunarity": 2,
+    "seed": 17679,
+    "type": "simplex",
+    "description": "Default terrain for Echo of Genesis"
+  },
+  "shader": {
+    "type": "sky",
+    "code": "extends ShaderMaterial\n# fallback shader",
+    "parameters": {},
+    "description": "Default void shader"
+  },
+  "audio": {
+    "ambience": "gentle wind and distant echoes",
+    "music_tempo": "medium",
+    "music_mood": "mysterious",
+    "instruments": [
+      "synthesizer",
+      "ambient_pad"
+    ],
+    "sfx": [
+      "wind",
+      "footsteps"
+    ],
+    "description": "Default audio for Echo of Genesis"
+  }
+}

@@ -263,13 +263,67 @@
         ],
         "description": "بيئة صوتية واسعة وهادئة تعكس الفراغ البدائي، مع طبقات من الأصوات الإثيرية الدقيقة التي توحي بنسيج الوجود والذكريات. تتميز ببطء الإيقاع ومزاج حزين وغامض، تتخلله أصوات عميقة وبعيدة تلامس الروح، مع لمسات من الأصوات البلورية وهمسات شبحية."
       }
+    },
+    {
+      "id": "world-5",
+      "dayNumber": 5,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "صدى التكوين",
+        "en": "Echo of Genesis"
+      },
+      "essence": "البدء",
+      "physics": "الواقع يتشكل ويتفكك باستمرار بواسطة صدى الأفكار الأولى التي تتردد في فراغه، مما يجعل المادة كياناً مؤقتاً لا يتجسد إلا بوعي خافت.",
+      "atmosphere": "ضوء خافت، متذبذب، يتراقص على حواف أشكال غير مكتملة تتكون وتتبدد كأطياف الأفكار. رائحة الأوزون ونسمة باردة تحمل همسات غير مفهومة، كأنها أفكار لم تتجسد بعد. كل شيء يبدو شفاهياً، هشاً، وعلى وشك الزوال.",
+      "secret": "إن الصمت الخانق ليس غياباً للذكرى، بل هو ذاكرة عملاقة لم يتمكن أحد من فهمها أو تذكرها بعد، وهي تنتظر من يجمع شظاياها ليكتمل وعيها.",
+      "enemyBehavior": "كيانات شبحية تتغذى على الأفكار غير المكتملة، محاولة منع أي شكل من الذكرى من التبلور. تنجذب إلى الأماكن التي يتردد فيها الفكر بقوة أكبر، وتصبح أكثر عدوانية كلما اقتربت الذكريات من التجسد، وتحاول التهامها.",
+      "playerAbility": "القدرة على تكثيف الأفكار العابرة إلى أشكال مؤقتة، يمكن استخدامها كجسور أو دروع أو مصائد، ولكنها تتلاشى بسرعة إذا لم يتم تذكرها أو 'تثبيتها' بوعي مستمر.",
+      "backgroundColor": "#E0E0F0",
+      "fogColor": "#C0C0D0",
+      "lightColor": "#FFFFE0",
+      "enemySpeed": 0.4,
+      "enemyHealth": 20,
+      "enemyCount": 15,
+      "difficulty": "medium",
+      "addedAt": "2024-05-23T14:30:00.000Z",
+      "noise": {
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 17679,
+        "type": "simplex",
+        "description": "Default terrain for Echo of Genesis"
+      },
+      "shader": {
+        "type": "sky",
+        "code": "extends ShaderMaterial\n# fallback shader",
+        "parameters": {},
+        "description": "Default void shader"
+      },
+      "audio": {
+        "ambience": "gentle wind and distant echoes",
+        "music_tempo": "medium",
+        "music_mood": "mysterious",
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
+        "description": "Default audio for Echo of Genesis"
+      }
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 4,
+  "evolutions": 5,
   "inventions": 0,
-  "lastEvolved": "2026-05-23T13:12:14.092Z",
+  "lastEvolved": "2026-05-23T13:24:13.852Z",
   "lastInvented": null
 }
