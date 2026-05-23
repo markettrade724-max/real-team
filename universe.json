@@ -72,13 +72,67 @@
       "enemyCount": 7,
       "difficulty": "easy",
       "addedAt": "2024-05-28T10:00:00.000Z"
+    },
+    {
+      "id": "world-2",
+      "dayNumber": 2,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "بذرة الوعي",
+        "en": "Seed of Awareness"
+      },
+      "essence": "التكوين",
+      "physics": "الوجود ذاته هو فعل مستمر من التذكر؛ كلما تلاشت ذكرى، تلاشى جزء من الواقع المحيط وانحل إلى الفراغ البدائي.",
+      "atmosphere": "هواء ثقيل بعبق النسيان والغبار الكوني المنسي، كأنه لمس تراب نجمي قديم. تتقلب الألوان ببطء بين درجات البنفسجي الداكن والأزرق الشاحب والإثيري. كل ومضة ضوء تكشف عن تضاريس تختفي لتعود في مكان آخر، كأن المكان يُعاد رسمه باستمرار من أنفاس الكون الأولى.",
+      "secret": "في قلب هذا العالم المتلاشي، توجد نبضة من الصمت البدائي. ليست فارغة تماماً، بل هي 'الذاكرة الصفرية' - أول همسة لذاكرة الكون التي لم تتشكل بعد، وهي المفتاح لإعادة تشكيل الواقع من لا شيء، لكن الوصول إليها يتطلب إتقان فن التذكر الكوني.",
+      "enemyBehavior": "كيانات شبحية تتغذى على تشتت الانتباه والتردد. لا تهاجم مباشرة، بل تتراقص حول اللاعب محاولة محو تضاريس العالم وذكريات المسار من حوله، مما يجعله يفقد أرضيته وتوازنه، وكأنهم يسرقون خطواته ومساره الوجودي، تاركين إياه في فراغ متزايد.",
+      "playerAbility": "قدرة 'ترسيخ الومضة' - تسمح للاعب بتثبيت قطعة من الواقع أو ذكرى تتلاشى بشكل فوري لفترة وجيزة، مما يخلق منصة مادية مؤقتة، أو درعاً ضد محاولات الأعداء لمحو البيئة، أو نقطة انطلاق لاستعادة مسار مفقود.",
+      "backgroundColor": "#1A102A",
+      "fogColor": "#4A3C6B",
+      "lightColor": "#C0D8FF",
+      "enemySpeed": 0.2,
+      "enemyHealth": 60,
+      "enemyCount": 4,
+      "difficulty": "medium",
+      "addedAt": "2024-05-23T11:25:24.364Z",
+      "noise": {
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 98025,
+        "type": "simplex",
+        "description": "Default terrain for Seed of Awareness"
+      },
+      "shader": {
+        "type": "sky",
+        "code": "extends ShaderMaterial\n# fallback shader",
+        "parameters": {},
+        "description": "Default void shader"
+      },
+      "audio": {
+        "ambience": "gentle wind and distant echoes",
+        "music_tempo": "medium",
+        "music_mood": "mysterious",
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
+        "description": "Default audio for Seed of Awareness"
+      }
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 1,
+  "evolutions": 2,
   "inventions": 0,
-  "lastEvolved": "2026-05-23T09:58:36.517Z",
+  "lastEvolved": "2026-05-23T11:26:14.309Z",
   "lastInvented": null
 }
