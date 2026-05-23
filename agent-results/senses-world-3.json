@@ -1,0 +1,48 @@
+{
+  "noise": {
+    "frequency": 0.02,
+    "amplitude": 1.5,
+    "octaves": 8,
+    "persistence": 0.6,
+    "lacunarity": 2.2,
+    "seed": 12345,
+    "type": "simplex",
+    "description": "تكوينات معقدة وعضوية تشبه تكتلات الأفكار أو بلورات الذاكرة التي تطفو في الفراغ الشاسع."
+  },
+  "shader": {
+    "type": "sky",
+    "code": "shader_type sky;\n\nuniform vec4 void_base_color : source_color = vec4(0.02, 0.01, 0.05, 1.0); // Very deep, dark purple-blue void\nuniform vec4 memory_shimmer_color : source_color = vec4(0.6, 0.5, 0.8, 1.0); // Muted, ethereal purple\nuniform vec4 hope_glow_color : source_color = vec4(0.9, 0.8, 0.6, 1.0); // Faint amber/gold glow for hope\nuniform float fragment_density : hint_range(0.0, 0.1) = 0.025; // Sparse fragments\nuniform float fragment_scale : hint_range(0.01, 0.5) = 0.1; // Size of individual fragments\nuniform float drift_speed : hint_range(0.0, 0.2) = 0.02; // Slow, contemplative drift\nuniform float shimmer_intensity : hint_range(0.0, 2.0) = 1.0; // Subtle shimmer\nuniform float turbulence_scale : hint_range(0.1, 10.0) = 3.0; // Scale of noise for turbulence\nuniform float turbulence_speed : hint_range(0.0, 1.0) = 0.05; // Speed of turbulence\n\nfloat hash12(vec2 p) {\n    p = fract(p * vec2(5.3983, 5.4427));\n    p += dot(p.yx, p.xy + vec2(21.5351, 14.3137));\n    return fract(p.x * p.y * 95.4337);\n}\n\nvec3 _process_sky() {\n    vec3 dir = normalize(VEC_DIR); // Direction vector for skybox/sphere\n    vec2 uv = vec2(atan(dir.z, dir.x) / (2.0 * PI) + 0.5, acos(dir.y) / PI); // Spherical UV mapping\n\n    // Combine multiple noise layers for complex \"cosmic dust\" / \"memory fragment\" effect\n    float noise_val = hash12(uv * turbulence_scale + TIME * drift_speed);\n    noise_val += hash12(uv * turbulence_scale * 1.5 - TIME * drift_speed * 0.7);\n    noise_val *= 0.5;\n\n    vec3 final_color = void_base_color.rgb;\n\n    // Create glowing fragments based on noise threshold\n    if (noise_val > (1.0 - fragment_density)) {\n        float fragment_intensity = smoothstep(1.0 - fragment_scale, 1.0 - fragment_scale * 0.5, noise_val);\n        vec3 fragment_blend = mix(memory_shimmer_color.rgb, hope_glow_color.rgb, fragment_intensity * shimmer_intensity);\n        final_color = mix(final_color, fragment_blend, fragment_intensity);\n    }\n    \n    return final_color;\n}",
+    "parameters": {
+      "void_base_color": "vec4(0.02, 0.01, 0.05, 1.0)",
+      "memory_shimmer_color": "vec4(0.6, 0.5, 0.8, 1.0)",
+      "hope_glow_color": "vec4(0.9, 0.8, 0.6, 1.0)",
+      "fragment_density": 0.025,
+      "fragment_scale": 0.1,
+      "drift_speed": 0.02,
+      "shimmer_intensity": 1,
+      "turbulence_scale": 3,
+      "turbulence_speed": 0.05
+    },
+    "description": "فراغ كوني شاسع مظلم تتراقص فيه بهدوء شظايا ذكريات متوهجة، تتخللها لمحات خافتة من الأمل، مما يخلق إحساسًا بالحنين والغموض."
+  },
+  "audio": {
+    "ambience": "همهمة عميقة وواسعة للفراغ، ممزوجة بأصوات خافتة لتكتلات الغبار الكوني وصدى بعيد يذكر بالهمسات المنسية.",
+    "music_tempo": "slow",
+    "music_mood": "melancholic | mysterious | eerie",
+    "instruments": [
+      "deep synthesizers (pads)",
+      "ethereal strings (cello/viola)",
+      "crystal chimes",
+      "subtle, resonant bass",
+      "sparse, shimmering arpeggios"
+    ],
+    "sfx": [
+      "همسات مشوشة وخافتة",
+      "أصوات بلورية متكسرة أو متوهجة",
+      "أصوات سحيقة طنينية للفراغ",
+      "ومضات صوتية إلكترونية خفيفة",
+      "تنهدات صامتة بعيدة"
+    ],
+    "description": "مشهد صوتي بطيء ومتأمل يعكس اتساع الفراغ وعمق الذكريات المفقودة. الهمهمات العميقة والآلات الإيثيرية تخلق إحساسًا بالحنين والغموض، بينما تذكر الأصوات البلورية والهمسات الخافتة بشظايا الذاكرة المتناثرة، مع لمسة خفيفة من الأمل في اللحن."
+  }
+}
