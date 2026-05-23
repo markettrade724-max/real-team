@@ -196,13 +196,80 @@
         ],
         "description": "مشهد صوتي بطيء ومتأمل يعكس اتساع الفراغ وعمق الذكريات المفقودة. الهمهمات العميقة والآلات الإيثيرية تخلق إحساسًا بالحنين والغموض، بينما تذكر الأصوات البلورية والهمسات الخافتة بشظايا الذاكرة المتناثرة، مع لمسة خفيفة من الأمل في اللحن."
       }
+    },
+    {
+      "id": "world-4",
+      "dayNumber": 4,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "بِكرُ النسيج",
+        "en": "Primordial Weave"
+      },
+      "essence": "التشكيل",
+      "physics": "كلما سُعيت ذكرى أو نُسيت، ازدادت مادية أو أثيرية، مغيرّة جاذبية الضوء وانكساره المحلي بناءً على ثقلها العاطفي الجماعي.",
+      "atmosphere": "يتلألأ الهواء بأفكار وليدة، برائحة خفيفة من الأوزون والأرض العتيقة. تتردد همسات ناعمة وغير محسوسة تقريبًا من الأرض، خالقة دندنة خفيفة تهتز في العظام. بصريًا، هو نسيج من الضوء والظلال المتشابكة غير المتشكلة، تتجمع أحيانًا في هياكل عابرة وشفافة قبل أن تذوب عائدة إلى الفوضى.",
+      "secret": "المهندس الحقيقي لذاكرة الفراغ ليس كيانًا، بل صدى للوعي الأول، كيان ضحى بشكله ليصبح نسيج كل القصص المنسية، والآن يستيقظ ببطء.",
+      "enemyBehavior": "الأعداء تجليات لأشكال فكرية مجزأة وغير متسقة. لا يهاجمون مباشرة، بل يحاولون سحب الذكريات المتماسكة للاعب، مزعزعين هويته. حركتهم متقطعة، غالبًا ما تبدو وكأنها تذوب وتتكون من جديد من الضوء المحيط، ينجذبون إلى مناطق ذات صدى عاطفي قوي أو تاريخ منسي.",
+      "playerAbility": "نسج الذاكرة: يمكن للاعب تثبيت جزء من ذاكرته مؤقتًا، وإسقاطه كدرع أو جسر مؤقت عبر الفجوات في البيئة. هذا أيضًا يطرد أعداء الأشكال الفكرية القريبين عن طريق إغراقهم بهوية متماسكة.",
+      "backgroundColor": "#E0E6F0",
+      "fogColor": "#C9D4E2",
+      "lightColor": "#FFF5E0",
+      "enemySpeed": 0.8,
+      "enemyHealth": 50,
+      "enemyCount": 10,
+      "difficulty": "medium",
+      "addedAt": "2024-05-23T13:11:24.123Z",
+      "noise": {
+        "frequency": 0.05,
+        "amplitude": 0.8,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 12345,
+        "type": "cellular",
+        "description": "تضاريس بدائية ومتشابكة، تتكون من خلايا عملاقة تمثل أساس الوجود والذكريات غير المنسوجة، مع تباينات طفيفة تعكس الفوضى الكامنة."
+      },
+      "shader": {
+        "type": "void",
+        "code": "shader_type spatial;\nrender_mode unshaded;\n\nuniform vec4 primary_color : source_color = vec4(0.02, 0.0, 0.03, 1.0); // Deep, dark void color\nuniform vec4 weave_color : source_color = vec4(0.1, 0.05, 0.15, 0.8); // Faint, shimmering weave color\nuniform float weave_density : hint_range(0.0, 10.0, 0.1) = 2.0;\nuniform float weave_thickness : hint_range(0.0, 1.0, 0.01) = 0.005;\nuniform float noise_speed : hint_range(0.0, 1.0, 0.01) = 0.02;\nuniform float distortion_strength : hint_range(0.0, 1.0, 0.01) = 0.05;\n\n// A simple pseudo-random function for noise\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\n// A simple noise function for subtle variations\nfloat snoise(vec2 p) {\n    vec2 ip = floor(p);\n    vec2 fp = fract(p);\n    fp = fp*fp*(3.0-2.0*fp);\n    float bl = rand(ip);\n    float br = rand(ip + vec2(1.0, 0.0));\n    float tl = rand(ip + vec2(0.0, 1.0));\n    float tr = rand(ip + vec2(1.0, 1.0));\n    return mix(mix(bl, br, fp.x), mix(tl, tr, fp.x), fp.y);\n}\n\nvoid fragment() {\n    vec2 uv = SCREEN_UV;\n    vec2 current_uv = uv;\n\n    // Add subtle, slow-moving noise for distortion, reflecting \"shards\" and \"unraveling\"\n    vec2 noise_offset = vec2(snoise(current_uv * 5.0 + TIME * noise_speed), snoise(current_uv * 5.0 + TIME * noise_speed + 10.0));\n    current_uv += noise_offset * distortion_strength;\n\n    // Calculate a grid-like pattern for the \"weave\"\n    vec2 grid_uv = current_uv * weave_density;\n    vec2 grid_fract = fract(grid_uv);\n    vec2 grid_floor = floor(grid_uv);\n\n    float line_x = smoothstep(0.5 - weave_thickness, 0.5 + weave_thickness, grid_fract.x);\n    float line_y = smoothstep(0.5 - weave_thickness, 0.5 + weave_thickness, grid_fract.y);\n\n    float weave_pattern = 1.0 - (line_x * line_y + (1.0 - line_x) * (1.0 - line_y)); // Intersecting lines\n\n    // Add some subtle, swirling noise to make the weave less rigid\n    float swirl_noise = snoise(current_uv * 10.0 + TIME * noise_speed * 0.5);\n    weave_pattern += swirl_noise * 0.1; // Faint distortion\n\n    // Combine background color with the weave pattern\n    vec4 final_color = mix(primary_color, weave_color, clamp(weave_pattern, 0.0, 1.0));\n\n    ALBEDO = final_color.rgb;\n    ALPHA = final_color.a;\n}",
+        "parameters": {
+          "primary_color": "vec4(0.02, 0.0, 0.03, 1.0)",
+          "weave_color": "vec4(0.1, 0.05, 0.15, 0.8)",
+          "weave_density": 2,
+          "weave_thickness": 0.005,
+          "noise_speed": 0.02,
+          "distortion_strength": 0.05
+        },
+        "description": "فضاء عميق وشاسع، تتقاطع فيه خيوط إثيرية خافتة ورفيعة تشكل نسيجًا بدائيًا، تتلوى وتتذبذب ببطء بفعل قوى غير مرئية، مما يوحي بالبنية الأساسية للذاكرة في الفراغ."
+      },
+      "audio": {
+        "ambience": "صمت عميق يتردد صداه بفراغ واسع، مع همهمات خافتة بعيدة تشبه تداخل الخيوط الكونية، أو أصوات تداعي الذكريات ببطء.",
+        "music_tempo": "slow",
+        "music_mood": "melancholic | mysterious | eerie",
+        "instruments": [
+          "deep synthesizers",
+          "ethereal pads",
+          "gamelan-like chimes",
+          "bowed strings (contrabass, cello)",
+          "subtle vocalizations (wordless, breathy)"
+        ],
+        "sfx": [
+          "whispering echoes (distant, barely perceptible)",
+          "faint crystalline tinkles (memory shards interacting)",
+          "slow, deep resonant pulses (the 'weave' itself expanding/contracting)",
+          "subtle, low-frequency hums (void energy)",
+          "stretching/tearing fabric-like sounds (the weave unraveling or forming)"
+        ],
+        "description": "بيئة صوتية واسعة وهادئة تعكس الفراغ البدائي، مع طبقات من الأصوات الإثيرية الدقيقة التي توحي بنسيج الوجود والذكريات. تتميز ببطء الإيقاع ومزاج حزين وغامض، تتخلله أصوات عميقة وبعيدة تلامس الروح، مع لمسات من الأصوات البلورية وهمسات شبحية."
+      }
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 3,
+  "evolutions": 4,
   "inventions": 0,
-  "lastEvolved": "2026-05-23T12:29:33.990Z",
+  "lastEvolved": "2026-05-23T13:12:14.092Z",
   "lastInvented": null
 }
