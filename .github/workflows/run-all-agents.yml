@@ -99,3 +99,9 @@ jobs:
           Write-Host "[OK] Changes pushed"
         env:
           MODE: ${{ github.event.inputs.mode || 'auto' }}
+      - name: Sync to Supabase
+        shell: pwsh
+        env:
+          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/sync-to-supabase.js
