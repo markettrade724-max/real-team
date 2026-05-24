@@ -1,33 +1,39 @@
 {
-  "runId": "2026-05-24T0959",
+  "runId": "2026-05-24T1455",
   "mode": "evolution:world",
-  "timestamp": "2026-05-24T10:02:02.814Z",
-  "totalDuration": "155.8s",
+  "timestamp": "2026-05-24T14:57:22.639Z",
+  "totalDuration": "135.3s",
   "geminiCalls": "4/15",
+  "schedule": {
+    "day": "Sun",
+    "invention": true,
+    "revival": false,
+    "sync": false
+  },
   "agents": {
     "world": {
       "success": true,
-      "duration": "19.3s",
+      "duration": "22.7s",
       "error": null
     },
-    "senses-world-7": {
+    "senses-world-8": {
       "success": true,
-      "duration": "53.2s",
+      "duration": "31.1s",
       "error": null
     },
     "collision": {
       "success": true,
-      "duration": "2ms",
+      "duration": "3ms",
       "error": null
     },
     "invention": {
       "success": true,
-      "duration": "11.0s",
+      "duration": "11.9s",
       "error": null
     },
     "marketing": {
       "success": true,
-      "duration": "12.2s",
+      "duration": "9.6s",
       "error": null
     }
   },

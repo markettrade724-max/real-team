@@ -439,13 +439,84 @@
         ],
         "description": "An expansive, deeply melancholic soundscape. The ambience is dominated by a vast, almost suffocating silence, punctuated by very low-frequency hums and distant, resonant rumbles. The music is slow and eerie, built upon deep atmospheric synthesizers and sub-bass drones, interwoven with mournful cello lines and the delicate, shimmering sounds of glass harmonica and ethereal chimes. Sparse, processed whispers and barely audible, distorted echoes of forgotten sounds occasionally break through the stillness, emphasizing the repository of untold stories within the void."
       }
+    },
+    {
+      "id": "world-8",
+      "dayNumber": 8,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "أفق العدم",
+        "en": "Horizon of Nothingness"
+      },
+      "essence": "الصدى",
+      "physics": "الوجود هنا ليس سوى ظل كثيف للعدم، وكل حركة أو فكر يترك تموجات مرئية في هذا الظل، يمكن أن تُقلد أو تُنسخ. هذه التموجات ليست مجرد ظلال بل هي احتمالات تتجسد جزئياً.",
+      "atmosphere": "فضاء يعكس كل شيء، ليس بصورة حادة بل كخيال باهت يتبع الأصل ببطء ويختلط به. الألوان متقزحة، وتتردد في الأفق أصداء صامتة لأصوات لم تُنطق قط، ورائحة الفراغ تحمل عبقاً معدنياً خفيفاً ممزوجاً برائحة أحلام لم تتحقق.",
+      "secret": "أن العدم ليس مجرد فراغ، بل هو مرآة كونية عملاقة تعكس كل احتمال لم يتحقق بعد، وكل ذاكرة قيد التكوين. ومن يحدق فيه طويلاً، يجد ذاته تتشكل من جديد في صدغه، لكن على حساب فقدان ذات سابقة.",
+      "enemyBehavior": "الأعداء هنا ليسوا كائنات حية بالمعنى التقليدي، بل هم تموجات في ظل العدم تتخذ شكل مخاوف اللاعب أو ندمه أو ذكرياته التي اختار دفنها. يظهرون بلا ضجيج، يمتصون الضوء والذاكرة ببطء، وكلما حاول اللاعب محاربتهم بالأساليب التقليدية، زادوا وضوحاً وقوة من خلال انعكاس فعل اللاعب، محاولين ابتلاع هويته.",
+      "playerAbility": "الرؤية العكسية (Inverse Vision): القدرة على رؤية العالم ليس كما هو، بل كما يمكن أن يكون أو كما كان، مما يكشف عن نقاط ضعف الأعداء (انعكاساتهم غير المكتملة) ويسمح بتعديل تموجات العدم للتحرك عبر الأبعاد المحتملة أو محو التأثيرات السلبية للانعكاسات.",
+      "backgroundColor": "#0D0D0D",
+      "fogColor": "#222233",
+      "lightColor": "#E0F2F7",
+      "enemySpeed": 0.2,
+      "enemyHealth": 150,
+      "enemyCount": 10,
+      "difficulty": "expert",
+      "addedAt": "2026-05-24T14:55:22.488Z",
+      "noise": {
+        "frequency": 0.005,
+        "amplitude": 0.1,
+        "octaves": 3,
+        "persistence": 0.3,
+        "lacunarity": 2,
+        "seed": 123456,
+        "type": "simplex",
+        "description": "تضاريس شاسعة، مسطحة تقريباً، مع تموجات خفية للغاية، تشبه سطح بحر كوني هادئ حيث تطفو بقايا ذكريات متناثرة كغبار نجمي."
+      },
+      "shader": {
+        "type": "void",
+        "code": "shader_type spatial;\nrender_mode unshaded;\n\nuniform vec4 dark_color : source_color = vec4(0.05, 0.03, 0.08, 1.0); // Very dark desaturated purple\nuniform vec4 light_color : source_color = vec4(0.12, 0.08, 0.18, 1.0); // Slightly lighter purple/grey, for subtle glow\nuniform float noise_scale : hint_range(0.01, 10.0) = 0.2; // Larger scale for vastness\nuniform float time_speed : hint_range(0.0, 1.0) = 0.005; // Extremely slow movement\nuniform float distortion_intensity : hint_range(0.0, 0.1) = 0.002; // Very subtle spatial distortion\nuniform float shard_density : hint_range(0.0, 1.0) = 0.01; // Very sparse memory flickers\nuniform float shard_size : hint_range(0.0, 0.01) = 0.0005; // Tiny, distant points\nuniform float flicker_speed : hint_range(0.0, 10.0) = 2.0; // Moderate flicker speed for shards\nuniform float ambient_intensity : hint_range(0.0, 1.0) = 0.05; // Overall dimness\n\n// Simple hash function for procedural noise\nfloat hash12(vec2 p) {\n    vec3 p3  = fract(vec3(p.xyx) * 0.1031);\n    p3 += dot(p3, p3.yzx + 33.33);\n    return fract((p3.x + p3.y) * p3.z);\n}\n\n// 2D Value Noise (simplified)\nfloat noise(vec2 p) {\n    vec2 ip = floor(p);\n    vec2 fp = fract(p);\n    \n    float a = hash12(ip);\n    float b = hash12(ip + vec2(1.0, 0.0));\n    float c = hash12(ip + vec2(0.0, 1.0));\n    float d = hash12(ip + vec2(1.0, 1.0));\n    \n    vec2 u = fp * fp * (3.0 - 2.0 * fp); // Smoother interpolation\n    \n    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);\n}\n\n\nvoid fragment() {\n    vec2 uv = FRAGMENT_COORD.xy / VIEWPORT_SIZE.xy;\n\n    // Time-based distortion for subtle movement, simulating cosmic drift\n    vec2 distorted_uv = uv + sin(TIME * time_speed * 0.5 + uv.x * 5.0) * distortion_intensity;\n    distorted_uv += cos(TIME * time_speed + uv.y * 7.0) * distortion_intensity * 0.7;\n\n    // Procedural noise for the void's base texture\n    float void_noise = noise(distorted_uv * noise_scale + TIME * time_speed * 1.5);\n\n    // Blending colors based on noise, creating subtle gradients and depth\n    vec4 final_color = mix(dark_color, light_color, void_noise * void_noise * 0.8); // Square to bias towards darker\n\n    // Add faint, flickering \"memory shards\"\n    vec2 shard_grid_uv = FRAGMENT_COORD.xy / VIEWPORT_SIZE.xy * 300.0; // Scale for density of potential shard locations\n    vec2 shard_cell = floor(shard_grid_uv);\n\n    float shard_id = hash12(shard_cell); // A unique ID for each cell\n\n    // Only show shards randomly based on shard_density\n    if (shard_id < shard_density) {\n        // Position the shard randomly within its cell for less grid-like appearance\n        vec2 rand_offset = vec2(hash12(shard_cell + vec2(100.0, 0.0)), hash12(shard_cell + vec2(0.0, 100.0))) * 0.8;\n        vec2 actual_shard_pos = shard_cell + 0.5 + rand_offset - 0.4; // Center and offset\n        \n        float dist_to_shard = distance(shard_grid_uv, actual_shard_pos);\n        \n        // Create a circular glow for the shard\n        float shard_alpha = smoothstep(shard_size * 2.0, shard_size, dist_to_shard);\n        \n        // Flicker effect, using a different hash for each shard for varied flickering\n        float flicker = sin(TIME * flicker_speed + shard_id * 50.0) * 0.5 + 0.5; // Range 0-1\n        shard_alpha *= max(0.0, flicker * flicker * flicker); // Bias flicker towards off, for more 'fading' look\n        \n        // Blend the shard color (faint, warm glow)\n        final_color = mix(final_color, vec4(0.8, 0.7, 0.5, 1.0), shard_alpha * 0.7); // Faint yellowish/orange glow\n    }\n    \n    // Apply a general dimness to the void\n    final_color.rgb *= ambient_intensity;\n\n    ALBEDO = final_color.rgb;\n    EMISSION = final_color.rgb; // Make it self-illuminating like a void\n    ALPHA = 1.0;\n}",
+        "parameters": {
+          "dark_color": "vec4(0.05, 0.03, 0.08, 1.0)",
+          "light_color": "vec4(0.12, 0.08, 0.18, 1.0)",
+          "noise_scale": 0.2,
+          "time_speed": 0.005,
+          "distortion_intensity": 0.002,
+          "shard_density": 0.01,
+          "shard_size": 0.0005,
+          "flicker_speed": 2,
+          "ambient_intensity": 0.05
+        },
+        "description": "فراغ كوني شاسع ومظلم، تتخلله تموجات خفيفة وأمواج من الطاقة الغامضة. تتناثر فيه ومضات باهتة ومتقطعة من 'شظايا الذكريات' الذهبية والبرتقالية، تظهر وتختفي ببطء، مما يوحي بالوحدة والفقدان مع بصيص أمل بعيد."
+      },
+      "audio": {
+        "ambience": "صمت عميق وهادئ يسيطر على الأفق، مع همسات منخفضة وبعيدة جداً، وأصوات احتكاك غبار كوني خفيف غير محسوس. شعور بالخواء يتردد صداه مع طنين خافت وشعور بالضغط التدريجي.",
+        "music_tempo": "slow",
+        "music_mood": "melancholic | eerie | mysterious | hopeful",
+        "instruments": [
+          "deep pads",
+          "ambient synths",
+          "sparse string swells",
+          "glass harmonica",
+          "chimes (processed and distorted)",
+          "low brass drones"
+        ],
+        "sfx": [
+          "فحيح وتآكل الصمت",
+          "ومضات صوتية خافتة للذكريات المتلاشية (مثل الرنين الزجاجي المتكسر)",
+          "تنهدات عميقة من الفراغ نفسه",
+          "همسات أثيرية غير مفهومة",
+          "أصوات طنين منخفضة وبعيدة جداً"
+        ],
+        "description": "بيئة صوتية هادئة ومترامية الأطراف، يسيطر عليها صمت عميق يحمل في طياته همسات خفيفة. أصوات خلفية منخفضة وبعيدة، تلميحات لمرور غبار كوني وأصداء ذكريات متلاشية. الموسيقى بطيئة ومؤرقة، تثير الحنين والكآبة مع ومضات أمل باهتة، تتخللها أصوات غريبة من الفراغ وومضات صوتية لشظايا الذاكرة."
+      }
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 7,
-  "inventions": 1,
-  "lastEvolved": "2026-05-24T10:01:09.550Z",
-  "lastInvented": "2026-05-24T10:01:35.580Z"
+  "evolutions": 8,
+  "inventions": 2,
+  "lastEvolved": "2026-05-24T14:56:31.109Z",
+  "lastInvented": "2026-05-24T14:56:57.996Z"
 }
