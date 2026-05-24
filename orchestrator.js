@@ -431,6 +431,53 @@ async function main() {
     log.sync = await run('Supabase Sync', './scripts/sync-to-supabase.js', [], false);
     return saveReport(log, {}, t0, runId, 'sync');
 
+  } else if (mode === 'code') {
+    // ════════════════════════════════════════
+    // CODE MODE — يبني ملفات Godot للكون الموجود
+    // بدون إعادة توليد أي شيء آخر
+    // ════════════════════════════════════════
+    logger.info('[CODE] Building Godot project for existing universe');
+
+    if (!universe) {
+      logger.error('[CODE] No universe found — run birth first');
+      process.exit(1);
+    }
+
+    const log = {};
+
+    // قراءة البيانات من agent-results
+    const loadResult = (file) => {
+      const path = join(RESULTS_DIR, file);
+      if (!existsSync(path)) return null;
+      try { return JSON.parse(readFileSync(path, 'utf8')); }
+      catch { return null; }
+    };
+
+    const idea     = loadResult('ideas.json');
+    const story    = loadResult('story.json');
+    const levels   = { worlds: universe.worlds };
+    const art      = universe.art || loadResult('art.json');
+    const template = loadResult('template.json');
+
+    if (!idea) {
+      logger.error('[CODE] ideas.json not found in agent-results');
+      process.exit(1);
+    }
+
+    log.code = await run('Code Agent', './agents/code-agent.js',
+      [idea, story, levels, art, template],
+      idea.type === 'godot');
+
+    if (log.code?.success) {
+      save('code.json', log.code.data);
+      logger.info('[CODE] Godot project built', {
+        slug:  log.code.data?.slug,
+        files: log.code.data?.totalFiles,
+      });
+    }
+
+    return saveReport(log, {}, t0, runId, 'code');
+
   } else {
     await evolutionMode(universe, t0, runId);
   }
