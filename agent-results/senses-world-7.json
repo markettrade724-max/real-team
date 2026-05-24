@@ -1,0 +1,46 @@
+{
+  "noise": {
+    "frequency": 0.05,
+    "amplitude": 1.2,
+    "octaves": 7,
+    "persistence": 0.55,
+    "lacunarity": 2.2,
+    "seed": 133742,
+    "type": "simplex",
+    "description": "Undulating, cavernous structures formed from coalesced cosmic dust and forgotten memory fragments, subtly shifting as if breathing within the vastness."
+  },
+  "shader": {
+    "type": "void",
+    "code": "extends ShaderMaterial\n\nshader_type spatial;\nrender_mode unshaded;\n\nuniform vec4 void_color : source_color = vec4(0.02, 0.0, 0.05, 1.0); // Dark indigo/purple\nuniform vec4 nebula_color : source_color = vec4(0.1, 0.05, 0.2, 1.0); // Faint purple-blue\nuniform vec4 memory_glow_color : source_color = vec4(0.8, 0.7, 0.9, 1.0); // Pale silver/lavender\nuniform float memory_glow_intensity = 0.5;\nuniform float memory_pulse_speed = 0.2;\nuniform sampler2D noise_texture;\nuniform float noise_scale = 0.005;\nuniform float noise_speed = 0.01;\n\nvoid fragment() {\n    vec3 world_pos = VERTEX;\n    vec2 uv = world_pos.xy * noise_scale + TIME * noise_speed;\n    float noise_val = texture(noise_texture, uv).r;\n    vec4 final_color = mix(void_color, nebula_color, noise_val * 0.7);\n    float pulse = sin(TIME * memory_pulse_speed) * 0.5 + 0.5;\n    final_color.rgb += memory_glow_color.rgb * pulse * memory_glow_intensity * noise_val;\n    ALBEDO = final_color.rgb;\n    EMISSION = final_color.rgb * 2.0;\n}\n\nvoid vertex() {\n    // No specific vertex manipulation for this simple void shader, but could be used for more complex nebula shapes.\n}",
+    "parameters": {
+      "void_color": "vec4(0.02, 0.0, 0.05, 1.0)",
+      "nebula_color": "vec4(0.1, 0.05, 0.2, 1.0)",
+      "memory_glow_color": "vec4(0.8, 0.7, 0.9, 1.0)",
+      "memory_glow_intensity": 0.5,
+      "memory_pulse_speed": 0.2,
+      "noise_scale": 0.005,
+      "noise_speed": 0.01
+    },
+    "description": "A vast, nebulous void with deep indigo and purple hues, subtly shifting like cosmic dust. Faint, ethereal glows of silver and lavender pulse gently, representing coalesced memory fragments, hinting at something ancient and profound within the emptiness."
+  },
+  "audio": {
+    "ambience": "A vast, almost suffocating silence, punctuated by very low-frequency hums and distant, resonant rumbles that hint at immense, unseen structures.",
+    "music_tempo": "slow",
+    "music_mood": "melancholic | eerie",
+    "instruments": [
+      "deep atmospheric synthesizers",
+      "sub-bass drones",
+      "long-reverb cello",
+      "glass harmonica",
+      "distant ethereal chimes",
+      "processed whispers"
+    ],
+    "sfx": [
+      "deep, resonant rumbles that fade quickly",
+      "barely audible, distorted echoes of forgotten sounds",
+      "ethereal shimmering particles",
+      "subtle, unsettling pressure shifts"
+    ],
+    "description": "An expansive, deeply melancholic soundscape. The ambience is dominated by a vast, almost suffocating silence, punctuated by very low-frequency hums and distant, resonant rumbles. The music is slow and eerie, built upon deep atmospheric synthesizers and sub-bass drones, interwoven with mournful cello lines and the delicate, shimmering sounds of glass harmonica and ethereal chimes. Sparse, processed whispers and barely audible, distorted echoes of forgotten sounds occasionally break through the stillness, emphasizing the repository of untold stories within the void."
+  }
+}
