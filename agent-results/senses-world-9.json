@@ -1,0 +1,45 @@
+{
+  "noise": {
+    "frequency": 0.02,
+    "amplitude": 0.8,
+    "octaves": 5,
+    "persistence": 0.45,
+    "lacunarity": 2.2,
+    "seed": 1337,
+    "type": "simplex",
+    "description": "Vast, undulating plains of solidified cosmic dust, occasionally broken by towering, crystalline memory fragments that shimmer with faint, internal light, forming subtle pathways and junctions."
+  },
+  "shader": {
+    "type": "void",
+    "code": "extends ShaderMaterial\nshader_type spatial;\n\nrender_mode unshaded; // Purely emissive, no light interaction\nrender_mode depth_draw_opaque; // Render as an opaque background\n\nuniform vec4 base_void_color : source_color = vec4(0.01, 0.005, 0.03, 1.0); // Deep violet-blue\nuniform vec4 shard_glow_color : source_color = vec4(0.6, 0.8, 1.0, 1.0); // Faint luminous blue\nuniform float glow_intensity : hint_range(0.0, 5.0) = 2.5;\nuniform float shard_density : hint_range(0.0, 0.1) = 0.03; // Controls how many glowing points appear\nuniform float drift_speed : hint_range(0.0, 0.1) = 0.015; // Slow, ethereal movement\nuniform float noise_scale : hint_range(0.1, 10.0) = 0.8; // Scale of background textural noise\n\n// Simple 2D hash for pseudo-randomness, projected into 3D\nfloat hash21(vec2 p) {\n    p = fract(p * vec2(123.34, 456.21));\n    p += dot(p, p + 43.45);\n    return fract(p.x * p.y);\n}\n\nvoid fragment() {\n    // Use fragment's world position for consistent noise\n    vec3 world_pos = (WORLD_MATRIX * vec4(VERTEX, 1.0)).xyz;\n\n    // Time-based offset for continuous drift\n    vec2 offset = world_pos.xz * noise_scale + TIME * drift_speed;\n\n    // Base void texture/noise\n    float void_texture = hash21(offset);\n    vec4 current_color = mix(base_void_color, base_void_color * 1.5, void_texture * 0.2); // Subtle variation\n\n    // Add memory shard glow\n    // Use a different offset or scale for the shards to make them distinct\n    vec2 shard_offset = world_pos.yx * 5.0 + TIME * drift_speed * 5.0; // Higher scale for finer \"shards\"\n    float shard_noise = hash21(shard_offset);\n\n    if (shard_noise < shard_density) {\n        // Intensify glow near the center of the \"shard\"\n        float shard_effect = smoothstep(0.0, shard_density, shard_noise);\n        current_color.rgb += shard_glow_color.rgb * glow_intensity * (1.0 - shard_effect);\n    }\n\n    ALBEDO = current_color.rgb;\n    EMISSION = current_color.rgb; // Make it glow\n    ALPHA = 1.0; // Fully opaque\n}",
+    "parameters": {
+      "base_void_color": "vec4(0.01, 0.005, 0.03, 1.0)",
+      "shard_glow_color": "vec4(0.6, 0.8, 1.0, 1.0)",
+      "glow_intensity": 2.5,
+      "shard_density": 0.03,
+      "drift_speed": 0.015,
+      "noise_scale": 0.8
+    },
+    "description": "A deep, inky void subtly illuminated by countless distant, shimmering memory particles, occasionally coalescing into faint, swirling nebulae of forgotten stories. A sense of immense, echoing emptiness with a melancholic glow."
+  },
+  "audio": {
+    "ambience": "A vast, echoing silence permeated by the deep, low hum of the cosmic void, carrying faint, almost imperceptible whispers and the distant, soft 'sigh' of forgotten epochs.",
+    "music_tempo": "slow",
+    "music_mood": "melancholic | mysterious | eerie",
+    "instruments": [
+      "synthesizer pads",
+      "deep drones",
+      "bowed glass/crystal tones",
+      "ethereal vocal textures",
+      "subtle chimes"
+    ],
+    "sfx": [
+      "faint high-frequency static",
+      "distant resonant pulses",
+      "soft crystalline shimmers (memory fragments)",
+      "subtle whooshes of cosmic dust",
+      "deep, slow 'thrums'"
+    ],
+    "description": "The soundscape of The Genesis Nexus is dominated by an overwhelming sense of ancient, melancholic emptiness. Deep, sustained hums and drones from the cosmic void form the foundation, occasionally pierced by the ethereal shimmer of memory shards materializing or dissipating. Whispers of untold stories drift on the edge of hearing, while distant, slow pulses resonate through the silent expanse, evoking both profound sorrow and irresistible curiosity."
+  }
+}
