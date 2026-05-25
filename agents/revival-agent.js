@@ -103,34 +103,23 @@ async function generateNewIdentity(product, universe, world, soul, recipes) {
     return await askGemini(`
 ${soul}
 
-أنت وكيل البعث — تُحوّل الأفكار الفارغة إلى ألعاب حية.
+حوّل هذا المنتج إلى لعبة Godot 3D بروح الكون.
 
-المنتج القديم:
-- الاسم: ${product.name?.en}
-- النوع القديم: ${product.type}
-- الوصف القديم: ${product.desc?.en}
-
-روح الكون: "${universe.soul?.essence}"
-المزاج البصري: "${universe.art?.mood}"
-العالم المرتبط: "${world?.name?.en || 'العالم الأول'}"
-
-الوصفات المتاحة:
-${recipes.length > 0 ? recipes.map(r => `- ${r.label}: ${r.usage}`).join('\n') : 'لا توجد وصفات بعد'}
-
-مهمتك: حوّل هذا المنتج إلى لعبة Godot 3D تحمل روح الكون.
-الاسم يبقى كما هو — الروح تتجدد.
+المنتج: "${product.name?.en}" — ${product.desc?.en?.slice(0, 80)}
+روح الكون: "${universe.soul?.essence?.slice(0, 80)}"
+العالم: "${world?.name?.en || 'العالم الأول'}"
 
 أنتج JSON فقط:
 {
-  "concept": "المفهوم الجديد في جملة شاعرية",
-  "gameplay": "آلية اللعب في Godot 3D",
+  "concept": "جملة شاعرية قصيرة",
+  "gameplay": "آلية اللعب في جملتين",
   "godotFeatures": ["ميزة 1", "ميزة 2"],
-  "worldConnection": "كيف ترتبط بعالم الكون",
+  "worldConnection": "جملة واحدة",
   "name": { "ar": "${product.name?.ar}", "en": "${product.name?.en}", "fr": "${product.name?.fr || product.name?.en}", "es": "${product.name?.es || product.name?.en}", "de": "${product.name?.de || product.name?.en}", "zh": "${product.name?.zh || product.name?.en}" },
-  "desc": { "ar": "وصف جديد", "en": "New description", "fr": "...", "es": "...", "de": "...", "zh": "..." },
+  "desc": { "ar": "وصف قصير", "en": "Short description", "fr": "Description", "es": "Descripción", "de": "Beschreibung", "zh": "描述" },
   "accent": "${universe.art?.accent || '#00ff88'}",
   "gradient": "${universe.art?.gradient || '135deg,#020209,#080820'}"
-}`, 0.9, { maxOutputTokens: 2048, topP: 0.95 });
+}`, 0.9, { maxOutputTokens: 1024, topP: 0.95 });
   } catch (err) {
     logger.error('[ERROR] Identity generation failed', { error: err.message });
     return null;
