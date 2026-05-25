@@ -776,15 +776,69 @@
         ],
         "description": "Default audio for The Nucleus of Manifestation"
       }
+    },
+    {
+      "id": "world-13",
+      "dayNumber": 13,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "نول اللافكرة",
+        "en": "The Loom of Unthought"
+      },
+      "essence": "تجلّي الكمون",
+      "physics": "قانون الجوهر الصدوي: كل شكل في هذا العالم يتألف من أصداء أفكار غير مكتملة. فعل عدم تذكر مفهوم ما يمنحه كتلة مادية ووجوداً فيزيائياً.",
+      "atmosphere": "عالم يسوده الشفق الأبدي حيث يتلألأ الهواء بأنماط هندسية خافتة لأفكار لم تتشكل بعد. تظهر الهياكل كشبكات شفافة ومهتزة، تعيد نسج نفسها باستمرار من خيوط من الغبار القزحي. يسود صمت عميق وواهن كل شيء، يقطعه أحياناً رنين خفيف، شبه تحت صوتي، يهتز في الصدر ويحمل رائحة معدنية خافتة للخلق والترابية الرطبة للأحلام المنسية.",
+      "secret": "لب هذا العالم ليس بداية، بل نهاية — الذاكرة الأخيرة لكون اختار أن ينسى نفسه بالكامل، ليصبح الإمكانية الخام لكل خلق لاحق. اكتشاف هذا يعني إدراك أن الصمت ليس عدوًا، بل هو الملاذ الأخير للهوية.",
+      "enemyBehavior": "كيانات اللافكرة، ليست خبيثة في نيتها بل هي تجسيدات مادية للنسيان المطلق. لا تهاجم مباشرة ولكنها تحاول محو أفكار وذكريات اللاعب النشطة والفورية بمهارة. إذا حاول اللاعب تذكرها أو التركيز عليها، تصبح الكيانات أكثر صلابة وخطورة. لهزيمتها، يجب على اللاعب أن ينساها بنشاط أو يحول وعيه، مما يتسبب في تبدد الكيانات لنقص 'الوقود' العقلي.",
+      "playerAbility": "نسيج النسيان: يكتسب اللاعب القدرة على 'نسيان' مدخلات حسية أو تركيبات مفاهيمية محددة للحظات. يمكن استخدام ذلك للمرور عبر حواجز مادية هي تجليات لأفكار منسية، أو لإخماد الأعداء بحرمانهم من 'الانتباه' الذي يحتاجونه للتصلب. إنه مسح ذهني انتقائي، يخلق فراغات مؤقتة في الواقع.",
+      "backgroundColor": "#1A1A33",
+      "fogColor": "#4A3B5C",
+      "lightColor": "#C8D8E8",
+      "enemySpeed": 0.3,
+      "enemyHealth": 0,
+      "enemyCount": 5,
+      "difficulty": "hard",
+      "addedAt": "2024-05-28T10:30:00.000Z",
+      "noise": {
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 88582,
+        "type": "simplex",
+        "description": "Default terrain for The Loom of Unthought"
+      },
+      "shader": {
+        "type": "sky",
+        "code": "extends ShaderMaterial\n# fallback shader",
+        "parameters": {},
+        "description": "Default void shader"
+      },
+      "audio": {
+        "ambience": "gentle wind and distant echoes",
+        "music_tempo": "medium",
+        "music_mood": "mysterious",
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
+        "description": "Default audio for The Loom of Unthought"
+      }
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 12,
+  "evolutions": 13,
   "inventions": 3,
-  "lastEvolved": "2026-05-25T11:37:02.376Z",
+  "lastEvolved": "2026-05-25T11:57:15.505Z",
   "lastInvented": "2026-05-24T22:55:44.516Z",
   "revivals": 0,
-  "lastRevived": "2026-05-25T11:37:48.823Z"
+  "lastRevived": "2026-05-25T11:57:30.901Z"
 }
