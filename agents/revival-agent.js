@@ -5,16 +5,9 @@
  * مشحونة بروح الكون الجديد.
  *
  * المبدأ: لا شيء يُحذف — كل شيء يُبعث.
- *
- * القواعد المطبقة:
- *  - rule-056: soulContext في كل وكيل
- *  - rule-058: preset name = 'Web'
- *  - rule-070: platform = 'Web' في Godot 4.x
- *  - rule-087: askGemini(prompt, temperature, options)
- *  - rule-099: [INFO]/[OK]/[ERROR] بدون إيموجي
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 import { join, dirname }  from 'path';
 import { fileURLToPath }  from 'url';
 import { askGemini }      from './_gemini.js';
@@ -23,12 +16,10 @@ import { logger }         from '../logger.js';
 
 const __dirname      = dirname(fileURLToPath(import.meta.url));
 const PRODUCTS_PATH  = join(__dirname, '..', 'products.json');
-const UNIVERSE_PATH  = join(__dirname, '..', 'universe.json');
 const RECIPES_DIR    = join(__dirname, '..', 'godot-recipes');
 
-// المنتجات التي لا تحتاج ترقية
-const SKIP_TYPES = ['godot'];
-const MAX_PER_RUN = 3; // نرقّي 3 منتجات في كل تشغيل لتوفير الحصة
+const SKIP_TYPES  = ['godot'];
+const MAX_PER_RUN = 3;
 
 // ════════════════════════════════════════════════════════════
 // الدالة الرئيسية
@@ -45,11 +36,10 @@ export async function run(universe) {
   }
 
   if (!universe?.soul) {
-    logger.warn('[REVIVAL] No universe soul found — cannot revive without spirit');
+    logger.warn('[REVIVAL] No universe soul — cannot revive without spirit');
     return { revived: 0 };
   }
 
-  // اختر المنتجات التي تحتاج ترقية
   const candidates = products
     .filter(p => !SKIP_TYPES.includes(p.type) && p.status === 'available')
     .filter(p => !p.revived)
@@ -60,36 +50,30 @@ export async function run(universe) {
     return { revived: 0 };
   }
 
-  logger.info(`[REVIVAL] Found ${candidates.length} candidates for revival`);
+  logger.info(`[REVIVAL] Found ${candidates.length} candidates`);
 
   let revivedCount = 0;
 
   for (const product of candidates) {
     logger.info(`[REVIVAL] Reviving: "${product.name?.en}"...`);
-
     try {
       const revived = await reviveProduct(product, universe, soul);
       if (revived) {
-        // تحديث المنتج في القائمة
         const idx = products.findIndex(p => p.id === product.id);
         if (idx !== -1) products[idx] = revived;
         revivedCount++;
-        logger.info(`[OK] Revived: "${revived.name?.en}" → ${revived.type}`);
+        logger.info(`[OK] Revived: "${revived.name?.en}" → godot`);
       }
     } catch (err) {
       logger.error(`[ERROR] Revival failed for ${product.id}`, { error: err.message });
     }
   }
 
-  // حفظ products.json المحدث
   if (revivedCount > 0) {
     writeFileSync(PRODUCTS_PATH, JSON.stringify(products, null, 2), 'utf8');
-
-    // نسخ لـ public/
     const publicPath = join(__dirname, '..', 'public', 'products.json');
     writeFileSync(publicPath, JSON.stringify(products, null, 2), 'utf8');
-
-    logger.info(`[OK] Revival complete`, { revived: revivedCount });
+    logger.info('[OK] Revival complete', { revived: revivedCount });
   }
 
   return { revived: revivedCount, total: candidates.length };
@@ -99,32 +83,24 @@ export async function run(universe) {
 // ترقية منتج واحد
 // ════════════════════════════════════════════════════════════
 async function reviveProduct(product, universe, soul) {
-
-  // اختر أقرب عالم في الكون للمنتج
   const closestWorld = findClosestWorld(product, universe);
+  const recipes      = loadAvailableRecipes();
 
-  // حمّل الوصفات المتاحة
-  const recipes = loadAvailableRecipes();
-
-  // المرحلة ١: توليد الهوية الجديدة
   const newIdentity = await generateNewIdentity(product, universe, closestWorld, soul, recipes);
   if (!newIdentity) return null;
 
-  // المرحلة ٢: توليد كود Godot
   const godotCode = await generateGodotCode(newIdentity, universe, closestWorld, soul, recipes);
   if (!godotCode) return null;
 
-  // المرحلة ٣: كتابة ملفات المشروع
   writeGodotProject(product.slug, godotCode, newIdentity);
 
-  // المرحلة ٤: إعادة بناء المنتج
   return buildRevivedProduct(product, newIdentity, closestWorld, universe);
 }
 
 // ── توليد الهوية الجديدة ─────────────────
 async function generateNewIdentity(product, universe, world, soul, recipes) {
   try {
-    const result = await askGemini(`
+    return await askGemini(`
 ${soul}
 
 أنت وكيل البعث — تُحوّل الأفكار الفارغة إلى ألعاب حية.
@@ -137,41 +113,24 @@ ${soul}
 روح الكون: "${universe.soul?.essence}"
 المزاج البصري: "${universe.art?.mood}"
 العالم المرتبط: "${world?.name?.en || 'العالم الأول'}"
-وصف العالم: "${world?.desc?.en || ''}"
 
-الوصفات المتاحة من المخترع:
+الوصفات المتاحة:
 ${recipes.length > 0 ? recipes.map(r => `- ${r.label}: ${r.usage}`).join('\n') : 'لا توجد وصفات بعد'}
 
-مهمتك: حوّل هذا المنتج إلى لعبة Godot 3D حقيقية تحمل روح الكون.
+مهمتك: حوّل هذا المنتج إلى لعبة Godot 3D تحمل روح الكون.
 الاسم يبقى كما هو — الروح تتجدد.
 
 أنتج JSON فقط:
 {
-  "concept": "المفهوم الجديد في جملة واحدة شاعرية",
-  "gameplay": "آلية اللعب الأساسية في Godot 3D",
-  "godotFeatures": ["ميزة Godot مستخدمة 1", "ميزة 2"],
-  "worldConnection": "كيف ترتبط اللعبة بعالم الكون",
-  "name": {
-    "ar": "${product.name?.ar}",
-    "en": "${product.name?.en}",
-    "fr": "${product.name?.fr || product.name?.en}",
-    "es": "${product.name?.es || product.name?.en}",
-    "de": "${product.name?.de || product.name?.en}",
-    "zh": "${product.name?.zh || product.name?.en}"
-  },
-  "desc": {
-    "ar": "وصف جديد بالعربية — موجز وشاعري",
-    "en": "New English description — concise and poetic",
-    "fr": "Nouvelle description en français",
-    "es": "Nueva descripción en español",
-    "de": "Neue Beschreibung auf Deutsch",
-    "zh": "新的中文描述"
-  },
+  "concept": "المفهوم الجديد في جملة شاعرية",
+  "gameplay": "آلية اللعب في Godot 3D",
+  "godotFeatures": ["ميزة 1", "ميزة 2"],
+  "worldConnection": "كيف ترتبط بعالم الكون",
+  "name": { "ar": "${product.name?.ar}", "en": "${product.name?.en}", "fr": "${product.name?.fr || product.name?.en}", "es": "${product.name?.es || product.name?.en}", "de": "${product.name?.de || product.name?.en}", "zh": "${product.name?.zh || product.name?.en}" },
+  "desc": { "ar": "وصف جديد", "en": "New description", "fr": "...", "es": "...", "de": "...", "zh": "..." },
   "accent": "${universe.art?.accent || '#00ff88'}",
   "gradient": "${universe.art?.gradient || '135deg,#020209,#080820'}"
 }`, 0.9, { maxOutputTokens: 2048, topP: 0.95 });
-
-    return result;
   } catch (err) {
     logger.error('[ERROR] Identity generation failed', { error: err.message });
     return null;
@@ -181,20 +140,18 @@ ${recipes.length > 0 ? recipes.map(r => `- ${r.label}: ${r.usage}`).join('\n') :
 // ── توليد كود Godot ──────────────────────
 async function generateGodotCode(identity, universe, world, soul, recipes) {
   try {
-    const result = await askGemini(`
+    return await askGemini(`
 ${soul}
 
-اكتب GDScript كامل لـ Godot 4.6.2 للعبة التالية:
+اكتب GDScript كامل لـ Godot 4.6.2:
 
 المفهوم: "${identity.concept}"
 آلية اللعب: "${identity.gameplay}"
 العالم: "${world?.name?.en || 'Unknown'}"
-ميزات Godot المطلوبة: ${identity.godotFeatures?.join(', ')}
 
-${recipes.length > 0 ? `وصفات متاحة للاستخدام:\n${recipes.slice(0,3).map(r => `- ${r.filename}: ${r.usage}`).join('\n')}` : ''}
+${recipes.length > 0 ? `وصفات متاحة:\n${recipes.slice(0,3).map(r => `- ${r.filename}: ${r.usage}`).join('\n')}` : ''}
 
-القواعد الصارمة:
-- Godot 4.6.2 فقط
+القواعد:
 - tabs للـ indentation
 - add_to_group("player") في player.gd
 - is_inside_tree() قبل queue_free() بعد await
@@ -210,8 +167,6 @@ ${recipes.length > 0 ? `وصفات متاحة للاستخدام:\n${recipes.sli
   "weapon.gd":     "...",
   "bullet.gd":     "..."
 }`, 0.7, { maxOutputTokens: 8192, topP: 0.9 });
-
-    return result;
   } catch (err) {
     logger.error('[ERROR] Godot code generation failed', { error: err.message });
     return null;
@@ -220,21 +175,16 @@ ${recipes.length > 0 ? `وصفات متاحة للاستخدام:\n${recipes.sli
 
 // ── كتابة ملفات المشروع ──────────────────
 function writeGodotProject(slug, scripts, identity) {
-  const { mkdirSync, writeFileSync } = await import('fs');
   const projectDir = join(__dirname, '..', 'godot-projects', slug);
   mkdirSync(projectDir, { recursive: true });
 
-  // كتابة السكريبتات
   for (const [filename, code] of Object.entries(scripts)) {
     if (typeof code === 'string' && code.trim()) {
       writeFileSync(join(projectDir, filename), code, 'utf8');
     }
   }
 
-  // project.godot
   writeFileSync(join(projectDir, 'project.godot'), buildProjectGodot(slug, identity), 'utf8');
-
-  // export_presets.cfg
   writeFileSync(join(projectDir, 'export_presets.cfg'), EXPORT_PRESETS, 'utf8');
 
   logger.info(`[OK] Godot project written: ${slug}`);
@@ -247,11 +197,11 @@ function buildRevivedProduct(old, identity, world, universe) {
     type:         'godot',
     templateFile: 'godot-wrapper.html',
     godotSlug:    old.slug,
-    accent:       identity.accent       || universe.art?.accent    || old.accent,
+    accent:       identity.accent        || universe.art?.accent    || old.accent,
     accentRgb:    universe.art?.accentRgb || old.accentRgb,
-    gradient:     identity.gradient     || universe.art?.gradient  || old.gradient,
-    name:         identity.name         || old.name,
-    desc:         identity.desc         || old.desc,
+    gradient:     identity.gradient      || universe.art?.gradient  || old.gradient,
+    name:         identity.name          || old.name,
+    desc:         identity.desc          || old.desc,
     revived:      true,
     revivedAt:    new Date().toISOString(),
     universeId:   universe.id,
@@ -264,36 +214,30 @@ function buildRevivedProduct(old, identity, world, universe) {
 function findClosestWorld(product, universe) {
   if (!universe.worlds?.length) return null;
 
-  const productKeywords = [
+  const keywords = [
     product.name?.en?.toLowerCase(),
     ...(product.tags || []),
     product.type?.toLowerCase(),
   ].filter(Boolean).join(' ');
 
-  // بحث بسيط بالكلمات المشتركة
   let best = universe.worlds[0];
   let bestScore = 0;
 
   for (const world of universe.worlds) {
-    const worldText = [
-      world.name?.en?.toLowerCase(),
-      world.desc?.en?.toLowerCase(),
-    ].filter(Boolean).join(' ');
-
-    const score = productKeywords.split(' ')
+    const worldText = [world.name?.en?.toLowerCase(), world.desc?.en?.toLowerCase()]
+      .filter(Boolean).join(' ');
+    const score = keywords.split(' ')
       .filter(w => w.length > 3 && worldText.includes(w)).length;
-
     if (score > bestScore) { bestScore = score; best = world; }
   }
 
   return best;
 }
 
-// ── تحميل الوصفات المتاحة ────────────────
+// ── تحميل الوصفات ────────────────────────
 function loadAvailableRecipes() {
   if (!existsSync(RECIPES_DIR)) return [];
   try {
-    const { readdirSync } = await import('fs');
     const index = join(RECIPES_DIR, 'index.json');
     if (existsSync(index)) {
       return JSON.parse(readFileSync(index, 'utf8')).slice(0, 5);
