@@ -10,7 +10,7 @@
  *  - rule-098: askGemini من _gemini.js فقط
  *  - rule-099: [INFO]/[OK]/[ERROR] بدون إيموجي
  */
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { askGemini }     from './_gemini.js';
@@ -156,7 +156,6 @@ function loadRecipes(domain) {
   const recipesDir = join(__dirname, '..', 'godot-recipes', domain);
   if (!existsSync(recipesDir)) return '';
   try {
-    const { readdirSync } = await import('fs');
     const files = readdirSync(recipesDir).filter(f => f.endsWith('.meta.json'));
     if (files.length === 0) return '';
     return files.slice(0, 3).map(f => {
