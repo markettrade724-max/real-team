@@ -17,8 +17,7 @@
  *   السبت     → EVOLUTION + sync-to-supabase
  */
 
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';import { fileURLToPath } from 'url';
 import { dirname, join }  from 'path';
 import { execSync }       from 'child_process';
 import { logger }         from './logger.js';
@@ -64,8 +63,14 @@ function loadUniverse() {
   catch { return null; }
 }
 
-function saveUniverse(universe) {
-  writeFileSync(UNIVERSE, JSON.stringify(universe, null, 2), 'utf8');
+function loadResult(file) {
+  const path = join(RESULTS_DIR, file);
+  if (!existsSync(path)) return null;
+  try { return JSON.parse(readFileSync(path, 'utf8')); }
+  catch { return null; }
+}
+
+function saveUniverse(universe) {  writeFileSync(UNIVERSE, JSON.stringify(universe, null, 2), 'utf8');
   logger.info('[OK] Universe saved', {
     worlds:      universe.worlds?.length    || 0,
     weapons:     universe.weapons?.length   || 0,
@@ -252,6 +257,23 @@ async function evolutionMode(universe, t0, runId) {
         await runWorldSensesAgent(universe, newWorld, log);
         log.collision = await run('Collision Check', './agents/collision-agent.js',
           [universe.id], false);
+      }
+
+      // ── بناء مشروع Godot إذا لم يكن موجوداً ──
+      const godotDir = join(__dirname, 'godot-projects', universe.id);
+      if (!existsSync(godotDir)) {
+        logger.info('[EVOLUTION] Godot project missing — building now');
+        const idea     = loadResult('ideas.json');
+        const story    = loadResult('story.json');
+        const levels   = { worlds: universe.worlds };
+        const art      = universe.art;
+        const template = loadResult('template.json');
+        if (idea) {
+          log.code = await run('Code Agent', './agents/code-agent.js',
+            [idea, story, levels, art, template],
+            idea.type === 'godot');
+          if (log.code?.success) save('code.json', log.code.data);
+        }
       }
       break;
     }
