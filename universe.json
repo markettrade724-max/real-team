@@ -577,13 +577,79 @@
         ],
         "description": "The soundscape of The Genesis Nexus is dominated by an overwhelming sense of ancient, melancholic emptiness. Deep, sustained hums and drones from the cosmic void form the foundation, occasionally pierced by the ethereal shimmer of memory shards materializing or dissipating. Whispers of untold stories drift on the edge of hearing, while distant, slow pulses resonate through the silent expanse, evoking both profound sorrow and irresistible curiosity."
       }
+    },
+    {
+      "id": "world-10",
+      "dayNumber": 10,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "الجنين الكوني",
+        "en": "Cosmic Embryo"
+      },
+      "essence": "الإمكانات",
+      "physics": "يتكون الواقع هنا من الأفكار المركزة. تتجلى الأشكال المادية مؤقتًا من التركيز الشديد، وتتلاشى مرة أخرى إلى اللامُتكوَّن عندما يتشتت الانتباه.",
+      "atmosphere": "منظر طبيعي متغير باستمرار من الأشكال الشفافة، يتوهج بضوء وليد. يحمل الهواء رائحة معدنية-حلوة خفيفة، مثل الأوزون الممزوج بغبار النجوم، مع همهمة منتشرة بالكاد تُسمع — أغنية الإمكانات الكامنة. الهياكل هنا زائلة، لا تتصلب إلا تحت الملاحظة المباشرة والمركزة، وتذوب مرة أخرى في ضباب متوهج عندما يتشتت الانتباه.",
+      "secret": "مخبأ في أعمق جيب من الفضاء غير المتكون يوجد تفرد لإرادة نقية وناشئة – 'النية' الأولى التي حثت الكون على التذكر. لمسه يسمح للمرء بإدراك المخطط الخام وغير الملوث لذاته، غير مُثقل بالذكريات أو التجارب اللاحقة.",
+      "enemyBehavior": "ليست الكيانات هنا 'مولودة' حقًا بل هي مظاهر طفيلية لإمكانات منسية ونوايا غير محققة. إنها تسعى لزعزعة تركيز اللاعب، متغذية على الشك والتشتت لتصلب أشكالها الزائلة ومنع أي خلق جديد. تنجذب إلى الفكر القوي والمركز، ولكن فقط لفساده أو تبديده.",
+      "playerAbility": "القدرة على تجميد أشكال الأفكار الزائلة مؤقتًا في منصات أو دروع صلبة، على الرغم من كونها مؤقتة، ولكنها تتطلب تركيزًا شديدًا. يؤدي فقدان التركيز إلى تبديد البناء على الفور.",
+      "backgroundColor": "#E0F2F7",
+      "fogColor": "#C8E6F0",
+      "lightColor": "#FFFAF0",
+      "enemySpeed": 2.5,
+      "enemyHealth": 50,
+      "enemyCount": 15,
+      "difficulty": "medium",
+      "addedAt": "2024-05-25T12:00:00.000Z",
+      "noise": {
+        "frequency": 0.03,
+        "amplitude": 1.2,
+        "octaves": 5,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 12345,
+        "type": "perlin",
+        "description": "تضاريس سحابية عضوية تتشكل ببطء في الفراغ، مع تلميحات لكتل نجمية تتجمع وشظايا ذاكرة عائمة، تعكس كونًا في طور التكوين."
+      },
+      "shader": {
+        "type": "void",
+        "code": "extends ShaderMaterial",
+        "parameters": {
+          "base_void_color": "Color(0.05, 0.0, 0.1, 1.0)",
+          "nebula_hue": "Color(0.1, 0.05, 0.25, 1.0)",
+          "star_sparkle_color": "Color(0.7, 0.8, 0.9, 0.5)",
+          "shard_glow_color": "Color(0.9, 0.6, 0.3, 0.4)",
+          "density_of_formation": 0.15,
+          "speed_of_cosmic_flow": 0.008
+        },
+        "description": "تأثير بصري يحاكي الفراغ الكوني الذي تتشكل فيه النجوم والسدم ببطء، مع ومضات خافتة لشظايا الذاكرة المتوهجة. يمزج بين الظلام العميق والألوان الكونية الخافتة، مع تركيز على الأشكال العضوية المتكونة."
+      },
+      "audio": {
+        "ambience": "همهمة كونية عميقة ومنخفضة التردد، يقطعها صمت مطبق ثم تظهر أصوات خافتة لتشكيل المادة النجمية، مع أصداء بعيدة ووشوشات إثيرية.",
+        "music_tempo": "slow",
+        "music_mood": "melancholic",
+        "instruments": [
+          "Deep Synths",
+          "Ethereal Pads",
+          "Bowed Cello",
+          "Glockenspiel/Chimes (sparse)",
+          "Harp (gentle arpeggios)"
+        ],
+        "sfx": [
+          "أصوات طقطقة خافتة وتوهج إثيري للمادة المتكونة",
+          "همسات ذاكرة متقطعة",
+          "أصوات احتكاك غبار كوني خفيف",
+          "تكتلات طاقة متذبذبة"
+        ],
+        "description": "مشهد صوتي يمزج بين اتساع الفراغ وصمت الفضاء العميق مع النشاط البطيء والخفي لكون في طور التكوين. تتميز الأجواء بالغموض والحنين، مع أصوات خافتة للمادة النجمية وشظايا الذاكرة التي تظهر وتختفي كأصداء من الماضي."
+      }
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 9,
+  "evolutions": 10,
   "inventions": 3,
-  "lastEvolved": "2026-05-24T22:55:17.839Z",
+  "lastEvolved": "2026-05-25T11:10:53.903Z",
   "lastInvented": "2026-05-24T22:55:44.516Z"
 }
