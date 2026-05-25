@@ -1,0 +1,57 @@
+{
+  "noise": {
+    "frequency": 0.05,
+    "amplitude": 0.8,
+    "octaves": 6,
+    "persistence": 0.4,
+    "lacunarity": 2.5,
+    "seed": 1337,
+    "type": "cellular",
+    "description": "تضاريس مجزأة تشبه شظايا المرايا المتكسرة أو الأفكار المتناثرة، مع حدود حادة وتغيرات عميقة، تعكس الطبيعة المعقدة والمربكة للبحث عن الذات."
+  },
+  "shader": {
+    "type": "void",
+    "code": "shader_type spatial;\nrender_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx, hint_screen_texture;\n\nuniform vec4 albedo : source_color = vec4(0.05, 0.05, 0.07, 1.0);\nuniform sampler2D noise_texture; // A NoiseTexture resource should be assigned in the editor\nuniform float distortion_strength : hint_range(0.0, 1.0) = 0.1;\nuniform float reflection_mix : hint_range(0.0, 1.0) = 0.6;\nuniform float time_speed : hint_range(0.0, 5.0) = 0.08;\nuniform vec4 emission_color : source_color = vec4(0.1, 0.3, 0.4, 1.0);\nuniform float emission_strength : hint_range(0.0, 5.0) = 2.0;\n\nvoid fragment() {\n    vec2 base_uv = SCREEN_UV;\n    \n    // Sample noise for distortion, assuming noise_texture is provided\n    vec4 noise_sample = texture(noise_texture, base_uv * 2.0 + TIME * time_speed);\n    \n    // Distort UVs slightly based on noise (scaling noise from 0-1 to -1 to 1 range)\n    vec2 distorted_uv = base_uv + (noise_sample.rg * 2.0 - 1.0) * distortion_strength;\n    \n    // Simulate \"reflection\" by sampling screen_texture with distortion\n    vec4 reflection_color = texture(SCREEN_TEXTURE, distorted_uv);\n    \n    // Mix with a base void color\n    vec4 void_color = albedo;\n    \n    // Final color mix\n    ALBEDO = mix(void_color.rgb, reflection_color.rgb, reflection_mix);\n    \n    // Add subtle emission for the \"insight\" aspect, modulated by noise\n    EMISSION = emission_color.rgb * emission_strength * (noise_sample.r * 0.5 + 0.5);\n    ALPHA = 1.0;\n}",
+    "parameters": {
+      "albedo": [
+        0.05,
+        0.05,
+        0.07,
+        1
+      ],
+      "noise_texture": null,
+      "distortion_strength": 0.1,
+      "reflection_mix": 0.6,
+      "time_speed": 0.08,
+      "emission_color": [
+        0.1,
+        0.3,
+        0.4,
+        1
+      ],
+      "emission_strength": 2
+    },
+    "description": "تأثير فراغي عميق ومظلم، مع تموجات خفيفة وتشوهات عاكسة، تكشف عن ومضات من الضوء والألوان الخافتة، كمرآة تتذبذب بين الفراغ المطلق ولمحات من الوعي المكبوت."
+  },
+  "audio": {
+    "ambience": "همهمة فراغية عميقة ومنخفضة التردد، يقطعها صدى بعيد لأصوات غير محددة أو وميض ضوئي، مع طبقات من الصمت الثقيل الذي يتنفس.",
+    "music_tempo": "slow",
+    "music_mood": "melancholic | mysterious | eerie",
+    "instruments": [
+      "synthesizers (pads, drones)",
+      "bowed strings (cello, contrabass)",
+      "sparse, reverberating piano",
+      "glass chimes (distorted)",
+      "reversed vocal whispers",
+      "deep resonant gongs"
+    ],
+    "sfx": [
+      "أصوات تكسر زجاجية خافتة وبعيدة",
+      "همسات مشوهة تتلاشى",
+      "ارتدادات معدنية باردة",
+      "تموجات مائية أثيرية",
+      "نبضات خفيفة كضربات قلب في الفراغ"
+    ],
+    "description": "بيئة صوتية غامرة تحاكي رحلة داخلية عميقة. تبدأ بضوضاء فراغية منخفضة ترددات، تتخللها مقطوعات موسيقية بطيئة وحزينة بأدوات وترية وإلكترونية، تثير الفضول والقلق. الأصوات التأثيرية خافتة ومُشوهة، تعكس طبيعة الذكريات المفقودة والانعكاسات المكسورة، مع لحظات من الصمت المطبق الذي يرفع التوتر."
+  }
+}

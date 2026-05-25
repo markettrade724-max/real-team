@@ -1,38 +1,170 @@
 [
- {
-  "id": "genesis-3d",
-  "slug": "genesis-3d",
-  "type": "godot",
-  "category": "game",
-  "status": "available",
-  "emoji": "🚀",
-  "accent": "#4a90d9",
-  "accentRgb": "74,144,217",
-  "gradient": "135deg,#1a1a2e,#16213e",
-  "templateFile": "godot-wrapper.html",
-  "godotSlug": "genesis-3d",
-  "name": {
-    "ar": "جينيسيس 3D",
-    "en": "Genesis 3D",
-    "fr": "Genèse 3D",
-    "es": "Génesis 3D",
-    "de": "Genesis 3D",
-    "zh": "创世纪 3D"
+  {
+    "id": "memory-shards-saga",
+    "slug": "memory-shards-saga",
+    "type": "godot",
+    "category": "game",
+    "status": "available",
+    "templateFile": "godot-wrapper.html",
+    "godotSlug": "memory-shards-saga",
+    "accent": "#8B5CF6",
+    "accentRgb": "139,92,246",
+    "gradient": "linear-gradient(135deg,#05000f,#0a0020)",
+    "name": {
+      "en": "Memory Shards Saga",
+      "ar": "ملحمة شظايا الذاكرة"
+    },
+    "desc": {
+      "en": "Explore a shattered world where memories are physical objects. Collect, trade, and battle using fragments of forgotten pasts to restore your own lost identity.",
+      "ar": "استكشف عالمًا محطمًا حيث الذكريات أشياء مادية. اجمع، تاجر، وحارب باستخدام شظايا الماضي المنسي لاستعادة هويتك المفقودة."
+    },
+    "tags": [],
+    "iap": [],
+    "levels": [
+      {
+        "id": "world-1",
+        "name": {
+          "ar": "مهد الذكرى",
+          "en": "Cradle of Memory"
+        },
+        "difficulty": "easy"
+      },
+      {
+        "id": "world-2",
+        "name": {
+          "ar": "بذرة الوعي",
+          "en": "Seed of Awareness"
+        },
+        "difficulty": "medium"
+      },
+      {
+        "id": "world-3",
+        "name": {
+          "ar": "مهد الفكر",
+          "en": "The Thought Cradle"
+        },
+        "difficulty": "hard"
+      },
+      {
+        "id": "world-4",
+        "name": {
+          "ar": "بِكرُ النسيج",
+          "en": "Primordial Weave"
+        },
+        "difficulty": "medium"
+      },
+      {
+        "id": "world-5",
+        "name": {
+          "ar": "صدى التكوين",
+          "en": "Echo of Genesis"
+        },
+        "difficulty": "medium"
+      },
+      {
+        "id": "world-6",
+        "name": {
+          "ar": "نواة الفكر الأول",
+          "en": "Primordial Thought Nucleus"
+        },
+        "difficulty": "medium"
+      },
+      {
+        "id": "world-7",
+        "name": {
+          "ar": "رحم الفراغ",
+          "en": "Womb of the Void"
+        },
+        "difficulty": "medium"
+      },
+      {
+        "id": "world-8",
+        "name": {
+          "ar": "أفق العدم",
+          "en": "Horizon of Nothingness"
+        },
+        "difficulty": "expert"
+      },
+      {
+        "id": "world-9",
+        "name": {
+          "ar": "نقطة التجلي",
+          "en": "The Genesis Nexus"
+        },
+        "difficulty": "medium"
+      },
+      {
+        "id": "world-10",
+        "name": {
+          "ar": "الجنين الكوني",
+          "en": "Cosmic Embryo"
+        },
+        "difficulty": "medium"
+      },
+      {
+        "id": "world-11",
+        "name": {
+          "ar": "مرآة البصيرة",
+          "en": "The Mirror of Insight"
+        },
+        "difficulty": "hard"
+      }
+    ],
+    "controls": {
+      "ar": {
+        "move": "WASD للتحرك",
+        "look": "الفأرة للنظر",
+        "fire": "كليك يسار",
+        "jump": "مسافة"
+      },
+      "en": {
+        "move": "WASD to move",
+        "look": "Mouse to look",
+        "fire": "Left click",
+        "jump": "Space"
+      }
+    },
+    "generated": true,
+    "generatedAt": "2026-05-25T11:27:51.929Z"
   },
-  "desc": {
-    "ar": "أول لعبة إطلاق نار ثلاثية الأبعاد على المنصة",
-    "en": "First 3D shooter game on the platform",
-    "fr": "Premier jeu de tir 3D sur la plateforme",
-    "es": "Primer juego de disparos 3D en la plataforma",
-    "de": "Erstes 3D-Shooter-Spiel auf der Plattform",
-    "zh": "平台上的首款3D射击游戏"
+  {
+    "id": "genesis-3d",
+    "slug": "genesis-3d",
+    "type": "godot",
+    "category": "game",
+    "status": "available",
+    "emoji": "🚀",
+    "accent": "#4a90d9",
+    "accentRgb": "74,144,217",
+    "gradient": "135deg,#1a1a2e,#16213e",
+    "templateFile": "godot-wrapper.html",
+    "godotSlug": "genesis-3d",
+    "name": {
+      "ar": "جينيسيس 3D",
+      "en": "Genesis 3D",
+      "fr": "Genèse 3D",
+      "es": "Génesis 3D",
+      "de": "Genesis 3D",
+      "zh": "创世纪 3D"
+    },
+    "desc": {
+      "ar": "أول لعبة إطلاق نار ثلاثية الأبعاد على المنصة",
+      "en": "First 3D shooter game on the platform",
+      "fr": "Premier jeu de tir 3D sur la plateforme",
+      "es": "Primer juego de disparos 3D en la plataforma",
+      "de": "Erstes 3D-Shooter-Spiel auf der Plattform",
+      "zh": "平台上的首款3D射击游戏"
+    },
+    "tags": [
+      "3d",
+      "fps",
+      "shooter"
+    ],
+    "iap": [],
+    "levels": [],
+    "generated": true,
+    "generatedAt": "2026-05-14T11:00:00.000Z"
   },
-  "tags": ["3d", "fps", "shooter"],
-  "iap": [],
-  "levels": [],
-  "generated": true,
-  "generatedAt": "2026-05-14T11:00:00.000Z"
-},
   {
     "id": "ephemeral-epic-generator",
     "slug": "ephemeral-epic-generator",
@@ -61,12 +193,73 @@
       "de": "Tauchen Sie ein in eine skurrile Welt, in der jede Ihrer Entscheidungen eine große, persönliche Erzählung spinnt.",
       "zh": "潜入一个异想天开的世界，你做出的每一个选择都编织成一个宏大而私人的故事。"
     },
-    "tags": ["narrative", "viral", "generator", "personalization", "social-game", "storytelling", "whimsical", "destiny"],
+    "tags": [
+      "narrative",
+      "viral",
+      "generator",
+      "personalization",
+      "social-game",
+      "storytelling",
+      "whimsical",
+      "destiny"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -101,12 +294,71 @@
       "de": "Entfesseln Sie Ihren inneren verrückten Wissenschaftler in einer lebendigen Sandbox.",
       "zh": "在这个充满活力的沙盒中释放你内心的疯狂科学家。"
     },
-    "tags": ["physics puzzle", "sandbox", "creativity", "viral", "social", "humor"],
+    "tags": [
+      "physics puzzle",
+      "sandbox",
+      "creativity",
+      "viral",
+      "social",
+      "humor"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -141,12 +393,71 @@
       "de": "Fordern Sie Ihren Verstand heraus, absurd überkonstruierte Maschinen zu bauen.",
       "zh": "挑战你的思维，建造荒谬的过度设计机器来解决日常问题。"
     },
-    "tags": ["physics puzzle", "creative", "simulation", "humor", "user-generated", "viral"],
+    "tags": [
+      "physics puzzle",
+      "creative",
+      "simulation",
+      "humor",
+      "user-generated",
+      "viral"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -181,12 +492,70 @@
       "de": "Entfesseln Sie Ihren inneren Architekten, um atemberaubende, unmögliche Strukturen zu erschaffen.",
       "zh": "释放你内在的建筑师，打造令人惊叹、不可能存在的结构。"
     },
-    "tags": ["puzzle", "creative", "sandbox", "social", "architecture"],
+    "tags": [
+      "puzzle",
+      "creative",
+      "sandbox",
+      "social",
+      "architecture"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -204,7 +573,13 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["⭐","💎","🔮","💡","🌟"],
+    "emojis": [
+      "⭐",
+      "💎",
+      "🔮",
+      "💡",
+      "🌟"
+    ],
     "name": {
       "ar": "صراع السريالية",
       "en": "Surreal Scramble",
@@ -221,12 +596,69 @@
       "de": "Entfesseln Sie täglich Ihre wildeste Kreativität im Surreales Gerangel.",
       "zh": "在《超现实乱斗》中，每天释放你最狂野的创造力。"
     },
-    "tags": ["UGC", "social-game", "creativity", "viral-challenges"],
+    "tags": [
+      "UGC",
+      "social-game",
+      "creativity",
+      "viral-challenges"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -261,12 +693,73 @@
       "de": "Tauchen Sie ein in eine Welt, in der Sie die Perspektive manipulieren, um das Unmögliche zu schaffen.",
       "zh": "进入一个您可以操纵视角创造不可能的世界。"
     },
-    "tags": ["puzzle", "logic", "illusion", "perspective", "creative", "viral", "brain-teaser", "artistic"],
+    "tags": [
+      "puzzle",
+      "logic",
+      "illusion",
+      "perspective",
+      "creative",
+      "viral",
+      "brain-teaser",
+      "artistic"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -301,12 +794,69 @@
       "de": "Tauchen Sie ein in SomniaForge, ein revolutionäres Spiel.",
       "zh": "深入梦境锻造，这是一款革命性的游戏。"
     },
-    "tags": ["Collaborative Storytelling", "AI Generated Content", "Dreamscape Exploration", "Surreal Multiplayer"],
+    "tags": [
+      "Collaborative Storytelling",
+      "AI Generated Content",
+      "Dreamscape Exploration",
+      "Surreal Multiplayer"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -341,12 +891,73 @@
       "de": "Tauchen Sie ein in ein globales, kollaboratives soziales Experiment, bei dem Ihre kreativen Entscheidungen subtil die kollektive Realität verzerren.",
       "zh": "投入一场全球性的协作式社会实验，您的创意选择将巧妙地扭曲数百万玩家共享的集体现实。"
     },
-    "tags": ["social experiment", "augmented reality", "perception game", "narrative", "creative", "viral", "mind-bending", "multiplayer"],
+    "tags": [
+      "social experiment",
+      "augmented reality",
+      "perception game",
+      "narrative",
+      "creative",
+      "viral",
+      "mind-bending",
+      "multiplayer"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -381,12 +992,69 @@
       "de": "Haben Sie sich jemals gefragt, was passieren würde, wenn Socken Meinungen hätten?",
       "zh": "你有没有想过，如果袜子有了思想会怎样？"
     },
-    "tags": ["AI", "Absurd Humor", "Scenario Generator", "Social Sharing"],
+    "tags": [
+      "AI",
+      "Absurd Humor",
+      "Scenario Generator",
+      "Social Sharing"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -421,12 +1089,73 @@
       "de": "Haben Sie sich jemals gefragt, welche bizarre Schlagzeile Ihre Zukunft bereithält?",
       "zh": "你有没有想过你的未来会是怎样一个离奇的头条新闻？"
     },
-    "tags": ["AI", "humor", "news generator", "shareable", "viral", "creative", "social media", "personalization"],
+    "tags": [
+      "AI",
+      "humor",
+      "news generator",
+      "shareable",
+      "viral",
+      "creative",
+      "social media",
+      "personalization"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -461,12 +1190,73 @@
       "de": "Entfessle deinen inneren Meme-Meister!",
       "zh": "释放你内心的迷因大师！"
     },
-    "tags": ["deepfake", "parody", "comedy", "social media", "video editor", "AI", "viral", "ugc"],
+    "tags": [
+      "deepfake",
+      "parody",
+      "comedy",
+      "social media",
+      "video editor",
+      "AI",
+      "viral",
+      "ugc"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -501,12 +1291,73 @@
       "de": "Tauchen Sie ein in ein Universum des entzückenden Durcheinanders, wo Bedeutung optional und Lachen garantiert ist.",
       "zh": "潜入一个充满愉悦混乱的宇宙，意义是可选的，而笑声是必然的。"
     },
-    "tags": ["meme generator", "viral content", "ai creativity", "short video", "humor app", "social sharing", "absurd fun", "narrative tool"],
+    "tags": [
+      "meme generator",
+      "viral content",
+      "ai creativity",
+      "short video",
+      "humor app",
+      "social sharing",
+      "absurd fun",
+      "narrative tool"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -541,12 +1392,69 @@
       "de": "Hast du dir jemals gewünscht, dein Morgenpendel wäre ein Science-Fiction-Epos?",
       "zh": "你是否曾希望你的早晨通勤是一部科幻史诗？"
     },
-    "tags": ["AI video", "viral humor", "social sharing", "creative tool"],
+    "tags": [
+      "AI video",
+      "viral humor",
+      "social sharing",
+      "creative tool"
+    ],
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "story": null,
     "levels": [],
@@ -564,7 +1472,20 @@
     "accent": "#f472b6",
     "accentRgb": "244,114,182",
     "gradient": "135deg,#1a0533,#831843",
-    "emojis": ["😈","🎭","🃏","🎪","💥","🌀","🔮","⚡","🌈","🎨","💫","🦄"],
+    "emojis": [
+      "😈",
+      "🎭",
+      "🃏",
+      "🎪",
+      "💥",
+      "🌀",
+      "🔮",
+      "⚡",
+      "🌈",
+      "🎨",
+      "💫",
+      "🦄"
+    ],
     "name": {
       "ar": "تحفة الفوضى",
       "en": "Mischief Masterpiece",
@@ -582,9 +1503,48 @@
       "zh": "疯狂不停的街机游戏 — 在混乱的欢笑中竞争！"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "levels": [],
     "generated": true,
@@ -619,9 +1579,48 @@
       "zh": "利用AI将你的独特精髓编织成令人惊叹的神话史诗。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-25T09:00:30.480Z"
@@ -655,9 +1654,48 @@
       "zh": "成为你的混沌喜剧宇宙的导演。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-24T18:18:01.665Z"
@@ -673,7 +1711,13 @@
     "accent": "#f472b6",
     "accentRgb": "244,114,182",
     "gradient": "135deg,#1a0533,#831843",
-    "emojis": ["👾","🤖","👽","🦠","💀"],
+    "emojis": [
+      "👾",
+      "🤖",
+      "👽",
+      "🦠",
+      "💀"
+    ],
     "name": {
       "ar": "لكمة البكسل",
       "en": "Pixel Punchline",
@@ -691,10 +1735,62 @@
       "zh": "使用AI制作搞笑短视频，在每日潮流大战中竞争！"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "levels": [],
     "generated": true,
@@ -729,10 +1825,62 @@
       "zh": "发掘日常生活中隐藏的艺术！"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-23T09:49:42.899Z"
@@ -766,10 +1914,62 @@
       "zh": "步入一个境界，你最深层的思想将转化为互动的现实。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-22T20:19:52.190Z"
@@ -803,10 +2003,62 @@
       "zh": "潜入一个逻辑只是建议的宇宙！"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "levels": [],
     "generated": true,
@@ -841,10 +2093,62 @@
       "zh": "让AI根据你的情感和思想，为你绘制独一无二的个人杰作。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-20T22:10:21.950Z"
@@ -878,10 +2182,62 @@
       "zh": "将数字艺术直接绘制到现实世界，与他人合作创作令人惊叹的作品。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-19T13:10:02.075Z"
@@ -897,7 +2253,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["🎨","🎶","✨","🌌","💫","😌","😮","💡","⏳","🌈","🎧","🔮"],
+    "emojis": [
+      "🎨",
+      "🎶",
+      "✨",
+      "🌌",
+      "💫",
+      "😌",
+      "😮",
+      "💡",
+      "⏳",
+      "🌈",
+      "🎧",
+      "🔮"
+    ],
     "name": {
       "ar": "كون المشاعر",
       "en": "Vibe Verse",
@@ -915,10 +2284,62 @@
       "zh": "表达你的心情，看着AI创造一个独特的视听迷你世界。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-18T20:47:24.210Z"
@@ -934,7 +2355,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["🧘‍♀️","✨","👤","🔍","💡","🤖","💻","💎","🌈","🎨","🧠","🌌"],
+    "emojis": [
+      "🧘‍♀️",
+      "✨",
+      "👤",
+      "🔍",
+      "💡",
+      "🤖",
+      "💻",
+      "💎",
+      "🌈",
+      "🎨",
+      "🧠",
+      "🌌"
+    ],
     "name": {
       "ar": "منشور الشخصية",
       "en": "Persona Prism",
@@ -952,10 +2386,62 @@
       "zh": "深入你的身份迷宫，见证你的真我被精美地可视化为不断演变的数字形象。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-17T11:17:18.905Z"
@@ -971,7 +2457,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["💡","✨","🎨","✍️","🎥","🖼️","🌟","🔮","🌐","🔥","♾️","🌈"],
+    "emojis": [
+      "💡",
+      "✨",
+      "🎨",
+      "✍️",
+      "🎥",
+      "🖼️",
+      "🌟",
+      "🔮",
+      "🌐",
+      "🔥",
+      "♾️",
+      "🌈"
+    ],
     "name": {
       "ar": "نسّاج الهالات",
       "en": "Aura Weaver",
@@ -989,10 +2488,62 @@
       "zh": "利用AI将你的照片和视频转化为令人惊叹的梦幻艺术作品。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-16T20:39:09.380Z"
@@ -1008,7 +2559,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["🧱","🌌","🤖","✍️","🗺️","👥","✨","📖","🔍","🏗️","🚀","📜"],
+    "emojis": [
+      "🧱",
+      "🌌",
+      "🤖",
+      "✍️",
+      "🗺️",
+      "👥",
+      "✨",
+      "📖",
+      "🔍",
+      "🏗️",
+      "🚀",
+      "📜"
+    ],
     "name": {
       "ar": "نسج العوالم",
       "en": "VerseForge",
@@ -1026,10 +2590,62 @@
       "zh": "协作游戏，你的创造力塑造体素景观。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-15T17:50:01.577Z"
@@ -1045,7 +2661,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["🪞","👤","🤖","🧩","🔑","✨","🌌","🚫","🎭","🧬","🌟","🌀"],
+    "emojis": [
+      "🪞",
+      "👤",
+      "🤖",
+      "🧩",
+      "🔑",
+      "✨",
+      "🌌",
+      "🚫",
+      "🎭",
+      "🧬",
+      "🌟",
+      "🌀"
+    ],
     "name": {
       "ar": "الأساطير المتناظرة",
       "en": "Mirrored Mythos",
@@ -1063,10 +2692,62 @@
       "zh": "深入挖掘你个性最深层的方面，展现令人惊叹的数字头像。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-15T11:40:58.290Z"
@@ -1082,7 +2763,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["✨","🌌","📜","🔑","🌟","🔮","🔥","🌊","⛰️","🕊️","♾️","🎶"],
+    "emojis": [
+      "✨",
+      "🌌",
+      "📜",
+      "🔑",
+      "🌟",
+      "🔮",
+      "🔥",
+      "🌊",
+      "⛰️",
+      "🕊️",
+      "♾️",
+      "🎶"
+    ],
     "name": {
       "ar": "منبع الأساطير الأولي",
       "en": "Mythos Forge Genesis",
@@ -1100,10 +2794,62 @@
       "zh": "与他人共同创造由神明、英雄和传奇野兽组成的完整宇宙。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-15T10:19:02.383Z"
@@ -1119,7 +2865,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["💻","⏳","❓","↔️","📡","🌐","👁️","⚙️","⚠️","✨","🌳","🧠"],
+    "emojis": [
+      "💻",
+      "⏳",
+      "❓",
+      "↔️",
+      "📡",
+      "🌐",
+      "👁️",
+      "⚙️",
+      "⚠️",
+      "✨",
+      "🌳",
+      "🧠"
+    ],
     "name": {
       "ar": "صدى الأكوان",
       "en": "EchoVerse",
@@ -1137,10 +2896,62 @@
       "zh": "利用AI根据你生命中的关键时刻，为你量身定制个性化的平行现实。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-14T11:45:45.629Z"
@@ -1156,7 +2967,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["🌌","✨","🧠","🤖","📖","💡","🌟","🔮","🧭","🔄","🚀","✍️"],
+    "emojis": [
+      "🌌",
+      "✨",
+      "🧠",
+      "🤖",
+      "📖",
+      "💡",
+      "🌟",
+      "🔮",
+      "🧭",
+      "🔄",
+      "🚀",
+      "✍️"
+    ],
     "name": {
       "ar": "حكايات الأثير",
       "en": "Aether Tales",
@@ -1174,10 +2998,62 @@
       "zh": "从一个简单提示开始，看着无与伦比的AI为你量身打造完整、适应性强的世界和故事。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "generated": true,
     "generatedAt": "2026-04-13T17:45:01.561Z"
@@ -1193,7 +3069,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["🌌","⭐","🪐","☄️","🌠","🌙","🔭","✨","🛸","💫","🌟","🚀"],
+    "emojis": [
+      "🌌",
+      "⭐",
+      "🪐",
+      "☄️",
+      "🌠",
+      "🌙",
+      "🔭",
+      "✨",
+      "🛸",
+      "💫",
+      "🌟",
+      "🚀"
+    ],
     "name": {
       "ar": "ذاكرة الكون",
       "en": "Memory Cosmos",
@@ -1211,10 +3100,62 @@
       "zh": "在星际间挑战记忆"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-neon", "type": "cosmetic", "price": 1.49, "emoji": "🌈", "name": { "ar": "ثيم النيون", "en": "Neon Theme", "fr": "Thème néon", "es": "Tema neón", "de": "Neon-Theme", "zh": "霓虹主题" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-neon",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🌈",
+        "name": {
+          "ar": "ثيم النيون",
+          "en": "Neon Theme",
+          "fr": "Thème néon",
+          "es": "Tema neón",
+          "de": "Neon-Theme",
+          "zh": "霓虹主题"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "levels": [],
     "generated": true,
@@ -1231,7 +3172,20 @@
     "accent": "#818cf8",
     "accentRgb": "129,140,248",
     "gradient": "135deg,#1e1b4b,#312e81",
-    "emojis": ["⏳","🕰️","📜","🗝️","🧭","⚙️","🔭","⚛️","🗿","🚀","🌌","💎"],
+    "emojis": [
+      "⏳",
+      "🕰️",
+      "📜",
+      "🗝️",
+      "🧭",
+      "⚙️",
+      "🔭",
+      "⚛️",
+      "🗿",
+      "🚀",
+      "🌌",
+      "💎"
+    ],
     "name": {
       "ar": "رحلة الزمن",
       "en": "Chrono-Quest",
@@ -1249,10 +3203,62 @@
       "zh": "穿越时空之旅。观察路径展开，然后精确地重新追踪它。"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "hint-pack", "type": "consumable", "price": 0.99, "emoji": "💡", "name": { "ar": "10 تلميحات", "en": "10 Hints", "fr": "10 indices", "es": "10 pistas", "de": "10 Hinweise", "zh": "10个提示" } },
-      { "id": "theme-pack", "type": "cosmetic", "price": 1.49, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack thèmes", "es": "Pack temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-unlock", "type": "unlock", "price": 2.99, "emoji": "⭐", "name": { "ar": "فتح كل المحتوى", "en": "Unlock All", "fr": "Tout débloquer", "es": "Desbloquear todo", "de": "Alles freischalten", "zh": "解锁全部" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "hint-pack",
+        "type": "consumable",
+        "price": 0.99,
+        "emoji": "💡",
+        "name": {
+          "ar": "10 تلميحات",
+          "en": "10 Hints",
+          "fr": "10 indices",
+          "es": "10 pistas",
+          "de": "10 Hinweise",
+          "zh": "10个提示"
+        }
+      },
+      {
+        "id": "theme-pack",
+        "type": "cosmetic",
+        "price": 1.49,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack thèmes",
+          "es": "Pack temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-unlock",
+        "type": "unlock",
+        "price": 2.99,
+        "emoji": "⭐",
+        "name": {
+          "ar": "فتح كل المحتوى",
+          "en": "Unlock All",
+          "fr": "Tout débloquer",
+          "es": "Desbloquear todo",
+          "de": "Alles freischalten",
+          "zh": "解锁全部"
+        }
+      }
     ],
     "levels": [],
     "generated": true,
@@ -1287,10 +3293,62 @@
       "zh": "智能番茄钟与统计"
     },
     "iap": [
-      { "id": "no-ads", "type": "remove_ads", "price": 1.99, "emoji": "🚫", "name": { "ar": "إزالة الإعلانات", "en": "Remove Ads", "fr": "Sans pub", "es": "Sin anuncios", "de": "Werbefrei", "zh": "去广告" } },
-      { "id": "stats-pro", "type": "feature", "price": 2.49, "emoji": "📊", "name": { "ar": "إحصائيات Pro", "en": "Pro Stats", "fr": "Stats Pro", "es": "Stats Pro", "de": "Pro-Statistiken", "zh": "专业统计" } },
-      { "id": "themes-pack", "type": "cosmetic", "price": 1.99, "emoji": "🎨", "name": { "ar": "حزمة الثيمات", "en": "Themes Pack", "fr": "Pack de thèmes", "es": "Pack de temas", "de": "Theme-Paket", "zh": "主题包" } },
-      { "id": "full-pro", "type": "unlock", "price": 4.99, "emoji": "👑", "name": { "ar": "النسخة Pro الكاملة", "en": "Full Pro Version", "fr": "Version Pro complète", "es": "Versión Pro completa", "de": "Vollständige Pro-Version", "zh": "完整Pro版" } }
+      {
+        "id": "no-ads",
+        "type": "remove_ads",
+        "price": 1.99,
+        "emoji": "🚫",
+        "name": {
+          "ar": "إزالة الإعلانات",
+          "en": "Remove Ads",
+          "fr": "Sans pub",
+          "es": "Sin anuncios",
+          "de": "Werbefrei",
+          "zh": "去广告"
+        }
+      },
+      {
+        "id": "stats-pro",
+        "type": "feature",
+        "price": 2.49,
+        "emoji": "📊",
+        "name": {
+          "ar": "إحصائيات Pro",
+          "en": "Pro Stats",
+          "fr": "Stats Pro",
+          "es": "Stats Pro",
+          "de": "Pro-Statistiken",
+          "zh": "专业统计"
+        }
+      },
+      {
+        "id": "themes-pack",
+        "type": "cosmetic",
+        "price": 1.99,
+        "emoji": "🎨",
+        "name": {
+          "ar": "حزمة الثيمات",
+          "en": "Themes Pack",
+          "fr": "Pack de thèmes",
+          "es": "Pack de temas",
+          "de": "Theme-Paket",
+          "zh": "主题包"
+        }
+      },
+      {
+        "id": "full-pro",
+        "type": "unlock",
+        "price": 4.99,
+        "emoji": "👑",
+        "name": {
+          "ar": "النسخة Pro الكاملة",
+          "en": "Full Pro Version",
+          "fr": "Version Pro complète",
+          "es": "Versión Pro completa",
+          "de": "Vollständige Pro-Version",
+          "zh": "完整Pro版"
+        }
+      }
     ]
   },
   {
@@ -1334,7 +3392,11 @@
     "accent": "#00BFFF",
     "accentRgb": "0,191,255",
     "gradient": "135deg,#007ACC,#00BFFF",
-    "emojis": ["🔊","⚡","🎶"],
+    "emojis": [
+      "🔊",
+      "⚡",
+      "🎶"
+    ],
     "name": {
       "ar": "ساحة الاندفاع الصوتي",
       "en": "Sonic Surge Arena",
@@ -1351,7 +3413,13 @@
       "de": "Rhythmusbasierte Renn- und Kampfspiele in einer dynamischen Arena.",
       "zh": "在动态竞技场中进行的基于节奏的音波赛车与战斗。"
     },
-    "tags": ["rhythm", "racing", "sound", "battle", "music"],
+    "tags": [
+      "rhythm",
+      "racing",
+      "sound",
+      "battle",
+      "music"
+    ],
     "iap": [],
     "levels": []
   }

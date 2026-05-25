@@ -1,9 +1,9 @@
 {
-  "runId": "2026-05-25T1109",
+  "runId": "2026-05-25T1125",
   "mode": "evolution:world",
-  "timestamp": "2026-05-25T11:11:34.082Z",
-  "totalDuration": "110.1s",
-  "geminiCalls": "3/15",
+  "timestamp": "2026-05-25T11:29:06.806Z",
+  "totalDuration": "239.1s",
+  "geminiCalls": "5/15",
   "schedule": {
     "day": "Mon",
     "invention": false,
@@ -13,33 +13,38 @@
   "agents": {
     "world": {
       "success": true,
-      "duration": "16.4s",
+      "duration": "24.2s",
       "error": null
     },
-    "senses-world-10": {
+    "senses-world-11": {
       "success": true,
-      "duration": "23.5s",
+      "duration": "27.2s",
       "error": null
     },
     "collision": {
       "success": true,
-      "duration": "3ms",
+      "duration": "1ms",
+      "error": null
+    },
+    "code": {
+      "success": true,
+      "duration": "67.9s",
       "error": null
     },
     "revival": {
-      "success": false,
-      "duration": "2ms",
-      "error": "Unexpected reserved word"
+      "success": true,
+      "duration": "34.5s",
+      "error": null
     },
     "marketing": {
       "success": true,
-      "duration": "10.2s",
+      "duration": "10.3s",
       "error": null
     }
   },
   "summary": {
-    "total": 5,
-    "passed": 4,
-    "failed": 1
+    "total": 6,
+    "passed": 6,
+    "failed": 0
   }
 }
