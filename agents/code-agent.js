@@ -337,7 +337,26 @@ Return JSON: { "bullet.gd": "<complete code>" }`
     logger.error('[ERROR] Scene generation failed', { error: err.message });
   }
 
-  // 5. worlds.json للاستخدام المستقبلي
+  // 5. إصلاح Camera3D في player.tscn — rule-026
+  try {
+    const playerTscnPath = join(__dirname, '..', 'godot-projects', slug, 'player.tscn');
+    if (existsSync(playerTscnPath)) {
+      let content = readFileSync(playerTscnPath, 'utf8');
+      // إذا كان Camera3D موجوداً بدون current = true — أضفه
+      if (content.includes('type="Camera3D"') && !content.includes('current = true')) {
+        content = content.replace(
+          /(\[node name="[^"]*" type="Camera3D"[^\]]*\])/g,
+          '$1\ncurrent = true'
+        );
+        writeFileSync(playerTscnPath, content, 'utf8');
+        logger.info('[OK] Fixed Camera3D current=true in player.tscn');
+      }
+    }
+  } catch (err) {
+    logger.warn('[WARN] Could not fix Camera3D', { error: err.message });
+  }
+
+  // 6. worlds.json للاستخدام المستقبلي
   if (levels) {
     writeProjectFile(slug, 'worlds.json', JSON.stringify(levels, null, 2));
     files.push('worlds.json');
