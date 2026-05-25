@@ -830,15 +830,81 @@
         ],
         "description": "Default audio for The Loom of Unthought"
       }
+    },
+    {
+      "id": "world-14",
+      "dayNumber": 14,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "همسة التكوين",
+        "en": "The Primordial Whisper"
+      },
+      "essence": "Awakening",
+      "physics": "Matter in this realm is an echo of latent potential; it only truly solidifies when observed and given a 'name' or 'purpose' by a sentient mind. Unobserved matter remains fluid, a shimmering probability.",
+      "atmosphere": "A realm of shimmering, translucent forms that constantly shift and reform. The air itself feels like liquid potential, carrying a faint, high-frequency hum that vibrates through the very bones. The ground beneath feels like solidified intention, smooth and cool to the touch. There is no discernible scent, but a pervasive sense of 'newness' and pristine, untouched possibility.",
+      "secret": "Deep within the core of this world, a single, crystalline 'Primordial Tear' exists. It is the crystallization of the universe's first existential question, holding the raw blueprint for all future suffering and joy. It can only be accessed by surrendering a cherished, yet painful, memory into its nascent depths.",
+      "enemyBehavior": "Enemies are not pre-existing entities but take form from the player's own unacknowledged doubts and fears. They are initially amorphous shadows, solidifying into recognizable threats only when the player consciously perceives and names their specific anxiety (e.g., 'Fear of Failure' manifests as a crumbling golem). Ignoring them makes them dissipate, but their essence might still linger, ready to reform.",
+      "playerAbility": "The player gains the ability 'Essence Weave': by focusing intention, they can temporarily solidify fleeting thoughts or fragmented memories into tangible (though ephemeral) tools or distractions. Conversely, they can render a solidified object fluid again for a brief period, allowing passage or transformation.",
+      "backgroundColor": "#E0F2F7",
+      "fogColor": "#DDF2F7",
+      "lightColor": "#FFFACD",
+      "enemySpeed": 0.5,
+      "enemyHealth": 50,
+      "enemyCount": 3,
+      "difficulty": "easy",
+      "addedAt": "2026-06-12T10:00:00.000Z",
+      "noise": {
+        "frequency": 0.05,
+        "amplitude": 0.4,
+        "octaves": 5,
+        "persistence": 0.4,
+        "lacunarity": 2,
+        "seed": 1701,
+        "type": "simplex",
+        "description": "تضاريس ناعمة ومتموجة، تذكر بالتموجات الخافتة للأثير أو غبار النجوم العتيق، مع انحدارات لطيفة تشير إلى وجود سابق تلاشى."
+      },
+      "shader": {
+        "type": "void",
+        "code": "extends ShaderMaterial\nshader_type spatial;\n\nuniform float time_speed = 0.05;\nuniform vec4 color_base : source_color = vec4(0.02, 0.0, 0.05, 1.0); // Very deep dark blue/purple\nuniform vec4 color_accent : source_color = vec4(0.1, 0.05, 0.15, 1.0); // Subtle lighter accent\nuniform float shimmer_intensity = 0.1;\nuniform float shimmer_speed = 0.2;\n\nvoid fragment() {\n    vec2 uv = SCREEN_UV;\n    float t = TIME * time_speed;\n\n    float noise = sin(uv.x * 10.0 + t) * cos(uv.y * 10.0 + t * 0.7);\n    noise = abs(noise);\n    noise = pow(noise, 2.0);\n\n    vec4 final_color = mix(color_base, color_accent, noise * shimmer_intensity);\n\n    final_color.rgb += sin(TIME * shimmer_speed + uv.x * 5.0 + uv.y * 5.0) * 0.01 * shimmer_intensity;\n\n    ALBEDO = final_color.rgb;\n    ALPHA = final_color.a;\n}",
+        "parameters": {
+          "time_speed": 0.05,
+          "color_base": "vec4(0.02, 0.0, 0.05, 1.0)",
+          "color_accent": "vec4(0.1, 0.05, 0.15, 1.0)",
+          "shimmer_intensity": 0.1,
+          "shimmer_speed": 0.2
+        },
+        "description": "تأثير بصري يجسد الفراغ الكوني الهادئ، مع غبار نجمي متلألئ خافت وتموجات إثيرية بطيئة، توحي بوجود أزلي يهمس في الصمت."
+      },
+      "audio": {
+        "ambience": "همهمة كونية خافتة تكاد لا تُسمع، مع صدى بعيد لقصص منسية تتلاشى في الأثير، وأصوات دقيقة لغبار النجوم وهو يستقر ببطء.",
+        "music_tempo": "slow",
+        "music_mood": "melancholic | eerie | mysterious | peaceful",
+        "instruments": [
+          "low droning synth pads",
+          "bowed strings (sparse, sustained)",
+          "ambient piano (single, distant notes)",
+          "ethereal vocal pads (wordless, breathy)",
+          "sparse, metallic chimes (reverberant)"
+        ],
+        "sfx": [
+          "soft, barely audible whispers (distant, indistinct)",
+          "faint cosmic hum (very low frequency)",
+          "subtle, slow-moving air currents (etheric)",
+          "delicate clicks and pops (like fading memories)",
+          "isolated, deep resonant tones"
+        ],
+        "description": "بيئة صوتية هادئة وغامضة، تتميز بضوضاء خلفية خافتة من الأثير الكوني وصدى لقصص منسية، ممزوجة بهمهمات تكاد لا تسمع وأصوات دقيقة تذكر بالزمن القديم، تخلق جوًا من الوحدة والتأمل."
+      }
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 13,
+  "evolutions": 14,
   "inventions": 3,
-  "lastEvolved": "2026-05-25T11:57:15.505Z",
+  "lastEvolved": "2026-05-25T16:16:49.141Z",
   "lastInvented": "2026-05-24T22:55:44.516Z",
   "revivals": 0,
-  "lastRevived": "2026-05-25T11:57:30.901Z"
+  "lastRevived": "2026-05-25T16:17:15.378Z"
 }

@@ -1,8 +1,8 @@
 {
-  "runId": "2026-05-25T1156",
+  "runId": "2026-05-25T1615",
   "mode": "evolution:world",
-  "timestamp": "2026-05-25T11:57:46.033Z",
-  "totalDuration": "103.3s",
+  "timestamp": "2026-05-25T16:17:30.552Z",
+  "totalDuration": "115.9s",
   "geminiCalls": "3/15",
   "schedule": {
     "day": "Mon",
@@ -13,27 +13,27 @@
   "agents": {
     "world": {
       "success": true,
-      "duration": "18.0s",
+      "duration": "12.7s",
       "error": null
     },
-    "senses-world-13": {
+    "senses-world-14": {
       "success": true,
-      "duration": "24.8s",
+      "duration": "31.8s",
       "error": null
     },
     "collision": {
       "success": true,
-      "duration": "4ms",
+      "duration": "3ms",
       "error": null
     },
     "revival": {
       "success": true,
-      "duration": "391ms",
+      "duration": "11.2s",
       "error": null
     },
     "marketing": {
       "success": false,
-      "duration": "121ms",
+      "duration": "161ms",
       "error": "Gemini API call failed: got status: 429 Too Many Requests. {\"error\":{\"code\":429,\"message\":\"You exceeded your current quo"
     }
   },
