@@ -722,15 +722,69 @@
         ],
         "description": "بيئة صوتية غامرة تحاكي رحلة داخلية عميقة. تبدأ بضوضاء فراغية منخفضة ترددات، تتخللها مقطوعات موسيقية بطيئة وحزينة بأدوات وترية وإلكترونية، تثير الفضول والقلق. الأصوات التأثيرية خافتة ومُشوهة، تعكس طبيعة الذكريات المفقودة والانعكاسات المكسورة، مع لحظات من الصمت المطبق الذي يرفع التوتر."
       }
+    },
+    {
+      "id": "world-12",
+      "dayNumber": 12,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "نواة التجلي",
+        "en": "The Nucleus of Manifestation"
+      },
+      "essence": "التجلي",
+      "physics": "إن فعل التذكر أو النسيان، حتى من قبل أصغر الكيانات، يخلق تموجات تظهر كتغييرات مؤقتة ومحلية في نسيج الزمكان. الذكريات الأكثر قوة تخلق أشكالًا أكثر استقرارًا؛ بينما تتلاشى المفاهيم المنسية عائدة إلى العدم.",
+      "atmosphere": "سمفونية من الهمسات شبه المسموعة لنجوم وليدة، غبار كوني متلألئ يتجمع أحيانًا ليشكل أصداء بصرية عابرة لأفكار منسية، ورائحة خفيفة حلوة لندى كوني على وشك الوجود. الهواء نفسه رقيق، يتلألأ بالطاقة الكامنة، مما يجعل الحركة تبدو بلا مجهود وفي نفس الوقت ذات وزن عميق.",
+      "secret": "يحتوي جوهر هذا العالم ليس على ذاكرة، بل على صدى مثالي للإمكانات النقية غير الملوثة - 'الذات' غير المتكونة قبل جمع أي تجربة أو شظية. اكتشافه يمنح لمحة لحظية عن اللوحة الأصلية الحقيقية للهوية.",
+      "enemyBehavior": "تظهر الكيانات الصامتة كفراغات متلألئة تمتص الضوء والصوت، وتزداد قوة بـ 'فك تشكيل' الذكريات أو الإمكانات الوليدة. لا تهاجم مباشرة بل تحاول إذابة شظايا الذكريات التي جمعها اللاعب، بهدف إعادة كل شيء إلى حالة من العدم المطلق غير المتذكر.",
+      "playerAbility": "نسيج الصدى: يستطيع اللاعب تثبيت شظايا الذاكرة العابرة أو الأفكار الوليدة مؤقتًا، مما يشكل منصات أو دروعًا مؤقتة. كما يسمح ذلك بلمح الأصداء المتلاشية التي تحاول الكيانات الصامتة محوها.",
+      "backgroundColor": "#1A0A33",
+      "fogColor": "#E6D8F2",
+      "lightColor": "#FFD700",
+      "enemySpeed": 0.2,
+      "enemyHealth": 50,
+      "enemyCount": 3,
+      "difficulty": "legendary",
+      "addedAt": "2024-05-25T11:35:52.778Z",
+      "noise": {
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 6190,
+        "type": "simplex",
+        "description": "Default terrain for The Nucleus of Manifestation"
+      },
+      "shader": {
+        "type": "sky",
+        "code": "extends ShaderMaterial\n# fallback shader",
+        "parameters": {},
+        "description": "Default void shader"
+      },
+      "audio": {
+        "ambience": "gentle wind and distant echoes",
+        "music_tempo": "medium",
+        "music_mood": "mysterious",
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
+        "description": "Default audio for The Nucleus of Manifestation"
+      }
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 11,
+  "evolutions": 12,
   "inventions": 3,
-  "lastEvolved": "2026-05-25T11:27:51.930Z",
+  "lastEvolved": "2026-05-25T11:37:02.376Z",
   "lastInvented": "2026-05-24T22:55:44.516Z",
   "revivals": 0,
-  "lastRevived": "2026-05-25T11:28:41.480Z"
+  "lastRevived": "2026-05-25T11:37:48.823Z"
 }
