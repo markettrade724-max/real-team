@@ -234,57 +234,67 @@ export async function run(idea, story, levels, art, template) {
   writeProjectFile(slug, 'project.godot', buildProjectGodot(idea));
   files.push('project.godot');
 
-  // 3. ملفات GDScript
+  // 3. ملفات GDScript — كل ملف في استدعاء منفصل
   logger.info('[INFO] Generating GDScript files...');
-  try {
-    const worldNames  = levels?.worlds?.map(w => w.name?.en).join(', ') || '';
-    const heroName    = story?.mainCharacter?.name || 'Hero';
-    const movementTip = loadRecipes('movement');
-    const shaderTip   = loadRecipes('shaders');
+  const heroName    = story?.mainCharacter?.name || 'Hero';
+  const worldNames  = levels?.worlds?.slice(0,3).map(w => w.name?.en).join(', ') || '';
+  const movementTip = loadRecipes('movement');
 
-    const scripts = await askGemini(`
-${soul}
+  const SCRIPTS = [
+    {
+      file: 'main_scene.gd',
+      prompt: `Godot 4.6.2 GDScript for main_scene.gd.
+Game: "${idea.name?.en}". Use Node3D root.
+Rules: process_mode = ALWAYS, handle InputEventMouseButton + InputEventScreenTouch to start game, pause/unpause logic.
+Return JSON: { "main_scene.gd": "<complete code>" }`
+    },
+    {
+      file: 'player.gd',
+      prompt: `Godot 4.6.2 GDScript for player.gd.
+Game: "${idea.name?.en}". Hero: ${heroName}.
+${movementTip ? `Movement recipe:\n${movementTip}` : ''}
+Rules: extends CharacterBody3D, add_to_group("player") in _ready(), WASD movement, mouse look, jump, fire action with InputEventMouseButton pressed:true + InputEventScreenTouch.
+Return JSON: { "player.gd": "<complete code>" }`
+    },
+    {
+      file: 'enemy.gd',
+      prompt: `Godot 4.6.2 GDScript for enemy.gd.
+Game: "${idea.name?.en}". Worlds: ${worldNames}.
+Rules: extends CharacterBody3D, add_to_group("enemy") in _ready(), NavigationAgent3D for pathfinding, attack when close, take damage and die.
+Return JSON: { "enemy.gd": "<complete code>" }`
+    },
+    {
+      file: 'weapon.gd',
+      prompt: `Godot 4.6.2 GDScript for weapon.gd.
+Game: "${idea.name?.en}".
+Rules: extends Node3D, preload bullet scene, shoot on fire action, muzzle_point as Marker3D child, fire rate cooldown.
+Return JSON: { "weapon.gd": "<complete code>" }`
+    },
+    {
+      file: 'bullet.gd',
+      prompt: `Godot 4.6.2 GDScript for bullet.gd.
+Rules: extends RigidBody3D, gravity_scale=0.0, linear_velocity on _ready(), _on_body_entered signal handler, is_inside_tree() before queue_free() after await, deal damage to enemy group.
+Return JSON: { "bullet.gd": "<complete code>" }`
+    },
+  ];
 
-اكتب GDScript كامل لـ Godot 4.6.2.
-اسم اللعبة: "${idea.name?.en}"
-البطل: ${heroName}
-العوالم: ${worldNames}
-
-${movementTip ? `وصفات الحركة المتاحة:\n${movementTip}` : ''}
-${shaderTip   ? `وصفات البصريات المتاحة:\n${shaderTip}`  : ''}
-
-القواعد الصارمة:
-- tabs للـ indentation فقط — ليس spaces
-- preload() للمراجع الثابتة
-- add_to_group("player") في _ready() في player.gd
-- add_to_group("enemy") في _ready() في enemy.gd
-- is_inside_tree() قبل queue_free() بعد await
-- process_mode = ALWAYS في main_scene.gd
-- دعم InputEventScreenTouch مع InputEventMouseButton
-- gravity_scale = 0.0 في bullet
-- fire action يستخدم pressed:true
-
-أنتج JSON فقط — مفاتيحه أسماء الملفات وقيمه الكود:
-{
-  "main_scene.gd": "...",
-  "player.gd":     "...",
-  "enemy.gd":      "...",
-  "weapon.gd":     "...",
-  "bullet.gd":     "..."
-}`, 0.7, { topP: 0.9, maxOutputTokens: 8192 });
-
-    const required = ['main_scene.gd', 'player.gd', 'enemy.gd', 'weapon.gd', 'bullet.gd'];
-    for (const f of required) {
-      if (!scripts[f]) {
-        logger.warn(`[WARN] Missing script: ${f} — will be skipped`);
+  for (const { file, prompt } of SCRIPTS) {
+    try {
+      const result = await askGemini(
+        `${soul}\n\n${prompt}`,
+        0.7, { topP: 0.9, maxOutputTokens: 4096 }
+      );
+      const code = result[file];
+      if (!code || typeof code !== 'string') {
+        logger.warn(`[WARN] Missing code for ${file}`);
         continue;
       }
-      const fixed = applyScriptRules(f, scripts[f]);
-      writeProjectFile(slug, f, fixed);
-      files.push(f);
+      const fixed = applyScriptRules(file, code);
+      writeProjectFile(slug, file, fixed);
+      files.push(file);
+    } catch (err) {
+      logger.error(`[ERROR] Failed to generate ${file}`, { error: err.message });
     }
-  } catch (err) {
-    logger.error('[ERROR] GDScript generation failed', { error: err.message });
   }
 
   // 4. ملفات .tscn
