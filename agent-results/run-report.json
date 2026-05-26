@@ -1,8 +1,8 @@
 {
-  "runId": "2026-05-26T2202",
+  "runId": "2026-05-26T2220",
   "mode": "evolution:world",
-  "timestamp": "2026-05-26T22:03:36.589Z",
-  "totalDuration": "93.8s",
+  "timestamp": "2026-05-26T22:23:19.015Z",
+  "totalDuration": "168.7s",
   "geminiCalls": "1/15",
   "schedule": {
     "day": "Tue",
@@ -13,14 +13,14 @@
   },
   "agents": {
     "world": {
-      "success": true,
-      "duration": "56.8s",
-      "error": null
+      "success": false,
+      "duration": "120.2s",
+      "error": "Timeout"
     },
     "marketing": {
-      "success": false,
-      "duration": "7.0s",
-      "error": "Gemini API call failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently exp"
+      "success": true,
+      "duration": "18.5s",
+      "error": null
     }
   },
   "summary": {
