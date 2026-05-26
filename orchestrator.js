@@ -1,23 +1,25 @@
 /**
- * orchestrator.js — v6.0
+ * orchestrator.js — v7.0
  *
  * BIRTH MODE      : يولد الكون كاملاً (مرة في السنة)
- * EVOLUTION MODE  : يطور الكون يومياً مع جدول أسبوعي
- * INVENTION MODE  : المخترع يعمل (الأحد)
- * REVIVAL MODE    : ترقية المنتجات القديمة (الاثنين/الأربعاء/الجمعة)
+ * EVOLUTION MODE  : يطور الكون يومياً
+ * INVENTION MODE  : المخترع (الأحد)
+ * REVIVAL MODE    : ترقية المنتجات (اثنين/أربعاء/جمعة)
  * SYNC MODE       : مزامنة Supabase (السبت)
+ * CODE MODE       : بناء Godot لكون موجود
  *
  * جدول الأسبوع:
- *   الأحد     → EVOLUTION + inventor-agent
- *   الاثنين   → EVOLUTION + revival-agent + godot-export trigger
+ *   الأحد     → EVOLUTION + inventor
+ *   اثنين     → EVOLUTION + revival + godot-export
  *   الثلاثاء  → EVOLUTION
- *   الأربعاء  → EVOLUTION + revival-agent + godot-export trigger
- *   الخميس    → EVOLUTION
- *   الجمعة    → EVOLUTION + revival-agent + godot-export trigger
+ *   الأربعاء  → EVOLUTION + revival + godot-export
+ *   الخميس    → EVOLUTION + roadmap
+ *   الجمعة    → EVOLUTION + revival + godot-export
  *   السبت     → EVOLUTION + sync-to-supabase
  */
 
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';import { fileURLToPath } from 'url';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
+import { fileURLToPath } from 'url';
 import { dirname, join }  from 'path';
 import { execSync }       from 'child_process';
 import { logger }         from './logger.js';
@@ -39,18 +41,19 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const fmt   = ms => ms < 1000 ? `${ms}ms` : `${(ms/1000).toFixed(1)}s`;
 
 // ── جدول الأسبوع ─────────────────────────
-const DAY = new Date().getDay(); // 0=أحد, 1=اثنين...
+const DAY = new Date().getDay();
 const SCHEDULE = {
-  isInventionDay: DAY === 0,                    // الأحد
-  isRevivalDay:   [1, 3, 5].includes(DAY),      // اثنين/أربعاء/جمعة
-  isSyncDay:      DAY === 6,                    // السبت
-  isGodotDay:     [1, 3, 5].includes(DAY),      // نفس أيام Revival
+  isInventionDay: DAY === 0,
+  isRevivalDay:   [1, 3, 5].includes(DAY),
+  isSyncDay:      DAY === 6,
+  isRoadmapDay:   DAY === 4,
 };
 
 logger.info('[SCHEDULE] Today', {
   day:       ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
   invention: SCHEDULE.isInventionDay,
   revival:   SCHEDULE.isRevivalDay,
+  roadmap:   SCHEDULE.isRoadmapDay,
   sync:      SCHEDULE.isSyncDay,
 });
 
@@ -70,14 +73,13 @@ function loadResult(file) {
   catch { return null; }
 }
 
-function saveUniverse(universe) {  writeFileSync(UNIVERSE, JSON.stringify(universe, null, 2), 'utf8');
+function saveUniverse(universe) {
+  writeFileSync(UNIVERSE, JSON.stringify(universe, null, 2), 'utf8');
   logger.info('[OK] Universe saved', {
     worlds:      universe.worlds?.length    || 0,
-    weapons:     universe.weapons?.length   || 0,
-    enemies:     universe.enemies?.length   || 0,
-    vehicles:    universe.vehicles?.length  || 0,
     evolutions:  universe.evolutions        || 0,
     inventions:  universe.inventions        || 0,
+    revivals:    universe.revivals          || 0,
   });
 }
 
@@ -112,19 +114,6 @@ async function run(name, agentPath, args = [], usesGemini = true) {
   }
 }
 
-async function runWorldSensesAgent(universe, world, log) {
-  const worldId = world.id || world.name?.en?.replace(/\s/g, '-').toLowerCase();
-  const key     = `senses-${worldId}`;
-  log[key] = await run('World Senses', './agents/world-senses-agent.js', [universe, world]);
-  if (log[key]?.success) {
-    const senses = log[key].data;
-    world.noise  = senses.noise;
-    world.shader = senses.shader;
-    world.audio  = senses.audio;
-    save(`senses-${worldId}.json`, senses);
-  }
-}
-
 // ════════════════════════════════════════════
 // BIRTH MODE
 // ════════════════════════════════════════════
@@ -144,7 +133,7 @@ async function birthMode(t0, runId) {
   }
   data.idea = log.idea.data;
   save('ideas.json', data.idea);
-  logger.info(`[BIRTH] Universe idea: "${data.idea.name?.en}"`);
+  logger.info(`[BIRTH] Universe: "${data.idea.name?.en}"`);
 
   // 3. القصة
   log.story = await run('Story Agent', './agents/story-agent.js', [data.idea]);
@@ -167,22 +156,26 @@ async function birthMode(t0, runId) {
     [data.idea, data.story], false);
   if (log.template?.success) { data.template = log.template.data; save('template.json', data.template); }
 
-  // 7. العوالم الأولى
-  log.levels = await run('Level Agent', './agents/level-agent.js', [data.idea, data.story]);
-  if (log.levels?.success) {
-    data.levels = log.levels.data;
-    save('levels.json', data.levels);
-    const partialUniverse = { name: data.idea.name, soul: data.soul, art: data.art };
-    if (data.levels.worlds) {
-      for (const world of data.levels.worlds) {
-        await runWorldSensesAgent(partialUniverse, world, log);
-      }
+  // 7. العوالم الأولى — عبر world-birth-agent
+  const initialWorlds = [];
+  for (let i = 0; i < 3; i++) {
+    const partialUniverse = {
+      id: data.idea.id, name: data.idea.name,
+      soul: data.soul, art: data.art,
+      worlds: initialWorlds,
+    };
+    log[`world-${i+1}`] = await run(`World ${i+1}`, './agents/world-birth-agent.js',
+      [partialUniverse]);
+    if (log[`world-${i+1}`]?.success) {
+      initialWorlds.push(log[`world-${i+1}`].data);
     }
   }
+  data.worlds = initialWorlds;
+  save('levels.json', { worlds: initialWorlds });
 
-  // 8. بناء لعبة Godot
+  // 8. بناء اللعبة
   log.code = await run('Code Agent', './agents/code-agent.js',
-    [data.idea, data.story, data.levels, data.art, data.template],
+    [data.idea, data.story, { worlds: initialWorlds }, data.art, data.template],
     data.idea.type === 'godot');
   if (log.code?.success) { data.code = log.code.data; save('code.json', data.code); }
 
@@ -196,17 +189,14 @@ async function birthMode(t0, runId) {
     [{ analytics: data.analytics, idea: data.idea, code: data.code }]);
   if (log.roadmap?.success) { data.roadmap = log.roadmap.data; save('roadmap.json', data.roadmap); }
 
-  // بناء الكون الكامل
+  // بناء الكون
   const universe = {
     id:           data.idea.id,
     name:         data.idea.name,
     born:         new Date().toISOString(),
     soul:         data.soul,
     art:          data.art,
-    worlds:       data.levels?.worlds || [],
-    weapons:      [],
-    enemies:      [],
-    vehicles:     [],
+    worlds:       initialWorlds,
     evolutions:   0,
     inventions:   0,
     revivals:     0,
@@ -218,7 +208,6 @@ async function birthMode(t0, runId) {
   // 11. فحص التصادم
   log.collision = await run('Collision Check', './agents/collision-agent.js',
     [data.idea.id], false);
-  if (log.collision?.success) { data.collision = log.collision.data; }
 
   // 12. ذاكرة اللاعب
   if (process.env.PLAYER_ID) {
@@ -237,178 +226,115 @@ async function evolutionMode(universe, t0, runId) {
   logger.info('[EVOLUTION] Starting', {
     universe:   universe.id,
     evolutions: universe.evolutions,
-    day:        ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
+    day: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
   });
 
   const log = {}, data = { universe };
-  const evolutionType = pickEvolutionType(universe);
-  logger.info(`[EVOLUTION] Type: ${evolutionType}`);
 
-  // ── التطور الأساسي ────────────────────────
-  switch (evolutionType) {
+  // ── العالم الجديد المتكامل ────────────
+  log.world = await run('World Birth', './agents/world-birth-agent.js', [universe]);
+  if (log.world?.success) {
+    const newWorld = log.world.data;
+    universe.worlds.push(newWorld);
+    save('last-world.json', newWorld);
+    logger.info('[EVOLUTION] New world born', {
+      name:    newWorld.name?.en,
+      enemies: newWorld.enemies?.length || 0,
+      weapon:  newWorld.weapon?.name?.en,
+    });
 
-    case 'world': {
-      log.world = await run('World Evolution', './agents/world-evolution-agent.js', [universe]);
-      if (log.world?.success) {
-        const newWorld = log.world.data;
-        universe.worlds.push(newWorld);
-        save('last-world.json', newWorld);
-        logger.info(`[EVOLUTION] New world: "${newWorld.name?.en}"`);
-        await runWorldSensesAgent(universe, newWorld, log);
-        log.collision = await run('Collision Check', './agents/collision-agent.js',
-          [universe.id], false);
+    // فحص التصادم
+    log.collision = await run('Collision Check', './agents/collision-agent.js',
+      [universe.id], false);
+
+    // بناء Godot إذا لم يكن موجوداً
+    const godotDir = join(__dirname, 'godot-projects', universe.id);
+    if (!existsSync(godotDir)) {
+      logger.info('[EVOLUTION] Building Godot project...');
+      const idea     = loadResult('ideas.json');
+      const story    = loadResult('story.json');
+      const art      = universe.art;
+      const template = loadResult('template.json');
+      if (idea) {
+        log.code = await run('Code Agent', './agents/code-agent.js',
+          [idea, story, { worlds: universe.worlds }, art, template],
+          idea.type === 'godot');
+        if (log.code?.success) save('code.json', log.code.data);
       }
-
-      // ── بناء مشروع Godot إذا لم يكن موجوداً ──
-      const godotDir = join(__dirname, 'godot-projects', universe.id);
-      if (!existsSync(godotDir)) {
-        logger.info('[EVOLUTION] Godot project missing — building now');
-        const idea     = loadResult('ideas.json');
-        const story    = loadResult('story.json');
-        const levels   = { worlds: universe.worlds };
-        const art      = universe.art;
-        const template = loadResult('template.json');
-        if (idea) {
-          log.code = await run('Code Agent', './agents/code-agent.js',
-            [idea, story, levels, art, template],
-            idea.type === 'godot');
-          if (log.code?.success) save('code.json', log.code.data);
-        }
-      }
-      break;
-    }
-
-    case 'weapon': {
-      log.weapon = await run('Weapon Evolution', './agents/weapon-evolution-agent.js', [universe]);
-      if (log.weapon?.success) {
-        universe.weapons.push(log.weapon.data);
-        save('last-weapon.json', log.weapon.data);
-        logger.info(`[EVOLUTION] New weapon: "${log.weapon.data.name?.en}"`);
-      }
-      break;
-    }
-
-    case 'enemy': {
-      log.enemy = await run('Enemy Evolution', './agents/enemy-evolution-agent.js', [universe]);
-      if (log.enemy?.success) {
-        universe.enemies.push(log.enemy.data);
-        save('last-enemy.json', log.enemy.data);
-        logger.info(`[EVOLUTION] New enemy: "${log.enemy.data.name?.en}"`);
-      }
-      break;
-    }
-
-    case 'vehicle': {
-      log.vehicle = await run('Vehicle Evolution', './agents/vehicle-evolution-agent.js', [universe]);
-      if (log.vehicle?.success) {
-        universe.vehicles.push(log.vehicle.data);
-        save('last-vehicle.json', log.vehicle.data);
-        logger.info(`[EVOLUTION] New vehicle: "${log.vehicle.data.name?.en}"`);
-      }
-      break;
     }
   }
 
-  // ── ذاكرة اللاعب ─────────────────────────
+  // ── تحديث الكون ──────────────────────
+  universe.evolutions++;
+  universe.lastEvolved = new Date().toISOString();
+
+  // ── ذاكرة اللاعب ─────────────────────
   if (process.env.PLAYER_ID) {
     log.playerMemory = await run('Player Memory', './agents/player-memory.js',
       [universe, process.env.PLAYER_ID]);
   }
 
-  // ── تحديث الكون ──────────────────────────
-  universe.evolutions++;
-  universe.lastEvolved = new Date().toISOString();
+  // ── جدول الأسبوع ─────────────────────
 
-  // ════════════════════════════════════════
   // الأحد — المخترع
-  // ════════════════════════════════════════
   if (SCHEDULE.isInventionDay) {
     logger.info('[INVENTION] Sunday — inventor awakens');
     log.invention = await run('Inventor', './agents/inventor-agent.js', [universe], true);
     if (log.invention?.success) {
       universe.inventions = (universe.inventions || 0) + 1;
       universe.lastInvented = new Date().toISOString();
-      save('last-invention.json', log.invention.data);
     }
   }
 
-  // ════════════════════════════════════════
   // اثنين/أربعاء/جمعة — البعث
-  // ════════════════════════════════════════
   if (SCHEDULE.isRevivalDay) {
-    logger.info('[REVIVAL] Revival day — upgrading old products');
+    logger.info('[REVIVAL] Revival day');
     log.revival = await run('Revival Agent', './agents/revival-agent.js', [universe], true);
     if (log.revival?.success) {
       universe.revivals = (universe.revivals || 0) + (log.revival.data?.revived || 0);
       universe.lastRevived = new Date().toISOString();
-      save('last-revival.json', log.revival.data);
-      logger.info('[REVIVAL] Products revived', { count: log.revival.data?.revived });
-
-      // تشغيل Godot Export بعد البعث
-      if (log.revival.data?.revived > 0) {
-        triggerGodotExport();
-      }
+      if (log.revival.data?.revived > 0) triggerGodotExport();
     }
   }
 
-  // ════════════════════════════════════════
+  // الخميس — خارطة الطريق
+  if (SCHEDULE.isRoadmapDay) {
+    logger.info('[ROADMAP] Thursday — updating roadmap');
+    const analytics = loadResult('analytics.json');
+    log.roadmap = await run('Roadmap Agent', './agents/roadmap-agent.js',
+      [{ analytics, universe }]);
+    if (log.roadmap?.success) save('roadmap.json', log.roadmap.data);
+  }
+
   // السبت — مزامنة Supabase
-  // ════════════════════════════════════════
   if (SCHEDULE.isSyncDay) {
     logger.info('[SYNC] Saturday — syncing to Supabase');
-    log.sync = await run('Supabase Sync', './scripts/sync-to-supabase.js',
-      [], false);
-    if (log.sync?.success) {
-      logger.info('[SYNC] Supabase sync complete');
-    }
+    log.sync = await run('Supabase Sync', './scripts/sync-to-supabase.js', [], false);
   }
 
   saveUniverse(universe);
 
-  // ── تسويق ────────────────────────────────
+  // تسويق
   log.marketing = await run('Marketing Agent', './agents/marketing-agent.js',
     [{ id: universe.id, name: universe.name,
-       desc: { en: `New ${evolutionType} added to the universe` }},
+       desc: { en: `World "${log.world?.data?.name?.en}" born` }},
      universe.art, universe.soul]);
-  if (log.marketing?.success) { save('marketing.json', log.marketing.data); }
+  if (log.marketing?.success) save('marketing.json', log.marketing.data);
 
-  return saveReport(log, data, t0, runId, `evolution:${evolutionType}`);
+  return saveReport(log, data, t0, runId, 'evolution:world');
 }
 
 // ── تشغيل Godot Export ───────────────────
 function triggerGodotExport() {
   try {
-    logger.info('[GODOT] Triggering export workflow...');
     execSync(
       `gh workflow run godot-export.yml --repo ${process.env.GITHUB_REPOSITORY}`,
       { stdio: 'pipe' }
     );
-    logger.info('[OK] Godot export workflow triggered');
+    logger.info('[OK] Godot export triggered');
   } catch (err) {
     logger.warn('[WARN] Could not trigger Godot export', { error: err.message });
   }
-}
-
-// ── اختيار نوع التطور ────────────────────
-function pickEvolutionType(universe) {
-  const worldsCount = universe.worlds?.length || 0;
-  const dayOfYear   = getDayOfYear();
-
-  if (worldsCount < dayOfYear) return 'world';
-
-  const counts = {
-    weapon:  universe.weapons?.length  || 0,
-    enemy:   universe.enemies?.length  || 0,
-    vehicle: universe.vehicles?.length || 0,
-  };
-
-  return Object.entries(counts).sort((a, b) => a[1] - b[1])[0][0];
-}
-
-function getDayOfYear() {
-  const now   = new Date();
-  const start = new Date(now.getFullYear(), 0, 1);
-  return Math.floor((now - start) / 86400000) + 1;
 }
 
 // ════════════════════════════════════════════
@@ -420,13 +346,12 @@ async function main() {
   const mode     = process.env.MODE || 'auto';
   const universe = loadUniverse();
 
-  logger.info('[START] Orchestrator v6.0', { runId, mode, hasUniverse: !!universe });
+  logger.info('[START] Orchestrator v7.0', { runId, mode, hasUniverse: !!universe });
 
   if (mode === 'birth' || !universe) {
     await birthMode(t0, runId);
 
   } else if (mode === 'invention') {
-    logger.info('[INVENTION] Manual mode');
     const log = {};
     log.invention = await run('Inventor', './agents/inventor-agent.js', [universe], true);
     if (log.invention?.success) {
@@ -437,7 +362,6 @@ async function main() {
     return saveReport(log, {}, t0, runId, 'invention');
 
   } else if (mode === 'revival') {
-    logger.info('[REVIVAL] Manual mode');
     const log = {};
     log.revival = await run('Revival Agent', './agents/revival-agent.js', [universe], true);
     if (log.revival?.success) {
@@ -448,56 +372,21 @@ async function main() {
     return saveReport(log, {}, t0, runId, 'revival');
 
   } else if (mode === 'sync') {
-    logger.info('[SYNC] Manual mode');
     const log = {};
     log.sync = await run('Supabase Sync', './scripts/sync-to-supabase.js', [], false);
     return saveReport(log, {}, t0, runId, 'sync');
 
   } else if (mode === 'code') {
-    // ════════════════════════════════════════
-    // CODE MODE — يبني ملفات Godot للكون الموجود
-    // بدون إعادة توليد أي شيء آخر
-    // ════════════════════════════════════════
-    logger.info('[CODE] Building Godot project for existing universe');
-
-    if (!universe) {
-      logger.error('[CODE] No universe found — run birth first');
-      process.exit(1);
-    }
-
     const log = {};
-
-    // قراءة البيانات من agent-results
-    const loadResult = (file) => {
-      const path = join(RESULTS_DIR, file);
-      if (!existsSync(path)) return null;
-      try { return JSON.parse(readFileSync(path, 'utf8')); }
-      catch { return null; }
-    };
-
     const idea     = loadResult('ideas.json');
     const story    = loadResult('story.json');
     const levels   = { worlds: universe.worlds };
-    const art      = universe.art || loadResult('art.json');
+    const art      = universe.art;
     const template = loadResult('template.json');
-
-    if (!idea) {
-      logger.error('[CODE] ideas.json not found in agent-results');
-      process.exit(1);
-    }
-
+    if (!idea) { logger.error('[CODE] ideas.json not found'); process.exit(1); }
     log.code = await run('Code Agent', './agents/code-agent.js',
-      [idea, story, levels, art, template],
-      idea.type === 'godot');
-
-    if (log.code?.success) {
-      save('code.json', log.code.data);
-      logger.info('[CODE] Godot project built', {
-        slug:  log.code.data?.slug,
-        files: log.code.data?.totalFiles,
-      });
-    }
-
+      [idea, story, levels, art, template], idea.type === 'godot');
+    if (log.code?.success) save('code.json', log.code.data);
     return saveReport(log, {}, t0, runId, 'code');
 
   } else {
@@ -507,8 +396,7 @@ async function main() {
 
 function saveReport(log, data, t0, runId, mode) {
   const report = {
-    runId,
-    mode,
+    runId, mode,
     timestamp:     new Date().toISOString(),
     totalDuration: fmt(Date.now()-t0),
     geminiCalls:   `${geminiCalls}/${MAX_RPD}`,
@@ -516,6 +404,7 @@ function saveReport(log, data, t0, runId, mode) {
       day:       ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
       invention: SCHEDULE.isInventionDay,
       revival:   SCHEDULE.isRevivalDay,
+      roadmap:   SCHEDULE.isRoadmapDay,
       sync:      SCHEDULE.isSyncDay,
     },
     agents: Object.fromEntries(Object.entries(log).map(([k,v]) => [k, {
