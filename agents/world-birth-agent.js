@@ -38,26 +38,19 @@ export async function run(universe) {
   // ══════════════════════════════════════
   // استدعاء ١ — العالم الكامل مع عناصره
   // ══════════════════════════════════════
-  logger.info('[BIRTH] Generating world with all elements...');
-  let worldData = null;
+  logger.info('[BIRTH] Generating world core...');
+  let worldCore = null;
   let attempts  = 0;
 
-  while (!worldData && attempts < 3) {
+  while (!worldCore && attempts < 3) {
     attempts++;
     try {
-      worldData = await askGemini(`
+      worldCore = await askGemini(`
 ${soul}
-
 ${context}
 
-أنت مصمم ألعاب عبقري. ابنِ عالماً متكاملاً كما في Dark Souls و Hollow Knight.
-
-القانون الذهبي: كل عنصر يجب أن يروي نفس القصة.
-البيئة ← الأعداء ← السلاح ← المركبة — كلها وجه واحد.
-
-مثال على التناسق:
-- عالم الجليد → أعداء يتجمدون عند الهجوم → سلاح يكسر الجليد → مركبة تنزلق على الجليد
-- عالم الذاكرة → أعداء يسرقون ذكرياتك → سلاح يعيد الذكريات المسروقة → لا مركبة (الذاكرة لا تتحرك)
+ابنِ عالماً فريداً مستوحى من Dark Souls و Hollow Knight.
+القانون الذهبي: البيئة تروي القصة.
 
 أنتج JSON فقط:
 {
@@ -67,74 +60,93 @@ ${context}
   "chapterName": "${chapterName}",
   "name": { "ar": "", "en": "" },
   "essence": "جوهر العالم في كلمة أو اثنتين",
-  "physicsLaw": "القانون الفيزيائي الفريد الذي يحكم هذا العالم",
-  "atmosphere": "وصف شاعري غني للمكان — ما تراه وتشمه وتحسه",
-  "secret": "السر الذي يغير كل شيء حين تكتشفه",
+  "physicsLaw": "القانون الفيزيائي الفريد",
+  "atmosphere": "وصف شاعري للمكان",
+  "secret": "السر الذي يغير كل شيء",
   "difficulty": "easy | medium | hard | expert",
   "backgroundColor": "#000000",
   "fogColor": "#000000",
-  "lightColor": "#ffffff",
+  "lightColor": "#ffffff"
+}`, 0.9, { topP: 0.97, maxOutputTokens: 1024 });
 
+    } catch (err) {
+      logger.warn(`[WARN] Core attempt ${attempts}/3 failed`, { error: err.message });
+      if (attempts < 3) await new Promise(r => setTimeout(r, 20000));
+    }
+  }
+
+  if (!worldCore?.name?.en) {
+    logger.error('[ERROR] World core generation failed');
+    return null;
+  }
+
+  logger.info('[OK] World core ready', { name: worldCore.name?.en });
+
+  // ── استدعاء ٢ — الأعداء + السلاح + المركبة ──
+  logger.info('[BIRTH] Generating world elements...');
+  let elements = null;
+
+  try {
+    elements = await askGemini(`
+${soul}
+
+العالم: "${worldCore.name?.en}"
+جوهره: "${worldCore.essence}"
+قانونه: "${worldCore.physicsLaw}"
+روح الكون: "${universe.soul?.essence?.slice(0,80)}"
+
+اخترع الأعداء والسلاح لهذا العالم. كل شيء يجب أن يعكس قانون العالم.
+مثل Hollow Knight: عدو يتجمد عند الهجوم في عالم الجليد.
+
+أنتج JSON فقط:
+{
   "enemies": [
     {
       "id": "enemy-${worldNum}-1",
       "name": { "ar": "", "en": "" },
-      "concept": "لماذا هذا العدو موجود في هذا العالم تحديداً",
-      "behavior": "كيف يتصرف — ليس فقط الهجوم بل الطريقة التي يروي بها القصة",
-      "weakness": "نقطة ضعفه المرتبطة بقانون العالم",
-      "lore": "من كان هذا العدو قبل أن يصبح عدواً",
-      "speed": 1.0,
-      "health": 100.0,
-      "damage": 15.0,
-      "count": 5
+      "concept": "لماذا موجود هنا",
+      "behavior": "كيف يتصرف",
+      "weakness": "نقطة ضعفه",
+      "lore": "من كان قبل أن يصبح عدواً",
+      "speed": 1.0, "health": 100.0, "damage": 15.0, "count": 5
     },
     {
       "id": "enemy-${worldNum}-2",
       "name": { "ar": "", "en": "" },
-      "concept": "النوع الثاني — أصعب وأكثر تعقيداً",
-      "behavior": "سلوك مختلف تماماً عن الأول",
-      "weakness": "نقطة ضعف مختلفة",
+      "concept": "النوع الأصعب",
+      "behavior": "سلوك مختلف",
+      "weakness": "ضعف مختلف",
       "lore": "قصة مختلفة",
-      "speed": 0.7,
-      "health": 200.0,
-      "damage": 30.0,
-      "count": 2
+      "speed": 0.7, "health": 200.0, "damage": 30.0, "count": 2
     }
   ],
-
   "weapon": {
     "id": "weapon-${worldNum}",
     "name": { "ar": "", "en": "" },
-    "concept": "لماذا هذا السلاح موجود في هذا العالم — فلسفته",
-    "visualDesc": "شكله ولونه وكيف يتحرك — مرتبط ببيئة العالم",
-    "sound": "صوته حين يُستخدم — يعكس روح العالم",
-    "effect": "ماذا يفعل للعدو — ليس الضرر فقط بل التحول",
-    "sideEffect": "أثر جانبي غير متوقع — مرتبط بقانون العالم",
-    "mechanic": "الميكانيكية الفريدة التي تجعله مختلفاً عن كل سلاح آخر",
-    "damage": 25.0,
-    "fireRate": 1.5,
-    "bulletSpeed": 20.0,
+    "concept": "فلسفة السلاح",
+    "visualDesc": "شكله ولونه",
+    "sound": "صوته",
+    "effect": "ماذا يفعل للعدو",
+    "sideEffect": "أثر جانبي",
+    "mechanic": "الميكانيكية الفريدة",
+    "damage": 25.0, "fireRate": 1.5, "bulletSpeed": 20.0,
     "rarity": "rare"
   },
-
   "vehicle": null
-}
+}`, 0.85, { topP: 0.95, maxOutputTokens: 2048 });
 
-ملاحظة: vehicle يكون null إذا لم يكن منطقياً في هذا العالم.
-إذا كان منطقياً، اجعله:
-{
-  "id": "vehicle-${worldNum}",
-  "name": { "ar": "", "en": "" },
-  "concept": "لماذا هذه المركبة تنتمي لهذا العالم",
-  "ability": "قدرة خاصة مرتبطة بقانون العالم",
-  "speed": 1.5
-}`, 0.9, { topP: 0.97, maxOutputTokens: 4096 });
-
-    } catch (err) {
-      logger.warn(`[WARN] Attempt ${attempts}/3 failed`, { error: err.message });
-      if (attempts < 3) await new Promise(r => setTimeout(r, 30000));
-    }
+  } catch (err) {
+    logger.warn('[WARN] Elements generation failed', { error: err.message });
+    elements = { enemies: [], weapon: null, vehicle: null };
   }
+
+  // ── دمج العالم الكامل ──
+  let worldData = {
+    ...worldCore,
+    enemies: elements?.enemies || [],
+    weapon:  elements?.weapon  || null,
+    vehicle: elements?.vehicle || null,
+  };
 
   if (!worldData?.name?.en) {
     logger.error('[ERROR] Invalid world data received');
