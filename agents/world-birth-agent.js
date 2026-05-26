@@ -40,9 +40,12 @@ export async function run(universe) {
   // ══════════════════════════════════════
   logger.info('[BIRTH] Generating world with all elements...');
   let worldData = null;
+  let attempts  = 0;
 
-  try {
-    worldData = await askGemini(`
+  while (!worldData && attempts < 3) {
+    attempts++;
+    try {
+      worldData = await askGemini(`
 ${soul}
 
 ${context}
@@ -127,9 +130,10 @@ ${context}
   "speed": 1.5
 }`, 0.9, { topP: 0.97, maxOutputTokens: 4096 });
 
-  } catch (err) {
-    logger.error('[ERROR] World generation failed', { error: err.message });
-    return null;
+    } catch (err) {
+      logger.warn(`[WARN] Attempt ${attempts}/3 failed`, { error: err.message });
+      if (attempts < 3) await new Promise(r => setTimeout(r, 30000));
+    }
   }
 
   if (!worldData?.name?.en) {
