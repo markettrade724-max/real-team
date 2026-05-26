@@ -148,16 +148,11 @@ ${soul}
     vehicle: elements?.vehicle || null,
   };
 
-  if (!worldData?.name?.en) {
-    logger.error('[ERROR] Invalid world data received');
-    return null;
-  }
-
-  logger.info('[OK] World generated', {
-    name:     worldData.name?.en,
-    enemies:  worldData.enemies?.length || 0,
-    weapon:   worldData.weapon?.name?.en,
-    vehicle:  worldData.vehicle?.name?.en || 'none',
+  logger.info('[OK] World ready', {
+    name:    worldData.name?.en,
+    enemies: worldData.enemies?.length || 0,
+    weapon:  worldData.weapon?.name?.en || 'none',
+    vehicle: worldData.vehicle?.name?.en || 'none',
   });
 
   // ══════════════════════════════════════
