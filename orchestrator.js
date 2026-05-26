@@ -233,7 +233,7 @@ async function evolutionMode(universe, t0, runId) {
 
   // ── العالم الجديد المتكامل ────────────
   log.world = await run('World Birth', './agents/world-birth-agent.js', [universe]);
-  if (log.world?.success) {
+  if (log.world?.success && log.world.data?.name?.en) {
     const newWorld = log.world.data;
     universe.worlds.push(newWorld);
     save('last-world.json', newWorld);
