@@ -115,7 +115,13 @@ jobs:
             echo ""
             echo "[INFO] Exporting: $slug"
 
-            OUTPUT_DIR="$(pwd)/public/games/godot/$slug"
+            # تخطي المشاريع بدون ملفات GDScript
+            if [ -z "$(find $proj_dir -name "*.gd" 2>/dev/null)" ]; then
+              echo "[SKIP] No GDScript files found in $slug — skipping"
+              continue
+            fi
+
+            OUTPUT_DIR="public/games/godot/$slug"
             mkdir -p "$OUTPUT_DIR"
 
             # التحقق من export_presets.cfg
@@ -156,8 +162,9 @@ jobs:
 
             # تشغيل التصدير
             echo "[INFO] Running Godot export..."
+            ABS_OUTPUT="$(pwd)/$OUTPUT_DIR"
             "$GODOT_BIN" --headless --path "$(pwd)/$proj_dir" \
-              --export-release "Web" "$(pwd)/$OUTPUT_DIR/index.html" 2>&1 || true
+              --export-release "Web" "$ABS_OUTPUT/index.html" 2>&1 || true
 
             # التحقق من الملفات
             echo "[INFO] Checking exported files..."
