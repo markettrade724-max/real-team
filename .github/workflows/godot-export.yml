@@ -201,7 +201,9 @@ jobs:
 
           if ! git diff --staged --quiet; then
             git commit -m "godot: export games [skip ci]"
+            git stash 2>/dev/null || true
             git pull --rebase origin main || git rebase --abort
+            git stash pop 2>/dev/null || true
             git push origin main --force-with-lease
             echo "[OK] Changes pushed"
           else
