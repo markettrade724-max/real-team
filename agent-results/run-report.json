@@ -1,9 +1,9 @@
 {
-  "runId": "2026-05-28T1731",
+  "runId": "2026-05-28T2330",
   "mode": "evolution:world",
-  "timestamp": "2026-05-28T17:34:22.145Z",
-  "totalDuration": "185.0s",
-  "geminiCalls": "2/15",
+  "timestamp": "2026-05-28T23:37:37.695Z",
+  "totalDuration": "405.2s",
+  "geminiCalls": "0/15",
   "schedule": {
     "day": "Thu",
     "invention": false,
@@ -14,23 +14,23 @@
   "agents": {
     "world": {
       "success": false,
-      "duration": "120.1s",
+      "duration": "120.2s",
       "error": "Timeout"
     },
     "roadmap": {
-      "success": true,
-      "duration": "7.5s",
-      "error": null
+      "success": false,
+      "duration": "120.0s",
+      "error": "Timeout"
     },
     "marketing": {
-      "success": true,
-      "duration": "12.3s",
-      "error": null
+      "success": false,
+      "duration": "120.0s",
+      "error": "Timeout"
     }
   },
   "summary": {
     "total": 3,
-    "passed": 2,
-    "failed": 1
+    "passed": 0,
+    "failed": 3
   }
 }
