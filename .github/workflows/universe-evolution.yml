@@ -1,7 +1,7 @@
 name: universe-evolution
 on:
   schedule:
-    - cron: '0 2 * * *'   # كل يوم الساعة 2 صباحاً UTC
+    - cron: '0 2 * * *'
   workflow_dispatch:
     inputs:
       mode:
@@ -13,6 +13,9 @@ on:
           - auto
           - birth
           - invention
+          - revival
+          - sync
+          - code
 
 jobs:
   evolve:
@@ -30,73 +33,97 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
+        shell: pwsh
+
+      - name: Create required directories
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "agent-results" | Out-Null
+          New-Item -ItemType Directory -Force -Path "public"         | Out-Null
+          New-Item -ItemType Directory -Force -Path "godot-recipes"  | Out-Null
+          Write-Host "[OK] Directories ready"
 
       - name: Verify Gemini key
+        shell: pwsh
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if (-not $env:GEMINI_API_KEY) {
             Write-Error "[FATAL] GEMINI_API_KEY is not set"
             exit 1
           }
           Write-Host "[OK] GEMINI_API_KEY is present"
-        shell: pwsh
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Run orchestrator
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          SUPABASE_URL:   ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY:   ${{ secrets.SUPABASE_KEY }}
-          MODE:           ${{ github.event.inputs.mode || 'auto' }}
-        run: node orchestrator.js
         shell: pwsh
+        env:
+          GEMINI_API_KEY:            ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GITHUB_REPOSITORY:         ${{ github.repository }}
+          SITE_URL:                  https://real-team.vercel.app
+          MODE:                      ${{ github.event.inputs.mode || 'auto' }}
+        run: node orchestrator.js
 
       - name: Verify universe was saved
+        shell: pwsh
         run: |
           if (Test-Path "universe.json") {
             $size = (Get-Item "universe.json").Length
             Write-Host "[OK] universe.json exists — size: $size bytes"
             if ($size -lt 10) {
-              Write-Error "[FAIL] universe.json is too small — something went wrong"
+              Write-Error "[FAIL] universe.json too small"
               exit 1
             }
           } else {
-            Write-Warning "[WARN] universe.json not found — BIRTH may have failed"
+            Write-Warning "[WARN] universe.json not found"
           }
-        shell: pwsh
 
       - name: Show run report
+        shell: pwsh
         run: |
           if (Test-Path "agent-results/run-report.json") {
             Get-Content "agent-results/run-report.json"
           } else {
             Write-Warning "[WARN] No run report found"
           }
-        shell: pwsh
 
-      - name: Commit universe changes
+      - name: Copy products to public
+        shell: pwsh
+        run: |
+          if (Test-Path "products.json") {
+            Copy-Item products.json public/products.json -Force
+            Write-Host "[OK] products.json copied to public/"
+          }
+
+      - name: Commit all changes
+        shell: pwsh
+        env:
+          MODE: ${{ github.event.inputs.mode || 'auto' }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add universe.json agent-results/ godot-projects/ godot-recipes/ products.json
+          git add -f agent-results/
+          git add universe.json products.json public/products.json
+          if (Test-Path "godot-projects") { git add godot-projects/ }
+          if (Test-Path "godot-recipes")  { git add godot-recipes/ }
+          if (Test-Path "public/games")   { git add public/games/ }
           $diff = git diff --staged --name-only
           if (-not $diff) {
             Write-Host "[INFO] No changes to commit"
             exit 0
           }
           $mode = $env:MODE
-          $date = Get-Date -Format "yyyy-MM-dd"
+          $date = Get-Date -Format "yyyy-MM-dd HH:mm"
           git commit -m "universe: $mode evolution $date [skip ci]"
           git pull --rebase origin main
           if ($LASTEXITCODE -ne 0) {
             git rebase --abort
+            Write-Error "[FAIL] Rebase failed"
             exit 1
           }
           git push origin main
-        shell: pwsh
-        env:
-          MODE: ${{ github.event.inputs.mode || 'auto' }}
+          Write-Host "[OK] Changes pushed"
