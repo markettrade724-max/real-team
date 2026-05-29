@@ -1,14 +1,14 @@
 {
-  "runId": "2026-05-28T2330",
+  "runId": "2026-05-29T0603",
   "mode": "evolution:world",
-  "timestamp": "2026-05-28T23:37:37.695Z",
+  "timestamp": "2026-05-29T06:09:57.943Z",
   "totalDuration": "405.2s",
   "geminiCalls": "0/15",
   "schedule": {
-    "day": "Thu",
+    "day": "Fri",
     "invention": false,
-    "revival": false,
-    "roadmap": true,
+    "revival": true,
+    "roadmap": false,
     "sync": false
   },
   "agents": {
@@ -17,7 +17,7 @@
       "duration": "120.2s",
       "error": "Timeout"
     },
-    "roadmap": {
+    "revival": {
       "success": false,
       "duration": "120.0s",
       "error": "Timeout"
