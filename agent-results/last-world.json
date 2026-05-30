@@ -1,24 +1,62 @@
 {
-  "id": "world-14",
-  "dayNumber": 14,
+  "id": "world-15",
+  "dayNumber": 150,
   "chapter": 1,
   "chapterName": "Genesis",
   "name": {
-    "ar": "همسة التكوين",
-    "en": "The Primordial Whisper"
+    "ar": "أطلال الصمت",
+    "en": "Ruins of Silence"
   },
-  "essence": "Awakening",
-  "physics": "Matter in this realm is an echo of latent potential; it only truly solidifies when observed and given a 'name' or 'purpose' by a sentient mind. Unobserved matter remains fluid, a shimmering probability.",
-  "atmosphere": "A realm of shimmering, translucent forms that constantly shift and reform. The air itself feels like liquid potential, carrying a faint, high-frequency hum that vibrates through the very bones. The ground beneath feels like solidified intention, smooth and cool to the touch. There is no discernible scent, but a pervasive sense of 'newness' and pristine, untouched possibility.",
-  "secret": "Deep within the core of this world, a single, crystalline 'Primordial Tear' exists. It is the crystallization of the universe's first existential question, holding the raw blueprint for all future suffering and joy. It can only be accessed by surrendering a cherished, yet painful, memory into its nascent depths.",
-  "enemyBehavior": "Enemies are not pre-existing entities but take form from the player's own unacknowledged doubts and fears. They are initially amorphous shadows, solidifying into recognizable threats only when the player consciously perceives and names their specific anxiety (e.g., 'Fear of Failure' manifests as a crumbling golem). Ignoring them makes them dissipate, but their essence might still linger, ready to reform.",
-  "playerAbility": "The player gains the ability 'Essence Weave': by focusing intention, they can temporarily solidify fleeting thoughts or fragmented memories into tangible (though ephemeral) tools or distractions. Conversely, they can render a solidified object fluid again for a brief period, allowing passage or transformation.",
-  "backgroundColor": "#E0F2F7",
-  "fogColor": "#DDF2F7",
-  "lightColor": "#FFFACD",
-  "enemySpeed": 0.5,
-  "enemyHealth": 50,
-  "enemyCount": 3,
-  "difficulty": "easy",
-  "addedAt": "2026-06-12T10:00:00.000Z"
+  "essence": "الذكرى الصامتة",
+  "physicsLaw": "كل صدى هو ذكرى متحجرة، يزداد ثقلاً كلما تعمق الصمت.",
+  "atmosphere": "أروقة معتمة يتخللها غبار النجوم البارد، حيث الأضواء الخافتة ترقص على جدران محفورة بقصص لم تُروَ، ويتردد صدى الصمت كنبض قلب يتلاشى. شظايا المعرفة المنسية تتلألأ كالدموع المجمدة، معلقة في فراغ لزج.",
+  "secret": "الصمت ليس غياباً، بل وجوداً واعياً يلتهم الذكريات لإعادة بناء كيان منسي، والذي كانت ذكريات البطل جزءاً لا يتجزأ من تشتته الأصلي.",
+  "difficulty": "hard",
+  "backgroundColor": "#0C0C12",
+  "fogColor": "#1A1A2A",
+  "lightColor": "#A0A0B0",
+  "enemies": [],
+  "weapon": null,
+  "vehicle": null,
+  "noise": {
+    "frequency": 0.03,
+    "amplitude": 1.2,
+    "octaves": 5,
+    "persistence": 0.6,
+    "lacunarity": 2.2,
+    "seed": 87654,
+    "type": "simplex",
+    "description": "تضاريس كونية شبحية تتشكل من غبار النجوم ورفات الذكريات، مع تكتلات أثيرية تمثل الذكريات المتحجرة الصامتة."
+  },
+  "shader": {
+    "type": "void",
+    "code": "shader_type spatial;\nrender_mode unshaded, depth_test_disable, cull_disabled;\n\nuniform float time;\nuniform vec3 tint_color = vec3(0.01, 0.005, 0.02);\nuniform float emission_strength = 0.7;\nuniform float noise_scale = 0.005;\nuniform float noise_speed = 0.05;\n\nvoid fragment() {\n    vec2 uv = SCREEN_UV;\n    // Simple noise to represent subtle void fluctuations or faint petrified memories\n    float n = fract(sin(dot(uv + time * noise_speed, vec2(12.9898, 78.233))) * 43758.5453);\n    \n    vec3 base_color = tint_color + vec3(n * noise_scale);\n    ALBEDO = base_color;\n    EMISSION = base_color * emission_strength;\n}",
+    "parameters": {
+      "tint_color": "0.01, 0.005, 0.02",
+      "emission_strength": 0.7,
+      "noise_scale": 0.005,
+      "noise_speed": 0.05
+    },
+    "description": "تأثير بصري يعكس فراغًا كونيًا عميقًا ومظلمًا، حيث تتجلى الذكريات المتحجرة كشذرات ضوء خافتة تكافح ضد الصمت الكوني الشامل."
+  },
+  "audio": {
+    "ambience": "طنين فراغي عميق ممزوج بصدى ذكريات بعيدة تتلاشى ببطء تحت وطأة الصمت الثقيل.",
+    "music_tempo": "slow",
+    "music_mood": "melancholic | eerie | mysterious",
+    "instruments": [
+      "cello",
+      "ambient synth pads",
+      "sparse piano",
+      "ethereal choir",
+      "distant metallic chimes"
+    ],
+    "sfx": [
+      "distant whispers",
+      "subtle deep hums of the void",
+      "faint, resonating chimes",
+      "slow, creeping static (representing silence's encroachment)"
+    ],
+    "description": "بيئة صوتية تعكس الحنين العميق والفراغ الكوني، حيث تتداخل أصداء الذكريات المفقودة مع الصمت الثقيل، مع لمسات موسيقية حزينة تثير الفضول والأمل الخافت."
+  },
+  "addedAt": "2026-05-30T15:00:13.875Z"
 }
