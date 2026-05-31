@@ -1,41 +1,59 @@
 {
-  "runId": "2026-05-30T1458",
-  "mode": "evolution:world",
-  "timestamp": "2026-05-30T15:00:43.446Z",
-  "totalDuration": "115.5s",
-  "geminiCalls": "2/15",
+  "runId": "2026-05-31T0607",
+  "mode": "evolution",
+  "timestamp": "2026-05-31T06:55:18.190Z",
+  "totalDuration": "2878.9s",
+  "budget": {
+    "library": {
+      "limit": 14,
+      "used": 14,
+      "left": 0
+    },
+    "agents": {
+      "limit": 6,
+      "used": 0,
+      "left": 6
+    },
+    "total": 20
+  },
+  "library": {
+    "built": 4,
+    "total": 56,
+    "percent": "7%",
+    "daysLeft": 4
+  },
   "schedule": {
-    "day": "Sat",
-    "invention": false,
+    "day": "Sun",
+    "invention": true,
     "revival": false,
     "roadmap": false,
-    "sync": true
+    "sync": false
   },
   "agents": {
+    "library": {
+      "success": true,
+      "duration": "2473.9s",
+      "error": null
+    },
     "world": {
-      "success": true,
-      "duration": "70.9s",
-      "error": null
-    },
-    "collision": {
-      "success": true,
-      "duration": "4ms",
-      "error": null
-    },
-    "sync": {
       "success": false,
-      "duration": "74ms",
-      "error": "mod.run is not a function"
+      "duration": "120.0s",
+      "error": "Timeout"
+    },
+    "invention": {
+      "success": false,
+      "duration": "120.0s",
+      "error": "Timeout"
     },
     "marketing": {
-      "success": true,
-      "duration": "14.5s",
-      "error": null
+      "success": false,
+      "duration": "120.0s",
+      "error": "Timeout"
     }
   },
   "summary": {
     "total": 4,
-    "passed": 3,
-    "failed": 1
+    "passed": 1,
+    "failed": 3
   }
 }
