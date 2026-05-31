@@ -8,10 +8,12 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { run as runScreenplay } from './screenplay-agent.js';
+import { run as runDialogue }   from './dialogue-agent.js';
 import { run as runScene }      from './scene-agent.js';
 import { run as runVoice }      from './voice-agent.js';
 import { run as runVisual }     from './visual-agent.js';
 import { run as runEdit }       from './edit-agent.js';
+import { run as runUpload }     from './upload-agent.js';
 import { logger }               from '../logger.js';
 
 const __dirname    = dirname(fileURLToPath(import.meta.url));
@@ -47,21 +49,29 @@ export async function run(universe, targetEpisode = null) {
     logger.info(`[SERIES] Step 1/5 — Screenplay`);
     const screenplay = await runScreenplay(universe, nextEpisode, seriesContext);
 
-    // 2. المشاهد البصرية
-    logger.info(`[SERIES] Step 2/5 — Visual scenes`);
-    const visualScenes = await runScene(screenplay, universe);
+    // 2. تحسين الحوار — بدون Gemini
+    logger.info(`[SERIES] Step 2/6 — Dialogue polish`);
+    const polishedScreenplay = runDialogue(screenplay);
 
-    // 3. الصوت
-    logger.info(`[SERIES] Step 3/5 — Voice`);
-    const audioManifest = await runVoice(screenplay, visualScenes);
+    // 3. المشاهد البصرية
+    logger.info(`[SERIES] Step 3/6 — Visual scenes`);
+    const visualScenes = await runScene(polishedScreenplay, universe);
 
-    // 4. الصور
-    logger.info(`[SERIES] Step 4/5 — Images`);
+    // 4. الصوت
+    logger.info(`[SERIES] Step 4/6 — Voice`);
+    const audioManifest = await runVoice(polishedScreenplay, visualScenes);
+
+    // 5. الصور
+    logger.info(`[SERIES] Step 5/6 — Images`);
     const visualManifest = await runVisual(visualScenes, nextEpisode);
 
-    // 5. المونتاج النهائي
-    logger.info(`[SERIES] Step 5/5 — Edit`);
-    const episode = await runEdit(screenplay, visualManifest, audioManifest);
+    // 6. المونتاج النهائي
+    logger.info(`[SERIES] Step 6/6 — Edit`);
+    const episode = await runEdit(polishedScreenplay, visualManifest, audioManifest);
+
+    // 7. النشر التلقائي
+    logger.info(`[SERIES] Publishing...`);
+    const uploadResult = await runUpload(episode, series);
 
     // ── تحديث سجل المسلسل ────────────────
     series.episodes.push({
