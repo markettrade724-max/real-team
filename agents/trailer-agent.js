@@ -1,69 +1,80 @@
 /**
- * trailer-agent.js
- * يقطع مشهداً مشوقاً 60 ثانية من كل حلقة
- * للنشر على تيك توك + إنستغرام ريلز + يوتيوب شورتس
- *
- * المنطق:
- * - يختار أفضل 3 مشاهد من الحلقة (توتر عالي + صورة قوية)
- * - يرتبها: hook (5s) → peak (40s) → cliffhanger (15s)
- * - يضيف نص علوي وسفلي
- * - يضيف موسيقى من المكتبة
- * - يولد mp4 عمودي 9:16
+ * trailer-agent.js — v2.0 (Node.js خالص — Windows/Linux/Mac)
+ * يقطع مشهداً مشوقاً 60 ثانية → تيك توك / شورتس
+ * عبر fluent-ffmpeg (لا bash)
  */
 
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname }  from 'path';
 import { fileURLToPath }  from 'url';
-import { execSync }       from 'child_process';
+import ffmpeg             from 'fluent-ffmpeg';
+import ffmpegInstaller    from '@ffmpeg-installer/ffmpeg';
 import { logger }         from '../logger.js';
 
-const __dirname    = dirname(fileURLToPath(import.meta.url));
-const MUSIC_LIB    = join(__dirname, '..', 'assets', 'music');
-const FONTS_DIR    = join(__dirname, '..', 'assets', 'fonts');
-const TRAILER_DUR  = 60; // ثانية
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+
+const __dirname   = dirname(fileURLToPath(import.meta.url));
+const MUSIC_LIB   = join(__dirname, '..', 'assets', 'music');
+const FALLBACK_IMG = join(__dirname, '..', 'assets', 'fallback.png');
+const TRAILER_DUR = 60;
 
 export async function run(screenplay, visualManifest, audioManifest, episodeManifest) {
   logger.info('[TRAILER] Building trailer', { episode: screenplay.episode });
 
-  const outDir = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`, 'output');
+  const epDir  = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`);
+  const outDir = join(epDir, 'output');
+  const segDir = join(epDir, 'trailer-segments');
   mkdirSync(outDir, { recursive: true });
+  mkdirSync(segDir, { recursive: true });
 
   const outputPath = join(outDir, 'trailer.mp4');
-
   if (existsSync(outputPath)) {
-    logger.info('[TRAILER] Already exists — skipping');
+    logger.info('[TRAILER] Already exists');
     return { outputPath, duration: TRAILER_DUR };
   }
 
-  // ── اختيار أفضل المشاهد ─────────────
-  const selectedScenes = selectBestScenes(screenplay, visualManifest);
-  if (!selectedScenes.length) {
-    logger.warn('[TRAILER] No suitable scenes found');
+  // اختيار المشاهد
+  const selected = selectBestScenes(screenplay, visualManifest);
+  if (!selected.length) {
+    logger.warn('[TRAILER] No suitable scenes');
     return null;
   }
 
-  // ── بناء script ffmpeg ───────────────
-  const epDir      = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`);
-  const scriptPath = join(epDir, 'trailer-script.sh');
-  const script     = buildTrailerScript(
-    selectedScenes, audioManifest, screenplay, outputPath, epDir
-  );
-  writeFileSync(scriptPath, script, 'utf8');
+  // بناء المقاطع
+  const segPaths = [];
+  for (const scene of selected) {
+    const segPath = join(segDir, `${scene.role}.mp4`);
+    segPaths.push(segPath);
+    if (!existsSync(segPath)) {
+      await buildTrailerSegment(scene, segPath, screenplay);
+    }
+  }
 
-  // ── تنفيذ ────────────────────────────
-  try {
-    execSync(`bash "${scriptPath}"`, { stdio: 'pipe', timeout: 120000 });
-    logger.info('[OK] Trailer ready', { path: outputPath });
-  } catch (err) {
-    logger.error('[TRAILER] ffmpeg failed', { error: err.message.slice(0, 200) });
-    throw new Error('trailer-agent: ffmpeg failed');
+  // دمج المقاطع
+  const concatPath = join(epDir, 'trailer-concat.txt');
+  writeFileSync(
+    concatPath,
+    segPaths.map(p => `file '${p.replace(/\\/g, '/')}'`).join('\n'),
+    'utf8'
+  );
+
+  const tempPath = join(outDir, 'trailer-temp.mp4');
+  await concatSegments(concatPath, tempPath);
+
+  // موسيقى درامية
+  const bgMusic = join(MUSIC_LIB, 'dramatic.mp3');
+  if (existsSync(bgMusic)) {
+    await mixWithMusic(tempPath, bgMusic, outputPath, 0.3);
+  } else {
+    const { copyFileSync } = await import('fs');
+    copyFileSync(tempPath, outputPath);
   }
 
   const result = {
     episode:    screenplay.episode,
     outputPath,
     duration:   TRAILER_DUR,
-    scenes:     selectedScenes.map(s => s.id),
+    scenes:     selected.map(s => s.id),
     generatedAt: new Date().toISOString(),
   };
 
@@ -72,187 +83,121 @@ export async function run(screenplay, visualManifest, audioManifest, episodeMani
     JSON.stringify(result, null, 2), 'utf8'
   );
 
+  logger.info('[OK] Trailer ready', { path: outputPath });
   return result;
 }
 
 // ════════════════════════════════════════════
-// اختيار أفضل المشاهد للتريلر
+// اختيار المشاهد
 // ════════════════════════════════════════════
 function selectBestScenes(screenplay, visualManifest) {
   const allScenes = screenplay.acts.flatMap(a => a.scenes);
+  const moodScore = { 'توتر': 5, 'خوف': 4, 'حماس': 4, 'حزن': 3, 'أمل': 2, 'هدوء': 1 };
 
-  // تقييم كل مشهد
-  const scored = allScenes.map(scene => {
+  const scored = allScenes.map((scene, idx) => {
     const visual = visualManifest.scenes.find(v => v.id === scene.id);
     if (!visual?.imagePath || !existsSync(visual.imagePath)) return null;
-
-    let score = 0;
-
-    // التوتر العاطفي
-    const moodScores = { 'توتر': 5, 'خوف': 4, 'حماس': 4, 'حزن': 3, 'أمل': 2, 'هدوء': 1 };
-    score += moodScores[scene.mood] || 1;
-
-    // الحوار الدرامي
-    if (scene.dialogue?.length > 0) score += 2;
-
-    // موقع الحلقة — المشاهد الأخيرة أكثر توتراً
-    const actIndex = screenplay.acts.findIndex(a => a.scenes.includes(scene));
-    if (actIndex === screenplay.acts.length - 1) score += 3; // الفصل الأخير
-
-    // الـ cliffhanger — آخر مشهد
-    const lastScene = allScenes[allScenes.length - 1];
-    if (scene.id === lastScene.id) score += 5;
-
+    let score = moodScore[scene.mood] || 1;
+    if (scene.dialogue?.length) score += 2;
+    if (idx > allScenes.length * 0.7) score += 3;
+    if (idx === allScenes.length - 1) score += 5;
     return { ...scene, imagePath: visual.imagePath, score };
-  }).filter(Boolean);
+  }).filter(Boolean).sort((a, b) => b.score - a.score);
 
-  // ترتيب بالنتيجة
-  scored.sort((a, b) => b.score - a.score);
+  const hook  = { ...allScenes[0], imagePath: visualManifest.scenes[0]?.imagePath, duration: 5,  role: 'hook' };
+  const peak  = { ...scored[0],  duration: 40, role: 'peak' };
+  const cliff = { ...scored.find(s => s.id === allScenes[allScenes.length - 1].id) || scored[1], duration: 15, role: 'cliffhanger' };
 
-  // اختيار 3 مشاهد: أول مشهد (hook) + أفضل مشهد + آخر مشهد (cliffhanger)
-  const hook        = allScenes[0];
-  const hookVisual  = visualManifest.scenes.find(v => v.id === hook.id);
-  const peak        = scored[0];
-  const cliffhanger = scored.find(s => s.id === allScenes[allScenes.length - 1].id) || scored[1];
-
-  const selected = [];
-
-  if (hookVisual?.imagePath && existsSync(hookVisual.imagePath)) {
-    selected.push({ ...hook, imagePath: hookVisual.imagePath, duration: 5,  role: 'hook' });
-  }
-  if (peak && peak.id !== hook.id) {
-    selected.push({ ...peak, duration: 40, role: 'peak' });
-  }
-  if (cliffhanger && cliffhanger.id !== peak?.id) {
-    selected.push({ ...cliffhanger, duration: 15, role: 'cliffhanger' });
-  }
-
-  // تعديل المدة لتصل 60 ثانية
-  const total = selected.reduce((s, sc) => s + sc.duration, 0);
-  if (total < TRAILER_DUR && selected.length > 0) {
-    selected[1 % selected.length].duration += TRAILER_DUR - total;
-  }
-
-  logger.info('[TRAILER] Scenes selected', {
-    hook:        selected.find(s => s.role === 'hook')?.id,
-    peak:        selected.find(s => s.role === 'peak')?.id,
-    cliffhanger: selected.find(s => s.role === 'cliffhanger')?.id,
-  });
-
-  return selected;
+  return [hook, peak, cliff].filter(s => s?.imagePath && existsSync(s.imagePath));
 }
 
 // ════════════════════════════════════════════
-// بناء script ffmpeg للتريلر
+// بناء مقطع تريلر — 9:16 عمودي
 // ════════════════════════════════════════════
-function buildTrailerScript(scenes, audioManifest, screenplay, outputPath, epDir) {
-  const lines = ['#!/bin/bash', 'set -e', ''];
-  const segDir = join(epDir, 'trailer-segments');
-  lines.push(`mkdir -p "${segDir}"`);
-  lines.push('');
+function buildTrailerSegment(scene, outputPath, screenplay) {
+  return new Promise((resolve, reject) => {
+    const img = existsSync(scene.imagePath) ? scene.imagePath : FALLBACK_IMG;
 
-  const segPaths = [];
+    // نص العنوان
+    const titleText = escapeFFmpeg(screenplay.title || 'المسلسل');
+    const subText   = scene.role === 'cliffhanger'
+      ? escapeFFmpeg((screenplay.cliffhanger || '').slice(0, 35))
+      : `الحلقة ${screenplay.episode}`;
 
-  for (const scene of scenes) {
-    const segPath = join(segDir, `${scene.role}.mp4`);
-    segPaths.push(segPath);
-
-    // صوت المشهد
-    const sceneAudio = audioManifest.audioFiles
-      .filter(a => a.sceneId === scene.id && existsSync(a.file));
-
-    const audioInput = sceneAudio.length > 0
-      ? `-i "${sceneAudio[0].file}"`
-      : `-f lavfi -i anullsrc=r=44100:cl=stereo`;
-
-    // نص العنوان للمشهد
-    const overlayText = buildOverlayText(scene, screenplay);
-
-    // فلتر الفيديو — 9:16 عمودي مع crop ذكي
     const vf = [
+      // crop عمودي 9:16
       'scale=1080:1920:force_original_aspect_ratio=increase',
       'crop=1080:1920',
       'setsar=1',
-      // تأثير Ken Burns — تكبير بطيء
+      // تأثير zoom للذروة
       scene.role === 'peak'
-        ? `zoompan=z='min(zoom+0.0005,1.1)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${scene.duration * 25}:s=1080x1920`
+        ? `zoompan=z='min(zoom+0.0003,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${scene.duration * 25}:s=1080x1920`
         : '',
-      // نص علوي — اسم المسلسل
-      `drawtext=text='${escapeText(screenplay.title || 'المسلسل')}':fontcolor=white:fontsize=36:x=(w-text_w)/2:y=80:shadowcolor=black:shadowx=2:shadowy=2`,
-      // نص سفلي — الحلقة
-      scene.role === 'cliffhanger'
-        ? `drawtext=text='${escapeText(screenplay.cliffhanger?.slice(0, 40) || '')}':fontcolor=yellow:fontsize=28:x=(w-text_w)/2:y=h-120:shadowcolor=black:shadowx=2:shadowy=2`
-        : `drawtext=text='الحلقة ${screenplay.episode}':fontcolor=white:fontsize=28:x=(w-text_w)/2:y=h-100:shadowcolor=black:shadowx=2:shadowy=2`,
-      // fade in/out
-      `fade=t=in:st=0:d=0.5`,
-      `fade=t=out:st=${scene.duration - 0.5}:d=0.5`,
+      // نص العنوان
+      `drawtext=text='${titleText}':fontcolor=white:fontsize=40:x=(w-text_w)/2:y=100:shadowcolor=black:shadowx=2:shadowy=2`,
+      // نص سفلي
+      `drawtext=text='${subText}':fontcolor=yellow:fontsize=32:x=(w-text_w)/2:y=h-140:shadowcolor=black:shadowx=2:shadowy=2`,
+      // fade
+      `fade=t=in:st=0:d=0.4`,
+      `fade=t=out:st=${scene.duration - 0.4}:d=0.4`,
     ].filter(Boolean).join(',');
 
-    lines.push(`# مقطع ${scene.role} — ${scene.duration}s`);
-    lines.push([
-      'ffmpeg -y',
-      `-loop 1 -t ${scene.duration} -i "${scene.imagePath}"`,
-      audioInput,
-      `-vf "${vf}"`,
-      `-c:v libx264 -preset fast -crf 20`,
-      `-c:a aac -b:a 128k`,
-      `-t ${scene.duration}`,
-      `-pix_fmt yuv420p`,
-      `-r 25`,
-      `"${segPath}"`,
-    ].join(' \\\n  '));
-    lines.push('');
-  }
-
-  // دمج المقاطع
-  const concatList = join(epDir, 'trailer-concat.txt');
-  lines.push(`cat > "${concatList}" << 'EOF'`);
-  for (const seg of segPaths) lines.push(`file '${seg}'`);
-  lines.push('EOF');
-  lines.push('');
-
-  // إضافة موسيقى خلفية درامية
-  const bgMusic = join(MUSIC_LIB, 'dramatic.mp3');
-  const tempPath = join(epDir, 'output', 'trailer-temp.mp4');
-
-  lines.push(`ffmpeg -y -f concat -safe 0 -i "${concatList}" -c copy "${tempPath}"`);
-  lines.push('');
-
-  if (existsSync(bgMusic)) {
-    lines.push([
-      'ffmpeg -y',
-      `-i "${tempPath}"`,
-      `-stream_loop -1 -i "${bgMusic}"`,
-      `-filter_complex "[1:a]volume=0.3[bg];[0:a][bg]amix=inputs=2:duration=first[aout]"`,
-      `-map 0:v -map "[aout]"`,
-      `-c:v copy -c:a aac -b:a 192k`,
-      `-t ${TRAILER_DUR}`,
-      `"${outputPath}"`,
-    ].join(' \\\n  '));
-  } else {
-    lines.push(`cp "${tempPath}" "${outputPath}"`);
-  }
-
-  lines.push('');
-  lines.push(`echo "[TRAILER] Done: ${outputPath}"`);
-
-  return lines.join('\n');
+    ffmpeg()
+      .input(img)
+      .inputOptions(['-loop 1', `-t ${scene.duration}`])
+      .input('anullsrc=r=44100:cl=stereo')
+      .inputFormat('lavfi')
+      .outputOptions([
+        '-c:v libx264', '-preset fast', '-crf 20',
+        '-c:a aac', '-b:a 128k',
+        `-t ${scene.duration}`,
+        '-pix_fmt yuv420p', '-r 25',
+      ])
+      .videoFilters(vf)
+      .output(outputPath)
+      .on('end',   resolve)
+      .on('error', reject)
+      .run();
+  });
 }
 
-// ── نص على الفيديو ───────────────────────
-function buildOverlayText(scene, screenplay) {
-  const roleText = {
-    hook:        `🎬 ${screenplay.title || 'المسلسل'}`,
-    peak:        `الحلقة ${screenplay.episode}`,
-    cliffhanger: screenplay.cliffhanger?.slice(0, 35) || '...',
-  };
-  return roleText[scene.role] || '';
+// ════════════════════════════════════════════
+// دمج ومزج
+// ════════════════════════════════════════════
+function concatSegments(concatPath, outputPath) {
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .input(concatPath)
+      .inputOptions(['-f concat', '-safe 0'])
+      .outputOptions(['-c copy'])
+      .output(outputPath)
+      .on('end',   resolve)
+      .on('error', reject)
+      .run();
+  });
 }
 
-function escapeText(text) {
-  return (text || '')
-    .replace(/'/g, "\\'")
-    .replace(/:/g, '\\:')
-    .replace(/\[/g, '\\[')
-    .replace(/\]/g, '\\]');
+function mixWithMusic(videoPath, musicPath, outputPath, vol = 0.3) {
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .input(videoPath)
+      .input(musicPath)
+      .complexFilter([
+        `[1:a]volume=${vol},aloop=loop=-1:size=2e+09[bg]`,
+        `[0:a][bg]amix=inputs=2:duration=first[aout]`,
+      ])
+      .outputOptions([
+        '-map 0:v', '-map [aout]',
+        '-c:v copy', '-c:a aac', '-b:a 192k',
+        `-t ${TRAILER_DUR}`,
+      ])
+      .output(outputPath)
+      .on('end',   resolve)
+      .on('error', reject)
+      .run();
+  });
+}
+
+function escapeFFmpeg(text) {
+  return (text || '').replace(/'/g, '').replace(/:/g, ' ').replace(/[[\]]/g, '');
 }
