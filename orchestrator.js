@@ -33,6 +33,8 @@ import { dirname, join }  from 'path';
 import { execSync }       from 'child_process';
 import { logger }         from './logger.js';
 import { run as runLibrary, getLibraryStatus } from './agents/library-builder-agent.js';
+import { run as runSeries }                    from './agents/series-agent.js';
+import { run as runAnalytics }                 from './agents/analytics-agent.js';
 
 const __dirname   = dirname(fileURLToPath(import.meta.url));
 const RESULTS_DIR = join(__dirname, 'agent-results');
@@ -368,10 +370,12 @@ async function evolutionMode(universe, t0, runId) {
     if (log.roadmap?.success) save('roadmap.json', log.roadmap.data);
   }
 
-  // السبت — مزامنة Supabase
+  // السبت — مزامنة Supabase + analytics
   if (SCHEDULE.isSyncDay) {
-    logger.info('[SYNC] Saturday — syncing to Supabase');
-    log.sync = await run('Supabase Sync', './scripts/sync-to-supabase.js', [], false);
+    logger.info('[SYNC] Saturday — syncing + analytics');
+    log.sync      = await run('Supabase Sync', './scripts/sync-to-supabase.js', [], false);
+    log.analytics = await runAnalytics(loadUniverse()).then(d => ({ success: true, data: d, duration: '—' }))
+      .catch(e => ({ success: false, error: e.message, duration: '—' }));
   }
 
   saveUniverse(universe);
@@ -475,6 +479,26 @@ async function main() {
       idea.type === 'godot');
     if (log.code?.success) save('code.json', log.code.data);
     return saveReport(log, {}, t0, runId, 'code');
+  }
+
+  // ── EPISODE — إنتاج حلقة جديدة ──────
+  if (mode === 'episode') {
+    const log = {};
+    await runLibraryStep(log);
+    logger.info('[EPISODE] Producing new episode...');
+    try {
+      const result = await runSeries(universe, process.env.EPISODE_NUMBER
+        ? parseInt(process.env.EPISODE_NUMBER) : null);
+      log.episode = { success: true, data: result, duration: '—' };
+      logger.info('[OK] Episode done', {
+        episode: result.episode,
+        title:   result.title,
+        path:    result.outputPath,
+      });
+    } catch (err) {
+      log.episode = { success: false, error: err.message, duration: '—' };
+    }
+    return saveReport(log, {}, t0, runId, 'episode');
   }
 
   // ── AUTO / EVOLUTION (الافتراضي) ─────
