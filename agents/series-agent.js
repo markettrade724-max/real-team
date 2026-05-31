@@ -15,6 +15,8 @@ import { run as runVisual }     from './visual-agent.js';
 import { run as runEdit }       from './edit-agent.js';
 import { run as runUpload }     from './upload-agent.js';
 import { run as runTrailer }    from './trailer-agent.js';
+import { run as runMusic }      from './music-agent.js';
+import { run as runSubtitle }   from './subtitle-agent.js';
 import { logger }               from '../logger.js';
 
 const __dirname    = dirname(fileURLToPath(import.meta.url));
@@ -47,27 +49,35 @@ export async function run(universe, targetEpisode = null) {
     // ── خط الإنتاج الكامل ────────────────
 
     // 1. السيناريو
-    logger.info(`[SERIES] Step 1/5 — Screenplay`);
+    logger.info(`[SERIES] Step 1/8 — Screenplay`);
     const screenplay = await runScreenplay(universe, nextEpisode, seriesContext);
 
-    // 2. تحسين الحوار — بدون Gemini
-    logger.info(`[SERIES] Step 2/6 — Dialogue polish`);
+    // 2. الموسيقى — بدون Gemini
+    logger.info(`[SERIES] Step 2/8 — Music`);
+    const music = await runMusic(screenplay, universe);
+
+    // 3. تحسين الحوار — بدون Gemini
+    logger.info(`[SERIES] Step 3/8 — Dialogue polish`);
     const polishedScreenplay = runDialogue(screenplay);
 
-    // 3. المشاهد البصرية
-    logger.info(`[SERIES] Step 3/6 — Visual scenes`);
+    // 4. المشاهد البصرية
+    logger.info(`[SERIES] Step 4/8 — Visual scenes`);
     const visualScenes = await runScene(polishedScreenplay, universe);
 
-    // 4. الصوت
-    logger.info(`[SERIES] Step 4/6 — Voice`);
+    // 5. الصوت
+    logger.info(`[SERIES] Step 5/8 — Voice`);
     const audioManifest = await runVoice(polishedScreenplay, visualScenes);
 
-    // 5. الصور
-    logger.info(`[SERIES] Step 5/6 — Images`);
+    // 6. الترجمة — بدون Gemini
+    logger.info(`[SERIES] Step 6/8 — Subtitles`);
+    const subtitles = runSubtitle(polishedScreenplay, audioManifest, visualScenes);
+
+    // 7. الصور
+    logger.info(`[SERIES] Step 7/8 — Images`);
     const visualManifest = await runVisual(visualScenes, nextEpisode);
 
-    // 6. المونتاج النهائي
-    logger.info(`[SERIES] Step 6/6 — Edit`);
+    // 8. المونتاج النهائي
+    logger.info(`[SERIES] Step 8/8 — Edit`);
     const episode = await runEdit(polishedScreenplay, visualManifest, audioManifest);
 
     // 7. التريلر — 60 ثانية لتيك توك
