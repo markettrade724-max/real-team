@@ -1,579 +1,222 @@
 {
-  "version": "5.0.0",
-  "description": "الكتاب الذهبي — ذاكرة الوكلاء الكاملة. سجل الأخطاء والقواعد والاختراعات. آخر تحديث: 2026-05-24.",
+  "version": "7.0.0",
+  "description": "الكتاب الذهبي — ذاكرة الوكلاء الكاملة. آخر تحديث: 2026-05-31.",
+
   "errors": [
-    {
-      "id": "err-070",
-      "date": "2026-05-18",
-      "severity": "high",
-      "description": "_gemini.js كانت تتجاهل المعاملات الإضافية (topP, topK, frequencyPenalty, presencePenalty). النتيجة: الوكلاء يعملون بإعدادات افتراضية فقط.",
-      "fixed": true,
-      "patch": "add-options-param-to-askGemini"
-    },
-    {
-      "id": "err-071",
-      "date": "2026-05-18",
-      "severity": "critical",
-      "description": "لا توجد وثيقة روح تربط الوكلاء. كل وكيل يعمل في جزيرة منفصلة دون معرفة الجوهر الفلسفي للكون.",
-      "fixed": true,
-      "patch": "add-soul-agent-and-soul-context"
-    },
-    {
-      "id": "err-072",
-      "date": "2026-05-18",
-      "severity": "high",
-      "description": "template-engineer كان يعرف قالبين فقط من أصل 16 قالباً موجوداً.",
-      "fixed": true,
-      "patch": "register-all-16-templates-with-scoring"
-    },
-    {
-      "id": "err-073",
-      "date": "2026-05-18",
-      "severity": "critical",
-      "description": "تعارض اسم preset بين code-agent (name='HTML5') وgodot-export.yml (--export-release 'Web'). Godot لا يجد الـ preset ويفشل التصدير بصمت.",
-      "fixed": true,
-      "patch": "unify-preset-name-to-Web-everywhere"
-    },
-    {
-      "id": "err-078",
-      "date": "2026-05-18",
-      "severity": "critical",
-      "description": "orchestrator لا يفرق بين BIRTH MODE وEVOLUTION MODE. كل تشغيل يولد كوناً جديداً بدل تطوير الموجود.",
-      "fixed": true,
-      "patch": "add-birth-evolution-dual-mode"
-    },
-    {
-      "id": "err-094",
-      "date": "2026-05-19",
-      "severity": "critical",
-      "description": "استدعاء askGemini ببارامترات temperature داخل كائن بدلاً من بارامتر ثانٍ مباشر.",
-      "fixed": true,
-      "patch": "fix-askGemini-call-signature"
-    },
-    {
-      "id": "err-095",
-      "date": "2026-05-19",
-      "severity": "high",
-      "description": "استدعاء soulContext(universe) بدلاً من soulContext('agentName').",
-      "fixed": true,
-      "patch": "fix-soulContext-call"
-    },
-    {
-      "id": "err-096",
-      "date": "2026-05-19",
-      "severity": "critical",
-      "description": "shader-agent يطلب نصاً خاماً لكن _gemini.js يستخدم responseMimeType: 'application/json'.",
-      "fixed": true,
-      "patch": "fix-shader-agent-to-request-json"
-    },
-    {
-      "id": "err-097",
-      "date": "2026-05-19",
-      "severity": "critical",
-      "description": "collision-agent يتحقق من MeshInstance3D بدلاً من StaticBody3D/CharacterBody3D/RigidBody3D.",
-      "fixed": true,
-      "patch": "fix-collision-agent-check"
-    },
-    {
-      "id": "err-098",
-      "date": "2026-05-20",
-      "severity": "critical",
-      "description": "MAX_RPD=8 غير كافٍ مع الوكلاء الحسّيين. تم رفعه إلى 15 ودمج الوكلاء الثلاثة في world-senses-agent.",
-      "fixed": true,
-      "patch": "raise-max-rpd-to-15"
-    },
-    {
-      "id": "err-101",
-      "date": "2026-05-20",
-      "severity": "critical",
-      "description": "player-memory يتلقى كائناً جزئياً بدلاً من universe الكامل.",
-      "fixed": true,
-      "patch": "pass-full-universe-to-player-memory"
-    },
-    {
-      "id": "err-104",
-      "date": "2026-05-20",
-      "severity": "medium",
-      "description": "idea-agent يتضمن حقل emoji في المخرجات مما يخالف rule-061.",
-      "fixed": true,
-      "patch": "remove-emoji-from-idea-agent"
-    },
-    {
-      "id": "err-105",
-      "date": "2026-05-20",
-      "severity": "critical",
-      "description": "idea-agent يفشل بسبب loadJSON is not defined.",
-      "fixed": true,
-      "patch": "fix-idea-agent-missing-loadjson"
-    },
-    {
-      "id": "err-108",
-      "date": "2026-05-20",
-      "severity": "critical",
-      "description": "فشل استدعاءات Gemini API بالكامل (503) بسبب استنفاد حصة Free Tier (20 طلب/يوم).",
-      "fixed": false,
-      "patch": "upgrade-to-paid-gemini-plan"
-    },
-    {
-      "id": "err-113",
-      "date": "2026-05-21",
-      "severity": "critical",
-      "description": "code-agent.js كان يستخدم maxTokens بدلاً من maxOutputTokens.",
-      "fixed": true,
-      "patch": "fix-maxTokens-to-maxOutputTokens"
-    },
-    {
-      "id": "err-114",
-      "date": "2026-05-21",
-      "severity": "critical",
-      "description": "code-agent.js كان يستخدم JSON.parse على مخرجات askGemini، لكن _gemini.js يعيد الكائن مباشرة.",
-      "fixed": true,
-      "patch": "remove-JSON-parse-call"
-    },
-    {
-      "id": "err-115",
-      "date": "2026-05-21",
-      "severity": "high",
-      "description": "code-agent.js كان يطلب plain text من Gemini لـ project.godot. تم تعديله ليطلب JSON مع مفتاح content.",
-      "fixed": true,
-      "patch": "request-json-for-project-godot"
-    },
-    {
-      "id": "err-116",
-      "date": "2026-05-21",
-      "severity": "critical",
-      "description": "مسار code-memory.json في _soul.js كان يشير إلى agent-results/ بدلاً من جذر المشروع.",
-      "fixed": true,
-      "patch": "fix-code-memory-path"
-    },
-    {
-      "id": "err-117",
-      "date": "2026-05-21",
-      "severity": "high",
-      "description": "readSoul() في _soul.js كانت تعيد string بدلاً من كائن. يكسر كل وكيل يصل لـ soul.essence مباشرة.",
-      "fixed": true,
-      "patch": "preserve-original-soul-structure"
-    },
-    {
-      "id": "err-118",
-      "date": "2026-05-21",
-      "severity": "medium",
-      "description": "checkRules في orchestrator.js كان يحمل القواعد ويطبعها فقط دون أي قيمة فعلية.",
-      "fixed": true,
-      "patch": "skip-checkrules-until-stable"
-    },
-    {
-      "id": "err-119",
-      "date": "2026-05-21",
-      "severity": "low",
-      "description": "ترقيم القواعد الجديدة تخطى rule-100 إلى rule-103.",
-      "fixed": true,
-      "patch": "fix-rule-numbering"
-    },
-    {
-      "id": "err-120",
-      "date": "2026-05-21",
-      "severity": "critical",
-      "description": "soulContext كان يُعيد كائناً مما يجعل prompts الوكلاء تحتوي على [object Object].",
-      "fixed": true,
-      "patch": "soulContext-returns-string-with-rules"
-    },
-    {
-      "id": "err-121",
-      "date": "2026-05-21",
-      "severity": "critical",
-      "description": "Cannot parse JSON في code-agent بسبب طلب project.godot كنص عادي. الحل: بناء project.godot محلياً بدون Gemini.",
-      "fixed": true,
-      "patch": "build-project-godot-locally"
-    },
-    {
-      "id": "err-122",
-      "date": "2026-05-21",
-      "severity": "high",
-      "description": "world-senses-agent.js مفقود من مجلد agents/ مما يسبب Cannot find module.",
-      "fixed": true,
-      "patch": "add-world-senses-agent"
-    },
-    {
-      "id": "err-123",
-      "date": "2026-05-21",
-      "severity": "high",
-      "description": "world-senses-agent كان يستخدم maxOutputTokens: 4096 مما يسبب قطع JSON للحواس الثلاث. تم رفعه إلى 8192.",
-      "fixed": true,
-      "patch": "increase-world-senses-tokens"
-    },
-    {
-      "id": "err-124",
-      "date": "2026-05-22",
-      "severity": "critical",
-      "description": "generate-deploy.yml يستخدم bash syntax (find, wc -l, if [ ]) على windows-latest runner.",
-      "fixed": true,
-      "patch": "replace-bash-with-pwsh"
-    },
-    {
-      "id": "err-125",
-      "date": "2026-05-22",
-      "severity": "critical",
-      "description": "mkdir -p agent-results في YAML يفشل على PowerShell إذا كان المجلد موجوداً.",
-      "fixed": true,
-      "patch": "use-new-item-force"
-    },
-    {
-      "id": "err-126",
-      "date": "2026-05-22",
-      "severity": "critical",
-      "description": "GEMINI_KEY في generate-deploy.yml بدلاً من GEMINI_API_KEY. _gemini.js يقرأ GEMINI_API_KEY فكانت قيمته undefined.",
-      "fixed": true,
-      "patch": "unify-gemini-key-name"
-    },
-    {
-      "id": "err-127",
-      "date": "2026-05-22",
-      "severity": "critical",
-      "description": "@supabase/supabase-js يفشل على Node.js 20 بسبب غياب WebSocket native. الحل: تثبيت ws وتمريره للـ client.",
-      "fixed": true,
-      "patch": "add-ws-package-for-supabase"
-    },
-    {
-      "id": "err-128",
-      "date": "2026-05-22",
-      "severity": "critical",
-      "description": "كلمة desc محجوزة في PostgreSQL. تسبب syntax error في migration SQL.",
-      "fixed": true,
-      "patch": "rename-desc-to-description-in-sql"
-    },
-    {
-      "id": "err-129",
-      "date": "2026-05-23",
-      "severity": "critical",
-      "description": "الكتالوج فارغ على Vercel لأن products.json في جذر المشروع غير مرئي للـ frontend. Vercel يخدم الملفات الثابتة من public/ فقط.",
-      "fixed": true,
-      "patch": "copy-products-to-public"
-    },
-    {
-      "id": "err-130",
-      "date": "2026-05-23",
-      "severity": "high",
-      "description": "godot-agent.js يستخدم HTML5 بدلاً من Web، يضيف المنتج في نهاية products.json، ويعتمد على base-godot-project ثابت بدون روح.",
-      "fixed": true,
-      "patch": "delete-godot-agent-use-code-agent"
-    },
-    {
-      "id": "err-131",
-      "date": "2026-05-23",
-      "severity": "medium",
-      "description": "generate-ideas.js يستخدم maxTokens بدلاً من maxOutputTokens، ويستدعي JSON.parse على مخرجات askGemini.",
-      "fixed": true,
-      "patch": "fix-generate-ideas-api-calls"
-    },
-    {
-      "id": "err-132",
-      "date": "2026-05-24",
-      "severity": "critical",
-      "description": "getDayOfYear() في orchestrator كان يبدأ من 0 بدلاً من 1 مما يسبب off-by-one في أولوية العوالم.",
-      "fixed": true,
-      "patch": "fix-day-of-year-calculation"
-    }
+    { "id":"err-070", "date":"2026-05-18", "severity":"high",     "description":"_gemini.js كانت تتجاهل المعاملات الإضافية.",                                                                                      "fixed":true,  "patch":"add-options-param-to-askGemini" },
+    { "id":"err-071", "date":"2026-05-18", "severity":"critical", "description":"لا توجد وثيقة روح تربط الوكلاء.",                                                                                                 "fixed":true,  "patch":"add-soul-agent-and-soul-context" },
+    { "id":"err-073", "date":"2026-05-18", "severity":"critical", "description":"تعارض اسم preset بين code-agent (HTML5) وgodot-export.yml (Web).",                                                               "fixed":true,  "patch":"unify-preset-name-to-Web-everywhere" },
+    { "id":"err-078", "date":"2026-05-18", "severity":"critical", "description":"orchestrator لا يفرق بين BIRTH MODE وEVOLUTION MODE.",                                                                            "fixed":true,  "patch":"add-birth-evolution-dual-mode" },
+    { "id":"err-094", "date":"2026-05-19", "severity":"critical", "description":"استدعاء askGemini ببارامترات temperature داخل كائن.",                                                                             "fixed":true,  "patch":"fix-askGemini-call-signature" },
+    { "id":"err-108", "date":"2026-05-20", "severity":"critical", "description":"فشل Gemini (503/429) بسبب استنفاد Free Tier. الحل: billing.",                                                                    "fixed":false, "patch":"upgrade-to-paid-gemini-plan" },
+    { "id":"err-113", "date":"2026-05-21", "severity":"critical", "description":"code-agent يستخدم maxTokens بدلاً من maxOutputTokens.",                                                                           "fixed":true,  "patch":"fix-maxTokens-to-maxOutputTokens" },
+    { "id":"err-114", "date":"2026-05-21", "severity":"critical", "description":"code-agent يستخدم JSON.parse على مخرجات askGemini.",                                                                              "fixed":true,  "patch":"remove-JSON-parse-call" },
+    { "id":"err-120", "date":"2026-05-21", "severity":"critical", "description":"soulContext يُعيد كائناً — prompts تحتوي على [object Object].",                                                                   "fixed":true,  "patch":"soulContext-returns-string-with-rules" },
+    { "id":"err-121", "date":"2026-05-21", "severity":"critical", "description":"Cannot parse JSON في code-agent — project.godot كنص. الحل: بناؤه محلياً.",                                                       "fixed":true,  "patch":"build-project-godot-locally" },
+    { "id":"err-122", "date":"2026-05-21", "severity":"high",     "description":"world-senses-agent.js مفقود من agents/.",                                                                                         "fixed":true,  "patch":"add-world-senses-agent" },
+    { "id":"err-124", "date":"2026-05-22", "severity":"critical", "description":"generate-deploy.yml يستخدم bash syntax على windows-latest.",                                                                      "fixed":true,  "patch":"replace-bash-with-pwsh" },
+    { "id":"err-126", "date":"2026-05-22", "severity":"critical", "description":"GEMINI_KEY في workflow بدلاً من GEMINI_API_KEY.",                                                                                  "fixed":true,  "patch":"unify-gemini-key-name" },
+    { "id":"err-127", "date":"2026-05-22", "severity":"critical", "description":"@supabase/supabase-js يفشل على Node.js 20 بسبب غياب WebSocket.",                                                                  "fixed":true,  "patch":"add-ws-package-for-supabase" },
+    { "id":"err-128", "date":"2026-05-22", "severity":"critical", "description":"desc محجوزة في PostgreSQL.",                                                                                                       "fixed":true,  "patch":"rename-desc-to-description-in-sql" },
+    { "id":"err-129", "date":"2026-05-23", "severity":"critical", "description":"الكتالوج فارغ على Vercel — products.json في الجذر غير مرئي.",                                                                    "fixed":true,  "patch":"copy-products-to-public" },
+    { "id":"err-132", "date":"2026-05-24", "severity":"critical", "description":"getDayOfYear() كان يبدأ من 0.",                                                                                                    "fixed":true,  "patch":"fix-day-of-year-calculation" },
+    { "id":"err-133", "date":"2026-05-25", "severity":"critical", "description":"revival-agent يستخدم await import داخل دوال غير async.",                                                                          "fixed":true,  "patch":"move-imports-to-top-of-file" },
+    { "id":"err-134", "date":"2026-05-25", "severity":"critical", "description":"code-agent يستخدم await import داخل loadRecipes.",                                                                                 "fixed":true,  "patch":"add-readdirSync-to-top-imports" },
+    { "id":"err-135", "date":"2026-05-25", "severity":"critical", "description":"world-birth-agent يطلب العالم + أعداء + سلاح في استدعاء واحد — JSON يُقطع.",                                                    "fixed":true,  "patch":"split-world-birth-into-3-calls" },
+    { "id":"err-136", "date":"2026-05-25", "severity":"high",     "description":"orchestrator v7.0 يتعطل عند فشل world-birth-agent — لا يتحقق من null.",                                                          "fixed":true,  "patch":"add-null-check-before-world-push" },
+    { "id":"err-137", "date":"2026-05-26", "severity":"critical", "description":"godot-export.yml يستخدم $(pwd)/$OUTPUT_DIR — يضاعف المسار على Windows.",                                                         "fixed":true,  "patch":"use-relative-output-dir" },
+    { "id":"err-138", "date":"2026-05-26", "severity":"high",     "description":"git pull --rebase يفشل بسبب unstaged changes بعد التصدير.",                                                                       "fixed":true,  "patch":"add-git-stash-before-rebase" },
+    { "id":"err-139", "date":"2026-05-26", "severity":"medium",   "description":"universe-evolution.yml يحتوي cache: npm.",                                                                                         "fixed":true,  "patch":"remove-npm-cache-from-setup-node" },
+    { "id":"err-140", "date":"2026-05-28", "severity":"critical", "description":"retry في _gemini.js يستهلك الحصة — كل فشل يستهلك 3 طلبات.",                                                                     "fixed":true,  "patch":"gemini-v2-single-retry" },
+    { "id":"err-141", "date":"2026-05-31", "severity":"critical", "description":"وكلاء الوسائط كانت تستخدم bash و pip — لا تعمل على Windows.",                                                                    "fixed":true,  "patch":"rewrite-all-media-agents-to-pure-nodejs" },
+    { "id":"err-142", "date":"2026-05-31", "severity":"high",     "description":"produce-episode.yml كان يستخدم ubuntu-latest.",                                                                                    "fixed":true,  "patch":"switch-workflow-to-windows-latest" },
+    { "id":"err-143", "date":"2026-05-31", "severity":"high",     "description":"library-builder-agent كان يحفظ قواعد عامة — لا تمييز بين الوكلاء.",                                                             "fixed":true,  "patch":"library-v3-per-agent-knowledge" },
+    { "id":"err-144", "date":"2026-05-31", "severity":"medium",   "description":"budget.json كان منفصلاً بين المكتبة والوكلاء.",                                                                                   "fixed":true,  "patch":"unified-budget-in-gemini-v2" }
   ],
+
   "rules": [
-    {
-      "id": "rule-055",
-      "scope": ["all"],
-      "description": "askGemini يجب أن تقبل دائماً معاملات إضافية (options) كـ topP, topK, maxOutputTokens. لا تُحذف هذه المعاملات."
-    },
-    {
-      "id": "rule-056",
-      "scope": ["all"],
-      "description": "كل وكيل يجب أن يقرأ وثيقة الروح قبل بدء عمله عبر soulContext('agentName')."
-    },
-    {
-      "id": "rule-057",
-      "scope": ["template-engineer"],
-      "description": "template-engineer يجب أن يحتوي على خريطة كاملة لجميع القوالب مع نظام تسجيل نقاط."
-    },
-    {
-      "id": "rule-058",
-      "scope": ["godot", "code-agent"],
-      "description": "اسم preset في export_presets.cfg يجب أن يكون 'Web' دائماً. لا يُستخدم 'HTML5' في Godot 4.x."
-    },
-    {
-      "id": "rule-059",
-      "scope": ["workflow"],
-      "description": "في GitHub Actions على Windows، استخدم python3 دائماً وليس python."
-    },
-    {
-      "id": "rule-060",
-      "scope": ["workflow"],
-      "description": "لا تستخدم ملفات مؤقتة في /tmp/ في YAML. استخدم shell variables أو $GITHUB_ENV."
-    },
-    {
-      "id": "rule-061",
-      "scope": ["all"],
-      "description": "الإيموجي محظور في commit messages وفي agent logs. يُسمح به فقط في بيانات اللعبة وواجهة المستخدم."
-    },
-    {
-      "id": "rule-063",
-      "scope": ["orchestrator"],
-      "description": "orchestrator يعمل بأربعة أوضاع: BIRTH / EVOLUTION / INVENTION / REVIVAL / SYNC. المتغير MODE يتحكم في الوضع."
-    },
-    {
-      "id": "rule-064",
-      "scope": ["orchestrator"],
-      "description": "العوالم لها أولوية مطلقة في EVOLUTION MODE. إذا كان عدد العوالم أقل من رقم اليوم من السنة، يُولد عالم جديد أولاً."
-    },
-    {
-      "id": "rule-065",
-      "scope": ["level-agent"],
-      "description": "الهدف السنوي 365 عالماً. كل عالم ينتمي لفصل من 12 فصلاً (30 عالم لكل فصل)."
-    },
-    {
-      "id": "rule-066",
-      "scope": ["soul-agent"],
-      "description": "وثيقة الروح تُنشأ مرة واحدة في BIRTH MODE وتبقى ثابتة طوال السنة."
-    },
-    {
-      "id": "rule-067",
-      "scope": ["template-engineer"],
-      "description": "لا تُضف قالباً HTML جديداً دون تحديث خريطة template-engineer فوراً."
-    },
-    {
-      "id": "rule-070",
-      "scope": ["godot"],
-      "description": "في Godot 4.x، اسم منصة الويب هو 'Web' دائماً. 'HTML5' خاص بـ Godot 3.x فقط."
-    },
-    {
-      "id": "rule-071",
-      "scope": ["godot"],
-      "description": "أضف دائماً variant/thread_support=false في export_presets.cfg للتصدير أحادي الخيط."
-    },
-    {
-      "id": "rule-074",
-      "scope": ["workflow"],
-      "description": "اسم سير GitHub Actions يجب أن يكون بحروف صغيرة فقط ليظهر زر Run workflow."
-    },
-    {
-      "id": "rule-077",
-      "scope": ["workflow"],
-      "description": "استخدم shell: pwsh بدلاً من shell: bash على windows-latest runner."
-    },
-    {
-      "id": "rule-079",
-      "scope": ["workflow"],
-      "description": "لكتابة محتوى ملف في GitHub Actions على Windows، استخدم echo المتعددة الأسطر أو PowerShell herestring."
-    },
-    {
-      "id": "rule-087",
-      "scope": ["all"],
-      "description": "استدعاء askGemini يجب أن يكون: askGemini(prompt, temperature, options). لا تدمج temperature داخل الكائن."
-    },
-    {
-      "id": "rule-088",
-      "scope": ["all"],
-      "description": "استدعاء soulContext يجب أن يكون باسم الوكيل (string) وليس بكائن universe."
-    },
-    {
-      "id": "rule-089",
-      "scope": ["all"],
-      "description": "جميع الوكلاء يجب أن يطلبوا JSON لأن _gemini.js يستخدم responseMimeType: 'application/json'."
-    },
-    {
-      "id": "rule-090",
-      "scope": ["collision-agent"],
-      "description": "وكيل التصادم يتحقق من StaticBody3D/CharacterBody3D/RigidBody3D وليس MeshInstance3D."
-    },
-    {
-      "id": "rule-092",
-      "scope": ["orchestrator"],
-      "description": "اجمع الوكلاء الذين يعملون على نفس البيانات في وكيل واحد لتقليل استدعاءات Gemini."
-    },
-    {
-      "id": "rule-094",
-      "scope": ["player-memory"],
-      "description": "player-memory يحتاج universe الكامل. لا تمرر له كائناً جزئياً أبداً."
-    },
-    {
-      "id": "rule-095",
-      "scope": ["collision-agent"],
-      "description": "لا تستدعِ collision-agent في كل جولة. استدعِه فقط عند إضافة عوالم جديدة."
-    },
-    {
-      "id": "rule-096",
-      "scope": ["orchestrator"],
-      "description": "خارطة الطريق: المرحلة 0 (إصلاح) → 1 (Supabase + test/monitor) → 2 (اللاعب) → 3 (الأفلام) → 4 (اللقاء)."
-    },
-    {
-      "id": "rule-097",
-      "scope": ["all"],
-      "description": "لا تغير نموذج Gemini (gemini-2.5-flash) إلا بطلب صريح. قاعدة ذهبية لا تُخرق."
-    },
-    {
-      "id": "rule-098",
-      "scope": ["all"],
-      "description": "جميع استدعاءات Gemini تمر عبر askGemini في _gemini.js. لا fetch مباشر أبداً."
-    },
-    {
-      "id": "rule-099",
-      "scope": ["all"],
-      "description": "استخدم [ERROR]/[INFO]/[OK]/[WARN] في console.log بدلاً من الإيموجي."
-    },
-    {
-      "id": "rule-100",
-      "scope": ["_soul.js"],
-      "description": "soulContext يُرجع string دائماً يحتوي على روح الكون + قواعد الوكيل من rules-index.json."
-    },
-    {
-      "id": "rule-101",
-      "scope": ["all"],
-      "description": "استخدم maxOutputTokens وليس maxTokens في خيارات askGemini."
-    },
-    {
-      "id": "rule-102",
-      "scope": ["all"],
-      "description": "لا تستخدم JSON.parse مع نتيجة askGemini. _gemini.js يعيد الكائن مباشرة."
-    },
-    {
-      "id": "rule-103",
-      "scope": ["code-agent"],
-      "description": "قسّم طلب الملفات الكبيرة إلى استدعاءين: .gd أولاً ثم .tscn لتجنب قطع JSON."
-    },
-    {
-      "id": "rule-104",
-      "scope": ["_soul.js"],
-      "description": "soulContext يُرجع string فقط. لا كائن أبداً حتى لا تتلوث prompts الوكلاء."
-    },
-    {
-      "id": "rule-105",
-      "scope": ["workflow"],
-      "description": "على windows-latest: استخدم New-Item -Force بدلاً من mkdir -p، وGet-ChildItem بدلاً من ls -la."
-    },
-    {
-      "id": "rule-106",
-      "scope": ["workflow"],
-      "description": "اسم متغير البيئة للـ Gemini هو GEMINI_API_KEY في كل مكان — في الكود وفي الـ workflow وفي GitHub Secrets."
-    },
-    {
-      "id": "rule-107",
-      "scope": ["supabase"],
-      "description": "على Node.js 20، مرر ws package للـ Supabase client: createClient(url, key, { realtime: { transport: ws } })."
-    },
-    {
-      "id": "rule-108",
-      "scope": ["supabase"],
-      "description": "تجنب استخدام desc كاسم عمود في PostgreSQL — كلمة محجوزة. استخدم description بدلاً منها."
-    },
-    {
-      "id": "rule-109",
-      "scope": ["vercel"],
-      "description": "Vercel يخدم الملفات الثابتة من public/ فقط. أي ملف في الجذر غير مرئي للـ frontend. انسخ products.json إلى public/ في كل تشغيل."
-    },
-    {
-      "id": "rule-110",
-      "scope": ["godot"],
-      "description": "لا تطلب project.godot من Gemini. ابنه محلياً بدالة buildProjectGodot() لتجنب مشاكل JSON parsing."
-    },
-    {
-      "id": "rule-111",
-      "scope": ["orchestrator"],
-      "description": "جدول الأسبوع: الأحد=inventor / اثنين+أربعاء+جمعة=revival+godot-export / السبت=supabase-sync / الباقي=evolution فقط."
-    },
-    {
-      "id": "rule-112",
-      "scope": ["orchestrator"],
-      "description": "getDayOfYear() يجب أن يبدأ من 1 وليس 0. استخدم: Math.floor((now - start) / 86400000) + 1."
-    },
-    {
-      "id": "rule-113",
-      "scope": ["revival-agent"],
-      "description": "revival-agent يرقّي 3 منتجات كحد أقصى في كل تشغيل لتوفير حصة Gemini."
-    },
-    {
-      "id": "rule-114",
-      "scope": ["revival-agent"],
-      "description": "revival-agent يحتفظ بالاسم الأصلي للمنتج ويجدد روحه فقط. لا حذف، لا تغيير للـ slug."
-    },
-    {
-      "id": "rule-115",
-      "scope": ["inventor-agent"],
-      "description": "inventor-agent يعمل كل أحد تلقائياً. يقيّم الاختراع بمعايير العبقرية قبل النشر. العبقرية أو لا شيء."
-    },
-    {
-      "id": "rule-116",
-      "scope": ["inventor-agent"],
-      "description": "godot-recipes/ لا تُنشأ يدوياً. يُنشئها inventor-agent تلقائياً في أول تشغيل."
-    }
+    { "id":"rule-055", "scope":["all"],                  "description":"askGemini تقبل دائماً معاملات إضافية (options) كـ topP, topK, maxOutputTokens." },
+    { "id":"rule-056", "scope":["all"],                  "description":"كل وكيل يقرأ وثيقة الروح عبر soulContext('agentName')." },
+    { "id":"rule-058", "scope":["godot","code-agent"],   "description":"اسم preset = 'Web' دائماً. لا 'HTML5' في Godot 4.x." },
+    { "id":"rule-061", "scope":["all"],                  "description":"الإيموجي محظور في commit messages وفي agent logs." },
+    { "id":"rule-063", "scope":["orchestrator"],         "description":"orchestrator v8.0 أوضاع: BIRTH/EVOLUTION/INVENTION/REVIVAL/SYNC/CODE/EPISODE/LIBRARY." },
+    { "id":"rule-064", "scope":["orchestrator"],         "description":"العوالم أولوية مطلقة. إذا عددها أقل من اليوم من السنة، يُولد عالم جديد أولاً." },
+    { "id":"rule-070", "scope":["godot"],                "description":"في Godot 4.x، اسم منصة الويب هو 'Web' دائماً." },
+    { "id":"rule-077", "scope":["workflow"],             "description":"shell: bash في godot-export.yml فقط. shell: pwsh في جميع الـ workflows الأخرى." },
+    { "id":"rule-087", "scope":["all"],                  "description":"askGemini(prompt, temperature, options, caller). لا تدمج temperature في الكائن." },
+    { "id":"rule-089", "scope":["all"],                  "description":"جميع الوكلاء يطلبون JSON — _gemini.js يستخدم responseMimeType: 'application/json'." },
+    { "id":"rule-097", "scope":["all"],                  "description":"لا تغير نموذج Gemini (gemini-2.5-flash) إلا بطلب صريح. قاعدة ذهبية." },
+    { "id":"rule-098", "scope":["all"],                  "description":"جميع استدعاءات Gemini تمر عبر askGemini في _gemini.js. لا fetch مباشر." },
+    { "id":"rule-099", "scope":["all"],                  "description":"استخدم [ERROR]/[INFO]/[OK]/[WARN] في console.log." },
+    { "id":"rule-100", "scope":["_soul.js"],             "description":"soulContext يُرجع string دائماً: روح الكون + قواعد الوكيل." },
+    { "id":"rule-101", "scope":["all"],                  "description":"استخدم maxOutputTokens وليس maxTokens." },
+    { "id":"rule-102", "scope":["all"],                  "description":"لا JSON.parse مع نتيجة askGemini. _gemini.js يعيد الكائن مباشرة." },
+    { "id":"rule-103", "scope":["code-agent"],           "description":"كل ملف .gd في استدعاء منفصل بـ 4096 token." },
+    { "id":"rule-104", "scope":["_soul.js"],             "description":"soulContext يُرجع string فقط. لا كائن أبداً." },
+    { "id":"rule-106", "scope":["workflow"],             "description":"GEMINI_API_KEY في كل مكان — كود، workflow، Secrets." },
+    { "id":"rule-107", "scope":["supabase"],             "description":"Node.js 20: createClient(url, key, { realtime: { transport: ws } })." },
+    { "id":"rule-108", "scope":["supabase"],             "description":"تجنب desc في PostgreSQL. استخدم description." },
+    { "id":"rule-109", "scope":["vercel"],               "description":"انسخ products.json إلى public/ في كل تشغيل." },
+    { "id":"rule-110", "scope":["godot"],                "description":"لا تطلب project.godot من Gemini. ابنه محلياً." },
+    { "id":"rule-111", "scope":["orchestrator"],         "description":"جدول الأسبوع: أحد=inventor / اثنين+أربعاء+جمعة=revival / خميس=roadmap / سبت=sync+analytics." },
+    { "id":"rule-112", "scope":["orchestrator"],         "description":"getDayOfYear() يبدأ من 1: Math.floor((now-start)/86400000)+1." },
+    { "id":"rule-115", "scope":["inventor-agent"],       "description":"inventor-agent كل أحد. العبقرية أو لا شيء. ينشر للبيع على itch.io وKo-fi." },
+    { "id":"rule-117", "scope":["world-birth-agent"],    "description":"world-birth-agent: 3 استدعاءات: core → elements → senses." },
+    { "id":"rule-118", "scope":["world-birth-agent"],    "description":"كل عالم: قانون فيزيائي + عدوان + سلاح + حواس. مستوحى من Dark Souls وHollow Knight." },
+    { "id":"rule-119", "scope":["godot-export"],         "description":"استخدم مسار نسبي للـ OUTPUT_DIR بدون $(pwd)." },
+    { "id":"rule-120", "scope":["godot-export"],         "description":"git stash قبل git pull --rebase." },
+    { "id":"rule-121", "scope":["workflow"],             "description":"لا cache: npm إلا إذا كان package-lock.json موجوداً." },
+    { "id":"rule-122", "scope":["_gemini.js"],           "description":"retry مرة واحدة فقط. JSON مقطوع يضاعف tokens بدون retry شبكي." },
+    { "id":"rule-123", "scope":["inventor-agent"],       "description":"كل اختراع = منتج للبيع على itch.io وKo-fi وGumroad." },
+    { "id":"rule-124", "scope":["content-agent"],        "description":"content-agent: سكريبت 60 ثانية كل 8 ساعات. مزيج: حياة + تقنية + دراما + فكاهة." },
+    { "id":"rule-125", "scope":["content-agent"],        "description":"content-agent يحفظ المواضيع المستخدمة في content-topics.json." },
+    { "id":"rule-126", "scope":["all"],                  "description":"لا bash scripts في أي وكيل. Node.js خالص: fluent-ffmpeg، fetch()، fs." },
+    { "id":"rule-127", "scope":["workflow"],             "description":"جميع الـ workflows: windows-latest + pwsh. استثناء واحد: godot-export.yml يستخدم bash." },
+    { "id":"rule-128", "scope":["_gemini.js"],           "description":"budget.json موحد: 14 للمكتبة + 6 للوكلاء = 20/يوم. كل caller مُسجَّل." },
+    { "id":"rule-129", "scope":["library-builder-agent"],"description":"كل مرجع يُبنى بـ byAgent. readForAgent() تقرأ byAgent[agentName] تحديداً." },
+    { "id":"rule-130", "scope":["series-agent"],         "description":"خط الإنتاج إلزامي: screenplay → dialogue → scene → voice → subtitle → visual → edit → trailer → upload." },
+    { "id":"rule-131", "scope":["screenplay-agent"],     "description":"screenplay-agent يقرأ audience-insights.json قبل الكتابة." },
+    { "id":"rule-132", "scope":["music-agent"],          "description":"أولوية: Suno API → CC0 → ffmpeg local. تُخزَّن في assets/music/." },
+    { "id":"rule-133", "scope":["trailer-agent"],        "description":"التريلر 60s: hook(5s)+peak(40s)+cliffhanger(15s). 9:16 عمودي." },
+    { "id":"rule-134", "scope":["upload-agent"],         "description":"يوتيوب: الحلقة الكاملة + شورتس. تيك توك: التريلر 60s فقط." },
+    { "id":"rule-135", "scope":["analytics-agent"],      "description":"analytics-agent كل سبت. يحفظ audience-insights.json. لا Gemini — منطق محلي." },
+    { "id":"rule-136", "scope":["dialogue-agent"],       "description":"dialogue-agent لا يستهلك Gemini. يعمل من DIALOGUE_PATTERNS + مكتبة." },
+    { "id":"rule-137", "scope":["subtitle-agent"],       "description":"subtitle-agent لا يستهلك Gemini. يولد SRT + WebVTT من audioManifest." },
+    { "id":"rule-138", "scope":["all"],                  "description":"npm إلزامي: fluent-ffmpeg + @ffmpeg-installer/ffmpeg + edge-tts-node. لا pip." },
+    { "id":"rule-139", "scope":["all"],                  "description":"Zero Cost Policy: لا إنفاق حتى يبدأ الدخل. Imagen مؤجل → Lexica/Unsplash. Suno مؤجل → CC0." }
   ],
+
   "agents": {
-    "birth": [
-      "analytics-agent",
-      "idea-agent",
-      "story-agent",
-      "soul-agent",
-      "art-agent",
-      "template-engineer",
-      "level-agent",
-      "world-senses-agent",
-      "code-agent",
-      "marketing-agent",
-      "roadmap-agent",
-      "collision-agent",
-      "player-memory"
-    ],
-    "evolution": [
-      "world-evolution-agent",
-      "weapon-evolution-agent",
-      "enemy-evolution-agent",
-      "vehicle-evolution-agent",
-      "world-senses-agent",
-      "collision-agent",
-      "player-memory",
-      "marketing-agent"
-    ],
+    "birth":      ["analytics-agent","idea-agent","story-agent","soul-agent","art-agent","template-engineer","world-birth-agent","code-agent","marketing-agent","roadmap-agent","collision-agent","player-memory"],
+    "evolution":  ["world-birth-agent","collision-agent","code-agent","player-memory","marketing-agent"],
+    "episode":    ["screenplay-agent","dialogue-agent","scene-agent","voice-agent","subtitle-agent","visual-agent","edit-agent","trailer-agent","upload-agent"],
     "weekly": {
-      "sunday":              ["inventor-agent"],
-      "monday_wednesday_friday": ["revival-agent"],
-      "saturday":            ["sync-to-supabase"]
+      "sunday":                  ["inventor-agent"],
+      "monday_wednesday_friday": ["revival-agent","godot-export"],
+      "thursday":                ["roadmap-agent"],
+      "saturday":                ["sync-to-supabase","analytics-agent"]
     },
-    "manual": [
-      "invention",
-      "revival",
-      "sync",
-      "birth"
-    ]
+    "daily":      ["library-builder-agent"],
+    "content":    ["content-agent"],
+    "support":    ["music-agent","analytics-agent"],
+    "deprecated": ["world-evolution-agent","weapon-evolution-agent","enemy-evolution-agent","vehicle-evolution-agent","world-senses-agent"]
   },
+
   "architecture": {
     "universe_layers": {
-      "cosmos":           "يتطور تلقائياً يومياً بالوكلاء",
-      "player":           "يتطور بتجربة كل لاعب",
-      "collective":       "يتشكل من آثار اللاعبين معاً",
-      "architect_class":  "أفضل اللاعبين يشاركون في بناء الكون"
+      "cosmos":          "يتطور يومياً — world-birth-agent",
+      "player":          "يتطور بتجربة اللاعب — player-memory",
+      "collective":      "آثار اللاعبين — collective-memory (مستقبل)",
+      "architect_class": "أفضل اللاعبين يشاركون في بناء الكون"
     },
-    "player_classes": [
-      "explorer",
-      "builder",
-      "architect"
-    ],
+    "production_pipeline": {
+      "episode_every":  "3 أيام",
+      "steps":          8,
+      "gemini_calls":   1,
+      "output":         "mp4 + trailer 60s + SRT عربي/إنجليزي",
+      "platforms":      ["youtube","youtube_shorts","tiktok"]
+    },
+    "budget": {
+      "daily_total":  20,
+      "library":      14,
+      "agents":       6,
+      "tracker":      "library/budget.json"
+    },
+    "library": {
+      "version":    "3.1",
+      "departments": 11,
+      "references":  66,
+      "build_days":  5,
+      "per_agent":   true
+    },
+    "engines": {
+      "godot":  "الألعاب الجادة — FPS، Action، RPG",
+      "phaser": "الألعاب الخفيفة — Arcade، Puzzle، 2D",
+      "ffmpeg": "المونتاج والتريلر — fluent-ffmpeg Node.js"
+    },
+    "revenue_streams": {
+      "youtube":       "إعلانات المسلسل",
+      "tiktok":        "محتوى قصير — trailer 60s",
+      "iap":           "Ko-fi + PayPal",
+      "inventions":    "itch.io + Gumroad",
+      "subscriptions": "اشتراك مستقبلي"
+    },
     "roadmap": {
-      "phase_0": "إصلاح الأخطاء — مكتملة",
-      "phase_1": "Supabase + world-senses + test/monitor — جارية",
-      "phase_2": "auth + progress + player-memory + matchmaking",
-      "phase_3": "screenplay + voice + render",
-      "phase_4": "اندماج الأكوان"
+      "phase_0": "إصلاح الأخطاء — مكتملة ✅",
+      "phase_1": "Supabase + world-birth + godot-export — مكتملة ✅",
+      "phase_2": "المكتبة + خط الإنتاج السينمائي — جارية 🔄",
+      "phase_3": "analytics feedback loop + auth اللاعب",
+      "phase_4": "Three.js cinematics + matchmaking",
+      "phase_5": "اندماج الأكوان + architect class"
     }
   },
+
   "weekly_schedule": {
-    "sunday":    "EVOLUTION + inventor-agent",
-    "monday":    "EVOLUTION + revival-agent + godot-export",
-    "tuesday":   "EVOLUTION",
-    "wednesday": "EVOLUTION + revival-agent + godot-export",
-    "thursday":  "EVOLUTION",
-    "friday":    "EVOLUTION + revival-agent + godot-export",
-    "saturday":  "EVOLUTION + sync-to-supabase"
+    "sunday":    "مكتبة + EVOLUTION + inventor",
+    "monday":    "مكتبة + EVOLUTION + revival + godot-export",
+    "tuesday":   "مكتبة + EVOLUTION",
+    "wednesday": "مكتبة + EVOLUTION + revival + godot-export",
+    "thursday":  "مكتبة + EVOLUTION + roadmap",
+    "friday":    "مكتبة + EVOLUTION + revival + godot-export",
+    "saturday":  "مكتبة + EVOLUTION + sync + analytics"
   },
+
+  "episode_schedule": {
+    "every_3_days": "حلقة مسلسل كاملة",
+    "workflow":     "produce-episode.yml",
+    "runner":       "windows-latest"
+  },
+
+  "content_schedule": {
+    "every_8_hours": "content-agent سكريبت فيديو جديد",
+    "slots":         ["morning","afternoon","night"],
+    "platforms":     ["tiktok","youtube_shorts","instagram_reels"]
+  },
+
+  "zero_cost_policy": {
+    "active": true,
+    "components": {
+      "gemini":  "Free Tier 20 طلب/يوم",
+      "tts":     "edge-tts-node مجاني",
+      "images":  "Lexica → Unsplash → Picsum",
+      "music":   "CC0 → ffmpeg local",
+      "hosting": "GitHub Actions + Vercel Free",
+      "database":"Supabase Free 500MB"
+    },
+    "deferred": ["Imagen API","Suno API","Gemini Paid Plan"]
+  },
+
+  "npm_dependencies": [
+    "@google/genai",
+    "@ffmpeg-installer/ffmpeg",
+    "fluent-ffmpeg",
+    "edge-tts-node",
+    "@supabase/supabase-js",
+    "ws"
+  ],
+
   "secrets_required": [
     "GEMINI_API_KEY",
     "SUPABASE_URL",
     "SUPABASE_SERVICE_ROLE_KEY",
+    "YOUTUBE_CLIENT_ID",
+    "YOUTUBE_CLIENT_SECRET",
+    "YOUTUBE_REFRESH_TOKEN",
+    "TIKTOK_ACCESS_TOKEN",
     "KOFI_VERIFICATION_TOKEN",
     "ADMIN_PASSWORD"
+  ],
+
+  "decisions": [
+    { "date":"2026-05-26", "decision":"world-birth-agent يدمج world+enemies+weapon+senses في وكيل واحد.", "reason":"التناسق + توفير Gemini" },
+    { "date":"2026-05-27", "decision":"التركيز على المحتوى الترفيهي كمصدر دخل أولي.",                    "reason":"الألعاب تحتاج وقتاً. المحتوى أسرع دخلاً." },
+    { "date":"2026-05-27", "decision":"inventor-agent ينشر للبيع على itch.io وKo-fi.",                    "reason":"كل اختراع = دخل يموّل billing." },
+    { "date":"2026-05-27", "decision":"المقاطع السينمائية بـ ffmpeg بدل Godot Movie Maker.",              "reason":"Godot Movie Maker لا يعمل headless." },
+    { "date":"2026-05-28", "decision":"content-agent ينتج محتوى عاماً (حياة+تقنية).",                    "reason":"جمهور أوسع من محتوى الكون فقط." },
+    { "date":"2026-05-31", "decision":"إعادة كتابة وكلاء الوسائط بـ Node.js خالص.",                      "reason":"windows-latest — bash وpip غير موثوقَين." },
+    { "date":"2026-05-31", "decision":"library-builder v3.1 — byAgent مخصص لكل وكيل.",                   "reason":"القواعد العامة لا تكفي — كل وكيل يحتاج علماً دقيقاً." },
+    { "date":"2026-05-31", "decision":"_gemini.js v2.0 — budget موحد + retry مرة واحدة.",                 "reason":"retry القديم كان يهدر 4 طلبات لكل فشل." },
+    { "date":"2026-05-31", "decision":"خط إنتاج المسلسل: 8 خطوات، Gemini طلب واحد فقط.",                 "reason":"باقي الخطوات من المكتبة أو أدوات مجانية." },
+    { "date":"2026-05-31", "decision":"analytics-agent يغذي screenplay-agent أسبوعياً.",                   "reason":"feedback loop حقيقي — المسلسل يتحسن تلقائياً." }
   ]
 }
