@@ -1,8 +1,10 @@
 name: run-all-agents
+
 on:
   schedule:
     - cron: '0 8  * * *'   # كل يوم 8 صباحاً UTC
     - cron: '0 14 * * *'   # كل يوم 2 ظهراً UTC
+    - cron: '0 18 */3 * *' # كل 3 أيام 6 مساءً UTC — حلقة مسلسل
   workflow_dispatch:
     inputs:
       mode:
@@ -13,14 +15,17 @@ on:
         options:
           - auto
           - birth
+          - episode
           - invention
           - revival
           - sync
           - code
+          - library
 
 jobs:
   orchestrate:
     runs-on: windows-latest
+    timeout-minutes: 90
     permissions:
       contents: write
 
@@ -36,16 +41,38 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
         shell: pwsh
+        run: npm install
 
       - name: Create required directories
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path "agent-results" | Out-Null
-          New-Item -ItemType Directory -Force -Path "public"         | Out-Null
-          New-Item -ItemType Directory -Force -Path "godot-recipes"  | Out-Null
+          $dirs = @(
+            "agent-results",
+            "public",
+            "godot-recipes",
+            "library",
+            "assets/music",
+            "assets/fonts",
+            "episodes",
+            "series"
+          )
+          foreach ($d in $dirs) {
+            New-Item -ItemType Directory -Force -Path $d | Out-Null
+          }
           Write-Host "[OK] Directories ready"
+
+      - name: Create fallback image if missing
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "assets/fallback.png")) {
+            # صورة 1x1 PNG بسيطة
+            $bytes = [Convert]::FromBase64String(
+              "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+            )
+            [System.IO.File]::WriteAllBytes("assets/fallback.png", $bytes)
+            Write-Host "[OK] fallback.png created"
+          }
 
       - name: Run orchestrator
         shell: pwsh
@@ -53,6 +80,12 @@ jobs:
           GEMINI_API_KEY:            ${{ secrets.GEMINI_API_KEY }}
           SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          YOUTUBE_CLIENT_ID:         ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET:     ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN:     ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          TIKTOK_ACCESS_TOKEN:       ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+          TIKTOK_USERNAME:           ${{ secrets.TIKTOK_USERNAME }}
+          UNSPLASH_ACCESS_KEY:       ${{ secrets.UNSPLASH_ACCESS_KEY }}
           GITHUB_REPOSITORY:         ${{ github.repository }}
           SITE_URL:                  https://real-team.vercel.app
           MODE:                      ${{ github.event.inputs.mode || 'auto' }}
@@ -61,25 +94,47 @@ jobs:
       - name: Show results
         shell: pwsh
         run: |
-          Write-Host "[INFO] === agent-results ==="
-          if (Test-Path "agent-results") {
-            Get-ChildItem "agent-results" | Select-Object Name, Length | Format-Table
-          } else {
-            Write-Warning "[WARN] agent-results not found"
-          }
-
           Write-Host "[INFO] === run report ==="
           if (Test-Path "agent-results/run-report.json") {
-            Get-Content "agent-results/run-report.json"
+            $r = Get-Content "agent-results/run-report.json" | ConvertFrom-Json
+            Write-Host "[INFO] Mode:     $($r.mode)"
+            Write-Host "[INFO] Duration: $($r.totalDuration)"
+            Write-Host "[INFO] Passed:   $($r.summary.passed)"
+            Write-Host "[INFO] Failed:   $($r.summary.failed)"
+            Write-Host "[INFO] Library:  $($r.library.percent) ($($r.library.built)/$($r.library.total))"
+            Write-Host "[INFO] Budget:   library=$($r.budget.library.used) agents=$($r.budget.agents.used)"
           } else {
             Write-Warning "[WARN] No run report found"
           }
 
-          Write-Host "[INFO] === products count ==="
-          node -e "try { const p=JSON.parse(require('fs').readFileSync('products.json')); console.log('[OK] Products:', p.length); } catch(e) { console.error('[ERROR]', e.message); }"
-
           Write-Host "[INFO] === universe status ==="
-          node -e "try { const u=JSON.parse(require('fs').readFileSync('universe.json')); console.log('[OK] Universe:', u.id, '| Worlds:', u.worlds?.length, '| Evolutions:', u.evolutions, '| Revivals:', u.revivals || 0); } catch(e) { console.warn('[WARN] No universe yet'); }"
+          if (Test-Path "universe.json") {
+            $u = Get-Content "universe.json" | ConvertFrom-Json
+            Write-Host "[OK] Universe: $($u.id) | Worlds: $($u.worlds.Count) | Evolutions: $($u.evolutions)"
+          } else {
+            Write-Warning "[WARN] No universe yet"
+          }
+
+          Write-Host "[INFO] === series status ==="
+          if (Test-Path "series.json") {
+            $s = Get-Content "series.json" | ConvertFrom-Json
+            Write-Host "[OK] Series: $($s.title) | Episodes: $($s.episodes.Count) | Next: $($s.nextEpisode)"
+          } else {
+            Write-Host "[INFO] No series yet"
+          }
+
+          Write-Host "[INFO] === library status ==="
+          if (Test-Path "library/index.json") {
+            $l = Get-Content "library/index.json" | ConvertFrom-Json
+            Write-Host "[OK] Library: $($l.Count) references built"
+          } else {
+            Write-Host "[INFO] Library empty"
+          }
+
+          Write-Host "[INFO] === products ==="
+          if (Test-Path "products.json") {
+            node -e "try { const p=JSON.parse(require('fs').readFileSync('products.json')); console.log('[OK] Products:', p.length); } catch(e) { console.error('[ERROR]', e.message); }"
+          }
 
       - name: Copy products to public
         shell: pwsh
@@ -88,34 +143,60 @@ jobs:
             Copy-Item products.json public/products.json -Force
             Write-Host "[OK] products.json copied to public/"
           } else {
-            Write-Warning "[WARN] products.json not found — skipping copy"
+            Write-Warning "[WARN] products.json not found"
           }
+
+      - name: Upload episode artifact
+        uses: actions/upload-artifact@v4
+        if: contains(github.event.inputs.mode, 'episode') || github.event.schedule == '0 18 */3 * *'
+        with:
+          name: episode-${{ github.run_number }}
+          path: |
+            episodes/
+            series.json
+          retention-days: 30
 
       - name: Commit all changes
         shell: pwsh
         run: |
           git config user.name  "agents-bot[bot]"
           git config user.email "agents-bot@users.noreply.github.com"
-          git add -f agent-results/
-          git add products.json public/products.json
+
+          # إضافة كل الملفات المتغيرة
+          git add -f agent-results/          2>$null
+          git add    library/                2>$null
+          git add    series.json             2>$null
+          git add    products.json           2>$null
+          git add    public/products.json    2>$null
+
           if (Test-Path "public/games")    { git add public/games/ }
           if (Test-Path "universe.json")   { git add universe.json }
           if (Test-Path "godot-projects")  { git add godot-projects/ }
           if (Test-Path "godot-recipes")   { git add godot-recipes/ }
+
+          # لا نضيف episodes/ للـ git (ملفات كبيرة — artifacts فقط)
+
           $diff = git diff --staged --name-only
           if (-not $diff) {
             Write-Host "[INFO] No changes to commit"
             exit 0
           }
+
           $date = Get-Date -Format "yyyy-MM-dd HH:mm"
           $mode = $env:MODE
           git commit -m "agents: $mode run $date [skip ci]"
+
+          # pull rebase مع stash للأمان
+          git stash
           git pull --rebase origin main
           if ($LASTEXITCODE -ne 0) {
             git rebase --abort
+            git stash pop
             Write-Error "[FAIL] Rebase failed"
             exit 1
           }
+          git stash pop 2>$null
+
           git push origin main
           Write-Host "[OK] Changes pushed"
         env:
