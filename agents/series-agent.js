@@ -14,6 +14,7 @@ import { run as runVoice }      from './voice-agent.js';
 import { run as runVisual }     from './visual-agent.js';
 import { run as runEdit }       from './edit-agent.js';
 import { run as runUpload }     from './upload-agent.js';
+import { run as runTrailer }    from './trailer-agent.js';
 import { logger }               from '../logger.js';
 
 const __dirname    = dirname(fileURLToPath(import.meta.url));
@@ -69,9 +70,15 @@ export async function run(universe, targetEpisode = null) {
     logger.info(`[SERIES] Step 6/6 — Edit`);
     const episode = await runEdit(polishedScreenplay, visualManifest, audioManifest);
 
-    // 7. النشر التلقائي
+    // 7. التريلر — 60 ثانية لتيك توك
+    logger.info(`[SERIES] Trailer — 60s for TikTok`);
+    const trailer = await runTrailer(
+      polishedScreenplay, visualManifest, audioManifest, episode
+    );
+
+    // 8. النشر التلقائي
     logger.info(`[SERIES] Publishing...`);
-    const uploadResult = await runUpload(episode, series);
+    const uploadResult = await runUpload(episode, series, trailer);
 
     // ── تحديث سجل المسلسل ────────────────
     series.episodes.push({
