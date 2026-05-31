@@ -1,25 +1,27 @@
 /**
- * voice-agent.js
+ * voice-agent.js — v2.0 (Node.js خالص — Windows/Linux/Mac)
  * يحول الحوار → ملفات صوتية mp3
- * Edge TTS مجاني — لا API key مطلوب
- * كل شخصية لها صوت فريد
+ * عبر edge-tts npm (لا pip، لا shell)
+ *
+ * npm install edge-tts-node
  */
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname }                         from 'path';
 import { fileURLToPath }                         from 'url';
-import { execSync }                              from 'child_process';
+import { EdgeTTS }                               from 'edge-tts-node';
 import { logger }                                from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const tts       = new EdgeTTS();
 
-// أصوات عربية متاحة في Edge TTS
+// أصوات عربية متاحة
 const VOICE_MAP = {
-  'protagonist': 'ar-SA-HamedNeural',    // ذكر سعودي — البطل
-  'antagonist':  'ar-SA-ZariyahNeural',  // أنثى سعودية — العدو
-  'supporting':  'ar-EG-ShakirNeural',   // ذكر مصري — الرفيق
-  'narrator':    'ar-KW-FahedNeural',    // ذكر كويتي — الراوي
-  'default':     'ar-SA-HamedNeural',
+  protagonist: 'ar-SA-HamedNeural',
+  antagonist:  'ar-SA-ZariyahNeural',
+  supporting:  'ar-EG-ShakirNeural',
+  narrator:    'ar-KW-FahedNeural',
+  default:     'ar-SA-HamedNeural',
 };
 
 export async function run(screenplay, visualScenes) {
@@ -28,7 +30,7 @@ export async function run(screenplay, visualScenes) {
   const outDir = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`, 'audio');
   mkdirSync(outDir, { recursive: true });
 
-  // بناء خريطة الشخصيات → أصوات
+  // خريطة الشخصيات → أصوات
   const charVoices = {};
   for (const char of (screenplay.characters || [])) {
     charVoices[char.name] = char.voice || VOICE_MAP[char.role] || VOICE_MAP.default;
@@ -37,30 +39,32 @@ export async function run(screenplay, visualScenes) {
   const audioFiles = [];
 
   for (const scene of visualScenes.scenes) {
-    // صوت الراوي — وصف المكان
-    if (scene.location) {
-      const narratorLine = buildNarratorLine(scene);
-      const narratorFile = join(outDir, `${scene.id}-narrator.mp3`);
+    // صوت الراوي
+    const narratorLine = buildNarratorLine(scene);
+    const narratorFile = join(outDir, `${scene.id}-narrator.mp3`);
+
+    if (!existsSync(narratorFile)) {
       await generateTTS(narratorLine, VOICE_MAP.narrator, narratorFile);
-      audioFiles.push({
-        sceneId:  scene.id,
-        type:     'narrator',
-        text:     narratorLine,
-        file:     narratorFile,
-        duration: estimateDuration(narratorLine),
-      });
     }
+    audioFiles.push({
+      sceneId:  scene.id,
+      type:     'narrator',
+      text:     narratorLine,
+      file:     narratorFile,
+      duration: estimateDuration(narratorLine),
+    });
 
     // حوار الشخصيات
     for (let i = 0; i < (scene.dialogue || []).length; i++) {
-      const line    = scene.dialogue[i];
-      const voice   = charVoices[line.character] || VOICE_MAP.default;
-      const file    = join(outDir, `${scene.id}-d${i+1}.mp3`);
+      const line  = scene.dialogue[i];
+      const voice = charVoices[line.character] || VOICE_MAP.default;
+      const file  = join(outDir, `${scene.id}-d${i + 1}.mp3`);
+      const text  = line.emotion === 'توتر' ? `...${line.line}` : line.line;
 
-      // إضافة مسافة صمت قبل الحوار المتوتر
-      const text = line.emotion === 'توتر' ? `...${line.line}` : line.line;
+      if (!existsSync(file)) {
+        await generateTTS(text, voice, file);
+      }
 
-      await generateTTS(text, voice, file);
       audioFiles.push({
         sceneId:   scene.id,
         type:      'dialogue',
@@ -74,7 +78,6 @@ export async function run(screenplay, visualScenes) {
     }
   }
 
-  // حفظ manifest الصوت
   const manifest = {
     episode:    screenplay.episode,
     audioFiles,
@@ -87,50 +90,35 @@ export async function run(screenplay, visualScenes) {
     JSON.stringify(manifest, null, 2), 'utf8'
   );
 
-  logger.info('[OK] Audio generated', {
-    episode: screenplay.episode,
-    files:   audioFiles.length,
-  });
-
+  logger.info('[OK] Audio generated', { files: audioFiles.length });
   return manifest;
 }
 
-// ── توليد TTS عبر edge-tts ───────────────
-async function generateTTS(text, voice, outputPath) {
-  if (existsSync(outputPath)) {
-    logger.debug(`[VOICE] Skipping existing: ${outputPath}`);
-    return;
-  }
-
+// ════════════════════════════════════════════
+// توليد TTS — edge-tts-node (بدون shell)
+// ════════════════════════════════════════════
+async function generateTTS(text, voice, outputPath, retried = false) {
   try {
-    // edge-tts مثبّت عبر pip
-    execSync(
-      `edge-tts --voice "${voice}" --text "${text.replace(/"/g, "'")}" --write-media "${outputPath}"`,
-      { stdio: 'pipe', timeout: 30000 }
-    );
+    await tts.ttsPromise(text, outputPath, voice);
     logger.debug(`[VOICE] Generated: ${outputPath}`);
   } catch (err) {
+    if (!retried) {
+      // انتظر ثانية وأعد المحاولة
+      await new Promise(r => setTimeout(r, 1000));
+      return generateTTS(text, voice, outputPath, true);
+    }
     logger.error(`[VOICE] TTS failed: ${err.message}`);
-    // إنشاء ملف فارغ حتى لا يتوقف خط الإنتاج
+    // ملف صوت فارغ حتى لا يتوقف خط الإنتاج
     writeFileSync(outputPath, Buffer.alloc(0));
   }
 }
 
-// ── بناء سطر الراوي ──────────────────────
+// ── دوال مساعدة ──────────────────────────
 function buildNarratorLine(scene) {
-  const timeMap = {
-    'نهار': 'في وضح النهار',
-    'ليل':  'تحت جنح الظلام',
-    'فجر':  'عند الفجر',
-    'غروب': 'عند الغروب',
-  };
-  const time = timeMap[scene.time] || '';
-  return `${time}، في ${scene.location}.`.trim();
+  const timeMap = { 'نهار': 'في وضح النهار', 'ليل': 'تحت جنح الظلام', 'فجر': 'عند الفجر', 'غروب': 'عند الغروب' };
+  return `${timeMap[scene.time] || ''}، في ${scene.location}.`.trim();
 }
 
-// ── تقدير مدة الصوت (ثانية) ──────────────
 function estimateDuration(text) {
-  // متوسط 3 كلمات/ثانية في العربية
-  const words = text.split(/\s+/).length;
-  return Math.max(1, Math.round(words / 3));
+  return Math.max(1, Math.round((text || '').split(/\s+/).length / 3));
 }
