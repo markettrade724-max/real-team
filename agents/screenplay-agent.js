@@ -4,12 +4,21 @@
  * يطبق قواعد McKee + Syd Field + Truby من المكتبة
  */
 
-import { writeFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { askGemini }     from './_gemini.js';
 import { readForAgent }  from './library-builder-agent.js';
 import { logger }        from '../logger.js';
+
+const INSIGHTS_PATH = join(
+  dirname(fileURLToPath(import.meta.url)), '..', 'agent-results', 'audience-insights.json'
+);
+
+function loadInsights() {
+  if (!existsSync(INSIGHTS_PATH)) return null;
+  try { return JSON.parse(readFileSync(INSIGHTS_PATH, 'utf8')); } catch { return null; }
+}
 
 const __dirname   = dirname(fileURLToPath(import.meta.url));
 const RESULTS_DIR = join(__dirname, '..', 'agent-results');
@@ -17,7 +26,11 @@ const RESULTS_DIR = join(__dirname, '..', 'agent-results');
 export async function run(universe, episodeNumber = 1, seriesContext = null) {
   logger.info('[SCREENPLAY] Starting', { universe: universe.id, episode: episodeNumber });
 
-  const library = readForAgent('screenplay-agent', 12);
+  const library  = readForAgent('screenplay-agent', 12);
+  const insights = loadInsights();
+  const audienceGuide = insights?.recommendations?.forStoryAgent?.length
+    ? `\nتوجيهات الجمهور:\n${insights.recommendations.forStoryAgent.map(r => `- ${r}`).join('\n')}`
+    : '';
 
   // بناء الشخصيات من universe
   const characters = buildCharacters(universe);
@@ -30,6 +43,7 @@ export async function run(universe, episodeNumber = 1, seriesContext = null) {
 
   const prompt = `
 ${library}
+${audienceGuide}
 
 أنت كاتب سيناريو محترف من طراز McKee و Syd Field.
 
