@@ -13,7 +13,7 @@ import { logger }                   from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export async function run(episodeManifest, series) {
+export async function run(episodeManifest, series, trailer = null) {
   logger.info('[UPLOAD] Starting', { episode: episodeManifest.episode });
 
   if (!existsSync(episodeManifest.outputPath)) {
@@ -22,24 +22,29 @@ export async function run(episodeManifest, series) {
 
   const results = {};
 
-  // ── يوتيوب ───────────────────────────
+  // ── يوتيوب — الحلقة الكاملة ──────────
   if (process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_REFRESH_TOKEN) {
     results.youtube = await uploadToYoutube(episodeManifest, series);
+
+    // يوتيوب شورتس — التريلر أيضاً
+    if (trailer?.outputPath && existsSync(trailer.outputPath)) {
+      results.youtubeShorts = await uploadToYoutube(
+        { ...episodeManifest, outputPath: trailer.outputPath, isShort: true },
+        series
+      );
+    }
   } else {
     logger.warn('[UPLOAD] YouTube credentials missing — skipping');
     results.youtube = { skipped: true, reason: 'no credentials' };
   }
 
-  // ── تيك توك ──────────────────────────
+  // ── تيك توك — التريلر 60 ثانية ───────
   if (process.env.TIKTOK_ACCESS_TOKEN) {
-    // تيك توك يقبل فيديو 60 ثانية max — نرسل trailer
-    const trailerPath = join(
-      __dirname, '..', 'episodes', `ep${episodeManifest.episode}`, 'output', 'trailer.mp4'
-    );
-    if (existsSync(trailerPath)) {
+    const trailerPath = trailer?.outputPath;
+    if (trailerPath && existsSync(trailerPath)) {
       results.tiktok = await uploadToTiktok(trailerPath, episodeManifest, series);
     } else {
-      logger.warn('[UPLOAD] No trailer found for TikTok');
+      logger.warn('[UPLOAD] No trailer for TikTok');
       results.tiktok = { skipped: true, reason: 'no trailer' };
     }
   } else {
