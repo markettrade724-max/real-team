@@ -1,47 +1,66 @@
 /**
- * edit-agent.js
- * يجمع الصور + الصوت + الموسيقى → mp4 كامل
- * عبر ffmpeg (يعمل headless بدون GPU)
+ * edit-agent.js — v2.0 (Node.js خالص — Windows/Linux/Mac)
+ * يجمع الصور + الصوت + الموسيقى → mp4
+ * عبر fluent-ffmpeg (لا bash، لا shell scripts)
+ *
+ * npm install fluent-ffmpeg @ffmpeg-installer/ffmpeg
  */
 
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
-import { join, dirname }  from 'path';
-import { fileURLToPath }  from 'url';
-import { execSync }       from 'child_process';
-import { logger }         from '../logger.js';
+import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import ffmpeg            from 'fluent-ffmpeg';
+import ffmpegInstaller   from '@ffmpeg-installer/ffmpeg';
+import { logger }        from '../logger.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// تثبيت ffmpeg تلقائياً — يعمل على Windows/Linux/Mac
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-// موسيقى افتراضية من المكتبة (ملفات mp3 محلية)
-const MUSIC_LIBRARY = join(__dirname, '..', 'assets', 'music');
+const __dirname    = dirname(fileURLToPath(import.meta.url));
+const MUSIC_LIB    = join(__dirname, '..', 'assets', 'music');
+const FALLBACK_IMG = join(__dirname, '..', 'assets', 'fallback.png');
 
 export async function run(screenplay, visualManifest, audioManifest) {
-  logger.info('[EDIT] Starting video assembly', { episode: screenplay.episode });
+  logger.info('[EDIT] Assembling video', { episode: screenplay.episode });
 
   const epDir  = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`);
   const outDir = join(epDir, 'output');
+  const segDir = join(epDir, 'segments');
   mkdirSync(outDir, { recursive: true });
+  mkdirSync(segDir, { recursive: true });
 
   const outputPath = join(outDir, `episode-${screenplay.episode}.mp4`);
+  const timeline   = buildTimeline(screenplay, visualManifest, audioManifest);
 
-  // بناء قائمة المشاهد مرتبة
-  const timeline = buildTimeline(screenplay, visualManifest, audioManifest);
-
-  // كتابة script ffmpeg
-  const ffmpegScript = buildFFmpegScript(timeline, outputPath, epDir, screenplay);
-  const scriptPath   = join(epDir, 'ffmpeg-script.sh');
-  writeFileSync(scriptPath, ffmpegScript, 'utf8');
-
-  // تنفيذ ffmpeg
-  try {
-    execSync(`bash "${scriptPath}"`, { stdio: 'pipe', timeout: 300000 }); // 5 دقائق max
-    logger.info('[OK] Video assembled', { output: outputPath });
-  } catch (err) {
-    logger.error('[EDIT] ffmpeg failed', { error: err.message.slice(0, 200) });
-    throw new Error('edit-agent: ffmpeg failed');
+  // ── الخطوة 1: بناء كل مشهد → مقطع mp4 ──
+  const segPaths = [];
+  for (const scene of timeline.scenes) {
+    const segPath = join(segDir, `${scene.id}.mp4`);
+    segPaths.push(segPath);
+    if (!existsSync(segPath)) {
+      await buildSegment(scene, segPath);
+    }
   }
 
-  // manifest النهائي
+  // ── الخطوة 2: دمج المقاطع ────────────
+  const concatPath = join(epDir, 'concat.txt');
+  writeFileSync(
+    concatPath,
+    segPaths.map(p => `file '${p.replace(/\\/g, '/')}'`).join('\n'),
+    'utf8'
+  );
+
+  const tempPath = join(outDir, 'temp.mp4');
+  await concatSegments(concatPath, tempPath);
+
+  // ── الخطوة 3: إضافة موسيقى خلفية ────
+  const bgMusic = join(MUSIC_LIB, 'ambient.mp3');
+  if (existsSync(bgMusic)) {
+    await mixWithMusic(tempPath, bgMusic, outputPath, 0.15);
+  } else {
+    copyFileSync(tempPath, outputPath);
+  }
+
   const result = {
     episode:    screenplay.episode,
     title:      screenplay.title,
@@ -65,120 +84,128 @@ export async function run(screenplay, visualManifest, audioManifest) {
   return result;
 }
 
-// ── بناء الجدول الزمني ───────────────────
+// ════════════════════════════════════════════
+// بناء الجدول الزمني
+// ════════════════════════════════════════════
 function buildTimeline(screenplay, visualManifest, audioManifest) {
   const scenes = [];
   let totalDuration = 0;
 
   for (const vScene of visualManifest.scenes) {
-    // الصوت المرتبط بهذا المشهد
-    const sceneAudio = audioManifest.audioFiles.filter(a => a.sceneId === vScene.id);
-
-    // مدة المشهد = مدة الحوار + مدة الراوي + هامش
-    const audioDuration = sceneAudio.reduce((s, a) => s + (a.duration || 3), 0);
-    const sceneDuration = Math.max(vScene.duration || 30, audioDuration + 2);
+    const sceneAudio  = audioManifest.audioFiles.filter(a => a.sceneId === vScene.id);
+    const audioDur    = sceneAudio.reduce((s, a) => s + (a.duration || 3), 0);
+    const sceneDur    = Math.max(vScene.duration || 30, audioDur + 2);
 
     scenes.push({
       id:        vScene.id,
-      imagePath: vScene.imagePath,
-      duration:  sceneDuration,
-      audio:     sceneAudio,
-      sfx:       vScene.sfx,
-      music:     vScene.music,
+      imagePath: vScene.imagePath || FALLBACK_IMG,
+      duration:  sceneDur,
+      audio:     sceneAudio.filter(a => a.file && existsSync(a.file)),
+      music:     vScene.music || '',
     });
 
-    totalDuration += sceneDuration;
+    totalDuration += sceneDur;
   }
 
   return { scenes, totalDuration };
 }
 
-// ── بناء script ffmpeg ────────────────────
-function buildFFmpegScript(timeline, outputPath, epDir, screenplay) {
-  const lines = ['#!/bin/bash', 'set -e', ''];
+// ════════════════════════════════════════════
+// بناء مقطع واحد
+// ════════════════════════════════════════════
+function buildSegment(scene, outputPath) {
+  return new Promise((resolve, reject) => {
+    const img = existsSync(scene.imagePath) ? scene.imagePath : FALLBACK_IMG;
 
-  // الخطوة 1: كل مشهد → مقطع فيديو قصير
-  const segmentPaths = [];
+    let cmd = ffmpeg()
+      .input(img)
+      .inputOptions(['-loop 1', `-t ${scene.duration}`]);
 
-  for (const scene of timeline.scenes) {
-    const segPath = join(epDir, 'segments', `${scene.id}.mp4`);
-    segmentPaths.push(segPath);
+    // إضافة ملفات الصوت
+    if (scene.audio.length > 0) {
+      for (const a of scene.audio) cmd = cmd.input(a.file);
+    } else {
+      // صمت
+      cmd = cmd.input('anullsrc=r=44100:cl=stereo').inputFormat('lavfi');
+    }
 
-    // إذا الصورة موجودة
-    const img = scene.imagePath || join(__dirname, '..', 'assets', 'fallback.png');
+    // فلاتر الفيديو
+    const vf = [
+      'scale=1920:1080:force_original_aspect_ratio=decrease',
+      'pad=1920:1080:(ow-iw)/2:(oh-ih)/2',
+      'setsar=1',
+    ].join(',');
 
-    // بناء track الصوت للمشهد
-    const audioInputs  = scene.audio.map(a => a.file).filter(existsSync);
-    const audioConcat  = audioInputs.length > 0
-      ? buildAudioConcat(audioInputs, scene.duration)
-      : buildSilence(scene.duration);
+    // دمج الصوت إذا متعدد
+    let audioFilter = '';
+    if (scene.audio.length > 1) {
+      const inputs = scene.audio.map((_, i) => `[${i+1}:a]`).join('');
+      audioFilter  = `${inputs}concat=n=${scene.audio.length}:v=0:a=1[aout]`;
+    }
 
-    lines.push(`mkdir -p "${join(epDir, 'segments')}"`);
-    lines.push(`# مشهد ${scene.id} — ${scene.duration}s`);
-    lines.push([
-      'ffmpeg -y',
-      `-loop 1 -t ${scene.duration} -i "${img}"`,   // صورة ثابتة → فيديو
-      audioConcat,
-      `-vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2,setsar=1"`,
-      `-c:v libx264 -preset fast -crf 23`,
-      `-c:a aac -b:a 128k`,
-      `-t ${scene.duration}`,
-      `-pix_fmt yuv420p`,
-      `"${segPath}"`,
-    ].join(' \\\n  '));
-    lines.push('');
-  }
+    cmd
+      .outputOptions([
+        '-c:v libx264',
+        '-preset fast',
+        '-crf 23',
+        '-c:a aac',
+        '-b:a 128k',
+        `-t ${scene.duration}`,
+        '-pix_fmt yuv420p',
+        '-r 25',
+      ])
+      .videoFilters(vf);
 
-  // الخطوة 2: دمج المقاطع
-  const concatList = join(epDir, 'concat.txt');
-  lines.push(`# بناء قائمة الدمج`);
-  lines.push(`cat > "${concatList}" << 'EOF'`);
-  for (const seg of segmentPaths) {
-    lines.push(`file '${seg}'`);
-  }
-  lines.push('EOF');
-  lines.push('');
+    if (audioFilter) {
+      cmd.complexFilter(audioFilter).outputOptions(['-map 0:v', '-map [aout]']);
+    }
 
-  // الخطوة 3: إضافة موسيقى خلفية
-  const bgMusic = join(MUSIC_LIBRARY, 'ambient.mp3');
-  const hasBGMusic = existsSync(bgMusic);
-
-  if (hasBGMusic) {
-    const tempPath = join(epDir, 'output', 'temp-no-music.mp4');
-    lines.push(`ffmpeg -y -f concat -safe 0 -i "${concatList}" -c copy "${tempPath}"`);
-    lines.push('');
-    lines.push([
-      'ffmpeg -y',
-      `-i "${tempPath}"`,
-      `-stream_loop -1 -i "${bgMusic}"`,
-      `-filter_complex "[1:a]volume=0.15[bg];[0:a][bg]amix=inputs=2:duration=first[aout]"`,
-      `-map 0:v -map "[aout]"`,
-      `-c:v copy -c:a aac -b:a 192k`,
-      `"${outputPath}"`,
-    ].join(' \\\n  '));
-  } else {
-    lines.push(`ffmpeg -y -f concat -safe 0 -i "${concatList}" -c copy "${outputPath}"`);
-  }
-
-  lines.push('');
-  lines.push(`echo "[EDIT] Episode ${screenplay.episode} done: ${outputPath}"`);
-
-  return lines.join('\n');
+    cmd
+      .output(outputPath)
+      .on('end',   () => { logger.debug(`[EDIT] Segment: ${scene.id}`); resolve(); })
+      .on('error', (err) => { logger.error(`[EDIT] Segment failed: ${scene.id}`, { error: err.message }); reject(err); })
+      .run();
+  });
 }
 
-// ── دمج ملفات الصوت للمشهد ───────────────
-function buildAudioConcat(audioFiles, duration) {
-  if (audioFiles.length === 1) {
-    return `-i "${audioFiles[0]}"`;
-  }
-  // دمج ملفات متعددة بشكل متسلسل
-  const inputs = audioFiles.map(f => `-i "${f}"`).join(' ');
-  const filter = audioFiles.map((_, i) => `[${i+1}:a]`).join('') +
-    `concat=n=${audioFiles.length}:v=0:a=1[aout]`;
-  return `${inputs} -filter_complex "${filter}" -map "[aout]"`;
+// ════════════════════════════════════════════
+// دمج المقاطع
+// ════════════════════════════════════════════
+function concatSegments(concatPath, outputPath) {
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .input(concatPath)
+      .inputOptions(['-f concat', '-safe 0'])
+      .outputOptions(['-c copy'])
+      .output(outputPath)
+      .on('end',   resolve)
+      .on('error', reject)
+      .run();
+  });
 }
 
-// ── صمت إذا لا يوجد صوت ──────────────────
-function buildSilence(duration) {
-  return `-f lavfi -i anullsrc=r=44100:cl=stereo -t ${duration}`;
+// ════════════════════════════════════════════
+// مزج الموسيقى الخلفية
+// ════════════════════════════════════════════
+function mixWithMusic(videoPath, musicPath, outputPath, musicVolume = 0.15) {
+  return new Promise((resolve, reject) => {
+    ffmpeg()
+      .input(videoPath)
+      .input(musicPath)
+      .complexFilter([
+        `[1:a]volume=${musicVolume},aloop=loop=-1:size=2e+09[bg]`,
+        `[0:a][bg]amix=inputs=2:duration=first[aout]`,
+      ])
+      .outputOptions([
+        '-map 0:v',
+        '-map [aout]',
+        '-c:v copy',
+        '-c:a aac',
+        '-b:a 192k',
+      ])
+      .output(outputPath)
+      .on('end',   resolve)
+      .on('error', reject)
+      .run();
+  });
 }
