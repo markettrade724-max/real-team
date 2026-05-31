@@ -1,93 +1,78 @@
 /**
- * music-agent.js
- * يولد موسيقى لكل حلقة — بدون API مدفوع
+ * music-agent.js — v2.0 (Node.js خالص — Windows/Linux/Mac)
+ * يولد موسيقى لكل حلقة
  *
- * المصادر (مجانية بالكامل):
- * 1. Suno AI — إذا توفر API
- * 2. Magenta.js — توليد محلي بـ TensorFlow
- * 3. مكتبة CC0 — Free Music Archive / ccMixter
- * 4. tone.js — توليد ambient بـ Web Audio (fallback)
- *
- * يولد 3 مقاطع لكل حلقة:
- * - ambient.mp3    — خلفية هادئة للمشاهد العادية
- * - dramatic.mp3   — توتر للمشاهد الحاسمة والتريلر
- * - ending.mp3     — نهاية الحلقة
+ * المصادر (مجانية):
+ * 1. Suno API — أفضل جودة
+ * 2. CC0 — Free Music Archive
+ * 3. fluent-ffmpeg — توليد محلي كـ fallback
  */
 
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'fs';
 import { join, dirname }  from 'path';
 import { fileURLToPath }  from 'url';
-import { execSync }       from 'child_process';
+import ffmpeg             from 'fluent-ffmpeg';
+import ffmpegInstaller    from '@ffmpeg-installer/ffmpeg';
 import { logger }         from '../logger.js';
 
-const __dirname   = dirname(fileURLToPath(import.meta.url));
-const MUSIC_DIR   = join(__dirname, '..', 'assets', 'music');
-const EPISODE_DIR = (ep) => join(__dirname, '..', 'episodes', `ep${ep}`, 'music');
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-// مكتبة CC0 — روابط مباشرة لموسيقى مجانية
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const MUSIC_DIR = join(__dirname, '..', 'assets', 'music');
+
 const CC0_LIBRARY = {
-  ambient: [
-    'https://freemusicarchive.org/file/music/ccCommunity/Kai_Engel/Satin/Kai_Engel_-_07_-_Interlude.mp3',
-    'https://ccmixter.org/content/airtone/airtone_-_reBreeze.mp3',
-  ],
-  dramatic: [
-    'https://freemusicarchive.org/file/music/WFMU/Broke_For_Free/Directionless_EP/Broke_For_Free_-_01_-_Night_Owl.mp3',
-    'https://ccmixter.org/content/texasradiofish/texasradiofish_-_Breathe_(Instrumental).mp3',
-  ],
-  ending: [
-    'https://freemusicarchive.org/file/music/ccCommunity/Kai_Engel/Satin/Kai_Engel_-_09_-_Truly.mp3',
-  ],
+  ambient:  'https://freemusicarchive.org/file/music/ccCommunity/Kai_Engel/Satin/Kai_Engel_-_07_-_Interlude.mp3',
+  dramatic: 'https://freemusicarchive.org/file/music/WFMU/Broke_For_Free/Directionless_EP/Broke_For_Free_-_01_-_Night_Owl.mp3',
+  ending:   'https://freemusicarchive.org/file/music/ccCommunity/Kai_Engel/Satin/Kai_Engel_-_09_-_Truly.mp3',
 };
 
 export async function run(screenplay, universe) {
   logger.info('[MUSIC] Generating music', { episode: screenplay.episode });
-
   mkdirSync(MUSIC_DIR, { recursive: true });
-  mkdirSync(EPISODE_DIR(screenplay.episode), { recursive: true });
 
   const results = {};
 
-  // توليد 3 مقاطع
   for (const type of ['ambient', 'dramatic', 'ending']) {
     const globalPath  = join(MUSIC_DIR, `${type}.mp3`);
-    const episodePath = join(EPISODE_DIR(screenplay.episode), `${type}.mp3`);
+    const episodeDir  = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`, 'music');
+    const episodePath = join(episodeDir, `${type}.mp3`);
+    mkdirSync(episodeDir, { recursive: true });
 
-    // إذا موجود في المكتبة العامة — انسخه
+    // مخبأ — إذا موجود
     if (existsSync(globalPath)) {
-      execSync(`cp "${globalPath}" "${episodePath}"`);
+      copyFileSync(globalPath, episodePath);
       results[type] = { path: episodePath, source: 'cached' };
-      logger.info(`[MUSIC] Using cached: ${type}`);
+      logger.info(`[MUSIC] Cached: ${type}`);
       continue;
     }
 
-    // محاولة 1: Suno API
+    // محاولة 1: Suno
     if (process.env.SUNO_API_KEY) {
-      const sunoResult = await generateWithSuno(type, screenplay, universe);
-      if (sunoResult) {
-        execSync(`cp "${sunoResult}" "${globalPath}"`);
-        execSync(`cp "${sunoResult}" "${episodePath}"`);
+      const sunoPath = await generateWithSuno(type, screenplay, universe, globalPath);
+      if (sunoPath) {
+        copyFileSync(globalPath, episodePath);
         results[type] = { path: episodePath, source: 'suno' };
         continue;
       }
     }
 
-    // محاولة 2: تنزيل من مكتبة CC0
-    const downloaded = await downloadCC0(type, globalPath);
-    if (downloaded) {
-      execSync(`cp "${globalPath}" "${episodePath}"`);
+    // محاولة 2: CC0 تنزيل
+    const cc0Ok = await downloadCC0(type, globalPath);
+    if (cc0Ok) {
+      copyFileSync(globalPath, episodePath);
       results[type] = { path: episodePath, source: 'cc0' };
       continue;
     }
 
-    // محاولة 3: توليد محلي بـ ffmpeg (sine wave + noise)
-    const generated = generateWithFFmpeg(type, episodePath);
-    if (generated) {
-      execSync(`cp "${episodePath}" "${globalPath}"`);
+    // محاولة 3: توليد محلي بـ ffmpeg
+    const genOk = await generateWithFFmpeg(type, globalPath);
+    if (genOk) {
+      copyFileSync(globalPath, episodePath);
       results[type] = { path: episodePath, source: 'generated' };
       continue;
     }
 
-    logger.warn(`[MUSIC] Could not generate: ${type}`);
+    logger.warn(`[MUSIC] All sources failed: ${type}`);
     results[type] = { path: null, source: 'failed' };
   }
 
@@ -101,40 +86,45 @@ export async function run(screenplay, universe) {
 }
 
 // ════════════════════════════════════════════
-// Suno API — أفضل جودة
+// Suno API
 // ════════════════════════════════════════════
-async function generateWithSuno(type, screenplay, universe) {
+async function generateWithSuno(type, screenplay, universe, outputPath) {
   const prompts = {
-    ambient: `ambient orchestral, ${universe.soul?.essence || 'fantasy world'}, peaceful exploration, no lyrics, cinematic`,
-    dramatic: `dramatic orchestral, tense, dark fantasy, ${universe.worlds?.[0]?.physics || 'unknown world'}, no lyrics, epic`,
-    ending:   `emotional ending theme, ${screenplay.theme || 'hope and mystery'}, orchestral, no lyrics, fade out`,
+    ambient:  `ambient orchestral, ${universe.soul?.essence || 'fantasy'}, peaceful, no lyrics, cinematic`,
+    dramatic: `dramatic orchestral, tense, dark fantasy, no lyrics, epic, intense`,
+    ending:   `emotional ending theme, ${screenplay.theme || 'hope'}, orchestral, no lyrics, fade out`,
   };
 
   try {
     const res = await fetch('https://studio-api.suno.ai/api/generate/v2/', {
       method:  'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.SUNO_API_KEY}`,
-        'Content-Type':  'application/json',
-      },
-      body: JSON.stringify({
-        prompt:           prompts[type],
-        make_instrumental: true,
-        mv:               'chirp-v3-5',
-      }),
+      headers: { 'Authorization': `Bearer ${process.env.SUNO_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompts[type], make_instrumental: true, mv: 'chirp-v3-5' }),
     });
-
     const data = await res.json();
-    const audioUrl = data?.clips?.[0]?.audio_url;
+    const clip = data?.clips?.[0];
+    if (!clip) return null;
+
+    // انتظار الجاهزية
+    let audioUrl = null;
+    for (let i = 0; i < 12; i++) {
+      await new Promise(r => setTimeout(r, 5000));
+      const pollRes  = await fetch(`https://studio-api.suno.ai/api/feed/?ids=${clip.id}`,
+        { headers: { 'Authorization': `Bearer ${process.env.SUNO_API_KEY}` } });
+      const pollData = await pollRes.json();
+      if (pollData?.[0]?.status === 'complete') {
+        audioUrl = pollData[0].audio_url;
+        break;
+      }
+    }
     if (!audioUrl) return null;
 
-    // انتظر حتى يجهز
-    await waitForSuno(data.clips[0].id);
-
-    // تنزيل
-    const outPath = join(MUSIC_DIR, `suno-${type}-${Date.now()}.mp3`);
-    execSync(`curl -s -o "${outPath}" "${audioUrl}"`);
-    return outPath;
+    // تنزيل بـ fetch
+    const mp3Res = await fetch(audioUrl);
+    const buffer = Buffer.from(await mp3Res.arrayBuffer());
+    writeFileSync(outputPath, buffer);
+    logger.info(`[MUSIC] Suno generated: ${type}`);
+    return outputPath;
 
   } catch (err) {
     logger.warn(`[MUSIC] Suno failed: ${err.message}`);
@@ -142,74 +132,49 @@ async function generateWithSuno(type, screenplay, universe) {
   }
 }
 
-async function waitForSuno(clipId, maxWait = 60000) {
-  const start = Date.now();
-  while (Date.now() - start < maxWait) {
-    await new Promise(r => setTimeout(r, 5000));
-    try {
-      const res  = await fetch(`https://studio-api.suno.ai/api/feed/?ids=${clipId}`, {
-        headers: { 'Authorization': `Bearer ${process.env.SUNO_API_KEY}` },
-      });
-      const data = await res.json();
-      if (data?.[0]?.status === 'complete') return true;
-    } catch {}
-  }
-  return false;
-}
-
 // ════════════════════════════════════════════
-// CC0 — تنزيل موسيقى مجانية
+// CC0 تنزيل بـ fetch
 // ════════════════════════════════════════════
 async function downloadCC0(type, outputPath) {
-  const urls = CC0_LIBRARY[type] || [];
-  for (const url of urls) {
-    try {
-      execSync(`curl -s -L --max-time 30 -o "${outputPath}" "${url}"`, { stdio: 'pipe' });
-      if (existsSync(outputPath)) {
-        logger.info(`[MUSIC] Downloaded CC0: ${type}`);
-        return true;
-      }
-    } catch {}
+  const url = CC0_LIBRARY[type];
+  if (!url) return false;
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(30000) });
+    if (!res.ok) return false;
+    const buffer = Buffer.from(await res.arrayBuffer());
+    writeFileSync(outputPath, buffer);
+    logger.info(`[MUSIC] CC0 downloaded: ${type}`);
+    return true;
+  } catch (err) {
+    logger.warn(`[MUSIC] CC0 failed: ${type} — ${err.message}`);
+    return false;
   }
-  return false;
 }
 
 // ════════════════════════════════════════════
-// توليد محلي بـ ffmpeg — fallback
+// توليد محلي بـ fluent-ffmpeg
 // ════════════════════════════════════════════
 function generateWithFFmpeg(type, outputPath) {
   const configs = {
-    ambient: {
-      // موجات جيبية هادئة مع ضوضاء بيضاء خفيفة
-      filter: `sine=f=220:r=44100,volume=0.3[s1];sine=f=330:r=44100,volume=0.2[s2];[s1][s2]amix=inputs=2,aecho=0.8:0.9:1000:0.3,lowpass=f=800`,
-      dur: 180,
-    },
-    dramatic: {
-      // نغمات منخفضة مع نبض
-      filter: `sine=f=110:r=44100,volume=0.5[s1];sine=f=165:r=44100,volume=0.4[s2];[s1][s2]amix=inputs=2,aecho=0.6:0.7:500:0.5,highpass=f=80`,
-      dur: 120,
-    },
-    ending: {
-      // نغمات عالية هادئة تتلاشى
-      filter: `sine=f=440:r=44100,volume=0.3[s1];sine=f=550:r=44100,volume=0.2[s2];[s1][s2]amix=inputs=2,afade=t=out:st=50:d=30`,
-      dur: 90,
-    },
+    ambient:  { freq: 220, dur: 180, vol: 0.3, echo: '0.8:0.9:1000:0.3' },
+    dramatic: { freq: 110, dur: 120, vol: 0.5, echo: '0.6:0.7:500:0.5'  },
+    ending:   { freq: 440, dur: 90,  vol: 0.25, echo: '0.9:0.8:800:0.2' },
   };
-
   const cfg = configs[type];
-  try {
-    execSync([
-      'ffmpeg -y',
-      `-f lavfi -i "${cfg.filter}"`,
-      `-t ${cfg.dur}`,
-      `-c:a libmp3lame -b:a 128k`,
-      `"${outputPath}"`,
-    ].join(' '), { stdio: 'pipe' });
 
-    logger.info(`[MUSIC] Generated with ffmpeg: ${type}`);
-    return true;
-  } catch (err) {
-    logger.error(`[MUSIC] ffmpeg generation failed: ${err.message}`);
-    return false;
-  }
+  return new Promise((resolve) => {
+    ffmpeg()
+      .input(`sine=frequency=${cfg.freq}:sample_rate=44100`)
+      .inputFormat('lavfi')
+      .audioFilters([
+        `volume=${cfg.vol}`,
+        `aecho=${cfg.echo}`,
+        type === 'ending' ? `afade=t=out:st=${cfg.dur - 20}:d=20` : '',
+      ].filter(Boolean))
+      .outputOptions(['-t', cfg.dur, '-c:a', 'libmp3lame', '-b:a', '128k'])
+      .output(outputPath)
+      .on('end',   () => { logger.info(`[MUSIC] Generated: ${type}`); resolve(true); })
+      .on('error', (err) => { logger.error(`[MUSIC] ffmpeg failed: ${err.message}`); resolve(false); })
+      .run();
+  });
 }
