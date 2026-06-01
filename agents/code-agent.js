@@ -5,17 +5,18 @@
  *  - rule-058: اسم preset = 'Web' دائماً
  *  - rule-070: platform = 'Web' في Godot 4.x
  *  - rule-071: variant/thread_support=false
- *  - rule-087: askGemini(prompt, temperature, options)
+ *  - rule-087: askGemini(prompt, temperature, options, caller)
  *  - rule-089: كل الردود JSON
  *  - rule-098: askGemini من _gemini.js فقط
  *  - rule-099: [INFO]/[OK]/[ERROR] بدون إيموجي
  */
 import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { askGemini }     from './_gemini.js';
-import { soulContext }   from './_soul.js';
-import { logger }        from '../logger.js';
+import { join, dirname }  from 'path';
+import { fileURLToPath }  from 'url';
+import { askGemini }      from './_gemini.js';
+import { soulContext }    from './_soul.js';
+import { readForAgent }   from './library-builder-agent.js';
+import { logger }         from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -123,23 +124,16 @@ renderer/rendering_method="forward_plus"
 // ── قواعد GDScript الآلية ─────────────────
 function applyScriptRules(filename, code) {
   if (typeof code !== 'string') return code;
-
-  // tabs بدلاً من spaces
   code = code.replace(/^    /gm, '\t').replace(/^  /gm, '\t');
-
-  // is_inside_tree قبل queue_free بعد await
   if (code.includes('await') && code.includes('queue_free()') && !code.includes('is_inside_tree')) {
     code = code.replace(/(\tqueue_free\(\))/g, '\tif is_inside_tree():\n\t\tqueue_free()');
   }
-
-  // add_to_group
   if (filename === 'player.gd' && !code.includes('add_to_group("player")')) {
     code = code.replace('func _ready():\n', 'func _ready():\n\tadd_to_group("player")\n');
   }
   if (filename === 'enemy.gd' && !code.includes('add_to_group("enemy")')) {
     code = code.replace('func _ready():\n', 'func _ready():\n\tadd_to_group("enemy")\n');
   }
-
   return code;
 }
 
@@ -157,26 +151,22 @@ function loadRecipes(domain) {
   if (!existsSync(recipesDir)) return '';
   try {
     const files = readdirSync(recipesDir).filter(f => f.endsWith('.meta.json'));
-    if (files.length === 0) return '';
+    if (!files.length) return '';
     return files.slice(0, 3).map(f => {
       const meta = JSON.parse(readFileSync(join(recipesDir, f), 'utf8'));
       return `- ${meta.label}: ${meta.usage}`;
     }).join('\n');
-  } catch {
-    return '';
-  }
+  } catch { return ''; }
 }
 
 // ── إضافة اللعبة لـ products.json ────────
 function addToProducts(idea, art, worlds) {
   const path     = join(__dirname, '..', 'products.json');
   const products = existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : [];
-
   if (products.find(p => p.id === idea.id)) {
     logger.info('[INFO] Product already exists', { id: idea.id });
     return;
   }
-
   products.unshift({
     id:           idea.id,
     slug:         idea.id,
@@ -199,12 +189,11 @@ function addToProducts(idea, art, worlds) {
     })) || [],
     controls: {
       ar: { move: 'WASD للتحرك', look: 'الفأرة للنظر', fire: 'كليك يسار', jump: 'مسافة' },
-      en: { move: 'WASD to move', look: 'Mouse to look', fire: 'Left click', jump: 'Space' },
+      en: { move: 'WASD to move', look: 'Mouse to look', fire: 'Left click',  jump: 'Space'  },
     },
     generated:   true,
     generatedAt: new Date().toISOString(),
   });
-
   writeFileSync(path, JSON.stringify(products, null, 2), 'utf8');
   logger.info('[OK] Product added to products.json', { id: idea.id });
 }
@@ -216,28 +205,28 @@ export async function run(idea, story, levels, art, template) {
   logger.info('[INFO] Code Agent started', { id: idea.id, type: idea.type });
 
   const isGodot = idea.type === 'godot';
-
   if (!isGodot) {
-    logger.info('[INFO] Non-Godot project — skipping Godot code generation');
+    logger.info('[INFO] Non-Godot project — skipping');
     return { slug: idea.id, files: [], engine: 'phaser' };
   }
 
-  const soul = soulContext('codeAgent');
-  const slug = idea.id;
-  const files = [];
+  const soul    = soulContext('codeAgent');
+  const library = readForAgent('code-agent', 10);
+  const slug    = idea.id;
+  const files   = [];
 
-  // 1. export_presets.cfg — ثابت لا يحتاج Gemini
+  // 1. export_presets.cfg
   writeProjectFile(slug, 'export_presets.cfg', generateExportPresets());
   files.push('export_presets.cfg');
 
-  // 2. project.godot — ثابت لا يحتاج Gemini
+  // 2. project.godot
   writeProjectFile(slug, 'project.godot', buildProjectGodot(idea));
   files.push('project.godot');
 
-  // 3. ملفات GDScript — كل ملف في استدعاء منفصل
+  // 3. ملفات GDScript
   logger.info('[INFO] Generating GDScript files...');
   const heroName    = story?.mainCharacter?.name || 'Hero';
-  const worldNames  = levels?.worlds?.slice(0,3).map(w => w.name?.en).join(', ') || '';
+  const worldNames  = levels?.worlds?.slice(0, 3).map(w => w.name?.en).join(', ') || '';
   const movementTip = loadRecipes('movement');
 
   const SCRIPTS = [
@@ -253,14 +242,14 @@ Return JSON: { "main_scene.gd": "<complete code>" }`
       prompt: `Godot 4.6.2 GDScript for player.gd.
 Game: "${idea.name?.en}". Hero: ${heroName}.
 ${movementTip ? `Movement recipe:\n${movementTip}` : ''}
-Rules: extends CharacterBody3D, add_to_group("player") in _ready(), WASD movement, mouse look, jump, fire action with InputEventMouseButton pressed:true + InputEventScreenTouch.
+Rules: extends CharacterBody3D, add_to_group("player") in _ready(), WASD movement, mouse look, jump, fire action.
 Return JSON: { "player.gd": "<complete code>" }`
     },
     {
       file: 'enemy.gd',
       prompt: `Godot 4.6.2 GDScript for enemy.gd.
 Game: "${idea.name?.en}". Worlds: ${worldNames}.
-Rules: extends CharacterBody3D, add_to_group("enemy") in _ready(), NavigationAgent3D for pathfinding, attack when close, take damage and die.
+Rules: extends CharacterBody3D, add_to_group("enemy") in _ready(), NavigationAgent3D for pathfinding, attack when close.
 Return JSON: { "enemy.gd": "<complete code>" }`
     },
     {
@@ -281,16 +270,15 @@ Return JSON: { "bullet.gd": "<complete code>" }`
   for (const { file, prompt } of SCRIPTS) {
     try {
       const result = await askGemini(
-        `${soul}\n\n${prompt}`,
-        0.7, { topP: 0.9, maxOutputTokens: 4096 }
+        `${soul}\n${library}\n\n${prompt}`,
+        0.7, { topP: 0.9, maxOutputTokens: 4096 }, 'code-agent'
       );
       const code = result[file];
       if (!code || typeof code !== 'string') {
         logger.warn(`[WARN] Missing code for ${file}`);
         continue;
       }
-      const fixed = applyScriptRules(file, code);
-      writeProjectFile(slug, file, fixed);
+      writeProjectFile(slug, file, applyScriptRules(file, code));
       files.push(file);
     } catch (err) {
       logger.error(`[ERROR] Failed to generate ${file}`, { error: err.message });
@@ -301,6 +289,9 @@ Return JSON: { "bullet.gd": "<complete code>" }`
   logger.info('[INFO] Generating .tscn scene files...');
   try {
     const scenes = await askGemini(`
+${soul}
+${library}
+
 اكتب ملفات .tscn لـ Godot 4.6.2.
 المشروع: "${idea.id}"
 الملفات المتوفرة: main_scene.gd, player.gd, enemy.gd, weapon.gd, bullet.gd
@@ -322,27 +313,25 @@ Return JSON: { "bullet.gd": "<complete code>" }`
   "enemy.tscn":      "...",
   "weapon.tscn":     "...",
   "bullet.tscn":     "..."
-}`, 0.5, { maxOutputTokens: 8192 });
+}`, 0.5, { maxOutputTokens: 8192 }, 'code-agent');
 
     for (const [filename, content] of Object.entries(scenes)) {
-      if (typeof content !== 'string' || content.trim().length === 0) {
-        logger.warn(`[WARN] Empty scene: ${filename} — skipping`);
+      if (typeof content !== 'string' || !content.trim()) {
+        logger.warn(`[WARN] Empty scene: ${filename}`);
         continue;
       }
-      const fixed = fixLoadSteps(content);
-      writeProjectFile(slug, filename, fixed);
+      writeProjectFile(slug, filename, fixLoadSteps(content));
       files.push(filename);
     }
   } catch (err) {
     logger.error('[ERROR] Scene generation failed', { error: err.message });
   }
 
-  // 5. إصلاح Camera3D في player.tscn — rule-026
+  // 5. إصلاح Camera3D في player.tscn
   try {
     const playerTscnPath = join(__dirname, '..', 'godot-projects', slug, 'player.tscn');
     if (existsSync(playerTscnPath)) {
       let content = readFileSync(playerTscnPath, 'utf8');
-      // إذا كان Camera3D موجوداً بدون current = true — أضفه
       if (content.includes('type="Camera3D"') && !content.includes('current = true')) {
         content = content.replace(
           /(\[node name="[^"]*" type="Camera3D"[^\]]*\])/g,
@@ -356,13 +345,13 @@ Return JSON: { "bullet.gd": "<complete code>" }`
     logger.warn('[WARN] Could not fix Camera3D', { error: err.message });
   }
 
-  // 6. worlds.json للاستخدام المستقبلي
+  // 6. worlds.json
   if (levels) {
     writeProjectFile(slug, 'worlds.json', JSON.stringify(levels, null, 2));
     files.push('worlds.json');
   }
 
-  // 6. إضافة للمنتجات
+  // 7. إضافة للمنتجات
   addToProducts(idea, art, levels);
 
   logger.info('[OK] Code Agent finished', { slug, totalFiles: files.length });
