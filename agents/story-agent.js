@@ -2,8 +2,8 @@
  * story-agent.js — يُطلق العنان لخيال Gemini لتوليد قصص أسطورية
  * مع محفزات إبداعية عميقة وسقف عالٍ للإبداع.
  */
-import { askGemini } from './_gemini.js';
-import { logger } from '../logger.js';
+import { askGemini }    from './_gemini.js';
+import { logger }       from '../logger.js';
 import { readForAgent } from './library-builder-agent.js';
 
 /**
@@ -43,11 +43,11 @@ function epicFallbackStory(idea) {
     },
     scenes: [
       { id: 'nebula', name: { ar: 'سديم الذكريات المنسية', en: 'Nebula of Forgotten Memories' }, emoji: '🌫️', description: 'Clouds of stardust whisper tales of worlds that no longer exist.' },
-      { id: 'abyss', name: { ar: 'الهاوية الصامتة', en: 'The Silent Abyss' }, emoji: '🕳️', description: 'An ocean of absolute nothingness where even light drowns.' }
+      { id: 'abyss',  name: { ar: 'الهاوية الصامتة',       en: 'The Silent Abyss'              }, emoji: '🕳️', description: 'An ocean of absolute nothingness where even light drowns.' }
     ],
     choices: [
-      { id: 'light', emoji: '🔥', text: { ar: 'أشعل الشعلة', en: 'Ignite the Flame' }, consequence: 'Sacrifice a part of yourself to create a new star' },
-      { id: 'dive', emoji: '🌀', text: { ar: 'اغطس في النسيان', en: 'Dive into Oblivion' }, consequence: 'Risk everything to retrieve a lost memory' }
+      { id: 'light', emoji: '🔥', text: { ar: 'أشعل الشعلة',    en: 'Ignite the Flame'  }, consequence: 'Sacrifice a part of yourself to create a new star' },
+      { id: 'dive',  emoji: '🌀', text: { ar: 'اغطس في النسيان', en: 'Dive into Oblivion' }, consequence: 'Risk everything to retrieve a lost memory' }
     ],
     generatedAt: new Date().toISOString()
   };
@@ -62,6 +62,8 @@ export async function run(idea) {
   let story;
   try {
     story = await askGemini(`
+${library}
+
 🎭 أنت الآن "الحكاء الأعظم"، راوي قصص أسطوري لا حدود لخيالك. مهمتك أن تخلق قصة فريدة وغامرة تجعل اللاعبين يشعرون بالدهشة والانبهار.
 
 🎮 **اللعبة**: "${idea.name?.en}" (نوع: ${idea.type})
@@ -106,34 +108,34 @@ export async function run(idea) {
 }
 
 🧠 تذكر: لا تكن متوقعاً. فاجئني. الخيال ليس له سقف هنا.`, 1.0, {
-      topP: 0.98,
-      topK: 60,
+      topP:             0.98,
+      topK:             60,
       frequencyPenalty: 0.2,
-      presencePenalty: 0.1,
-    });
+      presencePenalty:  0.1,
+    }, 'story-agent');
+
   } catch (err) {
     logger.error('Story generation failed, using epic fallback', { error: err.message });
     return epicFallbackStory(idea);
   }
 
-  // التحقق من صحة البيانات الأساسية، وإضافة الإبداع الافتراضي عند الحاجة
   if (!story || typeof story !== 'object') {
     logger.warn('Invalid story format from Gemini, using epic fallback');
     return epicFallbackStory(idea);
   }
 
-  // ملء أي تفاصيل ناقصة بعناصر من القصة الاحتياطية
-  const fallback = epicFallbackStory(idea);
-  story.gameId = idea.id;
-  story.setting = story.setting || fallback.setting;
-  story.mood = story.mood || fallback.mood;
+  const fallback    = epicFallbackStory(idea);
+  story.gameId      = idea.id;
+  story.setting     = story.setting     || fallback.setting;
+  story.mood        = story.mood        || fallback.mood;
   story.mainCharacter = { ...fallback.mainCharacter, ...(story.mainCharacter || {}) };
-  story.villain = { ...fallback.villain, ...(story.villain || {}) };
-  story.objective = story.objective || fallback.objective;
-  story.intro = { ...fallback.intro, ...(story.intro || {}) };
-  story.winMessage = { ...fallback.winMessage, ...(story.winMessage || {}) };
+  story.villain       = { ...fallback.villain,       ...(story.villain       || {}) };
+  story.objective   = story.objective   || fallback.objective;
+  story.intro       = { ...fallback.intro,       ...(story.intro       || {}) };
+  story.winMessage  = { ...fallback.winMessage,  ...(story.winMessage  || {}) };
   story.loseMessage = { ...fallback.loseMessage, ...(story.loseMessage || {}) };
-  if (!Array.isArray(story.scenes) || story.scenes.length === 0) story.scenes = fallback.scenes;
+
+  if (!Array.isArray(story.scenes)  || story.scenes.length  === 0) story.scenes  = fallback.scenes;
   if (!Array.isArray(story.choices) || story.choices.length === 0) story.choices = fallback.choices;
 
   story.generatedAt = new Date().toISOString();
