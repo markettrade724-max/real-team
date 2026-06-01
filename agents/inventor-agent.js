@@ -9,30 +9,30 @@
  */
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname }  from 'path';
 import { fileURLToPath }  from 'url';
 import { askGemini }      from './_gemini.js';
 import { soulContext }    from './_soul.js';
+import { readForAgent }   from './library-builder-agent.js';
 import { logger }         from '../logger.js';
 
-const __dirname    = dirname(fileURLToPath(import.meta.url));
-const RECIPES_DIR  = join(__dirname, '..', 'godot-recipes');
-const MEMORY_PATH  = join(__dirname, '..', 'code-memory.json');
-const UNIVERSE     = join(__dirname, '..', 'universe.json');
+const __dirname   = dirname(fileURLToPath(import.meta.url));
+const RECIPES_DIR = join(__dirname, '..', 'godot-recipes');
+const MEMORY_PATH = join(__dirname, '..', 'code-memory.json');
+const UNIVERSE    = join(__dirname, '..', 'universe.json');
 
 // ── مناطق الاختراع ──────────────────────────────────────────
 const INVENTION_DOMAINS = [
-  { id: 'movement',  label: 'حركة وفيزياء',      hunger: 0 },
-  { id: 'shaders',   label: 'بصريات وتأثيرات',   hunger: 0 },
-  { id: 'ai',        label: 'ذكاء الأعداء',       hunger: 0 },
-  { id: 'audio',     label: 'صوت وموسيقى',        hunger: 0 },
-  { id: 'ui',        label: 'واجهة وتجربة',       hunger: 0 },
-  { id: 'world',     label: 'بناء العوالم',        hunger: 0 },
-  { id: 'weapons',   label: 'أسلحة وقتال',        hunger: 0 },
-  { id: 'time',      label: 'زمن وذاكرة',         hunger: 0 },
+  { id: 'movement',  label: 'حركة وفيزياء',    hunger: 0 },
+  { id: 'shaders',   label: 'بصريات وتأثيرات', hunger: 0 },
+  { id: 'ai',        label: 'ذكاء الأعداء',     hunger: 0 },
+  { id: 'audio',     label: 'صوت وموسيقى',      hunger: 0 },
+  { id: 'ui',        label: 'واجهة وتجربة',     hunger: 0 },
+  { id: 'world',     label: 'بناء العوالم',      hunger: 0 },
+  { id: 'weapons',   label: 'أسلحة وقتال',      hunger: 0 },
+  { id: 'time',      label: 'زمن وذاكرة',       hunger: 0 },
 ];
 
-// معايير العبقرية — كلها يجب أن تنجح
 const GENIUS_CRITERIA = [
   'الفكرة لا تشبه أي وصفة موجودة',
   'الكود يعمل في Godot 4.6.2 بلا أخطاء',
@@ -47,10 +47,11 @@ const GENIUS_CRITERIA = [
 export async function run(universe) {
   logger.info('[INVENTOR] Awakening...');
 
-  const soul       = soulContext('inventorAgent');
-  const existing   = loadExistingRecipes();
-  const memory     = loadMemory();
-  const domains    = calculateHunger(existing);
+  const soul     = soulContext('inventorAgent');
+  const library  = readForAgent('inventor-agent', 12);
+  const existing = loadExistingRecipes();
+  const memory   = loadMemory();
+  const domains  = calculateHunger(existing);
 
   logger.info('[INVENTOR] Knowledge state', {
     existingRecipes: existing.length,
@@ -58,38 +59,38 @@ export async function run(universe) {
   });
 
   // ── المرحلة ١: الاستكشاف ─────────────────────────────────
-  logger.info('[INVENTOR] Phase 1 — Exploring the web of ideas...');
-  const idea = await explore(soul, universe, domains, existing, memory);
+  logger.info('[INVENTOR] Phase 1 — Exploring...');
+  const idea = await explore(soul, library, universe, domains, existing, memory);
 
   if (!idea) {
-    logger.warn('[INVENTOR] No worthy idea found today. Silence is better than mediocrity.');
+    logger.warn('[INVENTOR] No worthy idea found today.');
     return { invented: false, reason: 'no-worthy-idea' };
   }
 
   logger.info('[INVENTOR] Idea crystallized', { domain: idea.domain, name: idea.name });
 
   // ── المرحلة ٢: البناء ────────────────────────────────────
-  logger.info('[INVENTOR] Phase 2 — Building the invention...');
-  const invention = await build(soul, idea, universe);
+  logger.info('[INVENTOR] Phase 2 — Building...');
+  const invention = await build(soul, library, idea, universe);
 
   if (!invention) {
-    logger.warn('[INVENTOR] Build failed. Recording failure...');
+    logger.warn('[INVENTOR] Build failed.');
     recordFailure(idea, 'build-failed');
     return { invented: false, reason: 'build-failed' };
   }
 
-  // ── المرحلة ٣: التقييم بمعايير العبقرية ─────────────────
-  logger.info('[INVENTOR] Phase 3 — Applying genius criteria...');
-  const verdict = await evaluate(soul, idea, invention, existing);
+  // ── المرحلة ٣: تقييم العبقرية ────────────────────────────
+  logger.info('[INVENTOR] Phase 3 — Evaluating genius...');
+  const verdict = await evaluate(soul, library, idea, invention, existing);
 
   if (!verdict.isGenius) {
-    logger.warn('[INVENTOR] Rejected — not genius enough', { reasons: verdict.failedCriteria });
+    logger.warn('[INVENTOR] Rejected', { reasons: verdict.failedCriteria });
     recordFailure(idea, 'not-genius', verdict.failedCriteria);
     return { invented: false, reason: 'not-genius', criteria: verdict.failedCriteria };
   }
 
-  // ── المرحلة ٤: النشر في مكتبة الكون ─────────────────────
-  logger.info('[INVENTOR] Phase 4 — Publishing to the universe library...');
+  // ── المرحلة ٤: النشر ─────────────────────────────────────
+  logger.info('[INVENTOR] Phase 4 — Publishing...');
   publish(idea, invention, verdict);
 
   logger.info('[INVENTOR] Invention published', {
@@ -99,18 +100,18 @@ export async function run(universe) {
   });
 
   return {
-    invented:  true,
-    name:      idea.name,
-    domain:    idea.domain,
-    filename:  invention.filename,
-    impact:    verdict.impact,
+    invented: true,
+    name:     idea.name,
+    domain:   idea.domain,
+    filename: invention.filename,
+    impact:   verdict.impact,
   };
 }
 
 // ════════════════════════════════════════════════════════════
 // المرحلة ١ — الاستكشاف
 // ════════════════════════════════════════════════════════════
-async function explore(soul, universe, domains, existing, memory) {
+async function explore(soul, library, universe, domains, existing, memory) {
   const hungriestDomain = domains[0];
   const existingNames   = existing.map(r => r.name).join(', ') || 'none yet';
   const recentFailures  = memory['error-log']
@@ -119,28 +120,26 @@ async function explore(soul, universe, domains, existing, memory) {
     ?.slice(0, 5)
     ?.join(' | ') || 'none';
 
-  const universeEssence = universe?.soul?.essence || 'unknown cosmos';
-
   try {
     const idea = await askGemini(`
 ${soul}
+${library}
 
 أنت المخترع — عقل يبحث عن الجوهر الخفي في Godot 4.6.2.
 
 حالة المكتبة الحالية:
 - الوصفات الموجودة: ${existingNames}
 - المنطقة الأكثر جوعاً: ${hungriestDomain.label}
-- الأخطاء الأخيرة التي يجب تجنبها: ${recentFailures}
-
-روح الكون: "${universeEssence}"
+- الأخطاء الأخيرة: ${recentFailures}
+- روح الكون: "${universe?.soul?.essence || 'unknown cosmos'}"
 
 مهمتك: اقترح فكرة اختراع واحدة فقط في منطقة "${hungriestDomain.label}".
 
 القواعد الذهبية:
 - لا تقترح ما هو موجود بالفعل
-- الفكرة يجب أن تجعل اللاعب يشعر بشيء لم يشعر به من قبل
-- يجب أن تستغل قدرة حقيقية في Godot 4.6.2 لم نستخدمها بعد
-- الفكرة يجب أن تتناغم مع روح الكون
+- الفكرة تجعل اللاعب يشعر بشيء لم يشعر به من قبل
+- تستغل قدرة حقيقية في Godot 4.6.2
+- تتناغم مع روح الكون
 
 أنتج JSON فقط:
 {
@@ -151,7 +150,7 @@ ${soul}
   "poeticVision": "وصف شاعري لما سيشعر به اللاعب",
   "technicalApproach": "الأسلوب التقني بإيجاز",
   "uniqueness": "لماذا لا يشبه أي شيء موجود"
-}`, 0.95, { maxOutputTokens: 2048, topP: 0.98 });
+}`, 0.95, { maxOutputTokens: 2048, topP: 0.98 }, 'inventor-agent');
 
     idea.domain = hungriestDomain.id;
     return idea;
@@ -165,10 +164,11 @@ ${soul}
 // ════════════════════════════════════════════════════════════
 // المرحلة ٢ — البناء
 // ════════════════════════════════════════════════════════════
-async function build(soul, idea, universe) {
+async function build(soul, library, idea, universe) {
   try {
     const result = await askGemini(`
 ${soul}
+${library}
 
 أنت المخترع — الآن تبني.
 
@@ -183,7 +183,7 @@ ${soul}
 - tabs للـ indentation — ليس spaces
 - كل دالة لها هدف واحد واضح
 - لا كود ميت أو تعليقات زائدة
-- الوصفة يجب أن تعمل بمفردها (standalone)
+- الوصفة تعمل بمفردها (standalone)
 - أقل من 200 سطر
 - إذا shader: اكتب GLSL صحيح لـ Godot 4.6.2
 
@@ -195,7 +195,7 @@ ${soul}
   "usage": "كيف يستخدم code-agent هذه الوصفة",
   "parameters": [{ "name": "...", "type": "...", "default": "...", "description": "..." }],
   "dependencies": ["ما تحتاجه من nodes أو ملفات أخرى"]
-}`, 0.7, { maxOutputTokens: 8192, topP: 0.9 });
+}`, 0.7, { maxOutputTokens: 8192, topP: 0.9 }, 'inventor-agent');
 
     return result;
 
@@ -208,15 +208,13 @@ ${soul}
 // ════════════════════════════════════════════════════════════
 // المرحلة ٣ — تقييم العبقرية
 // ════════════════════════════════════════════════════════════
-async function evaluate(soul, idea, invention, existing) {
+async function evaluate(soul, library, idea, invention, existing) {
   try {
-    const existingCodes = existing
-      .slice(0, 5)
-      .map(r => r.name)
-      .join(', ');
+    const existingCodes = existing.slice(0, 5).map(r => r.name).join(', ');
 
     const verdict = await askGemini(`
 ${soul}
+${library}
 
 أنت القاضي الأعلى للعبقرية في هذا الكون.
 
@@ -226,22 +224,22 @@ ${soul}
 الكود:
 ${invention.code?.slice(0, 500)}...
 
-الوصفات الموجودة حالياً: ${existingCodes}
+الوصفات الموجودة: ${existingCodes}
 
-قيّم هذا الاختراع بناءً على المعايير الذهبية:
+قيّم بناءً على المعايير الذهبية:
 ${GENIUS_CRITERIA.map((c, i) => `${i + 1}. ${c}`).join('\n')}
 
 كن قاسياً — العبقرية نادرة.
 
 أنتج JSON فقط:
 {
-  "isGenius": true/false,
-  "score": 0-100,
+  "isGenius": true,
+  "score": 0,
   "passedCriteria": ["..."],
   "failedCriteria": ["..."],
   "impact": "كيف سيغير هذا تجربة اللاعب",
   "verdict": "حكم شاعري في جملة واحدة"
-}`, 0.3, { maxOutputTokens: 1024 });
+}`, 0.3, { maxOutputTokens: 1024 }, 'inventor-agent');
 
     return verdict;
 
@@ -255,15 +253,11 @@ ${GENIUS_CRITERIA.map((c, i) => `${i + 1}. ${c}`).join('\n')}
 // المرحلة ٤ — النشر
 // ════════════════════════════════════════════════════════════
 function publish(idea, invention, verdict) {
-  // إنشاء مجلد المنطقة إذا لم يكن موجوداً
   const domainDir = join(RECIPES_DIR, idea.domain);
   if (!existsSync(domainDir)) mkdirSync(domainDir, { recursive: true });
 
-  // كتابة ملف الكود
-  const codePath = join(domainDir, invention.filename);
-  writeFileSync(codePath, invention.code, 'utf8');
+  writeFileSync(join(domainDir, invention.filename), invention.code, 'utf8');
 
-  // كتابة ملف البيانات الوصفية
   const meta = {
     name:         idea.name,
     label:        idea.label,
@@ -271,7 +265,7 @@ function publish(idea, invention, verdict) {
     godotFeature: idea.godotFeature,
     poeticVision: idea.poeticVision,
     usage:        invention.usage,
-    parameters:   invention.parameters || [],
+    parameters:   invention.parameters  || [],
     dependencies: invention.dependencies || [],
     verdict:      verdict.verdict,
     impact:       verdict.impact,
@@ -279,35 +273,26 @@ function publish(idea, invention, verdict) {
     inventedAt:   new Date().toISOString(),
   };
 
-  const metaPath = join(domainDir, `${idea.name}.meta.json`);
-  writeFileSync(metaPath, JSON.stringify(meta, null, 2), 'utf8');
+  writeFileSync(
+    join(domainDir, `${idea.name}.meta.json`),
+    JSON.stringify(meta, null, 2), 'utf8'
+  );
 
-  // تحديث فهرس المكتبة
   updateLibraryIndex(meta);
-
-  // توثيق الاختراع في code-memory.json
   recordInvention(idea, invention, verdict);
 }
 
 // ════════════════════════════════════════════════════════════
 // دوال مساعدة
 // ════════════════════════════════════════════════════════════
-
 function loadExistingRecipes() {
-  if (!existsSync(RECIPES_DIR)) {
-    mkdirSync(RECIPES_DIR, { recursive: true });
-    return [];
-  }
+  if (!existsSync(RECIPES_DIR)) { mkdirSync(RECIPES_DIR, { recursive: true }); return []; }
   const recipes = [];
   for (const domain of INVENTION_DOMAINS) {
     const domainDir = join(RECIPES_DIR, domain.id);
     if (!existsSync(domainDir)) continue;
-    const files = readdirSync(domainDir).filter(f => f.endsWith('.meta.json'));
-    for (const file of files) {
-      try {
-        const meta = JSON.parse(readFileSync(join(domainDir, file), 'utf8'));
-        recipes.push(meta);
-      } catch {}
+    for (const file of readdirSync(domainDir).filter(f => f.endsWith('.meta.json'))) {
+      try { recipes.push(JSON.parse(readFileSync(join(domainDir, file), 'utf8'))); } catch {}
     }
   }
   return recipes;
@@ -323,7 +308,6 @@ function calculateHunger(existing) {
   const counts = {};
   for (const domain of INVENTION_DOMAINS) counts[domain.id] = 0;
   for (const recipe of existing) if (counts[recipe.domain] !== undefined) counts[recipe.domain]++;
-
   return INVENTION_DOMAINS
     .map(d => ({ ...d, hunger: counts[d.id] }))
     .sort((a, b) => a.hunger - b.hunger);
@@ -332,9 +316,7 @@ function calculateHunger(existing) {
 function updateLibraryIndex(meta) {
   const indexPath = join(RECIPES_DIR, 'index.json');
   let index = [];
-  if (existsSync(indexPath)) {
-    try { index = JSON.parse(readFileSync(indexPath, 'utf8')); } catch {}
-  }
+  if (existsSync(indexPath)) { try { index = JSON.parse(readFileSync(indexPath, 'utf8')); } catch {} }
   index = index.filter(r => r.name !== meta.name);
   index.unshift(meta);
   writeFileSync(indexPath, JSON.stringify(index, null, 2), 'utf8');
@@ -344,20 +326,20 @@ function recordInvention(idea, invention, verdict) {
   const memory = loadMemory();
   if (!memory.inventions) memory.inventions = [];
   memory.inventions.unshift({
-    name:      idea.name,
-    domain:    idea.domain,
-    score:     verdict.score,
-    verdict:   verdict.verdict,
-    filename:  invention.filename,
-    date:      new Date().toISOString().slice(0, 10),
+    name:     idea.name,
+    domain:   idea.domain,
+    score:    verdict.score,
+    verdict:  verdict.verdict,
+    filename: invention.filename,
+    date:     new Date().toISOString().slice(0, 10),
   });
   writeFileSync(MEMORY_PATH, JSON.stringify(memory, null, 2), 'utf8');
 }
 
 function recordFailure(idea, reason, details = []) {
-  const memory  = loadMemory();
-  const log     = memory['error-log'] || [];
-  const lastId  = log.length > 0
+  const memory = loadMemory();
+  const log    = memory['error-log'] || [];
+  const lastId = log.length > 0
     ? parseInt(log[0].id.replace('err-', '')) + 1
     : 200;
 
