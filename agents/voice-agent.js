@@ -9,7 +9,8 @@
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname }                         from 'path';
 import { fileURLToPath }                         from 'url';
-import { EdgeTTS }                               from 'edge-tts-node';
+import pkg from 'edge-tts-node';
+const { EdgeTTS } = pkg;
 import { logger }                                from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
