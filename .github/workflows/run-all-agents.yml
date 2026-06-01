@@ -44,7 +44,7 @@ jobs:
         shell: pwsh
         run: |
           npm install
-          npm install winston --save
+          npm install winston msedge-tts --save
 
       - name: Create required directories
         shell: pwsh
