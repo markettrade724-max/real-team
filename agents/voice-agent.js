@@ -9,12 +9,10 @@
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname }                         from 'path';
 import { fileURLToPath }                         from 'url';
-import pkg from 'edge-tts-node';
-const { EdgeTTS } = pkg;
+import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 import { logger }                                from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const tts       = new EdgeTTS();
 
 // أصوات عربية متاحة
 const VOICE_MAP = {
@@ -100,16 +98,23 @@ export async function run(screenplay, visualScenes) {
 // ════════════════════════════════════════════
 async function generateTTS(text, voice, outputPath, retried = false) {
   try {
-    await tts.ttsPromise(text, outputPath, voice);
+    const tts = new MsEdgeTTS();
+    await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+    const readable = tts.toStream(text);
+    const chunks   = [];
+    await new Promise((resolve, reject) => {
+      readable.on('data',  chunk => chunks.push(chunk));
+      readable.on('end',   resolve);
+      readable.on('error', reject);
+    });
+    writeFileSync(outputPath, Buffer.concat(chunks));
     logger.debug(`[VOICE] Generated: ${outputPath}`);
   } catch (err) {
     if (!retried) {
-      // انتظر ثانية وأعد المحاولة
       await new Promise(r => setTimeout(r, 1000));
       return generateTTS(text, voice, outputPath, true);
     }
     logger.error(`[VOICE] TTS failed: ${err.message}`);
-    // ملف صوت فارغ حتى لا يتوقف خط الإنتاج
     writeFileSync(outputPath, Buffer.alloc(0));
   }
 }
