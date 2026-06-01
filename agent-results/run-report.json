@@ -1,8 +1,8 @@
 {
-  "runId": "2026-06-01T1042",
+  "runId": "2026-06-01T1342",
   "mode": "evolution",
-  "timestamp": "2026-06-01T11:29:49.484Z",
-  "totalDuration": "2838.1s",
+  "timestamp": "2026-06-01T13:47:31.442Z",
+  "totalDuration": "326.5s",
   "budget": {
     "library": {
       "limit": 14,
@@ -11,8 +11,8 @@
     },
     "agents": {
       "limit": 6,
-      "used": 0,
-      "left": 6
+      "used": 1,
+      "left": 5
     },
     "total": 20
   },
@@ -31,14 +31,14 @@
   },
   "agents": {
     "library": {
-      "success": true,
-      "duration": "2433.0s",
-      "error": null
+      "success": false,
+      "duration": "0ms",
+      "error": "BudgetExhausted"
     },
     "world": {
-      "success": false,
-      "duration": "120.0s",
-      "error": "Timeout"
+      "success": true,
+      "duration": "41.5s",
+      "error": null
     },
     "revival": {
       "success": false,
