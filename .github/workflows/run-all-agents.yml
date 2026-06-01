@@ -42,7 +42,9 @@ jobs:
 
       - name: Install dependencies
         shell: pwsh
-        run: npm install
+        run: |
+          npm install
+          npm install winston --save
 
       - name: Create required directories
         shell: pwsh
