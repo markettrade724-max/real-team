@@ -13,9 +13,9 @@
  *  - Hades         → الأعداء ليسوا عقبات — هم جزء من القصة
  */
 
-import { askGemini }  from './_gemini.js';
-import { soulContext } from './_soul.js';
-import { logger }      from '../logger.js';
+import { askGemini }    from './_gemini.js';
+import { soulContext }  from './_soul.js';
+import { logger }       from '../logger.js';
 import { readForAgent } from './library-builder-agent.js';
 
 // ════════════════════════════════════════════════════════════
@@ -23,22 +23,22 @@ import { readForAgent } from './library-builder-agent.js';
 // ════════════════════════════════════════════════════════════
 export async function run(universe) {
   const library = readForAgent('world-birth-agent', 15);
+
   logger.info('[BIRTH] World birth started', {
-    universeId: universe.id,
+    universeId:  universe.id,
     worldsCount: universe.worlds?.length || 0,
   });
 
-  const soul       = soulContext('worldBirthAgent');
-  const dayOfYear  = getDayOfYear();
-  const worldNum   = (universe.worlds?.length || 0) + 1;
-  const chapter    = Math.ceil(worldNum / 30);
+  const soul        = soulContext('worldBirthAgent');
+  const dayOfYear   = getDayOfYear();
+  const worldNum    = (universe.worlds?.length || 0) + 1;
+  const chapter     = Math.ceil(worldNum / 30);
   const chapterName = getChapterName(chapter);
 
-  // السياق المشترك
   const context = buildContext(universe, worldNum, chapter, chapterName, dayOfYear);
 
   // ══════════════════════════════════════
-  // استدعاء ١ — العالم الكامل مع عناصره
+  // استدعاء ١ — العالم الكامل
   // ══════════════════════════════════════
   logger.info('[BIRTH] Generating world core...');
   let worldCore = null;
@@ -49,6 +49,7 @@ export async function run(universe) {
     try {
       worldCore = await askGemini(`
 ${soul}
+${library}
 ${context}
 
 ابنِ عالماً فريداً مستوحى من Dark Souls و Hollow Knight.
@@ -69,7 +70,7 @@ ${context}
   "backgroundColor": "#000000",
   "fogColor": "#000000",
   "lightColor": "#ffffff"
-}`, 0.9, { topP: 0.97, maxOutputTokens: 1024 });
+}`, 0.9, { topP: 0.97, maxOutputTokens: 1024 }, 'world-birth-agent');
 
     } catch (err) {
       logger.warn(`[WARN] Core attempt ${attempts}/3 failed`, { error: err.message });
@@ -84,18 +85,21 @@ ${context}
 
   logger.info('[OK] World core ready', { name: worldCore.name?.en });
 
-  // ── استدعاء ٢ — الأعداء + السلاح + المركبة ──
+  // ══════════════════════════════════════
+  // استدعاء ٢ — الأعداء + السلاح + المركبة
+  // ══════════════════════════════════════
   logger.info('[BIRTH] Generating world elements...');
   let elements = null;
 
   try {
     elements = await askGemini(`
 ${soul}
+${library}
 
 العالم: "${worldCore.name?.en}"
 جوهره: "${worldCore.essence}"
 قانونه: "${worldCore.physicsLaw}"
-روح الكون: "${universe.soul?.essence?.slice(0,80)}"
+روح الكون: "${universe.soul?.essence?.slice(0, 80)}"
 
 اخترع الأعداء والسلاح لهذا العالم. كل شيء يجب أن يعكس قانون العالم.
 مثل Hollow Knight: عدو يتجمد عند الهجوم في عالم الجليد.
@@ -135,15 +139,14 @@ ${soul}
     "rarity": "rare"
   },
   "vehicle": null
-}`, 0.85, { topP: 0.95, maxOutputTokens: 2048 });
+}`, 0.85, { topP: 0.95, maxOutputTokens: 2048 }, 'world-birth-agent');
 
   } catch (err) {
     logger.warn('[WARN] Elements generation failed', { error: err.message });
     elements = { enemies: [], weapon: null, vehicle: null };
   }
 
-  // ── دمج العالم الكامل ──
-  let worldData = {
+  const worldData = {
     ...worldCore,
     enemies: elements?.enemies || [],
     weapon:  elements?.weapon  || null,
@@ -154,17 +157,16 @@ ${soul}
     name:    worldData.name?.en,
     enemies: worldData.enemies?.length || 0,
     weapon:  worldData.weapon?.name?.en || 'none',
-    vehicle: worldData.vehicle?.name?.en || 'none',
   });
 
   // ══════════════════════════════════════
-  // استدعاء ٢ — الحواس الحسية
+  // استدعاء ٣ — الحواس الحسية
   // ══════════════════════════════════════
   logger.info('[BIRTH] Generating world senses...');
 
   let senses = null;
   try {
-    senses = await generateSenses(worldData, universe, soul);
+    senses = await generateSenses(worldData, universe, soul, library);
   } catch (err) {
     logger.warn('[WARN] Senses generation failed — using fallback', { error: err.message });
     senses = buildSensesFallback(worldData, universe?.art?.mood || 'cosmic');
@@ -193,9 +195,10 @@ ${soul}
 // ════════════════════════════════════════════════════════════
 // توليد الحواس
 // ════════════════════════════════════════════════════════════
-async function generateSenses(world, universe, soul) {
+async function generateSenses(world, universe, soul, library) {
   const result = await askGemini(`
 ${soul}
+${library}
 
 العالم: "${world.name?.en}"
 جوهره: "${world.essence}"
@@ -230,7 +233,7 @@ ${soul}
     "sfx":         ["..."],
     "description": "وصف البيئة الصوتية"
   }
-}`, 0.8, { topP: 0.9, maxOutputTokens: 3000 });
+}`, 0.8, { topP: 0.9, maxOutputTokens: 3000 }, 'world-birth-agent');
 
   return result;
 }
@@ -248,7 +251,7 @@ function buildContext(universe, worldNum, chapter, chapterName, dayOfYear) {
 الكون: "${universe.name?.en}"
 روح الكون: "${universe.soul?.essence}"
 المزاج البصري: "${universe.art?.mood}"
-قوانين الكون: ${universe.soul?.rules?.slice(0,2).join(' | ')}
+قوانين الكون: ${universe.soul?.rules?.slice(0, 2).join(' | ')}
 
 العالم رقم: ${worldNum} من 365
 الفصل: ${chapter} — ${chapterName}
