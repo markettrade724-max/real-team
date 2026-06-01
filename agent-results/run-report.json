@@ -1,8 +1,8 @@
 {
-  "runId": "2026-05-31T1020",
+  "runId": "2026-06-01T1042",
   "mode": "evolution",
-  "timestamp": "2026-05-31T10:52:45.114Z",
-  "totalDuration": "1947.6s",
+  "timestamp": "2026-06-01T11:29:49.484Z",
+  "totalDuration": "2838.1s",
   "budget": {
     "library": {
       "limit": 14,
@@ -17,22 +17,22 @@
     "total": 20
   },
   "library": {
-    "built": 10,
+    "built": 6,
     "total": 56,
-    "percent": "18%",
+    "percent": "11%",
     "daysLeft": 4
   },
   "schedule": {
-    "day": "Sun",
-    "invention": true,
-    "revival": false,
+    "day": "Mon",
+    "invention": false,
+    "revival": true,
     "roadmap": false,
     "sync": false
   },
   "agents": {
     "library": {
       "success": true,
-      "duration": "1542.6s",
+      "duration": "2433.0s",
       "error": null
     },
     "world": {
@@ -40,7 +40,7 @@
       "duration": "120.0s",
       "error": "Timeout"
     },
-    "invention": {
+    "revival": {
       "success": false,
       "duration": "120.0s",
       "error": "Timeout"
