@@ -16,11 +16,13 @@
 import { askGemini }  from './_gemini.js';
 import { soulContext } from './_soul.js';
 import { logger }      from '../logger.js';
+import { readForAgent } from './library-builder-agent.js';
 
 // ════════════════════════════════════════════════════════════
 // الدالة الرئيسية
 // ════════════════════════════════════════════════════════════
 export async function run(universe) {
+  const library = readForAgent('world-birth-agent', 15);
   logger.info('[BIRTH] World birth started', {
     universeId: universe.id,
     worldsCount: universe.worlds?.length || 0,
