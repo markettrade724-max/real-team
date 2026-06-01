@@ -1,13 +1,17 @@
-import { askGemini } from './_gemini.js';
-import { logger }    from '../logger.js';
+import { askGemini }    from './_gemini.js';
+import { readForAgent } from './library-builder-agent.js';
+import { logger }       from '../logger.js';
 
 const SITE_URL = process.env.SITE_URL || 'https://real-team-production.up.railway.app';
 
-export async function run(idea, art) {
+export async function run(idea, art, soul) {
+  const library = readForAgent('marketing-agent', 8);
   const name    = idea.name?.en || idea.id;
   const gameUrl = `${SITE_URL}/games/${idea.id}.html`;
 
   const posts = await askGemini(`
+${library}
+
 Create marketing content for the game "${name}" (${idea.emoji}).
 Description: ${idea.desc?.en}
 URL: ${gameUrl}
@@ -41,7 +45,7 @@ Return ONLY valid JSON:
     "description": "3 short paragraphs",
     "tags": ["t1","t2","t3"]
   }
-}`, 0.9);
+}`, 0.9, {}, 'marketing-agent');
 
   posts.gameId      = idea.id;
   posts.gameUrl     = gameUrl;
@@ -55,9 +59,10 @@ Return ONLY valid JSON:
     posts.twitter.ar = posts.twitter.ar.slice(0, 267) + '...';
   }
 
-  logger.info('Marketing generated', {
-    gameId: idea.id,
-    tweetLen: posts.twitter?.en?.length
+  logger.info('[OK] Marketing generated', {
+    gameId:   idea.id,
+    tweetLen: posts.twitter?.en?.length,
   });
+
   return posts;
 }
