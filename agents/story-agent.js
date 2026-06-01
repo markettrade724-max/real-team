@@ -4,6 +4,7 @@
  */
 import { askGemini } from './_gemini.js';
 import { logger } from '../logger.js';
+import { readForAgent } from './library-builder-agent.js';
 
 /**
  * قصة احتياطية غنية جداً تُستخدم إذا فشل التوليد
@@ -53,6 +54,7 @@ function epicFallbackStory(idea) {
 }
 
 export async function run(idea) {
+  const library = readForAgent('story-agent', 12);
   logger.info('Generating epic story', { gameId: idea.id });
 
   const concept = idea.concept || 'An extraordinary journey beyond imagination';
