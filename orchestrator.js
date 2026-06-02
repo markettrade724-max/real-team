@@ -43,9 +43,9 @@ const UNIVERSE    = join(__dirname, 'universe.json');
 if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 
 // ── إعدادات الحصة ────────────────────────
-const DAILY_LIMIT     = 20;  // إجمالي حصة Gemini
-const LIBRARY_BUDGET  = 14;  // مخصص للمكتبة
-const AGENTS_BUDGET   = 6;   // مخصص للوكلاء
+const DAILY_LIMIT     = 20;
+const LIBRARY_BUDGET  = 2;  // الحد الأدنى — مرجع واحد/يوم فقط
+const AGENTS_BUDGET   = 18; // الأولوية للإنتاج
 
 const DELAY   = 15000;
 const TIMEOUT = 120000;
@@ -339,6 +339,18 @@ async function evolutionMode(universe, t0, runId) {
   }
 
   // ── جدول الأسبوع ─────────────────────
+
+  // كل يوم — حلقة جديدة إذا توفرت الحصة
+  if (geminiCalls < AGENTS_BUDGET) {
+    logger.info('[EPISODE] Daily episode production');
+    try {
+      const result = await runSeries(universe);
+      log.episode = { success: true, data: result, duration: '—' };
+    } catch (err) {
+      log.episode = { success: false, error: err.message, duration: '—' };
+      logger.warn('[EPISODE] Failed', { error: err.message });
+    }
+  }
 
   // الأحد — المخترع
   if (SCHEDULE.isInventionDay && geminiCalls < AGENTS_BUDGET) {
