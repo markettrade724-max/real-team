@@ -7,16 +7,18 @@
  * المبدأ: لا شيء يُحذف — كل شيء يُبعث.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
-import { join, dirname }  from 'path';
-import { fileURLToPath }  from 'url';
-import { askGemini }      from './_gemini.js';
-import { soulContext }    from './_soul.js';
-import { logger }         from '../logger.js';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { join, dirname }     from 'path';
+import { fileURLToPath }     from 'url';
+import { askGemini }         from './_gemini.js';
+import { getRemainingQuota } from './_gemini.js';
+import { soulContext }       from './_soul.js';
+import { readForAgent }      from './library-builder-agent.js';
+import { logger }            from '../logger.js';
 
-const __dirname      = dirname(fileURLToPath(import.meta.url));
-const PRODUCTS_PATH  = join(__dirname, '..', 'products.json');
-const RECIPES_DIR    = join(__dirname, '..', 'godot-recipes');
+const __dirname     = dirname(fileURLToPath(import.meta.url));
+const PRODUCTS_PATH = join(__dirname, '..', 'products.json');
+const RECIPES_DIR   = join(__dirname, '..', 'godot-recipes');
 
 const SKIP_TYPES  = ['godot'];
 const MAX_PER_RUN = 3;
@@ -29,6 +31,7 @@ export async function run(universe) {
 
   const products = loadProducts();
   const soul     = soulContext('revivalAgent');
+  const library  = readForAgent('revival-agent', 8);
 
   if (!products.length) {
     logger.warn('[REVIVAL] No products found');
@@ -40,24 +43,37 @@ export async function run(universe) {
     return { revived: 0 };
   }
 
+  // فحص الحصة قبل البدء — revival يحتاج 2 طلب لكل منتج
+  const quota = getRemainingQuota();
+  if (quota < 2) {
+    logger.warn('[REVIVAL] Not enough quota', { remaining: quota });
+    return { revived: 0, reason: 'quota-exhausted' };
+  }
+
   const candidates = products
     .filter(p => !SKIP_TYPES.includes(p.type) && p.status === 'available')
     .filter(p => !p.revived)
-    .slice(0, MAX_PER_RUN);
+    .slice(0, Math.min(MAX_PER_RUN, Math.floor(quota / 2))); // لا نأخذ أكثر مما تسمح به الحصة
 
   if (!candidates.length) {
     logger.info('[REVIVAL] All products already revived');
     return { revived: 0 };
   }
 
-  logger.info(`[REVIVAL] Found ${candidates.length} candidates`);
+  logger.info(`[REVIVAL] Found ${candidates.length} candidates`, { quotaLeft: quota });
 
   let revivedCount = 0;
 
   for (const product of candidates) {
+    // فحص الحصة قبل كل منتج
+    if (getRemainingQuota() < 2) {
+      logger.warn('[REVIVAL] Quota reached mid-run — stopping');
+      break;
+    }
+
     logger.info(`[REVIVAL] Reviving: "${product.name?.en}"...`);
     try {
-      const revived = await reviveProduct(product, universe, soul);
+      const revived = await reviveProduct(product, universe, soul, library);
       if (revived) {
         const idx = products.findIndex(p => p.id === product.id);
         if (idx !== -1) products[idx] = revived;
@@ -82,14 +98,14 @@ export async function run(universe) {
 // ════════════════════════════════════════════════════════════
 // ترقية منتج واحد
 // ════════════════════════════════════════════════════════════
-async function reviveProduct(product, universe, soul) {
+async function reviveProduct(product, universe, soul, library) {
   const closestWorld = findClosestWorld(product, universe);
   const recipes      = loadAvailableRecipes();
 
-  const newIdentity = await generateNewIdentity(product, universe, closestWorld, soul, recipes);
+  const newIdentity = await generateNewIdentity(product, universe, closestWorld, soul, library);
   if (!newIdentity) return null;
 
-  const godotCode = await generateGodotCode(newIdentity, universe, closestWorld, soul, recipes);
+  const godotCode = await generateGodotCode(newIdentity, universe, closestWorld, soul, library, recipes);
   if (!godotCode) return null;
 
   writeGodotProject(product.slug, godotCode, newIdentity);
@@ -98,10 +114,11 @@ async function reviveProduct(product, universe, soul) {
 }
 
 // ── توليد الهوية الجديدة ─────────────────
-async function generateNewIdentity(product, universe, world, soul, recipes) {
+async function generateNewIdentity(product, universe, world, soul, library) {
   try {
     return await askGemini(`
 ${soul}
+${library}
 
 حوّل هذا المنتج إلى لعبة Godot 3D بروح الكون.
 
@@ -115,11 +132,12 @@ ${soul}
   "gameplay": "آلية اللعب في جملتين",
   "godotFeatures": ["ميزة 1", "ميزة 2"],
   "worldConnection": "جملة واحدة",
-  "name": { "ar": "${product.name?.ar}", "en": "${product.name?.en}", "fr": "${product.name?.fr || product.name?.en}", "es": "${product.name?.es || product.name?.en}", "de": "${product.name?.de || product.name?.en}", "zh": "${product.name?.zh || product.name?.en}" },
-  "desc": { "ar": "وصف قصير", "en": "Short description", "fr": "Description", "es": "Descripción", "de": "Beschreibung", "zh": "描述" },
+  "name": { "ar": "${product.name?.ar}", "en": "${product.name?.en}" },
+  "desc": { "ar": "وصف قصير", "en": "Short description" },
   "accent": "${universe.art?.accent || '#00ff88'}",
   "gradient": "${universe.art?.gradient || '135deg,#020209,#080820'}"
-}`, 0.9, { maxOutputTokens: 1024, topP: 0.95 });
+}`, 0.9, { maxOutputTokens: 1024, topP: 0.95 }, 'revival-agent');
+
   } catch (err) {
     logger.error('[ERROR] Identity generation failed', { error: err.message });
     return null;
@@ -127,10 +145,11 @@ ${soul}
 }
 
 // ── توليد كود Godot ──────────────────────
-async function generateGodotCode(identity, universe, world, soul, recipes) {
+async function generateGodotCode(identity, universe, world, soul, library, recipes) {
   try {
     return await askGemini(`
 ${soul}
+${library}
 
 اكتب GDScript كامل لـ Godot 4.6.2:
 
@@ -138,7 +157,7 @@ ${soul}
 آلية اللعب: "${identity.gameplay}"
 العالم: "${world?.name?.en || 'Unknown'}"
 
-${recipes.length > 0 ? `وصفات متاحة:\n${recipes.slice(0,3).map(r => `- ${r.filename}: ${r.usage}`).join('\n')}` : ''}
+${recipes.length > 0 ? `وصفات متاحة:\n${recipes.slice(0, 3).map(r => `- ${r.filename}: ${r.usage}`).join('\n')}` : ''}
 
 القواعد:
 - tabs للـ indentation
@@ -155,7 +174,8 @@ ${recipes.length > 0 ? `وصفات متاحة:\n${recipes.slice(0,3).map(r => `-
   "enemy.gd":      "...",
   "weapon.gd":     "...",
   "bullet.gd":     "..."
-}`, 0.7, { maxOutputTokens: 8192, topP: 0.9 });
+}`, 0.7, { maxOutputTokens: 8192, topP: 0.9 }, 'revival-agent');
+
   } catch (err) {
     logger.error('[ERROR] Godot code generation failed', { error: err.message });
     return null;
@@ -173,8 +193,8 @@ function writeGodotProject(slug, scripts, identity) {
     }
   }
 
-  writeFileSync(join(projectDir, 'project.godot'), buildProjectGodot(slug, identity), 'utf8');
-  writeFileSync(join(projectDir, 'export_presets.cfg'), EXPORT_PRESETS, 'utf8');
+  writeFileSync(join(projectDir, 'project.godot'),      buildProjectGodot(slug, identity), 'utf8');
+  writeFileSync(join(projectDir, 'export_presets.cfg'), EXPORT_PRESETS,                    'utf8');
 
   logger.info(`[OK] Godot project written: ${slug}`);
 }
@@ -186,11 +206,11 @@ function buildRevivedProduct(old, identity, world, universe) {
     type:         'godot',
     templateFile: 'godot-wrapper.html',
     godotSlug:    old.slug,
-    accent:       identity.accent        || universe.art?.accent    || old.accent,
+    accent:       identity.accent         || universe.art?.accent   || old.accent,
     accentRgb:    universe.art?.accentRgb || old.accentRgb,
-    gradient:     identity.gradient      || universe.art?.gradient  || old.gradient,
-    name:         identity.name          || old.name,
-    desc:         identity.desc          || old.desc,
+    gradient:     identity.gradient       || universe.art?.gradient || old.gradient,
+    name:         identity.name           || old.name,
+    desc:         identity.desc           || old.desc,
     revived:      true,
     revivedAt:    new Date().toISOString(),
     universeId:   universe.id,
@@ -213,7 +233,7 @@ function findClosestWorld(product, universe) {
   let bestScore = 0;
 
   for (const world of universe.worlds) {
-    const worldText = [world.name?.en?.toLowerCase(), world.desc?.en?.toLowerCase()]
+    const worldText = [world.name?.en?.toLowerCase(), world.essence?.toLowerCase()]
       .filter(Boolean).join(' ');
     const score = keywords.split(' ')
       .filter(w => w.length > 3 && worldText.includes(w)).length;
