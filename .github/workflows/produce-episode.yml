@@ -28,7 +28,7 @@ jobs:
 
       - name: Install dependencies
         shell: pwsh
-        run: npm ci
+        run: npm install
 
       # ffmpeg يُثبَّت تلقائياً عبر @ffmpeg-installer/ffmpeg
       # edge-tts يعمل عبر edge-tts-node بدون pip
