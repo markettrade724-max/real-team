@@ -70,7 +70,7 @@ ${context}
   "backgroundColor": "#000000",
   "fogColor": "#000000",
   "lightColor": "#ffffff"
-}`, 0.9, { topP: 0.97, maxOutputTokens: 1024 }, 'world-birth-agent');
+}`, 0.9, { topP: 0.97, maxOutputTokens: 2048 }, 'world-birth-agent');
 
     } catch (err) {
       logger.warn(`[WARN] Core attempt ${attempts}/3 failed`, { error: err.message });
