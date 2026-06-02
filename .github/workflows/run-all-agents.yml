@@ -43,11 +43,7 @@ jobs:
       - name: Install dependencies
         shell: pwsh
         run: |
-          if (Test-Path "package-lock.json") {
-            npm ci
-          } else {
-            npm install
-          }
+          npm install
           npm install winston msedge-tts express --save
 
       - name: Create required directories
