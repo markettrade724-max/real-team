@@ -2,9 +2,8 @@ name: run-all-agents
 
 on:
   schedule:
-    - cron: '0 8  * * *'   # كل يوم 8 صباحاً UTC
-    - cron: '0 14 * * *'   # كل يوم 2 ظهراً UTC
-    - cron: '0 18 */3 * *' # كل 3 أيام 6 مساءً UTC — حلقة مسلسل
+    - cron: '0 8  * * *'   # كل يوم 8 صباحاً UTC — evolution + episode
+    - cron: '0 14 * * *'   # كل يوم 2 ظهراً UTC — evolution + episode
   workflow_dispatch:
     inputs:
       mode:
