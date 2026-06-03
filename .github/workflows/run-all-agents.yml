@@ -27,6 +27,7 @@ jobs:
     timeout-minutes: 90
     permissions:
       contents: write
+      actions: write
 
     steps:
       - name: Checkout repository
@@ -159,11 +160,16 @@ jobs:
 
       - name: Commit all changes
         shell: pwsh
+        env:
+          MODE:         ${{ github.event.inputs.mode || 'auto' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name  "agents-bot[bot]"
-          git config user.email "agents-bot@users.noreply.github.com"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # إضافة كل الملفات المتغيرة
+          # تفعيل الصلاحية عبر token
+          git remote set-url origin https://x-access-token:$env:GITHUB_TOKEN@github.com/$env:GITHUB_REPOSITORY
+
           git add -f agent-results/          2>$null
           git add    library/                2>$null
           git add    series.json             2>$null
@@ -175,8 +181,6 @@ jobs:
           if (Test-Path "godot-projects")  { git add godot-projects/ }
           if (Test-Path "godot-recipes")   { git add godot-recipes/ }
 
-          # لا نضيف episodes/ للـ git (ملفات كبيرة — artifacts فقط)
-
           $diff = git diff --staged --name-only
           if (-not $diff) {
             Write-Host "[INFO] No changes to commit"
@@ -184,10 +188,8 @@ jobs:
           }
 
           $date = Get-Date -Format "yyyy-MM-dd HH:mm"
-          $mode = $env:MODE
-          git commit -m "agents: $mode run $date [skip ci]"
+          git commit -m "agents: $env:MODE run $date [skip ci]"
 
-          # pull rebase مع stash للأمان
           git stash
           git pull --rebase origin main
           if ($LASTEXITCODE -ne 0) {
@@ -200,5 +202,3 @@ jobs:
 
           git push origin main
           Write-Host "[OK] Changes pushed"
-        env:
-          MODE: ${{ github.event.inputs.mode || 'auto' }}
