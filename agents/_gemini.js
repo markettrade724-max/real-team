@@ -108,6 +108,34 @@ export function getRemainingQuota() {
   return b.limit - b.total;
 }
 
+// ══════════════════════════════════════════════════════════
+// تكاليف الوكلاء — rule-153
+// ══════════════════════════════════════════════════════════
+const AGENT_COSTS = {
+  'inventor'    : 3,  // explore + build + evaluate
+  'screenplay'  : 3,  // backbone + scenes + dialogue
+  'code-agent'  : 9,  // 4 gd + 5 tscn
+  'library'     : 2,  // مرجعان يومياً
+  'visual'      : 1,
+  'roadmap'     : 1,
+};
+
+/**
+ * تحقق من إمكانية تنفيذ مهمة كاملة
+ * rule-153: الاكتمال المطلق أو توقف
+ */
+export function canAfford(task) {
+  const needed = AGENT_COSTS[task];
+  if (!needed) return true; // مهمة غير محسوبة — اسمح بها
+  const left = getRemainingQuota();
+  if (left < needed) {
+    logger.warn(`[BUDGET] Cannot afford full ${task} — need ${needed}, have ${left} — skipping`);
+    return false;
+  }
+  logger.info(`[BUDGET] Afford check OK — ${task} needs ${needed}, have ${left}`);
+  return true;
+}
+
 export function getBudgetStatus() {
   const b = loadBudget();
   return {
