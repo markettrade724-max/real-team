@@ -1,5 +1,4 @@
-name: QA Tests
-
+name: qa-tests
 on:
   push:
     branches: [main]
@@ -17,33 +16,55 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Install dependencies
+        shell: pwsh
+        run: npm install
+
       - name: Wait for Vercel deployment
-        run: |
-          echo "⏳ Waiting for Vercel deployment..."
-          for i in {1..24}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SITE_URL || echo "000")
-            if [ "$STATUS" = "200" ]; then
-              echo "✅ Site is live (HTTP 200)"
-              exit 0
-            fi
-            echo "   Attempt $i/24 — HTTP $STATUS, retrying in 5s..."
-            sleep 5
-          done
-          echo "❌ Site did not become ready after 2 minutes"
-          exit 1
+        shell: pwsh
         env:
           SITE_URL: ${{ vars.SITE_URL || 'https://real-team.vercel.app' }}
+        run: |
+          Write-Host "[INFO] Waiting for Vercel deployment..."
+          $url    = $env:SITE_URL
+          $ready  = $false
+
+          for ($i = 1; $i -le 24; $i++) {
+            try {
+              $res    = Invoke-WebRequest -Uri $url -Method Get -TimeoutSec 10 -UseBasicParsing
+              $status = $res.StatusCode
+            } catch {
+              $status = 0
+            }
+
+            if ($status -eq 200) {
+              Write-Host "[OK] Site is live (HTTP 200) after attempt $i"
+              $ready = $true
+              break
+            }
+
+            Write-Host "[WAIT] Attempt $i/24 — HTTP $status — retrying in 5s..."
+            Start-Sleep -Seconds 5
+          }
+
+          if (-not $ready) {
+            Write-Error "[FAIL] Site did not become ready after 2 minutes"
+            exit 1
+          }
 
       - name: Run QA tests
-        run: node scripts/qa-bot.js
+        shell: pwsh
         env:
           SITE_URL: ${{ vars.SITE_URL || 'https://real-team.vercel.app' }}
+        run: node scripts/qa-bot.js
 
       - name: Upload QA report
         if: always()
