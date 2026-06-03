@@ -31,7 +31,7 @@
 import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 'fs';
 import { join, dirname }  from 'path';
 import { fileURLToPath }  from 'url';
-import { askGemini }      from './_gemini.js';
+import { askGemini, canAfford } from './_gemini.js';
 import { soulContext }    from './_soul.js';
 import { readForAgent }   from './library-builder-agent.js';
 import { logger }         from '../logger.js';
@@ -494,6 +494,11 @@ export async function run(idea, story, levels, art, template) {
   if (!isGodot) {
     logger.info('[CODE] Non-Godot project — skipping');
     return { slug: idea.id, files: [], engine: 'phaser' };
+  }
+
+  // rule-153: تحقق من الحصة قبل البدء
+  if (!canAfford('code-agent')) {
+    throw new Error('InsufficientQuota: code-agent needs 9 calls');
   }
 
   const soul    = soulContext('code-agent');
