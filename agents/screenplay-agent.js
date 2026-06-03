@@ -23,7 +23,7 @@
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { askGemini }    from './_gemini.js';
+import { askGemini, canAfford } from './_gemini.js';
 import { soulContext }  from './_soul.js';
 import { readForAgent } from './library-builder-agent.js';
 import { logger }       from '../logger.js';
@@ -397,6 +397,11 @@ export async function run(universe, episodeNumber = 1, seriesContext = null) {
   });
 
   ensureResultsDir();
+
+  // rule-153: تحقق من الحصة قبل البدء
+  if (!canAfford('screenplay')) {
+    throw new Error('InsufficientQuota: screenplay needs 3 calls');
+  }
 
   // ── تحضير السياق ───────────────────────────
   const soul          = soulContext('screenplay-agent');
