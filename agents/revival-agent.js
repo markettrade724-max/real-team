@@ -1,31 +1,49 @@
 /**
- * revival-agent.js — وكيل البعث
+ * revival-agent.js — v1.1
  *
- * يأخذ المنتجات القديمة الفارغة ويرقّيها إلى ألعاب Godot حقيقية
- * مشحونة بروح الكون الجديد.
+ * التغييرات عن v1.0:
+ *  - دمج imports من _gemini.js في سطر واحد
+ *  - canAfford() بدل حساب يدوي (rule-153)
+ *  - generateGodotCode: maxOutputTokens 8192 → 32768
+ *  - generateGodotCode: temperature 0.7 → 0.2 (rule-146)
+ *  - mkdirSync لـ public/ قبل الكتابة
  *
- * المبدأ: لا شيء يُحذف — كل شيء يُبعث.
+ * القواعد المطبقة:
+ *  rule-056 : soulContext قبل كل عمل
+ *  rule-087 : askGemini(prompt, temp, options, caller)
+ *  rule-089 : كل الردود JSON
+ *  rule-098 : askGemini فقط
+ *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
+ *  rule-101 : maxOutputTokens لا maxTokens
+ *  rule-102 : لا JSON.parse
+ *  rule-109 : نسخ products.json إلى public/
+ *  rule-128 : caller logging
+ *  rule-146 : كود GDScript → temperature 0.2
+ *  rule-153 : canAfford قبل البدء
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join, dirname }     from 'path';
-import { fileURLToPath }     from 'url';
-import { askGemini }         from './_gemini.js';
-import { getRemainingQuota } from './_gemini.js';
-import { soulContext }       from './_soul.js';
-import { readForAgent }      from './library-builder-agent.js';
-import { logger }            from '../logger.js';
+import { join, dirname }                       from 'path';
+import { fileURLToPath }                       from 'url';
+import { askGemini, canAfford }                from './_gemini.js';
+import { soulContext }                         from './_soul.js';
+import { readForAgent }                        from './library-builder-agent.js';
+import { logger }                              from '../logger.js';
 
 const __dirname     = dirname(fileURLToPath(import.meta.url));
 const PRODUCTS_PATH = join(__dirname, '..', 'products.json');
+const PUBLIC_PATH   = join(__dirname, '..', 'public', 'products.json');
 const RECIPES_DIR   = join(__dirname, '..', 'godot-recipes');
 
 const SKIP_TYPES  = ['godot'];
 const MAX_PER_RUN = 3;
 
-// ════════════════════════════════════════════════════════════
+// تكلفة إحياء منتج واحد = 2 طلب
+const REVIVAL_COST = 2;
+
+// ══════════════════════════════════════════════════════════
 // الدالة الرئيسية
-// ════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 export async function run(universe) {
   logger.info('[REVIVAL] Agent awakening — scanning old products...');
 
@@ -43,30 +61,29 @@ export async function run(universe) {
     return { revived: 0 };
   }
 
-  // فحص الحصة قبل البدء — revival يحتاج 2 طلب لكل منتج
-  const quota = getRemainingQuota();
-  if (quota < 2) {
-    logger.warn('[REVIVAL] Not enough quota', { remaining: quota });
-    return { revived: 0, reason: 'quota-exhausted' };
+  // rule-153: تحقق من الحصة قبل البدء
+  if (!canAfford('revival')) {
+    logger.warn('[REVIVAL] Insufficient quota for revival');
+    return { revived: 0, reason: 'quota-insufficient' };
   }
 
   const candidates = products
     .filter(p => !SKIP_TYPES.includes(p.type) && p.status === 'available')
     .filter(p => !p.revived)
-    .slice(0, Math.min(MAX_PER_RUN, Math.floor(quota / 2))); // لا نأخذ أكثر مما تسمح به الحصة
+    .slice(0, MAX_PER_RUN);
 
   if (!candidates.length) {
     logger.info('[REVIVAL] All products already revived');
     return { revived: 0 };
   }
 
-  logger.info(`[REVIVAL] Found ${candidates.length} candidates`, { quotaLeft: quota });
+  logger.info(`[REVIVAL] Found ${candidates.length} candidates`);
 
   let revivedCount = 0;
 
   for (const product of candidates) {
-    // فحص الحصة قبل كل منتج
-    if (getRemainingQuota() < 2) {
+    // rule-153: تحقق قبل كل منتج
+    if (!canAfford('revival')) {
       logger.warn('[REVIVAL] Quota reached mid-run — stopping');
       break;
     }
@@ -86,18 +103,20 @@ export async function run(universe) {
   }
 
   if (revivedCount > 0) {
-    writeFileSync(PRODUCTS_PATH, JSON.stringify(products, null, 2), 'utf8');
-    const publicPath = join(__dirname, '..', 'public', 'products.json');
-    writeFileSync(publicPath, JSON.stringify(products, null, 2), 'utf8');
+    const json = JSON.stringify(products, null, 2);
+    writeFileSync(PRODUCTS_PATH, json, 'utf8');
+    // rule-109: نسخ إلى public/
+    mkdirSync(join(__dirname, '..', 'public'), { recursive: true });
+    writeFileSync(PUBLIC_PATH, json, 'utf8');
     logger.info('[OK] Revival complete', { revived: revivedCount });
   }
 
   return { revived: revivedCount, total: candidates.length };
 }
 
-// ════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // ترقية منتج واحد
-// ════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 async function reviveProduct(product, universe, soul, library) {
   const closestWorld = findClosestWorld(product, universe);
   const recipes      = loadAvailableRecipes();
@@ -113,11 +132,12 @@ async function reviveProduct(product, universe, soul, library) {
   return buildRevivedProduct(product, newIdentity, closestWorld, universe);
 }
 
-// ── توليد الهوية الجديدة ─────────────────
+// ══════════════════════════════════════════════════════════
+// توليد الهوية الجديدة
+// ══════════════════════════════════════════════════════════
 async function generateNewIdentity(product, universe, world, soul, library) {
   try {
-    return await askGemini(`
-${soul}
+    return await askGemini(`${soul}
 ${library}
 
 حوّل هذا المنتج إلى لعبة Godot 3D بروح الكون.
@@ -126,63 +146,76 @@ ${library}
 روح الكون: "${universe.soul?.essence?.slice(0, 80)}"
 العالم: "${world?.name?.en || 'العالم الأول'}"
 
-أنتج JSON فقط:
+أنتج JSON فقط — بدون أي نص خارج JSON:
 {
-  "concept": "جملة شاعرية قصيرة",
-  "gameplay": "آلية اللعب في جملتين",
-  "godotFeatures": ["ميزة 1", "ميزة 2"],
+  "concept":         "جملة شاعرية قصيرة",
+  "gameplay":        "آلية اللعب في جملتين",
+  "godotFeatures":   ["ميزة 1", "ميزة 2"],
   "worldConnection": "جملة واحدة",
-  "name": { "ar": "${product.name?.ar}", "en": "${product.name?.en}" },
-  "desc": { "ar": "وصف قصير", "en": "Short description" },
-  "accent": "${universe.art?.accent || '#00ff88'}",
-  "gradient": "${universe.art?.gradient || '135deg,#020209,#080820'}"
-}`, 0.9, { maxOutputTokens: 1024, topP: 0.95 }, 'revival-agent');
-
+  "name":    { "ar": "${product.name?.ar}", "en": "${product.name?.en}" },
+  "desc":    { "ar": "وصف قصير", "en": "Short description" },
+  "accent":  "${universe.art?.accent   || '#00ff88'}",
+  "gradient":"${universe.art?.gradient || '135deg,#020209,#080820'}"
+}`,
+      0.9,
+      { maxOutputTokens: 1024, topP: 0.95 },
+      'revival-agent'
+    );
   } catch (err) {
     logger.error('[ERROR] Identity generation failed', { error: err.message });
     return null;
   }
 }
 
-// ── توليد كود Godot ──────────────────────
+// ══════════════════════════════════════════════════════════
+// توليد كود Godot
+// ══════════════════════════════════════════════════════════
 async function generateGodotCode(identity, universe, world, soul, library, recipes) {
   try {
-    return await askGemini(`
-${soul}
+    return await askGemini(`${soul}
 ${library}
 
-اكتب GDScript كامل لـ Godot 4.6.2:
+اكتب GDScript كامل لـ Godot 4.6.2 — لا اختصار — لا حذف.
 
 المفهوم: "${identity.concept}"
 آلية اللعب: "${identity.gameplay}"
 العالم: "${world?.name?.en || 'Unknown'}"
 
-${recipes.length > 0 ? `وصفات متاحة:\n${recipes.slice(0, 3).map(r => `- ${r.filename}: ${r.usage}`).join('\n')}` : ''}
+${recipes.length > 0
+  ? `وصفات متاحة:\n${recipes.slice(0, 3).map(r => `- ${r.filename}: ${r.usage}`).join('\n')}`
+  : ''}
 
 القواعد:
-- tabs للـ indentation
-- add_to_group("player") في player.gd
-- is_inside_tree() قبل queue_free() بعد await
+- tabs للـ indentation — ليس spaces
+- add_to_group("player") في _ready() في player.gd
+- add_to_group("enemy")  في _ready() في enemy.gd
+- is_inside_tree() قبل queue_free() بعد أي await
 - process_mode = ALWAYS في main_scene.gd
 - دعم InputEventScreenTouch
-- gravity_scale = 0.0 للرصاص
+- gravity_scale = 0.0 في bullet.gd
+- NavigationAgent3D في enemy.gd
 
-أنتج JSON فقط:
+أنتج JSON فقط — بدون أي نص خارج JSON:
 {
-  "main_scene.gd": "...",
-  "player.gd":     "...",
-  "enemy.gd":      "...",
-  "weapon.gd":     "...",
-  "bullet.gd":     "..."
-}`, 0.7, { maxOutputTokens: 8192, topP: 0.9 }, 'revival-agent');
-
+  "main_scene.gd": "<كود كامل>",
+  "player.gd":     "<كود كامل>",
+  "enemy.gd":      "<كود كامل>",
+  "weapon.gd":     "<كود كامل>",
+  "bullet.gd":     "<كود كامل>"
+}`,
+      0.2,
+      { maxOutputTokens: 32768, topP: 0.85 },
+      'revival-agent'
+    );
   } catch (err) {
     logger.error('[ERROR] Godot code generation failed', { error: err.message });
     return null;
   }
 }
 
-// ── كتابة ملفات المشروع ──────────────────
+// ══════════════════════════════════════════════════════════
+// كتابة ملفات المشروع
+// ══════════════════════════════════════════════════════════
 function writeGodotProject(slug, scripts, identity) {
   const projectDir = join(__dirname, '..', 'godot-projects', slug);
   mkdirSync(projectDir, { recursive: true });
@@ -199,7 +232,9 @@ function writeGodotProject(slug, scripts, identity) {
   logger.info(`[OK] Godot project written: ${slug}`);
 }
 
-// ── بناء المنتج المُرقّى ─────────────────
+// ══════════════════════════════════════════════════════════
+// بناء المنتج المُرقّى
+// ══════════════════════════════════════════════════════════
 function buildRevivedProduct(old, identity, world, universe) {
   return {
     ...old,
@@ -214,12 +249,15 @@ function buildRevivedProduct(old, identity, world, universe) {
     revived:      true,
     revivedAt:    new Date().toISOString(),
     universeId:   universe.id,
-    worldId:      world?.id || null,
+    worldId:      world?.id   || null,
     concept:      identity.concept,
   };
 }
 
-// ── اختيار أقرب عالم ────────────────────
+// ══════════════════════════════════════════════════════════
+// دوال مساعدة
+// ══════════════════════════════════════════════════════════
+
 function findClosestWorld(product, universe) {
   if (!universe.worlds?.length) return null;
 
@@ -243,7 +281,6 @@ function findClosestWorld(product, universe) {
   return best;
 }
 
-// ── تحميل الوصفات ────────────────────────
 function loadAvailableRecipes() {
   if (!existsSync(RECIPES_DIR)) return [];
   try {
@@ -255,14 +292,15 @@ function loadAvailableRecipes() {
   return [];
 }
 
-// ── تحميل المنتجات ───────────────────────
 function loadProducts() {
   if (!existsSync(PRODUCTS_PATH)) return [];
   try { return JSON.parse(readFileSync(PRODUCTS_PATH, 'utf8')); }
   catch { return []; }
 }
 
-// ── project.godot ────────────────────────
+// ══════════════════════════════════════════════════════════
+// project.godot
+// ══════════════════════════════════════════════════════════
 function buildProjectGodot(slug, identity) {
   return `; Engine configuration file — Godot 4.6.2
 config_version=5
@@ -285,7 +323,9 @@ renderer/rendering_method="forward_plus"
 `;
 }
 
-// ── export_presets.cfg ───────────────────
+// ══════════════════════════════════════════════════════════
+// export_presets.cfg
+// ══════════════════════════════════════════════════════════
 const EXPORT_PRESETS = `[preset.0]
 name="Web"
 platform="Web"
