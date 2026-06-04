@@ -1,16 +1,16 @@
 {
-  "runId": "2026-06-04T1119",
-  "mode": "evolution",
-  "success": true,
-  "timestamp": "2026-06-04T11:27:03.880Z",
-  "totalDuration": "473.7s",
+  "runId": "2026-06-04T1258",
+  "mode": "episode",
+  "success": false,
+  "timestamp": "2026-06-04T13:01:11.647Z",
+  "totalDuration": "191.2s",
   "budget": {
-    "total": 8,
+    "total": 11,
     "limit": 20,
-    "left": 12,
+    "left": 9,
     "library": 0,
-    "agents": 8,
-    "percent": "40%"
+    "agents": 11,
+    "percent": "55%"
   },
   "library": {
     "built": 8,
@@ -31,35 +31,15 @@
       "duration": "1ms",
       "error": null
     },
-    "world": {
-      "success": true,
-      "duration": "62.8s",
-      "error": null
-    },
-    "collision": {
-      "success": true,
-      "duration": "3ms",
-      "error": null
-    },
     "episode": {
       "success": false,
       "duration": "—",
-      "error": "ffmpeg exited with code 1: D:\\a\\real-team\\real-team\\episodes\\ep1\\audio\\S01-narrator.mp3: Invalid argument\n"
-    },
-    "roadmap": {
-      "success": true,
-      "duration": "7.5s",
-      "error": null
-    },
-    "marketing": {
-      "success": true,
-      "duration": "11.5s",
-      "error": null
+      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     }
   },
   "summary": {
-    "total": 6,
-    "passed": 5,
+    "total": 2,
+    "passed": 1,
     "failed": 1
   },
   "rolledBack": false
