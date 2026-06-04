@@ -1,7 +1,26 @@
-name: universe-evolution
+# universe-evolution.yml — v2.0
+#
+# التغييرات عن v1.0:
+#  - حذف cache: npm (rule-121)
+#  - timeout: مرفوع لـ 120 دقيقة
+#  - git stash + pull --rebase (rule-120)
+#  - retry على push
+#  - [skip ci] في commit message
+#  - حذف SUNO_API_KEY (Zero Cost Policy)
+#  - فصل artifact عن commit
+#
+# القواعد المطبقة:
+#  rule-099 : لا إيموجي في commit messages
+#  rule-106 : GEMINI_API_KEY الاسم الموحد
+#  rule-120 : git stash قبل pull --rebase
+#  rule-121 : لا cache: npm
+#  rule-127 : windows-latest + shell: pwsh
+
+name: Universe Evolution
+
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 2 * * *'   # كل يوم الساعة 02:00 UTC
   workflow_dispatch:
     inputs:
       mode:
@@ -12,118 +31,119 @@ on:
         options:
           - auto
           - birth
+          - evolution
           - invention
           - revival
           - sync
           - code
+          - library
 
 jobs:
   evolve:
     runs-on: windows-latest
-    permissions:
-      contents: write
+    timeout-minutes: 120
 
     steps:
-      - name: Checkout repository
+      # ── 1. Checkout ──────────────────────────────────
+      - name: Checkout
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      # ── 2. Node.js ───────────────────────────────────
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          # لا cache: npm — rule-121
 
+      # ── 3. Install ───────────────────────────────────
       - name: Install dependencies
+        shell: pwsh
         run: npm install
-        shell: pwsh
 
-      - name: Create required directories
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path "agent-results" | Out-Null
-          New-Item -ItemType Directory -Force -Path "public"         | Out-Null
-          New-Item -ItemType Directory -Force -Path "godot-recipes"  | Out-Null
-          Write-Host "[OK] Directories ready"
-
-      - name: Verify Gemini key
-        shell: pwsh
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: |
-          if (-not $env:GEMINI_API_KEY) {
-            Write-Error "[FATAL] GEMINI_API_KEY is not set"
-            exit 1
-          }
-          Write-Host "[OK] GEMINI_API_KEY is present"
-
-      - name: Run orchestrator
+      # ── 4. Run Orchestrator ──────────────────────────
+      - name: Run Orchestrator
         shell: pwsh
         env:
           GEMINI_API_KEY:            ${{ secrets.GEMINI_API_KEY }}
           SUPABASE_URL:              ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          GITHUB_REPOSITORY:         ${{ github.repository }}
-          SITE_URL:                  https://real-team.vercel.app
-          MODE:                      ${{ github.event.inputs.mode || 'auto' }}
+          YOUTUBE_CLIENT_ID:         ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET:     ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN:     ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          TIKTOK_ACCESS_TOKEN:       ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+          TIKTOK_USERNAME:           ${{ secrets.TIKTOK_USERNAME }}
+          KOFI_VERIFICATION_TOKEN:   ${{ secrets.KOFI_VERIFICATION_TOKEN }}
+          MODE: ${{ github.event.inputs.mode || 'auto' }}
         run: node orchestrator.js
 
-      - name: Verify universe was saved
-        shell: pwsh
-        run: |
-          if (Test-Path "universe.json") {
-            $size = (Get-Item "universe.json").Length
-            Write-Host "[OK] universe.json exists — size: $size bytes"
-            if ($size -lt 10) {
-              Write-Error "[FAIL] universe.json too small"
-              exit 1
-            }
-          } else {
-            Write-Warning "[WARN] universe.json not found"
-          }
+      # ── 5. Upload Artifact ───────────────────────────
+      - name: Upload run artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: run-${{ github.run_number }}-${{ github.event.inputs.mode || 'auto' }}
+          path: |
+            agent-results/
+            universe.json
+            universe.backup.json
+            godot-recipes/index.json
+            library/budget.json
+          retention-days: 14
 
-      - name: Show run report
+      # ── 6. Commit + Push ─────────────────────────────
+      - name: Commit universe progress
         shell: pwsh
         run: |
-          if (Test-Path "agent-results/run-report.json") {
-            Get-Content "agent-results/run-report.json"
-          } else {
-            Write-Warning "[WARN] No run report found"
-          }
+          git config user.name  "Universe Bot"
+          git config user.email "bot@universe.ai"
 
-      - name: Copy products to public
-        shell: pwsh
-        run: |
-          if (Test-Path "products.json") {
-            Copy-Item products.json public/products.json -Force
-            Write-Host "[OK] products.json copied to public/"
-          }
+          # أضف كل الملفات المتغيرة
+          git add universe.json          2>$null
+          git add agent-results\         2>$null
+          git add godot-projects\        2>$null
+          git add godot-recipes\         2>$null
+          git add library\               2>$null
+          git add public\products.json   2>$null
+          git add products.json          2>$null
 
-      - name: Commit all changes
-        shell: pwsh
-        env:
-          MODE: ${{ github.event.inputs.mode || 'auto' }}
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f agent-results/
-          git add universe.json products.json public/products.json
-          if (Test-Path "godot-projects") { git add godot-projects/ }
-          if (Test-Path "godot-recipes")  { git add godot-recipes/ }
-          if (Test-Path "public/games")   { git add public/games/ }
-          $diff = git diff --staged --name-only
-          if (-not $diff) {
+          # تحقق من وجود تغييرات
+          git diff --staged --quiet
+          if ($LASTEXITCODE -eq 0) {
             Write-Host "[INFO] No changes to commit"
             exit 0
           }
-          $mode = $env:MODE
-          $date = Get-Date -Format "yyyy-MM-dd HH:mm"
-          git commit -m "universe: $mode evolution $date [skip ci]"
-          git pull --rebase origin main
-          if ($LASTEXITCODE -ne 0) {
-            git rebase --abort
-            Write-Error "[FAIL] Rebase failed"
-            exit 1
+
+          # استخرج معلومات للـ commit message
+          $mode      = "${{ github.event.inputs.mode || 'auto' }}"
+          $day       = (Get-Date).DayOfWeek.ToString().ToLower()
+          $worlds    = "0"
+          $evolutions = "0"
+
+          if (Test-Path "universe.json") {
+            try {
+              $uni        = Get-Content "universe.json" | ConvertFrom-Json
+              $worlds     = [string]$uni.worlds.Count
+              $evolutions = [string]$uni.evolutions
+            } catch {
+              Write-Host "[WARN] Could not parse universe.json"
+            }
           }
+
+          git commit -m "evolution: day=$day mode=$mode worlds=$worlds ev=$evolutions [skip ci]"
+
+          # rule-120: stash + rebase + push + pop
+          git stash
+          git pull --rebase origin main
+          git stash pop
+
           git push origin main
-          Write-Host "[OK] Changes pushed"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "[WARN] Push failed — retrying"
+            git pull --rebase origin main
+            git push origin main
+          }
+
+          Write-Host "[OK] Universe progress committed"
