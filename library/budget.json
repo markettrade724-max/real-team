@@ -1,9 +1,9 @@
 {
   "date": "2026-06-04",
-  "total": 17,
+  "total": 19,
   "limit": 20,
   "library": 0,
-  "agents": 17,
+  "agents": 19,
   "log": [
     {
       "time": "11:19:35",
@@ -128,6 +128,21 @@
       "success": false,
       "total": 17,
       "left": 3,
+      "errorType": "network_429"
+    },
+    {
+      "time": "20:01:48",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 18,
+      "left": 2
+    },
+    {
+      "time": "20:02:48",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 19,
+      "left": 1,
       "errorType": "network_429"
     }
   ]
