@@ -958,14 +958,72 @@
         "description": "بيئة صوتية تعكس الحنين العميق والفراغ الكوني، حيث تتداخل أصداء الذكريات المفقودة مع الصمت الثقيل، مع لمسات موسيقية حزينة تثير الفضول والأمل الخافت."
       },
       "addedAt": "2026-05-30T15:00:13.875Z"
+    },
+    {
+      "id": "world-16",
+      "dayNumber": 155,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "رفات الذكريات الكونية",
+        "en": "Cosmic Memory Remains"
+      },
+      "essence": "النسيان الكوني",
+      "physicsLaw": "الذكريات المادية تشكّل الفراغ وتُحفَر فيه، وكلما زاد النسيان، ازداد ثقل الصمت.",
+      "atmosphere": "فسحة شاسعة من العدم، تتلألأ فيها شظايا الأرواح المنسية كالغبار الكوني المتجمد، يلفها صمتٌ أزليٌّ ثقيل، وتتردد فيها أصداء قصص لم تُروَ بعد، مُهملة على حافة النسيان.",
+      "secret": "الصمت ليس غيابًا، بل كيان كوني قديم يمتص الذكريات ليحافظ على وجوده، ولكل ذكرى تُستعاد تأثيرٌ على استقراره.",
+      "difficulty": "hard",
+      "backgroundColor": "#0A0A0A",
+      "fogColor": "#1A1A2A",
+      "lightColor": "#D0E0FF",
+      "enemies": [],
+      "weapon": null,
+      "vehicle": null,
+      "noise": {
+        "frequency": 0.03,
+        "amplitude": 1.2,
+        "octaves": 5,
+        "persistence": 0.4,
+        "lacunarity": 2.2,
+        "seed": 70828,
+        "type": "simplex",
+        "description": "حقول غبار كوني واسعة ومتموجة تتخللها بقايا ذاكرة مجزأة دقيقة، مما يخلق إحساسًا بالمناظر الطبيعية القديمة المنسية والفراغ اللامتناهي."
+      },
+      "shader": {
+        "type": "void",
+        "code": "shader_type spatial;\nrender_mode unshaded;\nvoid fragment() { ALBEDO = vec3(0.02, 0.0, 0.05); EMISSION = ALBEDO; }",
+        "parameters": {},
+        "description": "فراغ كوني عميق وخانق، ملون بدرجات باهتة من البنفسجي والأزرق الكئيب، يعكس الصمت المنتشر وبقايا الوجود المنسي."
+      },
+      "audio": {
+        "ambience": "صمت كوني خانق، طنين خافت لغبار النجوم، أصداء بعيدة لهمسات منسية، وشعور بالضغط الجوي.",
+        "music_tempo": "slow",
+        "music_mood": "melancholic",
+        "instruments": [
+          "Ethereal synths and pads",
+          "Deep, sustained strings (cello, double bass)",
+          "Ghostly, wordless choir",
+          "Subtle, resonant chimes",
+          "Low, ambient drones"
+        ],
+        "sfx": [
+          "Faint, fragmented whispers (memories)",
+          "Distant, deep cosmic thrums/pulses",
+          "Subtle shimmering/dust particulate sounds",
+          "Ethereal hums and resonances of the void",
+          "A soft, oppressive 'pressure' of silence"
+        ],
+        "description": "مشهد صوتي واسع وكئيب يسيطر عليه الصمت الخانق، تتخلله طنين خافت لغبار كوني، همسات بعيدة ومطاردة، وألحان إثيرية حزينة تستحضر شعورًا بالخسارة العميقة والأمل الخافت المتبقي."
+      },
+      "addedAt": "2026-06-04T11:20:28.023Z"
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 40,
+  "evolutions": 41,
   "inventions": 3,
-  "lastEvolved": "2026-06-03T18:17:52.638Z",
+  "lastEvolved": "2026-06-04T11:20:28.028Z",
   "lastInvented": "2026-05-24T22:55:44.516Z",
   "revivals": 0,
   "lastRevived": "2026-05-25T16:17:15.378Z"
