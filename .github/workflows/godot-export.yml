@@ -9,6 +9,13 @@ on:
       project-slug:
         description: 'مُعرّف المشروع (اتركه فارغاً لتصدير الكل)'
         required: false
+  # إضافة: يقبل استدعاء من orchestrator
+  workflow_call:
+    inputs:
+      project-slug:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   export-godot:
@@ -88,11 +95,12 @@ jobs:
           echo "[OK] Godot found: $GODOT_BIN"
 
           # تحديد المشاريع للتصدير
-          if [ -n "${{ github.event.inputs.project-slug }}" ]; then
-            SLUG="${{ github.event.inputs.project-slug }}"
-            FOUND_PROJECTS="godot-projects/$SLUG/project.godot"
+          # إضافة: يقرأ من workflow_call أيضاً
+          INPUT_SLUG="${{ github.event.inputs.project-slug }}${{ inputs.project-slug }}"
+          if [ -n "$INPUT_SLUG" ]; then
+            FOUND_PROJECTS="godot-projects/$INPUT_SLUG/project.godot"
             if [ ! -f "$FOUND_PROJECTS" ]; then
-              echo "[FAIL] Project not found: $SLUG"
+              echo "[FAIL] Project not found: $INPUT_SLUG"
               exit 1
             fi
           else
@@ -190,6 +198,15 @@ jobs:
           if [ "$EXPORT_FAILED" = "true" ]; then
             exit 1
           fi
+
+      # إضافة: upload artifact للبناء
+      - name: Upload web builds
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: godot-web-builds-${{ github.run_number }}
+          path: public/games/godot/
+          retention-days: 30
 
       - name: Commit exported files
         shell: bash
