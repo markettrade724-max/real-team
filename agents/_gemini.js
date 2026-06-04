@@ -116,8 +116,15 @@ const AGENT_COSTS = {
   'screenplay'  : 3,  // backbone + scenes + dialogue
   'code-agent'  : 9,  // 4 gd + 5 tscn
   'library'     : 2,  // مرجعان يومياً
+  'revival'     : 2,  // identity + godot code
   'visual'      : 1,
   'roadmap'     : 1,
+  'marketing'   : 1,
+  'world'       : 1,
+  'idea'        : 1,
+  'story'       : 1,
+  'soul'        : 1,
+  'art'         : 1,
 };
 
 /**
