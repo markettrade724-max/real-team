@@ -1,5 +1,5 @@
 /**
- * scripts/qa-bot.js — v1.0
+ * qa-bot.js — v1.0
  *
  * اختبارات QA تلقائية بعد كل deploy على Vercel.
  *
@@ -121,6 +121,29 @@ async function testProductsJSON(results) {
   }
 }
 
+async function testAPIEndpoints(results) {
+  const endpoints = [
+    { path: '/api/products', name: 'api:products', critical: true },
+  ];
+
+  for (const ep of endpoints) {
+    const url  = `${BASE_URL}${ep.path}`;
+    const test = { name: ep.name, url, critical: ep.critical };
+    try {
+      const res   = await fetchWithTimeout(url);
+      test.status = res.status;
+      test.passed = res.status === 200;
+      if (!test.passed) test.error = `HTTP ${res.status}`;
+      console.log(`[${test.passed ? 'OK' : 'FAIL'}] ${ep.name} — HTTP ${res.status}`);
+    } catch (err) {
+      test.passed = false;
+      test.error  = err.message;
+      console.log(`[FAIL] ${ep.name} — ${err.message}`);
+    }
+    results.push(test);
+  }
+}
+
 async function testGamePages(products, results) {
   // اختبر أول 5 ألعاب فقط — لا نستهلك وقتاً كثيراً
   const godotGames = products
@@ -128,7 +151,9 @@ async function testGamePages(products, results) {
     .slice(0, 5);
 
   for (const game of godotGames) {
-    const url  = `${BASE_URL}/games/godot/${game.id || game.slug}/index.html`;
+    // يستخدم godotSlug إذا وجد — وإلا id
+    const slug = game.godotSlug || game.slug || game.id;
+    const url  = `${BASE_URL}/games/godot/${slug}/index.html`;
     const test = { name: `game:${game.id}`, url, critical: false };
 
     try {
@@ -182,6 +207,7 @@ async function main() {
   // الاختبارات بالترتيب
   await testHomepage(results);
   const products = await testProductsJSON(results);
+  await testAPIEndpoints(results);
   await testGamePages(products, results);
   await testTemplate(results);
 
