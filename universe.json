@@ -1016,14 +1016,66 @@
         "description": "مشهد صوتي واسع وكئيب يسيطر عليه الصمت الخانق، تتخلله طنين خافت لغبار كوني، همسات بعيدة ومطاردة، وألحان إثيرية حزينة تستحضر شعورًا بالخسارة العميقة والأمل الخافت المتبقي."
       },
       "addedAt": "2026-06-04T11:20:28.023Z"
+    },
+    {
+      "id": "world-17",
+      "dayNumber": 155,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "المضجع النجمي",
+        "en": "The Astral Sepulchre"
+      },
+      "essence": "صدى الذاكرة",
+      "physicsLaw": "الفراغ يتلاعب بالزمن والجاذبية حول الذكريات المنسية، مما يخلق مساحات مشوهة وكيانات مادية من الأصوات والأحاسيس.",
+      "atmosphere": "فراغ لا نهائي يتراقص فيه ضباب كوني كثيف، تتجسد فيه أضواء باهتة لنجوم ميتة كشظايا بلورية متناثرة. صمت ثقيل يلف كل شيء، يُكسر أحيانًا بصدى همسات قديمة وارتجافات اهتزازية لكيانات غير مرئية تسبح في العدم.",
+      "secret": "الفراغ ليس فراغًا عدميًا، بل هو كائن حي قديم يمتص الذكريات المنسية ليحافظ على وجوده. كل ذكرى تُستعاد تُضعفه وتكشف عن حقيقته الكامنة، لكنه في المقابل يمتلك القدرة على إعادة تشكيل الوجود.",
+      "difficulty": "hard",
+      "backgroundColor": "#000000",
+      "fogColor": "#1a0f2c",
+      "lightColor": "#a0b0c0",
+      "enemies": [],
+      "weapon": null,
+      "vehicle": null,
+      "noise": {
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 77363,
+        "type": "simplex",
+        "description": "Default terrain for The Astral Sepulchre"
+      },
+      "shader": {
+        "type": "void",
+        "code": "shader_type spatial;\nrender_mode unshaded;\nvoid fragment() { ALBEDO = vec3(0.02, 0.0, 0.05); EMISSION = ALBEDO; }",
+        "parameters": {},
+        "description": "Default void shader"
+      },
+      "audio": {
+        "ambience": "distant echoes and cosmic hum",
+        "music_tempo": "slow",
+        "music_mood": "mysterious",
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "distant_rumble"
+        ],
+        "description": "Default audio for The Astral Sepulchre"
+      },
+      "addedAt": "2026-06-04T16:46:25.932Z"
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 41,
+  "evolutions": 42,
   "inventions": 3,
-  "lastEvolved": "2026-06-04T11:20:28.028Z",
+  "lastEvolved": "2026-06-04T16:46:25.939Z",
   "lastInvented": "2026-05-24T22:55:44.516Z",
   "revivals": 0,
   "lastRevived": "2026-05-25T16:17:15.378Z"

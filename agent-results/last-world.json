@@ -1,58 +1,52 @@
 {
-  "id": "world-16",
+  "id": "world-17",
   "dayNumber": 155,
   "chapter": 1,
   "chapterName": "Genesis",
   "name": {
-    "ar": "رفات الذكريات الكونية",
-    "en": "Cosmic Memory Remains"
+    "ar": "المضجع النجمي",
+    "en": "The Astral Sepulchre"
   },
-  "essence": "النسيان الكوني",
-  "physicsLaw": "الذكريات المادية تشكّل الفراغ وتُحفَر فيه، وكلما زاد النسيان، ازداد ثقل الصمت.",
-  "atmosphere": "فسحة شاسعة من العدم، تتلألأ فيها شظايا الأرواح المنسية كالغبار الكوني المتجمد، يلفها صمتٌ أزليٌّ ثقيل، وتتردد فيها أصداء قصص لم تُروَ بعد، مُهملة على حافة النسيان.",
-  "secret": "الصمت ليس غيابًا، بل كيان كوني قديم يمتص الذكريات ليحافظ على وجوده، ولكل ذكرى تُستعاد تأثيرٌ على استقراره.",
+  "essence": "صدى الذاكرة",
+  "physicsLaw": "الفراغ يتلاعب بالزمن والجاذبية حول الذكريات المنسية، مما يخلق مساحات مشوهة وكيانات مادية من الأصوات والأحاسيس.",
+  "atmosphere": "فراغ لا نهائي يتراقص فيه ضباب كوني كثيف، تتجسد فيه أضواء باهتة لنجوم ميتة كشظايا بلورية متناثرة. صمت ثقيل يلف كل شيء، يُكسر أحيانًا بصدى همسات قديمة وارتجافات اهتزازية لكيانات غير مرئية تسبح في العدم.",
+  "secret": "الفراغ ليس فراغًا عدميًا، بل هو كائن حي قديم يمتص الذكريات المنسية ليحافظ على وجوده. كل ذكرى تُستعاد تُضعفه وتكشف عن حقيقته الكامنة، لكنه في المقابل يمتلك القدرة على إعادة تشكيل الوجود.",
   "difficulty": "hard",
-  "backgroundColor": "#0A0A0A",
-  "fogColor": "#1A1A2A",
-  "lightColor": "#D0E0FF",
+  "backgroundColor": "#000000",
+  "fogColor": "#1a0f2c",
+  "lightColor": "#a0b0c0",
   "enemies": [],
   "weapon": null,
   "vehicle": null,
   "noise": {
-    "frequency": 0.03,
-    "amplitude": 1.2,
-    "octaves": 5,
-    "persistence": 0.4,
-    "lacunarity": 2.2,
-    "seed": 70828,
+    "frequency": 0.05,
+    "amplitude": 1,
+    "octaves": 4,
+    "persistence": 0.5,
+    "lacunarity": 2,
+    "seed": 77363,
     "type": "simplex",
-    "description": "حقول غبار كوني واسعة ومتموجة تتخللها بقايا ذاكرة مجزأة دقيقة، مما يخلق إحساسًا بالمناظر الطبيعية القديمة المنسية والفراغ اللامتناهي."
+    "description": "Default terrain for The Astral Sepulchre"
   },
   "shader": {
     "type": "void",
     "code": "shader_type spatial;\nrender_mode unshaded;\nvoid fragment() { ALBEDO = vec3(0.02, 0.0, 0.05); EMISSION = ALBEDO; }",
     "parameters": {},
-    "description": "فراغ كوني عميق وخانق، ملون بدرجات باهتة من البنفسجي والأزرق الكئيب، يعكس الصمت المنتشر وبقايا الوجود المنسي."
+    "description": "Default void shader"
   },
   "audio": {
-    "ambience": "صمت كوني خانق، طنين خافت لغبار النجوم، أصداء بعيدة لهمسات منسية، وشعور بالضغط الجوي.",
+    "ambience": "distant echoes and cosmic hum",
     "music_tempo": "slow",
-    "music_mood": "melancholic",
+    "music_mood": "mysterious",
     "instruments": [
-      "Ethereal synths and pads",
-      "Deep, sustained strings (cello, double bass)",
-      "Ghostly, wordless choir",
-      "Subtle, resonant chimes",
-      "Low, ambient drones"
+      "synthesizer",
+      "ambient_pad"
     ],
     "sfx": [
-      "Faint, fragmented whispers (memories)",
-      "Distant, deep cosmic thrums/pulses",
-      "Subtle shimmering/dust particulate sounds",
-      "Ethereal hums and resonances of the void",
-      "A soft, oppressive 'pressure' of silence"
+      "wind",
+      "distant_rumble"
     ],
-    "description": "مشهد صوتي واسع وكئيب يسيطر عليه الصمت الخانق، تتخلله طنين خافت لغبار كوني، همسات بعيدة ومطاردة، وألحان إثيرية حزينة تستحضر شعورًا بالخسارة العميقة والأمل الخافت المتبقي."
+    "description": "Default audio for The Astral Sepulchre"
   },
-  "addedAt": "2026-06-04T11:20:28.023Z"
+  "addedAt": "2026-06-04T16:46:25.932Z"
 }

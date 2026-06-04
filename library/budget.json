@@ -1,9 +1,9 @@
 {
   "date": "2026-06-04",
-  "total": 11,
+  "total": 17,
   "limit": 20,
   "library": 0,
-  "agents": 11,
+  "agents": 17,
   "log": [
     {
       "time": "11:19:35",
@@ -82,6 +82,53 @@
       "total": 11,
       "left": 9,
       "errorType": "network_503"
+    },
+    {
+      "time": "16:45:13",
+      "caller": "world-birth-agent",
+      "success": true,
+      "total": 12,
+      "left": 8
+    },
+    {
+      "time": "16:45:25",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 13,
+      "left": 7,
+      "errorType": "network_429"
+    },
+    {
+      "time": "16:46:25",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 14,
+      "left": 6,
+      "errorType": "network_429"
+    },
+    {
+      "time": "16:47:26",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 15,
+      "left": 5,
+      "errorType": "network_429"
+    },
+    {
+      "time": "16:48:41",
+      "caller": "unknown",
+      "success": false,
+      "total": 16,
+      "left": 4,
+      "errorType": "network_429"
+    },
+    {
+      "time": "16:49:56",
+      "caller": "marketing-agent",
+      "success": false,
+      "total": 17,
+      "left": 3,
+      "errorType": "network_429"
     }
   ]
 }
