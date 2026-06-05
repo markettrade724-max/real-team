@@ -1,0 +1,48 @@
+{
+  "date": "2026-06-05",
+  "total": 5,
+  "limit": 20,
+  "library": 0,
+  "agents": 5,
+  "log": [
+    {
+      "time": "11:09:01",
+      "caller": "revival-agent",
+      "success": false,
+      "total": 1,
+      "left": 19,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "11:09:10",
+      "caller": "revival-agent",
+      "success": false,
+      "total": 2,
+      "left": 18,
+      "errorType": "network_503"
+    },
+    {
+      "time": "11:09:11",
+      "caller": "revival-agent",
+      "success": false,
+      "total": 3,
+      "left": 17,
+      "errorType": "network_503"
+    },
+    {
+      "time": "11:09:42",
+      "caller": "revival-agent",
+      "success": false,
+      "total": 4,
+      "left": 16,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "11:10:03",
+      "caller": "marketing-agent",
+      "success": true,
+      "total": 5,
+      "left": 15
+    }
+  ]
+}
