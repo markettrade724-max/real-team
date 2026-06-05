@@ -1,14 +1,14 @@
 {
-  "runId": "2026-06-05T1103",
+  "runId": "2026-06-05T1132",
   "mode": "evolution",
   "success": true,
-  "timestamp": "2026-06-05T11:10:18.970Z",
-  "totalDuration": "411.5s",
+  "timestamp": "2026-06-05T11:37:03.475Z",
+  "totalDuration": "301.6s",
   "budget": {
-    "total": 25,
+    "total": 40,
     "limit": 40,
-    "left": 15,
-    "percent": "63%"
+    "left": 0,
+    "percent": "100%"
   },
   "library": {
     "built": 8,
@@ -26,17 +26,17 @@
   "agents": {
     "library": {
       "success": true,
-      "duration": "2ms",
+      "duration": "1ms",
       "error": null
     },
     "world": {
       "success": true,
-      "duration": "92.5s",
+      "duration": "93.9s",
       "error": null
     },
     "collision": {
       "success": true,
-      "duration": "5ms",
+      "duration": "4ms",
       "error": null
     },
     "episode": {
@@ -46,18 +46,13 @@
     },
     "revival": {
       "success": true,
-      "duration": "146.7s",
-      "error": null
-    },
-    "marketing": {
-      "success": true,
-      "duration": "15.6s",
+      "duration": "31.8s",
       "error": null
     }
   },
   "summary": {
-    "total": 6,
-    "passed": 5,
+    "total": 5,
+    "passed": 4,
     "failed": 1
   },
   "rolledBack": false

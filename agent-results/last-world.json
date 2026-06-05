@@ -1,22 +1,69 @@
 {
-  "id": "world-18",
+  "id": "world-19",
   "dayNumber": 156,
   "chapter": 1,
   "chapterName": "Genesis",
   "name": {
-    "ar": "متاهة السبج",
-    "en": "The Obsidian Labyrinth"
+    "ar": "أروقة الصمت الأثيرية",
+    "en": "The Ethereal Halls of Silence"
   },
-  "essence": "الصدى المتحجر",
-  "physicsLaw": "الذكريات، بمجرد نسيانها، تتكثف في جدران متاهة السبج، متصلبة كعوائق وممرات منسية.",
-  "atmosphere": "متاهة شاسعة وصامتة من السبج المصقول، تعكس نجومًا خافتة وثقلًا صامتًا لذكريات منسية. الهواء كثيف بغبار الأفكار المتحللة والرنين الحزين لأصداء لم تُبك، متاهة صممها أقدم أحزان الكون.",
-  "secret": "متاهة السبج ليست سجنًا، بل وعاء بناه كيان قديم لاحتواء حزنه الطاغي والذكريات المنسية الجماعية لكوزموس يحتضر. 'الصمت' هو محاولة هذا الكيان الأخيرة لتحقيق السلام بمحو الوجود، واللاعب جزء من إرادته المفقودة، عاد ليتم هذا الفعل الأخير من النسيان أو يتحدىه.",
+  "essence": "Cosmic Forgetting",
+  "physicsLaw": "Within these halls, echoes of forgotten existence coalesce into tangible, yet fragile, crystalline structures that can be harvested or shattered.",
+  "atmosphere": "A vast, melancholic expanse where cosmic dust coalesces into silent, monumental archives of forgotten civilizations. Here, the air itself shimmers with the ghosts of unremembered stories, and colossal, crumbling structures float like mausoleums, bathed in a cold, distant light, hinting at an ancient, profound sorrow.",
+  "secret": "The 'Silence' is not merely the absence of memory, but a primordial, sentient entity born from the collective forgetting of the cosmos, actively seeking to devour all remaining echoes of selfhood. Its true vulnerability lies in the paradox of newly forged memories, which it cannot consume.",
   "difficulty": "hard",
-  "backgroundColor": "#0A0A0A",
-  "fogColor": "#1F2228",
-  "lightColor": "#D0D8E8",
-  "enemies": [],
-  "weapon": null,
+  "backgroundColor": "#05050A",
+  "fogColor": "#151520",
+  "lightColor": "#BFD7FF",
+  "enemies": [
+    {
+      "id": "enemy-19-1",
+      "name": {
+        "ar": "شظية الصدى",
+        "en": "Echo Shard"
+      },
+      "concept": "شظايا صغيرة من الذكريات المنسية، تتجسد في شكل بلوري هش بفعل الصمت الكوني.",
+      "behavior": "تتراقص بلا هدف حتى ينجذب إليها 'وجود ذاكرة قوي' (اللاعب). عندئذ، تتكتل وتحاول 'امتصاص' حضور اللاعب، مسببة تآكلاً طفيفًا للهوية.",
+      "weakness": "موجات الصوت عالية التردد أو الضوء المركز الذي يزعزع استقرار شكلها البلوري الهش. تتأثر بشدة بالهجمات التي 'تشتتها' بدلاً من مجرد تحطيمها.",
+      "lore": "كانت في يوم من الأيام أفكارًا عابرة، وعواطف لحظية، وهمسات غير معبر عنها لكائنات قديمة، تجسدت الآن كصدى مادي داخل قاعات الصمت. ليست حية بالمعنى التقليدي، بل متحركة بقوة ما 'كان' موجودًا.",
+      "speed": 1.2,
+      "health": 50,
+      "damage": 10,
+      "count": 10
+    },
+    {
+      "id": "enemy-19-2",
+      "name": {
+        "ar": "نول النسيان",
+        "en": "Loom of Oblivion"
+      },
+      "concept": "كيانات أكبر وأكثر تماسكًا تنسج الصمت بنشاط، وتستهلك أصداء الوجود المنسي لتعزيز شكلها الخاص وتوسيع نطاق النسيان الكوني.",
+      "behavior": "تتحرك ببطء ولكن عن قصد، وتطلق حقولاً من 'الصمت' تستنزف إرادة/طاقة اللاعب. يمكنها امتصاص شظايا الصدى القريبة مؤقتًا للشفاء أو النمو. عند الهجوم، يمكنها 'إخفاء' نفسها بالصمت، لتصبح منيعة مؤقتًا.",
+      "weakness": "تعطيل عملية 'نسجها'. الهجمات التي تخترق درع الصمت الخاص بها (مثل الأسلحة القائمة على الصوت). مهاجمتها أثناء امتصاصها للشظايا يجعلها عرضة للخطر.",
+      "lore": "هؤلاء ليسوا مجرد منسيين، بل هم 'عملاء' النسيان. إنهم شظايا من الفراغ البدائي أعطيت شكلاً، ومهمتهم ضمان عدم هروب أي قصة من قاعات الصمت الأثيرية. كانوا في يوم من الأيام مراقبين صامتين للخلق، والآن تحولوا إلى ملتهمي السرد.",
+      "speed": 0.5,
+      "health": 300,
+      "damage": 40,
+      "count": 3
+    }
+  ],
+  "weapon": {
+    "id": "weapon-19",
+    "name": {
+      "ar": "قيثارة الرنين الشاعرية",
+      "en": "The Lyrical Resonance Harp"
+    },
+    "concept": "قناة للتفاعل مع الجوهر الاهتزازي للذكريات والأصداء، قادرة على التدمير والكشف. لا تقتل بالمعنى التقليدي، بل 'تفكك' أو 'تعيد هيكلة' الوجود.",
+    "visualDesc": "قيثارة هيكلية أنيقة، إطارها مصنوع مما يبدو أنه ضوء نجمي متحجر وغبار كوني. أوتارها ليست مادية بل خيوط متلألئة من الضوء النقي والمركز، يهتز كل منها بضجيج خافت وحزين.",
+    "sound": "همهمة عميقة وصدى تتصاعد إلى أوج من الأجراس البلورية ثم وتر 'متحطم' حاد، شبه مؤلم، عند الاصطدام.",
+    "effect": "تطلق موجات من الرنين الصوتي المركز الذي يجعل الهياكل البلورية للأعداء تهتز بشدة، مما يزعزع استقرارها وفي النهاية يحطمها. تستهدف تحديدًا 'الأصداء المنسية' داخل الأعداء.",
+    "sideEffect": "كل نغمة قوية ترسل همسات خافتة ومقطوعة وصورًا مجزأة للحظات منسية إلى عقل اللاعب، مما يسبب تشويشًا بصريًا لحظيًا وانخفاضًا طفيفًا في الوعي (مثل وميض الخريطة المصغرة، ضبابية خفيفة). يمكن أن يؤدي الإفراط في الاستخدام إلى تأثير 'نزيف الذاكرة'، مما يزيد من الضعف الذهني.",
+    "mechanic": "نغمة خفيفة (إطلاق نار سريع): نبضات صوتية سريعة ومنخفضة الضرر تعطل تصرفات العدو وتلحق ضررًا طفيفًا. وتر مشحون (هجوم أساسي): اضغط باستمرار للشحن، ثم أطلق موجة صوتية قوية وواسعة النطاق تلحق ضررًا كبيرًا، وتزعزع استقرار أعداء متعددين، ولديها فرصة لإسقاط 'شظايا الذاكرة' (معارف/عملة قابلة للجمع) من الأعداء المحطمين. صدى الذاكرة (قدرة ثانوية): نبضة مركزة أحادية الهدف 'تردد' عدوًا، مما يصعقه مؤقتًا ويجعله أكثر عرضة للهجمات اللاحقة، وكأنها تجبره على 'تذكر' ضعفه.",
+    "damage": 35,
+    "fireRate": 1,
+    "bulletSpeed": 25,
+    "rarity": "rare"
+  },
   "vehicle": null,
   "noise": {
     "frequency": 0.05,
@@ -24,9 +71,9 @@
     "octaves": 4,
     "persistence": 0.5,
     "lacunarity": 2,
-    "seed": 85110,
+    "seed": 43096,
     "type": "simplex",
-    "description": "Default terrain for The Obsidian Labyrinth"
+    "description": "Default terrain for The Ethereal Halls of Silence"
   },
   "shader": {
     "type": "void",
@@ -46,7 +93,7 @@
       "wind",
       "distant_rumble"
     ],
-    "description": "Default audio for The Obsidian Labyrinth"
+    "description": "Default audio for The Ethereal Halls of Silence"
   },
-  "addedAt": "2026-06-05T11:05:15.063Z"
+  "addedAt": "2026-06-05T11:33:50.769Z"
 }
