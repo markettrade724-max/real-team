@@ -22,11 +22,13 @@ jobs:
         run: node scripts/generate-ideas.js
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
 
       - name: Generate levels for existing games
         run: node scripts/generate-levels.js
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
 
       - name: Rebuild games
         run: node game-generator.js
