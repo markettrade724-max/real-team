@@ -1,16 +1,16 @@
 {
-  "runId": "2026-06-04T2001",
-  "mode": "episode",
+  "runId": "2026-06-05T0611",
+  "mode": "evolution",
   "success": false,
-  "timestamp": "2026-06-04T20:02:48.688Z",
-  "totalDuration": "81.8s",
+  "timestamp": "2026-06-05T06:14:47.207Z",
+  "totalDuration": "195.0s",
   "budget": {
-    "total": 19,
+    "total": 5,
     "limit": 20,
-    "left": 1,
+    "left": 15,
     "library": 0,
-    "agents": 19,
-    "percent": "95%"
+    "agents": 5,
+    "percent": "25%"
   },
   "library": {
     "built": 8,
@@ -18,10 +18,10 @@
     "percent": "14%"
   },
   "schedule": {
-    "day": "Thu",
+    "day": "Fri",
     "invention": false,
-    "revival": false,
-    "roadmap": true,
+    "revival": true,
+    "roadmap": false,
     "sync": false,
     "episode": true
   },
@@ -31,10 +31,10 @@
       "duration": "1ms",
       "error": null
     },
-    "episode": {
+    "world": {
       "success": false,
-      "duration": "—",
-      "error": "Gemini API failed: got status: 429 Too Many Requests. {\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 11.378279425s.\",\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-2.5-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"11s\"}]}}"
+      "duration": "180.0s",
+      "error": "Timeout"
     }
   },
   "summary": {
@@ -42,5 +42,5 @@
     "passed": 1,
     "failed": 1
   },
-  "rolledBack": false
+  "rolledBack": true
 }
