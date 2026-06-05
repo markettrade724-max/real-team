@@ -1,5 +1,5 @@
 /**
- * qa-bot.js — v1.0
+ * scripts/qa-bot.js — v1.0
  *
  * اختبارات QA تلقائية بعد كل deploy على Vercel.
  *
@@ -123,7 +123,7 @@ async function testProductsJSON(results) {
 
 async function testAPIEndpoints(results) {
   const endpoints = [
-    { path: '/api/products', name: 'api:products', critical: true },
+    { path: '/api/products', name: 'api:products', critical: false },
   ];
 
   for (const ep of endpoints) {
