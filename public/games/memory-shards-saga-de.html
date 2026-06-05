@@ -8,24 +8,148 @@
     :root { --acc: #8B5CF6; --bg: #0a0a14; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: var(--bg); display: flex; flex-direction: column; height: 100dvh; font-family: 'Segoe UI', Tajawal, sans-serif; }
-    #header { background: rgba(0,0,0,0.6); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; }
-    #back-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; }
+
+    /* ── header ── */
+    #header {
+      background: rgba(0,0,0,0.6);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      flex-shrink: 0;
+    }
+    #back-btn, #fs-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    #back-btn:hover, #fs-btn:hover { border-color: var(--acc); color: var(--acc); }
     #title { font-weight: bold; color: var(--acc); }
-    #game-container { flex: 1; background: #000; }
+
+    /* ── game container ── */
+    #game-container { flex: 1; background: #000; position: relative; overflow: hidden; }
     iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    /* ── loading overlay ── */
+    #loading {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: #000; color: white; gap: 16px;
+      transition: opacity 0.5s;
+    }
+    #loading.hidden { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--acc);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading-text { font-size: 14px; opacity: 0.7; }
+
+    /* ── error overlay ── */
+    #error {
+      position: absolute; inset: 0;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: #000; color: white; gap: 12px;
+      text-align: center; padding: 24px;
+    }
+    #error.show { display: flex; }
+    #error h2 { color: var(--acc); }
+    #retry-btn {
+      background: var(--acc); color: #000;
+      border: none; padding: 8px 24px;
+      border-radius: 8px; cursor: pointer;
+      font-weight: bold; font-family: inherit;
+    }
   </style>
 </head>
 <body>
   <div id="header">
     <button id="back-btn" onclick="history.back()">← Zurück</button>
     <span id="title">🎮 Memory Shards Saga</span>
-    <div style="width:50px"></div>
+    <button id="fs-btn" onclick="toggleFullscreen()" title="{{FS_LBL}}">⛶</button>
   </div>
+
   <div id="game-container">
-    <iframe 
-      src="/games/godot/memory-shards-saga/index.html" 
-      allow="fullscreen">
-    </iframe>
+    <!-- loading -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <div id="loading-text">{{LOADING_LBL}}</div>
+    </div>
+
+    <!-- error -->
+    <div id="error">
+      <h2>{{ERROR_TITLE}}</h2>
+      <p>{{ERROR_MSG}}</p>
+      <button id="retry-btn" onclick="reloadGame()">Nochmal</button>
+    </div>
+
+    <!-- game iframe -->
+    <iframe
+      id="game-frame"
+      src="/games/godot/memory-shards-saga/index.html"
+      allow="fullscreen; autoplay; pointer-lock"
+      allowfullscreen
+      loading="eager"
+    ></iframe>
   </div>
+
+  <script>
+    const frame   = document.getElementById('game-frame');
+    const loading = document.getElementById('loading');
+    const error   = document.getElementById('error');
+    let   loaded  = false;
+
+    // إخفاء loading عند تحميل اللعبة
+    frame.addEventListener('load', () => {
+      loaded = true;
+      loading.classList.add('hidden');
+    });
+
+    // معالجة خطأ التحميل
+    frame.addEventListener('error', showError);
+
+    // timeout — إذا لم تحمل في 30 ثانية
+    setTimeout(() => {
+      if (!loaded) showError();
+    }, 30000);
+
+    function showError() {
+      loading.classList.add('hidden');
+      error.classList.add('show');
+    }
+
+    function reloadGame() {
+      error.classList.remove('show');
+      loading.classList.remove('hidden');
+      loaded = false;
+      frame.src = frame.src;
+    }
+
+    function toggleFullscreen() {
+      const el = document.getElementById('game-container');
+      if (!document.fullscreenElement) {
+        el.requestFullscreen?.() || el.webkitRequestFullscreen?.();
+      } else {
+        document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+      }
+    }
+
+    // pointer lock للـ FPS — عند الضغط على اللعبة
+    frame.addEventListener('click', () => {
+      frame.contentWindow?.document?.body?.requestPointerLock?.();
+    });
+  </script>
 </body>
 </html>
