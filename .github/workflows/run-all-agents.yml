@@ -2,8 +2,8 @@ name: run-all-agents
 
 on:
   schedule:
-    - cron: '0 8  * * *'   # كل يوم 8 صباحاً UTC — evolution + episode
-    - cron: '0 14 * * *'   # كل يوم 2 ظهراً UTC — evolution + episode
+    - cron: '0 8  * * *'   # 8 صباحاً UTC — التشغيل الرئيسي
+    - cron: '0 14 * * *'   # 2 ظهراً UTC  — التشغيل الثاني
   workflow_dispatch:
     inputs:
       mode:
@@ -30,6 +30,9 @@ jobs:
       actions: write
 
     steps:
+      # ══════════════════════════════════════════════════════
+      # 1 — إعداد البيئة
+      # ══════════════════════════════════════════════════════
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -42,9 +45,7 @@ jobs:
 
       - name: Install dependencies
         shell: pwsh
-        run: |
-          npm install
-          npm install winston msedge-tts express --save
+        run: npm install
 
       - name: Create required directories
         shell: pwsh
@@ -64,11 +65,10 @@ jobs:
           }
           Write-Host "[OK] Directories ready"
 
-      - name: Create fallback image if missing
+      - name: Create fallback image
         shell: pwsh
         run: |
           if (-not (Test-Path "assets/fallback.png")) {
-            # صورة 1x1 PNG بسيطة
             $bytes = [Convert]::FromBase64String(
               "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
             )
@@ -76,8 +76,12 @@ jobs:
             Write-Host "[OK] fallback.png created"
           }
 
+      # ══════════════════════════════════════════════════════
+      # 2 — تشغيل الـ orchestrator
+      # ══════════════════════════════════════════════════════
       - name: Run orchestrator
         shell: pwsh
+        timeout-minutes: 75
         env:
           GEMINI_API_KEY:            ${{ secrets.GEMINI_API_KEY }}
           GEMINI_API_KEY_2:          ${{ secrets.GEMINI_API_KEY_2 }}
@@ -94,7 +98,11 @@ jobs:
           MODE:                      ${{ github.event.inputs.mode || 'auto' }}
         run: node orchestrator.js
 
+      # ══════════════════════════════════════════════════════
+      # 3 — تقرير النتائج
+      # ══════════════════════════════════════════════════════
       - name: Show results
+        if: always()
         shell: pwsh
         run: |
           Write-Host "[INFO] === run report ==="
@@ -104,41 +112,59 @@ jobs:
             Write-Host "[INFO] Duration: $($r.totalDuration)"
             Write-Host "[INFO] Passed:   $($r.summary.passed)"
             Write-Host "[INFO] Failed:   $($r.summary.failed)"
-            Write-Host "[INFO] Library:  $($r.library.percent) ($($r.library.built)/$($r.library.total))"
-            Write-Host "[INFO] Budget:   library=$($r.budget.library.used) agents=$($r.budget.agents.used)"
+            Write-Host "[INFO] Library:  $($r.library.percent)% ($($r.library.built)/$($r.library.total))"
           } else {
             Write-Warning "[WARN] No run report found"
           }
 
-          Write-Host "[INFO] === universe status ==="
+          Write-Host "[INFO] === budget (KEY_1 + KEY_2) ==="
+          $totalLeft = 0
+          foreach ($file in @("library/budget.json","library/budget2.json")) {
+            $label = if ($file -match "budget2") { "KEY_2" } else { "KEY_1" }
+            if (Test-Path $file) {
+              $b = Get-Content $file | ConvertFrom-Json
+              $left = $b.limit - $b.total
+              $totalLeft += $left
+              Write-Host "[INFO] ${label}: $($b.total)/$($b.limit) used — $left left"
+            } else {
+              Write-Host "[INFO] ${label}: not initialized yet"
+              $totalLeft += 20
+            }
+          }
+          Write-Host "[INFO] TOTAL left today: $totalLeft/40"
+
+          Write-Host "[INFO] === universe ==="
           if (Test-Path "universe.json") {
             $u = Get-Content "universe.json" | ConvertFrom-Json
-            Write-Host "[OK] Universe: $($u.id) | Worlds: $($u.worlds.Count) | Evolutions: $($u.evolutions)"
+            Write-Host "[OK] $($u.id) | Worlds: $($u.worlds.Count) | Evolutions: $($u.evolutions)"
           } else {
             Write-Warning "[WARN] No universe yet"
           }
 
-          Write-Host "[INFO] === series status ==="
+          Write-Host "[INFO] === series ==="
           if (Test-Path "series.json") {
             $s = Get-Content "series.json" | ConvertFrom-Json
-            Write-Host "[OK] Series: $($s.title) | Episodes: $($s.episodes.Count) | Next: $($s.nextEpisode)"
+            Write-Host "[OK] $($s.title) | Episodes: $($s.episodes.Count) | Next: $($s.nextEpisode)"
           } else {
             Write-Host "[INFO] No series yet"
           }
 
-          Write-Host "[INFO] === library status ==="
+          Write-Host "[INFO] === library ==="
           if (Test-Path "library/index.json") {
             $l = Get-Content "library/index.json" | ConvertFrom-Json
-            Write-Host "[OK] Library: $($l.Count) references built"
+            Write-Host "[OK] $($l.Count) references built"
           } else {
             Write-Host "[INFO] Library empty"
           }
 
           Write-Host "[INFO] === products ==="
           if (Test-Path "products.json") {
-            node -e "try { const p=JSON.parse(require('fs').readFileSync('products.json')); console.log('[OK] Products:', p.length); } catch(e) { console.error('[ERROR]', e.message); }"
+            node -e "try{const p=JSON.parse(require('fs').readFileSync('products.json'));console.log('[OK] Products:',p.length);}catch(e){console.error('[ERROR]',e.message);}"
           }
 
+      # ══════════════════════════════════════════════════════
+      # 4 — نسخ الملفات العامة
+      # ══════════════════════════════════════════════════════
       - name: Copy products to public
         shell: pwsh
         run: |
@@ -149,9 +175,18 @@ jobs:
             Write-Warning "[WARN] products.json not found"
           }
 
+      # ══════════════════════════════════════════════════════
+      # 5 — رفع artifact الحلقة
+      #   يعمل على: كل تشغيل scheduled + manual episode
+      # ══════════════════════════════════════════════════════
       - name: Upload episode artifact
         uses: actions/upload-artifact@v4
-        if: contains(github.event.inputs.mode, 'episode') || github.event.schedule == '0 18 */3 * *'
+        if: |
+          always() && (
+            github.event_name == 'schedule' ||
+            (github.event_name == 'workflow_dispatch' &&
+             contains(github.event.inputs.mode, 'episode'))
+          )
         with:
           name: episode-${{ github.run_number }}
           path: |
@@ -159,7 +194,10 @@ jobs:
             series.json
           retention-days: 30
 
-      - name: Commit all changes
+      # ══════════════════════════════════════════════════════
+      # 6 — Commit + Push مع retry — rule-158, rule-159
+      # ══════════════════════════════════════════════════════
+      - name: Commit and push
         shell: pwsh
         env:
           MODE:         ${{ github.event.inputs.mode || 'auto' }}
@@ -167,16 +205,13 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # تفعيل الصلاحية عبر token
           git remote set-url origin https://x-access-token:$env:GITHUB_TOKEN@github.com/$env:GITHUB_REPOSITORY
 
-          git add -f agent-results/          2>$null
-          git add    library/                2>$null
-          git add    series.json             2>$null
-          git add    products.json           2>$null
-          git add    public/products.json    2>$null
-
+          git add -f agent-results/       2>$null
+          git add    library/             2>$null
+          git add    series.json          2>$null
+          git add    products.json        2>$null
+          git add    public/products.json 2>$null
           if (Test-Path "public/games")    { git add public/games/ }
           if (Test-Path "universe.json")   { git add universe.json }
           if (Test-Path "godot-projects")  { git add godot-projects/ }
@@ -191,15 +226,47 @@ jobs:
           $date = Get-Date -Format "yyyy-MM-dd HH:mm"
           git commit -m "agents: $env:MODE run $date [skip ci]"
 
-          git stash
-          git pull --rebase origin main
-          if ($LASTEXITCODE -ne 0) {
-            git rebase --abort
-            git stash pop
-            Write-Error "[FAIL] Rebase failed"
+          # push مع retry — rule-159
+          $pushed = $false
+          for ($i = 1; $i -le 3; $i++) {
+            Write-Host "[INFO] Push attempt $i/3..."
+            git pull --rebase origin main 2>$null
+            if ($LASTEXITCODE -ne 0) {
+              git rebase --abort 2>$null
+              Start-Sleep -Seconds (10 * $i)
+              continue
+            }
+            git push origin main
+            if ($LASTEXITCODE -eq 0) {
+              $pushed = $true
+              Write-Host "[OK] Changes pushed"
+              break
+            }
+            Start-Sleep -Seconds (10 * $i)
+          }
+
+          if (-not $pushed) {
+            Write-Error "[FAIL] Push failed after 3 retries"
             exit 1
           }
-          git stash pop 2>$null
 
-          git push origin main
-          Write-Host "[OK] Changes pushed"
+      # ══════════════════════════════════════════════════════
+      # 7 — QA bot بعد الـ deploy
+      # ══════════════════════════════════════════════════════
+      - name: Wait for Vercel deploy
+        shell: pwsh
+        run: Start-Sleep -Seconds 30
+
+      - name: Run QA bot
+        shell: pwsh
+        env:
+          SITE_URL: https://real-team.vercel.app
+        run: node scripts/qa-bot.js
+
+      - name: Upload QA report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-report
+          path: qa-results.json
+          retention-days: 7
