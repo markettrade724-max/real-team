@@ -63,6 +63,22 @@ jobs:
         shell: pwsh
         run: npm install
 
+      - name: Copy static files to public
+        shell: pwsh
+        run: |
+          # rule-109: Vercel يخدم من public/ فقط
+          New-Item -ItemType Directory -Force -Path "public\templates" | Out-Null
+          if (Test-Path "templates\godot-wrapper.html") {
+            Copy-Item "templates\godot-wrapper.html" "public\templates\godot-wrapper.html" -Force
+            Write-Host "[OK] godot-wrapper.html copied to public/templates/"
+          } else {
+            Write-Host "[WARN] templates/godot-wrapper.html not found"
+          }
+          if (Test-Path "products.json") {
+            Copy-Item "products.json" "public\products.json" -Force
+            Write-Host "[OK] products.json copied to public/"
+          }
+
       # ── 4. Run Orchestrator ──────────────────────────
       - name: Run Orchestrator
         shell: pwsh
