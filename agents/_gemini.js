@@ -1,11 +1,12 @@
 /**
- * _gemini.js — v2.2
+ * _gemini.js — v2.3
  *
- * التغييرات عن v2.1:
- *  - consumeQuota يُسجَّل قبل الاستدعاء الفعلي لا بعده
- *  - كل retry يعدّ في الحصة باستقلالية تامة
- *  - markQuotaError يُحدّث نوع الخطأ بدون عدّ إضافي
- *  - budget.json يطابق API حتى عند crash أو exception
+ * التغييرات عن v2.2:
+ *  - دعم مفتاحين: GEMINI_API_KEY + GEMINI_API_KEY_2
+ *  - كل مفتاح له budget مستقل (budget.json + budget2.json)
+ *  - تبديل تلقائي للمفتاح الثاني عند انتهاء حصة الأول
+ *  - getRemainingQuota() تُرجع المجموع الكلي للمفتاحين
+ *  - canAfford يحسب على المجموع الكلي (40 طلب/يوم)
  *
  * القواعد المطبقة:
  *  rule-097 : لا تغيير للنموذج — gemini-2.5-flash ثابت
@@ -13,9 +14,9 @@
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
  *  rule-101 : maxOutputTokens لا maxTokens
  *  rule-122 : retry مرة واحدة فقط
- *  rule-128 : budget.json موحد + caller tracking
+ *  rule-128 : budget موحد + caller tracking
  *  rule-143 : MAX_TOKENS_CAP = 65536
- *  rule-144 : consumeQuota قبل الاستدعاء — ضمان التطابق
+ *  rule-144 : consumeQuota قبل الاستدعاء
  *  rule-145 : DEFAULT_TOKENS = 8192
  */
 
@@ -25,50 +26,69 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { logger } from '../logger.js';
 
-const __dirname   = dirname(fileURLToPath(import.meta.url));
-const BUDGET_PATH = join(__dirname, '..', 'library', 'budget.json');
-const LIBRARY_DIR = join(__dirname, '..', 'library');
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const __dirname    = dirname(fileURLToPath(import.meta.url));
+const LIBRARY_DIR  = join(__dirname, '..', 'library');
+const BUDGET_PATH_1 = join(LIBRARY_DIR, 'budget.json');
+const BUDGET_PATH_2 = join(LIBRARY_DIR, 'budget2.json');
 
 const DAILY_LIMIT    = 20;
 const MAX_TOKENS_CAP = 65536;
 const DEFAULT_TOKENS = 8192;
 
 // ══════════════════════════════════════════════════════════
-// الحصة الموحدة
+// المفتاحان — يُبنيان عند التحميل
 // ══════════════════════════════════════════════════════════
-function loadBudget() {
+const KEYS = [];
+
+if (process.env.GEMINI_API_KEY) {
+  KEYS.push({
+    client:     new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }),
+    budgetPath: BUDGET_PATH_1,
+    label:      'KEY_1',
+  });
+}
+
+if (process.env.GEMINI_API_KEY_2) {
+  KEYS.push({
+    client:     new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY_2 }),
+    budgetPath: BUDGET_PATH_2,
+    label:      'KEY_2',
+  });
+}
+
+if (KEYS.length === 0) throw new Error('[GEMINI] No API keys configured');
+
+logger.info(`[GEMINI] Loaded ${KEYS.length} key(s) — daily limit: ${KEYS.length * DAILY_LIMIT}`);
+
+// ══════════════════════════════════════════════════════════
+// الحصة — مستقلة لكل مفتاح
+// ══════════════════════════════════════════════════════════
+function loadBudget(budgetPath) {
   const today = new Date().toISOString().slice(0, 10);
-  if (existsSync(BUDGET_PATH)) {
+  if (existsSync(budgetPath)) {
     try {
-      const b = JSON.parse(readFileSync(BUDGET_PATH, 'utf8'));
+      const b = JSON.parse(readFileSync(budgetPath, 'utf8'));
       if (b.date === today) return b;
     } catch {}
   }
-  const fresh = {
-    date:    today,
-    total:   0,
-    limit:   DAILY_LIMIT,
-    library: 0,
-    agents:  0,
-    log:     [],
-  };
-  saveBudget(fresh);
+  const fresh = { date: today, total: 0, limit: DAILY_LIMIT, library: 0, agents: 0, log: [] };
+  saveBudget(budgetPath, fresh);
   return fresh;
 }
 
-function saveBudget(b) {
+function saveBudget(budgetPath, b) {
   mkdirSync(LIBRARY_DIR, { recursive: true });
-  writeFileSync(BUDGET_PATH, JSON.stringify(b, null, 2), 'utf8');
+  writeFileSync(budgetPath, JSON.stringify(b, null, 2), 'utf8');
 }
 
-/**
- * يُسجَّل قبل الاستدعاء الفعلي — v2.2
- * success = true مبدئياً، يُحدَّث بـ markQuotaError عند الفشل
- */
-function consumeQuota(caller = 'unknown') {
-  const b = loadBudget();
+function getQuotaForKey(budgetPath) {
+  const b = loadBudget(budgetPath);
+  return b.limit - b.total;
+}
+
+// يُسجَّل قبل الاستدعاء الفعلي — v2.2 fix
+function consumeQuota(caller, budgetPath) {
+  const b = loadBudget(budgetPath);
   if (b.total >= b.limit) return false;
 
   b.total++;
@@ -78,22 +98,19 @@ function consumeQuota(caller = 'unknown') {
   b.log.push({
     time:    new Date().toISOString().slice(11, 19),
     caller,
-    success: true,
+    success: true,   // يُحدَّث بـ markQuotaError عند الفشل
     total:   b.total,
     left:    b.limit - b.total,
   });
   if (b.log.length > 50) b.log = b.log.slice(-50);
 
-  saveBudget(b);
+  saveBudget(budgetPath, b);
   return true;
 }
 
-/**
- * يُحدّث آخر إدخال للمستدعي بنوع الخطأ — بدون عدّ إضافي
- * يُستدعى بعد فشل الاستدعاء مباشرة
- */
-function markQuotaError(caller, errorType) {
-  const b = loadBudget();
+// يُحدّث آخر إدخال للمستدعي — بدون عدّ إضافي
+function markQuotaError(caller, errorType, budgetPath) {
+  const b = loadBudget(budgetPath);
   for (let i = b.log.length - 1; i >= 0; i--) {
     if (b.log[i].caller === caller) {
       b.log[i].success   = false;
@@ -101,12 +118,20 @@ function markQuotaError(caller, errorType) {
       break;
     }
   }
-  saveBudget(b);
+  saveBudget(budgetPath, b);
 }
 
+// المجموع الكلي للمفتاحين
 export function getRemainingQuota() {
-  const b = loadBudget();
-  return b.limit - b.total;
+  return KEYS.reduce((sum, k) => sum + getQuotaForKey(k.budgetPath), 0);
+}
+
+// المفتاح النشط — الأول الذي له حصة
+function getActiveKey() {
+  for (const k of KEYS) {
+    if (getQuotaForKey(k.budgetPath) > 0) return k;
+  }
+  return null;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -131,7 +156,7 @@ const AGENT_COSTS = {
 export function canAfford(task) {
   const needed = AGENT_COSTS[task];
   if (!needed) return true;
-  const left = getRemainingQuota();
+  const left = getRemainingQuota(); // مجموع المفتاحين
   if (left < needed) {
     logger.warn(`[BUDGET] Cannot afford full ${task} — need ${needed}, have ${left} — skipping`);
     return false;
@@ -141,15 +166,20 @@ export function canAfford(task) {
 }
 
 export function getBudgetStatus() {
-  const b = loadBudget();
+  const keys = KEYS.map(k => {
+    const b = loadBudget(k.budgetPath);
+    return { key: k.label, total: b.total, limit: b.limit, left: b.limit - b.total,
+             library: b.library, agents: b.agents };
+  });
+  const totalUsed  = keys.reduce((s, k) => s + k.total, 0);
+  const totalLimit = keys.reduce((s, k) => s + k.limit, 0);
   return {
-    date:    b.date,
-    total:   b.total,
-    limit:   b.limit,
-    left:    b.limit - b.total,
-    library: b.library,
-    agents:  b.agents,
-    percent: Math.round((b.total / b.limit) * 100),
+    date:    new Date().toISOString().slice(0, 10),
+    total:   totalUsed,
+    limit:   totalLimit,
+    left:    totalLimit - totalUsed,
+    percent: Math.round((totalUsed / totalLimit) * 100),
+    keys,
   };
 }
 
@@ -167,17 +197,16 @@ export async function askGemini(prompt, temperature = 0.9, options = {}, caller 
 
   const remaining = getRemainingQuota();
   if (remaining <= 0) {
-    logger.warn(`[QUOTA] Daily limit reached (${DAILY_LIMIT}/day) — caller: ${caller}`);
+    logger.warn(`[QUOTA] All keys exhausted (${KEYS.length * DAILY_LIMIT}/day) — caller: ${caller}`);
     throw new Error('DailyQuotaExhausted');
   }
 
-  logger.info(`[GEMINI] ${caller} — quota left: ${remaining}/${DAILY_LIMIT} — tokens: ${maxOutputTokens}`);
+  logger.info(`[GEMINI] ${caller} — quota left: ${remaining}/${KEYS.length * DAILY_LIMIT} — tokens: ${maxOutputTokens}`);
 
   return _callGemini(
     prompt, temperature,
     { topP, topK, maxOutputTokens, frequencyPenalty, presencePenalty },
-    caller,
-    false
+    caller, false
   );
 }
 
@@ -188,11 +217,20 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
   const { topP, topK, maxOutputTokens, frequencyPenalty, presencePenalty } = options;
   const safeTokens = Math.min(maxOutputTokens, MAX_TOKENS_CAP);
 
-  // ── سجّل قبل الاستدعاء — v2.2 fix ─────
-  if (!consumeQuota(caller)) {
-    logger.warn(`[QUOTA] Daily limit reached mid-run — caller: ${caller}`);
+  // ── اختر المفتاح النشط ──────────────────
+  const activeKey = getActiveKey();
+  if (!activeKey) {
+    logger.warn(`[QUOTA] All keys exhausted mid-run — caller: ${caller}`);
     throw new Error('DailyQuotaExhausted');
   }
+
+  // ── سجّل قبل الاستدعاء ──────────────────
+  if (!consumeQuota(caller, activeKey.budgetPath)) {
+    logger.warn(`[QUOTA] ${activeKey.label} exhausted mid-run — caller: ${caller}`);
+    throw new Error('DailyQuotaExhausted');
+  }
+
+  logger.info(`[GEMINI] ${activeKey.label} — ${caller}`);
 
   const config = {
     temperature,
@@ -207,7 +245,7 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
   // ── استدعاء API ────────────────────────
   let response;
   try {
-    response = await ai.models.generateContent({
+    response = await activeKey.client.models.generateContent({
       model:    'gemini-2.5-flash',
       contents: prompt,
       config,
@@ -216,14 +254,13 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
     const is503 = err.message?.includes('503');
     const is429 = err.message?.includes('429');
 
-    // حدّث نوع الخطأ للإدخال المسجَّل مسبقاً
-    markQuotaError(caller, is429 ? 'network_429' : is503 ? 'network_503' : 'network');
+    markQuotaError(caller, is429 ? 'network_429' : is503 ? 'network_503' : 'network', activeKey.budgetPath);
 
     if (!isRetry) {
       const delay = is429 ? 60000 : 30000;
-      logger.warn(`[RETRY] ${is429 ? '429' : '503'} — ${caller} — waiting ${delay / 1000}s`);
+      logger.warn(`[RETRY] ${is429 ? '429' : '503'} — ${caller} — ${activeKey.label} — waiting ${delay / 1000}s`);
       await new Promise(r => setTimeout(r, delay));
-      // retry = استدعاء جديد = consumeQuota جديد
+      // retry: قد يختار مفتاحاً مختلفاً إذا انتهت حصة الأول
       return _callGemini(prompt, temperature, options, caller, true);
     }
 
@@ -243,7 +280,7 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
 
   // ── ردّ فارغ ───────────────────────────
   if (!text || text.trim().length < 2) {
-    markQuotaError(caller, 'empty');
+    markQuotaError(caller, 'empty', activeKey.budgetPath);
     if (!isRetry) {
       logger.warn(`[RETRY] Empty response — ${caller} — waiting 30s`);
       await new Promise(r => setTimeout(r, 30000));
@@ -256,7 +293,7 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
   const parsed = parseJSON(text);
 
   if (parsed) {
-    logger.info(`[OK] Gemini — ${caller}`, {
+    logger.info(`[OK] Gemini — ${caller} — ${activeKey.label}`, {
       tokens: safeTokens,
       left:   getRemainingQuota(),
     });
@@ -264,11 +301,10 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
   }
 
   // ── JSON مقطوع — رفع الـ tokens ────────
-  markQuotaError(caller, 'json_truncated');
+  markQuotaError(caller, 'json_truncated', activeKey.budgetPath);
   if (!isRetry) {
     const newTokens = Math.min(safeTokens * 2, MAX_TOKENS_CAP);
     logger.warn(`[RETRY] JSON truncated — ${caller} — tokens: ${safeTokens} → ${newTokens}`);
-    // retry = استدعاء جديد = consumeQuota جديد
     return _callGemini(
       prompt, temperature,
       { ...options, maxOutputTokens: newTokens },
