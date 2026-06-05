@@ -24,7 +24,10 @@ import { fileURLToPath } from 'url';
 import { dirname, join }  from 'path';
 import { execSync }       from 'child_process';
 import { logger }         from './logger.js';
-import { canAfford, getBudgetStatus, getRemainingQuota } from './agents/_gemini.js';
+import {
+  canAfford, getBudgetStatus, getRemainingQuota,
+  selectKeyForTask, resetSessionKey,
+} from './agents/_gemini.js';
 import { run as runLibrary, getLibraryStatus }           from './agents/library-builder-agent.js';
 import { run as runSeries }                              from './agents/series-agent.js';
 import { run as runAnalytics }                           from './agents/analytics-agent.js';
@@ -250,6 +253,7 @@ async function produceEpisode(universe, episodeNumber, log, progress) {
 
     // اكتمل — سجّل النجاح
     completeEpisode(episodeNumber);
+    resetSessionKey(); // rule-172: حرر المفتاح بعد اكتمال المهمة
     logger.info('[OK] Episode complete', {
       episode: episodeNumber,
       title:   result.title,
@@ -297,6 +301,7 @@ async function buildGame(universe, gameId, log, progress) {
 
     if (log.code?.success) {
       completeGame(gameId);
+      resetSessionKey(); // rule-172: حرر المفتاح بعد اكتمال المهمة
       save('code.json', log.code.data);
       logger.info('[OK] Game complete', { id: gameId });
     } else {
