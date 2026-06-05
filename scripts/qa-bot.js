@@ -121,24 +121,25 @@ async function testProductsJSON(results) {
   }
 }
 
-async function testAPIEndpoints(results) {
-  const endpoints = [
-    { path: '/api/products', name: 'api:products', critical: false },
+async function testStaticFiles(results) {
+  const files = [
+    { path: '/products.json',              name: 'static:products.json',      critical: true  },
+    { path: '/templates/godot-wrapper.html', name: 'static:godot-wrapper.html', critical: false },
   ];
 
-  for (const ep of endpoints) {
-    const url  = `${BASE_URL}${ep.path}`;
-    const test = { name: ep.name, url, critical: ep.critical };
+  for (const f of files) {
+    const url  = `${BASE_URL}${f.path}`;
+    const test = { name: f.name, url, critical: f.critical };
     try {
       const res   = await fetchWithTimeout(url);
       test.status = res.status;
       test.passed = res.status === 200;
       if (!test.passed) test.error = `HTTP ${res.status}`;
-      console.log(`[${test.passed ? 'OK' : 'FAIL'}] ${ep.name} — HTTP ${res.status}`);
+      console.log(`[${test.passed ? 'OK' : 'WARN'}] ${f.name} — HTTP ${res.status}`);
     } catch (err) {
       test.passed = false;
       test.error  = err.message;
-      console.log(`[FAIL] ${ep.name} — ${err.message}`);
+      console.log(`[WARN] ${f.name} — ${err.message}`);
     }
     results.push(test);
   }
@@ -207,9 +208,8 @@ async function main() {
   // الاختبارات بالترتيب
   await testHomepage(results);
   const products = await testProductsJSON(results);
-  await testAPIEndpoints(results);
+  await testStaticFiles(results);
   await testGamePages(products, results);
-  await testTemplate(results);
 
   // ── تجميع النتائج ──────────────────────────────────
   const critical = results.filter(r => r.critical);
