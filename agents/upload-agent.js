@@ -1,18 +1,25 @@
 /**
- * upload-agent.js
- * ينشر الحلقة تلقائياً على يوتيوب + تيك توك
- * يوتيوب: YouTube Data API v3
- * تيك توك: TikTok Content Posting API
+ * upload-agent.js — v1.1
+ *
+ * التغييرات عن v1.0:
+ *  - createReadStream + statSync في أعلى الملف (rule-134)
+ *  - حذف await import داخل uploadVideoFile و uploadToTiktok
+ *
+ * القواعد المطبقة:
+ *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
+ *  rule-134 : لا await import داخل دوال
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { join, dirname }            from 'path';
-import { fileURLToPath }            from 'url';
-import { createReadStream }         from 'fs';
-import { logger }                   from '../logger.js';
+import { readFileSync, existsSync, createReadStream, statSync } from 'fs';
+import { join, dirname }  from 'path';
+import { fileURLToPath }  from 'url';
+import { logger }         from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// ══════════════════════════════════════════════════════════
+// الدالة الرئيسية
+// ══════════════════════════════════════════════════════════
 export async function run(episodeManifest, series, trailer = null) {
   logger.info('[UPLOAD] Starting', { episode: episodeManifest.episode });
 
@@ -22,11 +29,10 @@ export async function run(episodeManifest, series, trailer = null) {
 
   const results = {};
 
-  // ── يوتيوب — الحلقة الكاملة ──────────
+  // ── يوتيوب ────────────────────────────
   if (process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_REFRESH_TOKEN) {
     results.youtube = await uploadToYoutube(episodeManifest, series);
 
-    // يوتيوب شورتس — التريلر أيضاً
     if (trailer?.outputPath && existsSync(trailer.outputPath)) {
       results.youtubeShorts = await uploadToYoutube(
         { ...episodeManifest, outputPath: trailer.outputPath, isShort: true },
@@ -38,7 +44,7 @@ export async function run(episodeManifest, series, trailer = null) {
     results.youtube = { skipped: true, reason: 'no credentials' };
   }
 
-  // ── تيك توك — التريلر 60 ثانية ───────
+  // ── تيك توك ───────────────────────────
   if (process.env.TIKTOK_ACCESS_TOKEN) {
     const trailerPath = trailer?.outputPath;
     if (trailerPath && existsSync(trailerPath)) {
@@ -53,30 +59,26 @@ export async function run(episodeManifest, series, trailer = null) {
   }
 
   logger.info('[OK] Upload done', {
-    youtube: results.youtube?.url || results.youtube?.skipped,
-    tiktok:  results.tiktok?.url  || results.tiktok?.skipped,
+    youtube: results.youtube?.url  || results.youtube?.skipped,
+    tiktok:  results.tiktok?.url   || results.tiktok?.skipped,
   });
 
   return results;
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // يوتيوب
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 async function uploadToYoutube(manifest, series) {
   logger.info('[YOUTUBE] Uploading...');
-
   try {
-    // 1. الحصول على access token
-    const token = await refreshYoutubeToken();
-
-    // 2. بيانات الفيديو
+    const token    = await refreshYoutubeToken();
     const metadata = {
       snippet: {
-        title:       buildYoutubeTitle(manifest, series),
-        description: buildYoutubeDescription(manifest, series),
-        tags:        buildTags(series),
-        categoryId:  '24', // Entertainment
+        title:           buildYoutubeTitle(manifest, series),
+        description:     buildYoutubeDescription(manifest, series),
+        tags:            buildTags(series),
+        categoryId:      '24',
         defaultLanguage: 'ar',
       },
       status: {
@@ -86,14 +88,12 @@ async function uploadToYoutube(manifest, series) {
       },
     };
 
-    // 3. رفع الفيديو — resumable upload
     const uploadUrl = await initResumableUpload(token, metadata);
     const videoId   = await uploadVideoFile(uploadUrl, manifest.outputPath, token);
+    const url       = `https://youtube.com/watch?v=${videoId}`;
 
-    const url = `https://youtube.com/watch?v=${videoId}`;
     logger.info('[OK] YouTube uploaded', { videoId, url });
     return { success: true, videoId, url };
-
   } catch (err) {
     logger.error('[YOUTUBE] Upload failed', { error: err.message });
     return { success: false, error: err.message };
@@ -102,7 +102,7 @@ async function uploadToYoutube(manifest, series) {
 
 async function refreshYoutubeToken() {
   const res = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
+    method:  'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       client_id:     process.env.YOUTUBE_CLIENT_ID,
@@ -122,9 +122,9 @@ async function initResumableUpload(token, metadata) {
     {
       method:  'POST',
       headers: {
-        'Authorization':  `Bearer ${token}`,
-        'Content-Type':   'application/json',
-        'X-Upload-Content-Type': 'video/mp4',
+        'Authorization':          `Bearer ${token}`,
+        'Content-Type':           'application/json',
+        'X-Upload-Content-Type':  'video/mp4',
       },
       body: JSON.stringify(metadata),
     }
@@ -134,7 +134,7 @@ async function initResumableUpload(token, metadata) {
 }
 
 async function uploadVideoFile(uploadUrl, videoPath, token) {
-  const { createReadStream, statSync } = await import('fs');
+  // rule-134: statSync و createReadStream في أعلى الملف
   const size   = statSync(videoPath).size;
   const stream = createReadStream(videoPath);
 
@@ -145,7 +145,7 @@ async function uploadVideoFile(uploadUrl, videoPath, token) {
       'Content-Type':   'video/mp4',
       'Content-Length': size,
     },
-    body: stream,
+    body:   stream,
     duplex: 'half',
   });
 
@@ -154,17 +154,15 @@ async function uploadVideoFile(uploadUrl, videoPath, token) {
   return data.id;
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // تيك توك
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 async function uploadToTiktok(videoPath, manifest, series) {
   logger.info('[TIKTOK] Uploading trailer...');
-
   try {
-    const { statSync } = await import('fs');
+    // rule-134: statSync في أعلى الملف
     const size = statSync(videoPath).size;
 
-    // 1. تهيئة الرفع
     const initRes = await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
       method:  'POST',
       headers: {
@@ -173,16 +171,16 @@ async function uploadToTiktok(videoPath, manifest, series) {
       },
       body: JSON.stringify({
         post_info: {
-          title:        buildTiktokTitle(manifest, series),
-          privacy_level: 'PUBLIC_TO_EVERYONE',
-          disable_duet:  false,
+          title:           buildTiktokTitle(manifest, series),
+          privacy_level:   'PUBLIC_TO_EVERYONE',
+          disable_duet:    false,
           disable_comment: false,
         },
         source_info: {
-          source:         'FILE_UPLOAD',
-          video_size:     size,
-          chunk_size:     size,
-          total_chunk_count: 1,
+          source:             'FILE_UPLOAD',
+          video_size:         size,
+          chunk_size:         size,
+          total_chunk_count:  1,
         },
       }),
     });
@@ -192,14 +190,13 @@ async function uploadToTiktok(videoPath, manifest, series) {
       throw new Error('TikTok init failed: ' + JSON.stringify(initData));
     }
 
-    // 2. رفع الملف
     const videoBuffer = readFileSync(videoPath);
     await fetch(initData.data.upload_url, {
       method:  'PUT',
       headers: {
-        'Content-Type':            'video/mp4',
-        'Content-Range':           `bytes 0-${size-1}/${size}`,
-        'Content-Length':          size,
+        'Content-Type':   'video/mp4',
+        'Content-Range':  `bytes 0-${size - 1}/${size}`,
+        'Content-Length': size,
       },
       body: videoBuffer,
     });
@@ -214,9 +211,9 @@ async function uploadToTiktok(videoPath, manifest, series) {
   }
 }
 
-// ════════════════════════════════════════════
-// بناء البيانات الوصفية
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// بيانات وصفية
+// ══════════════════════════════════════════════════════════
 function buildYoutubeTitle(manifest, series) {
   return `${series?.title || 'المسلسل'} — الحلقة ${manifest.episode}: ${manifest.title}`;
 }
@@ -228,8 +225,8 @@ function buildYoutubeDescription(manifest, series) {
     manifest.title,
     '',
     '━━━━━━━━━━━━━━━━━━━━━━',
-    '🎬 مسلسل مولود من الذكاء الاصطناعي',
-    '🌌 كون فريد يتطور كل يوم',
+    'مسلسل مولود من الذكاء الاصطناعي',
+    'كون فريد يتطور كل يوم',
     '━━━━━━━━━━━━━━━━━━━━━━',
     '',
     '#مسلسل_عربي #ذكاء_اصطناعي #قصة',
@@ -237,7 +234,7 @@ function buildYoutubeDescription(manifest, series) {
 }
 
 function buildTiktokTitle(manifest, series) {
-  return `${series?.title || 'مسلسل'} الحلقة ${manifest.episode} 🎬 #مسلسل #ذكاء_اصطناعي`;
+  return `${series?.title || 'مسلسل'} الحلقة ${manifest.episode} #مسلسل #ذكاء_اصطناعي`;
 }
 
 function buildTags(series) {
@@ -248,12 +245,10 @@ function buildTags(series) {
   ];
 }
 
-// أفضل وقت نشر — الخميس 8 مساءً بتوقيت السعودية
 function getOptimalPublishTime() {
-  const now = new Date();
+  const now    = new Date();
   const target = new Date(now);
-  target.setHours(17, 0, 0, 0); // 17:00 UTC = 20:00 KSA
-  // إذا فات الوقت اليوم — نشر غداً
+  target.setHours(17, 0, 0, 0);
   if (target <= now) target.setDate(target.getDate() + 1);
   return target.toISOString();
 }
