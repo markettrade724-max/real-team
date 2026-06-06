@@ -396,12 +396,33 @@ async function birthMode(t0, runId) {
     return saveReport(log, t0, runId, 'birth', false);
   }
 
+  // القالب — بدون Gemini
+  log.template = await run('Template Engineer',
+    './agents/template-engineer.js', [data.idea, data.story]);
+  if (log.template?.success) {
+    data.template = log.template.data;
+    // يحفظ في agents/ حيث يقرأه code-agent و revival-agent
+    writeFileSync(
+      join(__dirname, 'agents', 'template.json'),
+      JSON.stringify(data.template, null, 2), 'utf8'
+    );
+    save('template.json', data.template); // نسخة في agent-results/ للتقرير
+  }
+
   // عالم أول
   if (canAfford('world')) {
     const partial = { id: data.idea.id, name: data.idea.name, soul: data.soul, worlds: [] };
     log.world = await run('World 1', './agents/world-birth-agent.js', [partial], 'world');
     data.worlds = log.world?.success ? [log.world.data] : [];
     save('levels.json', { worlds: data.worlds });
+  }
+
+  // بناء اللعبة — يستخدم template
+  if (canAfford('code-agent') && data.idea.type === 'godot') {
+    log.code = await run('Code Agent', './agents/code-agent.js',
+      [data.idea, data.story, { worlds: data.worlds || [] }, data.art, data.template],
+      'code-agent');
+    if (log.code?.success) save('code.json', log.code.data);
   }
 
   const universe = {
