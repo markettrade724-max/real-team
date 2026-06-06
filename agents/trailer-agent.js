@@ -1,10 +1,16 @@
 /**
- * trailer-agent.js — v2.0 (Node.js خالص — Windows/Linux/Mac)
- * يقطع مشهداً مشوقاً 60 ثانية → تيك توك / شورتس
- * عبر fluent-ffmpeg (لا bash)
+ * trailer-agent.js — v2.1 (Node.js خالص)
+ *
+ * التغييرات عن v2.0:
+ *  - copyFileSync في أعلى الملف (rule-134)
+ *
+ * القواعد المطبقة:
+ *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
+ *  rule-126 : Node.js خالص — fluent-ffmpeg
+ *  rule-134 : لا await import داخل دوال
  */
 
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'fs';
 import { join, dirname }  from 'path';
 import { fileURLToPath }  from 'url';
 import ffmpeg             from 'fluent-ffmpeg';
@@ -13,11 +19,14 @@ import { logger }         from '../logger.js';
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-const __dirname   = dirname(fileURLToPath(import.meta.url));
-const MUSIC_LIB   = join(__dirname, '..', 'assets', 'music');
+const __dirname    = dirname(fileURLToPath(import.meta.url));
+const MUSIC_LIB    = join(__dirname, '..', 'assets', 'music');
 const FALLBACK_IMG = join(__dirname, '..', 'assets', 'fallback.png');
-const TRAILER_DUR = 60;
+const TRAILER_DUR  = 60;
 
+// ══════════════════════════════════════════════════════════
+// الدالة الرئيسية
+// ══════════════════════════════════════════════════════════
 export async function run(screenplay, visualManifest, audioManifest, episodeManifest) {
   logger.info('[TRAILER] Building trailer', { episode: screenplay.episode });
 
@@ -33,7 +42,6 @@ export async function run(screenplay, visualManifest, audioManifest, episodeMani
     return { outputPath, duration: TRAILER_DUR };
   }
 
-  // اختيار المشاهد
   const selected = selectBestScenes(screenplay, visualManifest);
   if (!selected.length) {
     logger.warn('[TRAILER] No suitable scenes');
@@ -66,15 +74,14 @@ export async function run(screenplay, visualManifest, audioManifest, episodeMani
   if (existsSync(bgMusic)) {
     await mixWithMusic(tempPath, bgMusic, outputPath, 0.3);
   } else {
-    const { copyFileSync } = await import('fs');
-    copyFileSync(tempPath, outputPath);
+    copyFileSync(tempPath, outputPath); // rule-134: import في الأعلى
   }
 
   const result = {
-    episode:    screenplay.episode,
+    episode:     screenplay.episode,
     outputPath,
-    duration:   TRAILER_DUR,
-    scenes:     selected.map(s => s.id),
+    duration:    TRAILER_DUR,
+    scenes:      selected.map(s => s.id),
     generatedAt: new Date().toISOString(),
   };
 
@@ -87,15 +94,15 @@ export async function run(screenplay, visualManifest, audioManifest, episodeMani
   return result;
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // اختيار المشاهد
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function selectBestScenes(screenplay, visualManifest) {
-  const allScenes = screenplay.acts.flatMap(a => a.scenes);
+  const allScenes = (screenplay.acts || []).flatMap(a => a.scenes || []);
   const moodScore = { 'توتر': 5, 'خوف': 4, 'حماس': 4, 'حزن': 3, 'أمل': 2, 'هدوء': 1 };
 
   const scored = allScenes.map((scene, idx) => {
-    const visual = visualManifest.scenes.find(v => v.id === scene.id);
+    const visual = (visualManifest?.scenes || []).find(v => v.id === scene.id);
     if (!visual?.imagePath || !existsSync(visual.imagePath)) return null;
     let score = moodScore[scene.mood] || 1;
     if (scene.dialogue?.length) score += 2;
@@ -104,40 +111,46 @@ function selectBestScenes(screenplay, visualManifest) {
     return { ...scene, imagePath: visual.imagePath, score };
   }).filter(Boolean).sort((a, b) => b.score - a.score);
 
-  const hook  = { ...allScenes[0], imagePath: visualManifest.scenes[0]?.imagePath, duration: 5,  role: 'hook' };
-  const peak  = { ...scored[0],  duration: 40, role: 'peak' };
-  const cliff = { ...scored.find(s => s.id === allScenes[allScenes.length - 1].id) || scored[1], duration: 15, role: 'cliffhanger' };
+  if (!scored.length) return [];
+
+  const firstVisual = (visualManifest?.scenes || [])[0];
+  const hook = firstVisual?.imagePath && existsSync(firstVisual.imagePath)
+    ? { ...allScenes[0], imagePath: firstVisual.imagePath, duration: 5,  role: 'hook' }
+    : null;
+
+  const peak  = scored[0]
+    ? { ...scored[0], duration: 40, role: 'peak' }
+    : null;
+
+  const lastScene = allScenes[allScenes.length - 1];
+  const cliffVisual = scored.find(s => s.id === lastScene?.id) || scored[1];
+  const cliff = cliffVisual
+    ? { ...cliffVisual, duration: 15, role: 'cliffhanger' }
+    : null;
 
   return [hook, peak, cliff].filter(s => s?.imagePath && existsSync(s.imagePath));
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // بناء مقطع تريلر — 9:16 عمودي
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function buildTrailerSegment(scene, outputPath, screenplay) {
   return new Promise((resolve, reject) => {
-    const img = existsSync(scene.imagePath) ? scene.imagePath : FALLBACK_IMG;
-
-    // نص العنوان
+    const img       = existsSync(scene.imagePath) ? scene.imagePath : FALLBACK_IMG;
     const titleText = escapeFFmpeg(screenplay.title || 'المسلسل');
     const subText   = scene.role === 'cliffhanger'
       ? escapeFFmpeg((screenplay.cliffhanger || '').slice(0, 35))
       : `الحلقة ${screenplay.episode}`;
 
     const vf = [
-      // crop عمودي 9:16
       'scale=1080:1920:force_original_aspect_ratio=increase',
       'crop=1080:1920',
       'setsar=1',
-      // تأثير zoom للذروة
       scene.role === 'peak'
         ? `zoompan=z='min(zoom+0.0003,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${scene.duration * 25}:s=1080x1920`
         : '',
-      // نص العنوان
       `drawtext=text='${titleText}':fontcolor=white:fontsize=40:x=(w-text_w)/2:y=100:shadowcolor=black:shadowx=2:shadowy=2`,
-      // نص سفلي
       `drawtext=text='${subText}':fontcolor=yellow:fontsize=32:x=(w-text_w)/2:y=h-140:shadowcolor=black:shadowx=2:shadowy=2`,
-      // fade
       `fade=t=in:st=0:d=0.4`,
       `fade=t=out:st=${scene.duration - 0.4}:d=0.4`,
     ].filter(Boolean).join(',');
@@ -161,9 +174,9 @@ function buildTrailerSegment(scene, outputPath, screenplay) {
   });
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // دمج ومزج
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function concatSegments(concatPath, outputPath) {
   return new Promise((resolve, reject) => {
     ffmpeg()
