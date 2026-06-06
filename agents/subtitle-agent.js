@@ -1,12 +1,17 @@
 /**
- * subtitle-agent.js
- * يولد ترجمة SRT عربية + إنجليزية لكل حلقة
- * بدون Gemini — من audioManifest مباشرة
+ * subtitle-agent.js — v1.1
  *
- * المخرجات:
- * - episode-ar.srt  — عربي
- * - episode-en.srt  — إنجليزي (ترجمة بسيطة)
- * - episode.vtt     — WebVTT للمشغلات الحديثة
+ * التغييرات عن v1.0:
+ *  - buildBurnScript محذوف (bash — rule-126)
+ *  - buildTimeline يعمل من audioManifest مباشرة
+ *  - visualManifest اختياري — لا crash عند غيابه
+ *  - run() يستلم (screenplay, audioManifest) فقط
+ *
+ * لا يستهلك Gemini — rule-137
+ * القواعد المطبقة:
+ *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
+ *  rule-126 : لا bash scripts
+ *  rule-137 : subtitle-agent لا يستهلك Gemini
  */
 
 import { writeFileSync, mkdirSync } from 'fs';
@@ -16,30 +21,34 @@ import { logger }                   from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export function run(screenplay, audioManifest, visualManifest) {
+// ══════════════════════════════════════════════════════════
+// الدالة الرئيسية — sync
+// ══════════════════════════════════════════════════════════
+export function run(screenplay, audioManifest) {
   logger.info('[SUBTITLE] Generating subtitles', { episode: screenplay.episode });
+
+  if (!audioManifest?.audioFiles?.length) {
+    logger.warn('[SUBTITLE] No audio manifest — skipping');
+    return { arSRT: null, enSRT: null, vtt: null, lines: 0 };
+  }
 
   const outDir = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`, 'output');
   mkdirSync(outDir, { recursive: true });
 
-  // بناء الجدول الزمني من audioManifest
-  const timeline = buildTimeline(audioManifest, visualManifest);
+  // بناء الجدول الزمني من audioManifest مباشرة
+  const timeline = buildTimeline(audioManifest);
 
-  // توليد SRT عربي
+  // SRT عربي
   const arSRT = generateSRT(timeline, 'ar');
   writeFileSync(join(outDir, 'episode-ar.srt'), arSRT, 'utf8');
 
-  // توليد SRT إنجليزي (transliteration بسيطة)
+  // SRT إنجليزي
   const enSRT = generateSRT(timeline, 'en');
   writeFileSync(join(outDir, 'episode-en.srt'), enSRT, 'utf8');
 
-  // توليد WebVTT
+  // WebVTT
   const vtt = generateVTT(timeline);
   writeFileSync(join(outDir, 'episode.vtt'), vtt, 'utf8');
-
-  // حرق الترجمة في الفيديو — نسخة مع ترجمة
-  const burnScript = buildBurnScript(screenplay, outDir);
-  writeFileSync(join(outDir, 'burn-subtitles.sh'), burnScript, 'utf8');
 
   logger.info('[OK] Subtitles generated', {
     lines: timeline.length,
@@ -47,126 +56,99 @@ export function run(screenplay, audioManifest, visualManifest) {
   });
 
   return {
-    arSRT:  join(outDir, 'episode-ar.srt'),
-    enSRT:  join(outDir, 'episode-en.srt'),
-    vtt:    join(outDir, 'episode.vtt'),
-    lines:  timeline.length,
+    arSRT: join(outDir, 'episode-ar.srt'),
+    enSRT: join(outDir, 'episode-en.srt'),
+    vtt:   join(outDir, 'episode.vtt'),
+    lines: timeline.length,
   };
 }
 
-// ════════════════════════════════════════════
-// بناء الجدول الزمني
-// ════════════════════════════════════════════
-function buildTimeline(audioManifest, visualManifest) {
-  const timeline = [];
+// ══════════════════════════════════════════════════════════
+// بناء الجدول الزمني من audioManifest
+// ══════════════════════════════════════════════════════════
+function buildTimeline(audioManifest) {
+  const timeline  = [];
   let currentTime = 0;
 
-  // ترتيب المشاهد حسب البصري
-  for (const vScene of visualManifest.scenes) {
-    const sceneAudio = audioManifest.audioFiles
-      .filter(a => a.sceneId === vScene.id)
-      .sort((a, b) => {
-        // الراوي أولاً ثم الحوار بالترتيب
-        if (a.type === 'narrator') return -1;
-        if (b.type === 'narrator') return 1;
-        return 0;
-      });
+  // ترتيب: narrator أولاً ثم dialogue بالترتيب
+  const sorted = [...audioManifest.audioFiles].sort((a, b) => {
+    if (a.sceneId !== b.sceneId) return a.sceneId.localeCompare(b.sceneId);
+    if (a.type === 'narrator') return -1;
+    if (b.type === 'narrator') return 1;
+    return 0;
+  });
 
-    for (const audio of sceneAudio) {
-      const dur = audio.duration || estimateDuration(audio.text);
+  let lastSceneId = null;
 
-      timeline.push({
-        index:     timeline.length + 1,
-        start:     currentTime,
-        end:       currentTime + dur,
-        text:      audio.text,
-        character: audio.character || 'راوٍ',
-        type:      audio.type,
-        sceneId:   vScene.id,
-      });
-
-      currentTime += dur + 0.3; // هامش 300ms بين الجمل
-    }
-
+  for (const audio of sorted) {
     // هامش بين المشاهد
-    currentTime += 1;
+    if (lastSceneId && audio.sceneId !== lastSceneId) {
+      currentTime += 1;
+    }
+    lastSceneId = audio.sceneId;
+
+    const dur = audio.duration || estimateDuration(audio.text);
+
+    timeline.push({
+      index:     timeline.length + 1,
+      start:     currentTime,
+      end:       currentTime + dur,
+      text:      audio.text || '',
+      character: audio.character || 'راوٍ',
+      type:      audio.type,
+      sceneId:   audio.sceneId,
+    });
+
+    currentTime += dur + 0.3; // 300ms بين الجمل
   }
 
   return timeline;
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // توليد SRT
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function generateSRT(timeline, lang) {
   const lines = [];
-
   for (const entry of timeline) {
     const text = lang === 'en'
       ? transliterate(entry.text)
       : formatArabicLine(entry);
-
     lines.push(entry.index);
     lines.push(`${formatTime(entry.start)} --> ${formatTime(entry.end)}`);
     lines.push(text);
     lines.push('');
   }
-
   return lines.join('\n');
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // توليد WebVTT
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function generateVTT(timeline) {
   const lines = ['WEBVTT', ''];
-
   for (const entry of timeline) {
     lines.push(`${entry.index}`);
     lines.push(`${formatTimeVTT(entry.start)} --> ${formatTimeVTT(entry.end)} align:center`);
     lines.push(formatArabicLine(entry));
     lines.push('');
   }
-
   return lines.join('\n');
 }
 
-// ════════════════════════════════════════════
-// حرق الترجمة في الفيديو
-// ════════════════════════════════════════════
-function buildBurnScript(screenplay, outDir) {
-  const inputPath  = join(outDir, `episode-${screenplay.episode}.mp4`);
-  const outputPath = join(outDir, `episode-${screenplay.episode}-subtitled.mp4`);
-  const srtPath    = join(outDir, 'episode-ar.srt');
-
-  return [
-    '#!/bin/bash',
-    'set -e',
-    '',
-    '# حرق الترجمة العربية في الفيديو',
-    `ffmpeg -y \\`,
-    `  -i "${inputPath}" \\`,
-    `  -vf "subtitles='${srtPath}':force_style='FontName=Arial,FontSize=24,PrimaryColour=&Hffffff,OutlineColour=&H000000,Outline=2,Alignment=2'" \\`,
-    `  -c:a copy \\`,
-    `  "${outputPath}"`,
-    '',
-    `echo "[SUBTITLE] Done: ${outputPath}"`,
-  ].join('\n');
-}
-
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // دوال مساعدة
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function formatArabicLine(entry) {
   if (entry.type === 'narrator') return `♪ ${entry.text}`;
   return `${entry.character}: ${entry.text}`;
 }
 
 function formatTime(seconds) {
-  const h   = Math.floor(seconds / 3600);
-  const m   = Math.floor((seconds % 3600) / 60);
-  const s   = Math.floor(seconds % 60);
-  const ms  = Math.round((seconds % 1) * 1000);
+  const h  = Math.floor(seconds / 3600);
+  const m  = Math.floor((seconds % 3600) / 60);
+  const s  = Math.floor(seconds % 60);
+  const ms = Math.round((seconds % 1) * 1000);
   return `${pad(h)}:${pad(m)}:${pad(s)},${padMs(ms)}`;
 }
 
@@ -178,10 +160,9 @@ function pad(n)   { return String(n).padStart(2, '0'); }
 function padMs(n) { return String(n).padStart(3, '0'); }
 
 function estimateDuration(text) {
-  return Math.max(1.5, (text || '').split(/\s+/).length / 3);
+  return Math.max(1.5, (text || '').split(/\s+/).length / 2.5);
 }
 
-// transliteration عربي → إنجليزي بسيط
 function transliterate(text) {
   const map = {
     'أ':'a','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh',
