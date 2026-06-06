@@ -34,6 +34,13 @@ const __dirname     = dirname(fileURLToPath(import.meta.url));
 const PRODUCTS_PATH = join(__dirname, '..', 'products.json');
 const PUBLIC_PATH   = join(__dirname, '..', 'public', 'products.json');
 const RECIPES_DIR   = join(__dirname, '..', 'godot-recipes');
+const TEMPLATE_PATH = join(__dirname, 'template.json');
+
+function loadTemplate() {
+  if (!existsSync(TEMPLATE_PATH)) return null;
+  try { return JSON.parse(readFileSync(TEMPLATE_PATH, 'utf8')); }
+  catch { return null; }
+}
 
 const SKIP_TYPES  = ['godot'];
 const MAX_PER_RUN = 3;
@@ -236,10 +243,11 @@ function writeGodotProject(slug, scripts, identity) {
 // بناء المنتج المُرقّى
 // ══════════════════════════════════════════════════════════
 function buildRevivedProduct(old, identity, world, universe) {
+  const template = loadTemplate();
   return {
     ...old,
     type:         'godot',
-    templateFile: 'godot-wrapper.html',
+    templateFile: template?.templateFile || 'godot-wrapper.html',
     godotSlug:    old.slug,
     accent:       identity.accent         || universe.art?.accent   || old.accent,
     accentRgb:    universe.art?.accentRgb || old.accentRgb,
