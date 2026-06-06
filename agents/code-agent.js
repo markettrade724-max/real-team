@@ -1,13 +1,13 @@
 /**
- * code-agent.js — v2.0
+ * code-agent.js — v2.1
  *
- * التغييرات عن v1.0:
- *  - maxOutputTokens: .gd=8192 / .tscn=16384
- *  - temperature: 0.7 → 0.2 لكل الكود
- *  - .tscn: كل ملف في استدعاء منفصل (بدل 5 في استدعاء واحد)
- *  - weapon.gd + bullet.gd في استدعاء واحد (توفير طلب)
- *  - كل .tscn يستلم الكود المقابل كمرجع
- *  - soul خارج prompt الرئيسي
+ * التغييرات عن v2.0:
+ *  - taskConfig (6th param): { pendingFiles, completedFiles, budget }
+ *  - Phase 1 (budget=4): كل .gd — يحفظ في disk + يُرجع للـ progress
+ *  - Phase 2 (budget=5): كل .tscn — يقرأ .gd من disk كمرجع
+ *  - files[] يُرجع { name, content } لدعم saveGameFile في orchestrator
+ *  - إصلاح template scoping bug في addToProducts
+ *  - canAfford مرن حسب budget المخصص لا 9 ثابت
  *
  * القواعد المطبقة:
  *  rule-056 : soulContext قبل كل عمل
@@ -19,19 +19,24 @@
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
  *  rule-101 : maxOutputTokens لا maxTokens
  *  rule-102 : لا JSON.parse
+ *  rule-109 : انسخ products.json إلى public/
  *  rule-110 : project.godot يُبنى محلياً
  *  rule-128 : caller logging
- *
- *  rule-146 : .gd  → maxOutputTokens: 8,192  / temperature: 0.2
- *  rule-147 : .tscn → maxOutputTokens: 16,384 / temperature: 0.2
+ *  rule-146 : .gd  → maxOutputTokens: 8192  / temperature: 0.2
+ *  rule-147 : .tscn → maxOutputTokens: 16384 / temperature: 0.2
  *  rule-148 : كل .tscn في استدعاء منفصل مع كوده كمرجع
  *  rule-149 : weapon.gd + bullet.gd في استدعاء واحد
+ *  rule-153 : canAfford — وحدة كاملة أو لا شيء
+ *  rule-188 : كل خطوة تُحفظ فور اكتمالها
  */
 
-import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 'fs';
+import {
+  writeFileSync, mkdirSync, existsSync,
+  readFileSync, readdirSync,
+} from 'fs';
 import { join, dirname }  from 'path';
 import { fileURLToPath }  from 'url';
-import { askGemini, canAfford } from './_gemini.js';
+import { askGemini, getRemainingQuota } from './_gemini.js';
 import { soulContext }    from './_soul.js';
 import { readForAgent }   from './library-builder-agent.js';
 import { logger }         from '../logger.js';
@@ -39,14 +44,66 @@ import { logger }         from '../logger.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ══════════════════════════════════════════════════════════
+// هيكل الملفات — تسلسل التوليد
+// ══════════════════════════════════════════════════════════
+// Phase 1 — 4 استدعاءات Gemini
+const GD_SEQUENCE = [
+  'main_scene.gd',          // 1 call
+  'player.gd',              // 1 call
+  'enemy.gd',               // 1 call
+  'weapon.gd+bullet.gd',    // 1 call (rule-149)
+];
+
+// Phase 2 — 5 استدعاءات Gemini
+const TSCN_SEQUENCE = [
+  'main_scene.tscn',
+  'player.tscn',
+  'enemy.tscn',
+  'weapon.tscn',
+  'bullet.tscn',
+];
+
+// ══════════════════════════════════════════════════════════
 // أدوات مساعدة
 // ══════════════════════════════════════════════════════════
+function getProjectDir(slug) {
+  return join(__dirname, '..', 'godot-projects', slug);
+}
 
 function writeProjectFile(slug, filename, content) {
-  const dir = join(__dirname, '..', 'godot-projects', slug);
+  const dir = getProjectDir(slug);
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, filename), content, 'utf8');
   logger.info(`[OK] Written: ${slug}/${filename}`);
+}
+
+function readProjectFile(slug, filename) {
+  const p = join(getProjectDir(slug), filename);
+  if (!existsSync(p)) return null;
+  try { return readFileSync(p, 'utf8'); } catch { return null; }
+}
+
+// يقرأ .gd المحفوظة من disk للمرحلة الثانية
+function loadSavedGdFiles(slug) {
+  const files = {};
+  for (const name of ['main_scene.gd', 'player.gd', 'enemy.gd', 'weapon.gd', 'bullet.gd']) {
+    const content = readProjectFile(slug, name);
+    if (content) files[name] = content;
+  }
+  return files;
+}
+
+function loadRecipes(domain) {
+  const dir = join(__dirname, '..', 'godot-recipes', domain);
+  if (!existsSync(dir)) return '';
+  try {
+    const files = readdirSync(dir).filter(f => f.endsWith('.meta.json'));
+    if (!files.length) return '';
+    return files.slice(0, 3).map(f => {
+      const m = JSON.parse(readFileSync(join(dir, f), 'utf8'));
+      return `- ${m.label}: ${m.usage}`;
+    }).join('\n');
+  } catch { return ''; }
 }
 
 function generateExportPresets() {
@@ -80,13 +137,6 @@ html/canvas_resize_policy=2
 html/focus_canvas_on_start=true
 html/experimental_virtual_keyboard=false
 progressive_web_app/enabled=false
-progressive_web_app/offline_page=""
-progressive_web_app/display=1
-progressive_web_app/orientation=0
-progressive_web_app/icon_144x144=""
-progressive_web_app/icon_180x180=""
-progressive_web_app/icon_512x512=""
-progressive_web_app/background_color=Color(0, 0, 0, 1)
 `;
 }
 
@@ -108,31 +158,27 @@ window/size/viewport_height=720
 [input]
 move_forward={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":87,"physical_keycode":87,"key_label":87,"unicode":119,"echo":false)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":87,"physical_keycode":87,"unicode":119)]
 }
 move_back={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":83,"physical_keycode":83,"key_label":83,"unicode":115,"echo":false)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":83,"physical_keycode":83,"unicode":115)]
 }
 move_left={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":65,"physical_keycode":65,"key_label":65,"unicode":97,"echo":false)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":65,"physical_keycode":65,"unicode":97)]
 }
 move_right={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":68,"physical_keycode":68,"key_label":68,"unicode":100,"echo":false)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":68,"physical_keycode":68,"unicode":100)]
 }
 jump={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":32,"physical_keycode":32,"key_label":32,"unicode":32,"echo":false)]
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":32,"physical_keycode":32,"unicode":32)]
 }
 fire={
 "deadzone": 0.5,
-"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false)]
-}
-ui_cancel={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194305,"physical_keycode":4194305,"key_label":4194305,"unicode":0,"echo":false)]
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"device":-1,"window_id":0,"button_index":1,"pressed":true)]
 }
 
 [rendering]
@@ -162,20 +208,26 @@ function fixLoadSteps(content) {
   return content.replace(/\[gd_scene load_steps=\d+/, `[gd_scene load_steps=${ext + sub + 1}`);
 }
 
-function loadRecipes(domain) {
-  const recipesDir = join(__dirname, '..', 'godot-recipes', domain);
-  if (!existsSync(recipesDir)) return '';
+function fixCamera3D(slug) {
   try {
-    const files = readdirSync(recipesDir).filter(f => f.endsWith('.meta.json'));
-    if (!files.length) return '';
-    return files.slice(0, 3).map(f => {
-      const meta = JSON.parse(readFileSync(join(recipesDir, f), 'utf8'));
-      return `- ${meta.label}: ${meta.usage}`;
-    }).join('\n');
-  } catch { return ''; }
+    const p = join(getProjectDir(slug), 'player.tscn');
+    if (!existsSync(p)) return;
+    let c = readFileSync(p, 'utf8');
+    if (c.includes('type="Camera3D"') && !c.includes('current = true')) {
+      c = c.replace(
+        /(\[node name="[^"]*" type="Camera3D"[^\]]*\])/g,
+        '$1\ncurrent = true'
+      );
+      writeFileSync(p, c, 'utf8');
+      logger.info('[OK] Fixed Camera3D current=true');
+    }
+  } catch (err) {
+    logger.warn('[WARN] Could not fix Camera3D', { error: err.message });
+  }
 }
 
-function addToProducts(idea, art, worlds) {
+// إصلاح البق: template يُمرَّر صريحاً
+function addToProducts(idea, art, levels, template) {
   const path     = join(__dirname, '..', 'products.json');
   const pub      = join(__dirname, '..', 'public', 'products.json');
   const products = existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : [];
@@ -198,7 +250,7 @@ function addToProducts(idea, art, worlds) {
     desc:         idea.desc,
     tags:         idea.tags || [],
     iap:          [],
-    levels:       worlds?.worlds?.map(w => ({
+    levels:       levels?.worlds?.map(w => ({
       id:         w.id,
       name:       w.name,
       difficulty: w.difficulty,
@@ -212,28 +264,26 @@ function addToProducts(idea, art, worlds) {
   });
   const json = JSON.stringify(products, null, 2);
   writeFileSync(path, json, 'utf8');
-  // rule-109: انسخ إلى public/
   mkdirSync(join(__dirname, '..', 'public'), { recursive: true });
   writeFileSync(pub, json, 'utf8');
   logger.info('[OK] Product added + copied to public/', { id: idea.id });
 }
 
 // ══════════════════════════════════════════════════════════
-// توليد GDScript
+// Phase 1 — توليد .gd
 // ══════════════════════════════════════════════════════════
-
-async function generateGDScripts(idea, story, levels, soul, library) {
-  logger.info('[CODE] Generating GDScript files...');
+async function generateGDScripts(idea, story, levels, soul, library, targetFiles = null) {
+  logger.info('[CODE] Phase 1 — GDScript files');
 
   const heroName    = story?.mainCharacter?.name || 'Hero';
   const worldNames  = levels?.worlds?.slice(0, 3).map(w => w.name?.en).join(', ') || '';
   const movementTip = loadRecipes('movement');
   const files       = {};
 
-  // ── 1. main_scene.gd ──────────────────────────────────
-  try {
-    const r = await askGemini(`${soul}
-${library}
+  // ── main_scene.gd ──────────────────────────────────────
+  if (!targetFiles || targetFiles.includes('main_scene.gd')) {
+    try {
+      const r = await askGemini(`${soul}\n${library}
 
 Godot 4.6.2 GDScript for main_scene.gd.
 Game: "${idea.name?.en}".
@@ -246,17 +296,17 @@ Rules:
 
 Return JSON only — no text outside JSON:
 { "main_scene.gd": "<complete GDScript code>" }`,
-      0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
-
-    files['main_scene.gd'] = r?.['main_scene.gd'];
-  } catch (err) {
-    logger.error('[ERROR] main_scene.gd failed', { error: err.message });
+        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
+      files['main_scene.gd'] = r?.['main_scene.gd'];
+    } catch (err) {
+      logger.error('[ERROR] main_scene.gd failed', { error: err.message });
+    }
   }
 
-  // ── 2. player.gd ──────────────────────────────────────
-  try {
-    const r = await askGemini(`${soul}
-${library}
+  // ── player.gd ───────────────────────────────────────────
+  if (!targetFiles || targetFiles.includes('player.gd')) {
+    try {
+      const r = await askGemini(`${soul}\n${library}
 
 Godot 4.6.2 GDScript for player.gd.
 Game: "${idea.name?.en}". Hero: ${heroName}.
@@ -272,17 +322,17 @@ Rules:
 
 Return JSON only — no text outside JSON:
 { "player.gd": "<complete GDScript code>" }`,
-      0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
-
-    files['player.gd'] = r?.['player.gd'];
-  } catch (err) {
-    logger.error('[ERROR] player.gd failed', { error: err.message });
+        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
+      files['player.gd'] = r?.['player.gd'];
+    } catch (err) {
+      logger.error('[ERROR] player.gd failed', { error: err.message });
+    }
   }
 
-  // ── 3. enemy.gd ───────────────────────────────────────
-  try {
-    const r = await askGemini(`${soul}
-${library}
+  // ── enemy.gd ────────────────────────────────────────────
+  if (!targetFiles || targetFiles.includes('enemy.gd')) {
+    try {
+      const r = await askGemini(`${soul}\n${library}
 
 Godot 4.6.2 GDScript for enemy.gd.
 Game: "${idea.name?.en}". Worlds: ${worldNames}.
@@ -296,17 +346,19 @@ Rules:
 
 Return JSON only — no text outside JSON:
 { "enemy.gd": "<complete GDScript code>" }`,
-      0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
-
-    files['enemy.gd'] = r?.['enemy.gd'];
-  } catch (err) {
-    logger.error('[ERROR] enemy.gd failed', { error: err.message });
+        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
+      files['enemy.gd'] = r?.['enemy.gd'];
+    } catch (err) {
+      logger.error('[ERROR] enemy.gd failed', { error: err.message });
+    }
   }
 
-  // ── 4. weapon.gd + bullet.gd في استدعاء واحد ─────────
-  try {
-    const r = await askGemini(`${soul}
-${library}
+  // ── weapon.gd + bullet.gd — في استدعاء واحد (rule-149) ─
+  const needWeapon = !targetFiles ||
+    targetFiles.includes('weapon.gd') || targetFiles.includes('bullet.gd');
+  if (needWeapon) {
+    try {
+      const r = await askGemini(`${soul}\n${library}
 
 Godot 4.6.2 GDScript — two files in one call.
 
@@ -330,31 +382,30 @@ Return JSON only — no text outside JSON:
   "weapon.gd": "<complete GDScript code>",
   "bullet.gd": "<complete GDScript code>"
 }`,
-      0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
-
-    files['weapon.gd'] = r?.['weapon.gd'];
-    files['bullet.gd'] = r?.['bullet.gd'];
-  } catch (err) {
-    logger.error('[ERROR] weapon+bullet failed', { error: err.message });
+        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
+      files['weapon.gd'] = r?.['weapon.gd'];
+      files['bullet.gd'] = r?.['bullet.gd'];
+    } catch (err) {
+      logger.error('[ERROR] weapon+bullet failed', { error: err.message });
+    }
   }
 
   return files;
 }
 
 // ══════════════════════════════════════════════════════════
-// توليد .tscn — كل ملف منفصل مع كوده كمرجع
+// Phase 2 — توليد .tscn
 // ══════════════════════════════════════════════════════════
-
-async function generateScenes(idea, gdFiles, soul) {
-  logger.info('[CODE] Generating .tscn scene files...');
+async function generateScenes(idea, gdFiles, soul, targetFiles = null) {
+  logger.info('[CODE] Phase 2 — .tscn scene files');
 
   const scenes = {};
 
   const SCENE_SPECS = [
     {
-      name:     'main_scene.tscn',
-      ref:      gdFiles['main_scene.gd'] || '',
-      prompt:   `Godot 4.6.2 .tscn for main_scene.tscn.
+      name:   'main_scene.tscn',
+      gdRef:  gdFiles['main_scene.gd'] || '',
+      prompt: `Godot 4.6.2 .tscn for main_scene.tscn.
 Reference GDScript (main_scene.gd):
 \`\`\`
 ${(gdFiles['main_scene.gd'] || '').slice(0, 2000)}
@@ -369,7 +420,7 @@ Rules:
     },
     {
       name:   'player.tscn',
-      ref:    gdFiles['player.gd'] || '',
+      gdRef:  gdFiles['player.gd'] || '',
       prompt: `Godot 4.6.2 .tscn for player.tscn.
 Reference GDScript (player.gd):
 \`\`\`
@@ -378,14 +429,12 @@ ${(gdFiles['player.gd'] || '').slice(0, 2000)}
 Rules:
 - Root: CharacterBody3D with script player.gd
 - CollisionShape3D child (CapsuleShape3D h=1.8 r=0.4)
-- Node3D child "head" containing:
-    Camera3D with current=true
-    Node3D "weapon_holder" for weapon attachment
+- Node3D child "head" containing Camera3D (current=true) + Node3D "weapon_holder"
 - load_steps = exact count`,
     },
     {
       name:   'enemy.tscn',
-      ref:    gdFiles['enemy.gd'] || '',
+      gdRef:  gdFiles['enemy.gd'] || '',
       prompt: `Godot 4.6.2 .tscn for enemy.tscn.
 Reference GDScript (enemy.gd):
 \`\`\`
@@ -400,7 +449,7 @@ Rules:
     },
     {
       name:   'weapon.tscn',
-      ref:    gdFiles['weapon.gd'] || '',
+      gdRef:  gdFiles['weapon.gd'] || '',
       prompt: `Godot 4.6.2 .tscn for weapon.tscn.
 Reference GDScript (weapon.gd):
 \`\`\`
@@ -415,7 +464,7 @@ Rules:
     },
     {
       name:   'bullet.tscn',
-      ref:    gdFiles['bullet.gd'] || '',
+      gdRef:  gdFiles['bullet.gd'] || '',
       prompt: `Godot 4.6.2 .tscn for bullet.tscn.
 Reference GDScript (bullet.gd):
 \`\`\`
@@ -425,8 +474,7 @@ Rules:
 - Root: RigidBody3D with script bullet.gd
 - CollisionShape3D child (SphereShape3D r=0.05)
 - MeshInstance3D child (SphereMesh r=0.05)
-- gravity_scale=0.0
-- contact_monitor=true, max_contacts_reported=1
+- gravity_scale=0.0, contact_monitor=true, max_contacts_reported=1
 - collision_layer=4
 - signal body_entered connected to _on_body_entered
 - load_steps = exact count`,
@@ -434,6 +482,7 @@ Rules:
   ];
 
   for (const spec of SCENE_SPECS) {
+    if (targetFiles && !targetFiles.includes(spec.name)) continue;
     try {
       const r = await askGemini(`${soul}
 
@@ -441,10 +490,7 @@ ${spec.prompt}
 
 Return JSON only — no text outside JSON:
 { "${spec.name}": "<complete .tscn content>" }`,
-        0.2,
-        { maxOutputTokens: 16384, topP: 0.85 },
-        'code-agent'
-      );
+        0.2, { maxOutputTokens: 16384, topP: 0.85 }, 'code-agent');
 
       const content = r?.[spec.name];
       if (!content || typeof content !== 'string' || content.trim().length < 10) {
@@ -462,109 +508,153 @@ Return JSON only — no text outside JSON:
 }
 
 // ══════════════════════════════════════════════════════════
-// إصلاح Camera3D
-// ══════════════════════════════════════════════════════════
-
-function fixCamera3D(slug) {
-  try {
-    const p = join(__dirname, '..', 'godot-projects', slug, 'player.tscn');
-    if (!existsSync(p)) return;
-    let c = readFileSync(p, 'utf8');
-    if (c.includes('type="Camera3D"') && !c.includes('current = true')) {
-      c = c.replace(
-        /(\[node name="[^"]*" type="Camera3D"[^\]]*\])/g,
-        '$1\ncurrent = true'
-      );
-      writeFileSync(p, c, 'utf8');
-      logger.info('[OK] Fixed Camera3D current=true');
-    }
-  } catch (err) {
-    logger.warn('[WARN] Could not fix Camera3D', { error: err.message });
-  }
-}
-
-// ══════════════════════════════════════════════════════════
 // الدالة الرئيسية
 // ══════════════════════════════════════════════════════════
 
-export async function run(idea, story, levels, art, template) {
-  logger.info('[CODE] Code Agent v2.0 started', { id: idea.id, type: idea.type });
+/**
+ * @param {object} idea
+ * @param {object} story
+ * @param {object} levels
+ * @param {object} art
+ * @param {object} template
+ * @param {object} taskConfig  — { pendingFiles?, completedFiles?, budget? }
+ */
+export async function run(idea, story, levels, art, template, taskConfig = {}) {
+  const {
+    pendingFiles   = null,   // null = كل شيء / array = ملفات محددة
+    completedFiles = [],
+    budget         = 9,
+  } = taskConfig;
+
+  logger.info('[CODE] Code Agent v2.1 started', {
+    id:             idea.id,
+    budget,
+    pendingFiles:   pendingFiles?.length ?? 'all',
+    completedFiles: completedFiles.length,
+  });
 
   const isGodot = idea.type === 'godot';
   if (!isGodot) {
     logger.info('[CODE] Non-Godot project — skipping');
-    return { slug: idea.id, files: [], engine: 'phaser' };
+    return { slug: idea.id, files: [], engine: 'phaser', isComplete: true };
   }
 
-  // rule-153: تحقق من الحصة قبل البدء
-  if (!canAfford('code-agent')) {
-    throw new Error('InsufficientQuota: code-agent needs 9 calls');
+  // تحقق من الحصة المخصصة
+  const available = getRemainingQuota();
+  const needed    = Math.min(budget, pendingFiles
+    ? (pendingFiles.every(f => f.endsWith('.tscn')) ? 5 : 4)
+    : 4);
+
+  if (available < needed) {
+    throw new Error(`InsufficientQuota: need ${needed} calls, have ${available}`);
   }
 
-  // اقرأ template.json إذا لم يُمرَّر
+  // template من disk إذا لم يُمرَّر
   if (!template) {
-    const templatePath = join(__dirname, 'template.json');
-    if (existsSync(templatePath)) {
-      try {
-        template = JSON.parse(readFileSync(templatePath, 'utf8'));
-        logger.info('[CODE] Template loaded from template.json', { file: template.templateFile });
-      } catch {
-        logger.warn('[CODE] Could not read template.json');
-      }
+    const tp = join(__dirname, 'template.json');
+    if (existsSync(tp)) {
+      try { template = JSON.parse(readFileSync(tp, 'utf8')); } catch {}
     }
   }
 
   const soul    = soulContext('code-agent');
   const library = readForAgent('code-agent', 8);
   const slug    = idea.id;
-  const files   = [];
+  const outputFiles = []; // { name, content } — للـ orchestrator
 
-  // ── 1. ملفات ثابتة — بدون Gemini ──────────────────────
-  writeProjectFile(slug, 'export_presets.cfg', generateExportPresets());
-  files.push('export_presets.cfg');
+  // ── ملفات ثابتة — بدون Gemini ─────────────────────────
+  const onlyTscn = pendingFiles?.every(f => f.endsWith('.tscn'));
 
-  writeProjectFile(slug, 'project.godot', buildProjectGodot(idea));
-  files.push('project.godot');
+  if (!onlyTscn) {
+    const presets = generateExportPresets();
+    const godotCfg = buildProjectGodot(idea);
+    writeProjectFile(slug, 'export_presets.cfg', presets);
+    writeProjectFile(slug, 'project.godot',      godotCfg);
+    outputFiles.push({ name: 'export_presets.cfg', content: presets });
+    outputFiles.push({ name: 'project.godot',      content: godotCfg });
+  }
 
-  // ── 2. GDScript — 4 استدعاءات ──────────────────────────
-  const gdFiles = await generateGDScripts(idea, story, levels, soul, library);
+  // ── Phase 1: توليد .gd ────────────────────────────────
+  let gdFiles = {};
 
-  for (const [filename, code] of Object.entries(gdFiles)) {
-    if (!code || typeof code !== 'string') {
-      logger.warn(`[WARN] Missing code for ${filename}`);
-      continue;
+  if (!onlyTscn) {
+    const gdTarget = pendingFiles?.filter(f => f.endsWith('.gd')) ?? null;
+    gdFiles = await generateGDScripts(idea, story, levels, soul, library, gdTarget);
+
+    for (const [name, code] of Object.entries(gdFiles)) {
+      if (!code) continue;
+      const fixed = applyScriptRules(name, code);
+      writeProjectFile(slug, name, fixed);
+      outputFiles.push({ name, content: fixed }); // rule-188: حفظ فوري
+      logger.info(`[OK] GD saved: ${name}`);
     }
-    writeProjectFile(slug, filename, applyScriptRules(filename, code));
-    files.push(filename);
   }
 
-  // ── 3. .tscn — 5 استدعاءات منفصلة ─────────────────────
-  const sceneFiles = await generateScenes(idea, gdFiles, soul);
+  // ── Phase 2: توليد .tscn ─────────────────────────────
+  const doTscn = !pendingFiles || pendingFiles.some(f => f.endsWith('.tscn'));
 
-  for (const [filename, content] of Object.entries(sceneFiles)) {
-    writeProjectFile(slug, filename, fixLoadSteps(content));
-    files.push(filename);
+  if (doTscn && (budget >= 9 || onlyTscn)) {
+    // إذا Phase 2 فقط — حمّل .gd من disk
+    if (onlyTscn) {
+      gdFiles = loadSavedGdFiles(slug);
+      logger.info('[CODE] Loaded saved GD files from disk', { count: Object.keys(gdFiles).length });
+    }
+
+    const tscnTarget = pendingFiles?.filter(f => f.endsWith('.tscn')) ?? null;
+    const sceneFiles = await generateScenes(idea, gdFiles, soul, tscnTarget);
+
+    for (const [name, content] of Object.entries(sceneFiles)) {
+      const fixed = fixLoadSteps(content);
+      writeProjectFile(slug, name, fixed);
+      outputFiles.push({ name, content: fixed }); // rule-188
+    }
+
+    fixCamera3D(slug);
   }
 
-  // ── 4. إصلاحات ما بعد التوليد ──────────────────────────
-  fixCamera3D(slug);
-
-  // ── 5. worlds.json ──────────────────────────────────────
-  if (levels) {
-    writeProjectFile(slug, 'worlds.json', JSON.stringify(levels, null, 2));
-    files.push('worlds.json');
+  // ── levels.json ─────────────────────────────────────────
+  if (levels && !onlyTscn) {
+    const lvl = JSON.stringify(levels, null, 2);
+    writeProjectFile(slug, 'worlds.json', lvl);
+    outputFiles.push({ name: 'worlds.json', content: lvl });
   }
 
-  // ── 6. إضافة للمنتجات ───────────────────────────────────
-  addToProducts(idea, art, levels);
+  // ── تحديد الاكتمال ──────────────────────────────────────
+  const allGd   = ['main_scene.gd', 'player.gd', 'enemy.gd', 'weapon.gd', 'bullet.gd'];
+  const allTscn = ['main_scene.tscn', 'player.tscn', 'enemy.tscn', 'weapon.tscn', 'bullet.tscn'];
+  const allDone = [...completedFiles, ...outputFiles.map(f => f.name)];
 
-  logger.info('[OK] Code Agent v2.0 finished', {
+  const gdDone   = allGd.every(f => allDone.includes(f));
+  const tscnDone = allTscn.every(f => allDone.includes(f));
+  const isComplete = gdDone && tscnDone;
+
+  // ── أضف للمنتجات إذا اكتملت ─────────────────────────────
+  if (isComplete) {
+    addToProducts(idea, art, levels, template);
+  }
+
+  // pending للـ orchestrator
+  const pendingRemaining = isComplete ? [] : [
+    ...(!gdDone   ? allGd.filter(f => !allDone.includes(f))   : []),
+    ...(!tscnDone ? allTscn.filter(f => !allDone.includes(f)) : []),
+  ];
+
+  logger.info('[OK] Code Agent v2.1 finished', {
     slug,
-    totalFiles:  files.length,
-    gdScripts:   Object.keys(gdFiles).length,
-    scenes:      Object.keys(sceneFiles).length,
-    geminiCalls: 9,  // 4 gd + 5 tscn
+    outputFiles:     outputFiles.length,
+    isComplete,
+    pendingRemaining: pendingRemaining.length,
+    geminiCalls:     outputFiles.filter(f =>
+      f.name.endsWith('.gd') || f.name.endsWith('.tscn')).length,
   });
 
-  return { slug, files, engine: 'godot', totalFiles: files.length };
+  return {
+    slug,
+    files:            outputFiles,      // { name, content }[] للـ progress
+    engine:           'godot',
+    isComplete,
+    completedFiles:   allDone,
+    pendingFiles:     pendingRemaining,
+    totalFiles:       outputFiles.length,
+  };
 }
