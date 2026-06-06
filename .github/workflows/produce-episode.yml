@@ -59,10 +59,6 @@ jobs:
         # لا bash  → rule-127
 
       # ── 4. Produce Episode ───────────────────────────
-      - name: Init recipes structure
-        shell: pwsh
-        run: node scripts/init-recipes.js
-
       - name: Produce Episode
         shell: pwsh
         env:
