@@ -80,6 +80,10 @@ jobs:
           }
 
       # ── 4. Run Orchestrator ──────────────────────────
+      - name: Init recipes structure
+        shell: pwsh
+        run: node scripts/init-recipes.js
+
       - name: Run Orchestrator
         shell: pwsh
         env:
