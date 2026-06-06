@@ -1,39 +1,59 @@
 {
-  "runId": "2026-06-05T1625",
-  "mode": "evolution",
+  "runId": "2026-06-06T0545",
+  "mode": "library",
   "success": true,
-  "timestamp": "2026-06-05T16:25:15.690Z",
-  "totalDuration": "17ms",
+  "timestamp": "2026-06-06T05:45:39.906Z",
+  "totalDuration": "25ms",
   "budget": {
-    "total": 40,
+    "total": 0,
     "limit": 40,
-    "left": 0,
-    "percent": "100%"
+    "left": 40,
+    "percent": "0%",
+    "keys": [
+      {
+        "key": "KEY_1",
+        "total": 0,
+        "limit": 20,
+        "left": 20,
+        "library": 0,
+        "agents": 0
+      },
+      {
+        "key": "KEY_2",
+        "total": 0,
+        "limit": 20,
+        "left": 20,
+        "library": 0,
+        "agents": 0
+      }
+    ]
   },
   "library": {
     "built": 8,
     "total": 56,
     "percent": "14%"
   },
-  "schedule": {
-    "day": "Fri",
-    "invention": false,
-    "revival": true,
-    "roadmap": false,
-    "sync": false,
-    "episode": true
+  "progress": {
+    "current": null,
+    "nextEpisode": 1,
+    "totalEpisodes": 0,
+    "gamesDone": 0
   },
   "agents": {
     "library": {
-      "success": false,
-      "duration": "0ms",
-      "error": "InsufficientQuota"
+      "success": true,
+      "duration": "7ms",
+      "error": null
+    },
+    "analytics": {
+      "success": true,
+      "duration": "—",
+      "error": null
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 0,
-    "failed": 1
-  },
-  "rolledBack": false
+    "total": 2,
+    "passed": 2,
+    "failed": 0
+  }
 }
