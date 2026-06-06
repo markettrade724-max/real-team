@@ -1,9 +1,14 @@
 /**
- * edit-agent.js — v2.0 (Node.js خالص — Windows/Linux/Mac)
- * يجمع الصور + الصوت + الموسيقى → mp4
- * عبر fluent-ffmpeg (لا bash، لا shell scripts)
+ * edit-agent.js — v2.1 (Node.js خالص)
  *
- * npm install fluent-ffmpeg @ffmpeg-installer/ffmpeg
+ * التغييرات عن v2.0:
+ *  - run() يستلم subtitles و music (توافق series-agent v1.1)
+ *  - موسيقى من music-agent إذا وجدت — وإلا ambient.mp3
+ *  - logger.debug → logger.info (rule-099)
+ *
+ * القواعد المطبقة:
+ *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
+ *  rule-126 : Node.js خالص — fluent-ffmpeg
  */
 
 import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'fs';
@@ -13,14 +18,16 @@ import ffmpeg            from 'fluent-ffmpeg';
 import ffmpegInstaller   from '@ffmpeg-installer/ffmpeg';
 import { logger }        from '../logger.js';
 
-// تثبيت ffmpeg تلقائياً — يعمل على Windows/Linux/Mac
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 const __dirname    = dirname(fileURLToPath(import.meta.url));
 const MUSIC_LIB    = join(__dirname, '..', 'assets', 'music');
 const FALLBACK_IMG = join(__dirname, '..', 'assets', 'fallback.png');
 
-export async function run(screenplay, visualManifest, audioManifest) {
+// ══════════════════════════════════════════════════════════
+// الدالة الرئيسية
+// ══════════════════════════════════════════════════════════
+export async function run(screenplay, visualManifest, audioManifest, subtitles = null, music = null) {
   logger.info('[EDIT] Assembling video', { episode: screenplay.episode });
 
   const epDir  = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`);
@@ -32,17 +39,18 @@ export async function run(screenplay, visualManifest, audioManifest) {
   const outputPath = join(outDir, `episode-${screenplay.episode}.mp4`);
   const timeline   = buildTimeline(screenplay, visualManifest, audioManifest);
 
-  // ── الخطوة 1: بناء كل مشهد → مقطع mp4 ──
+  // ── 1. بناء مقاطع المشاهد ─────────────
   const segPaths = [];
   for (const scene of timeline.scenes) {
     const segPath = join(segDir, `${scene.id}.mp4`);
     segPaths.push(segPath);
     if (!existsSync(segPath)) {
       await buildSegment(scene, segPath);
+      logger.info(`[EDIT] Segment done: ${scene.id}`);
     }
   }
 
-  // ── الخطوة 2: دمج المقاطع ────────────
+  // ── 2. دمج المقاطع ────────────────────
   const concatPath = join(epDir, 'concat.txt');
   writeFileSync(
     concatPath,
@@ -53,20 +61,25 @@ export async function run(screenplay, visualManifest, audioManifest) {
   const tempPath = join(outDir, 'temp.mp4');
   await concatSegments(concatPath, tempPath);
 
-  // ── الخطوة 3: إضافة موسيقى خلفية ────
-  const bgMusic = join(MUSIC_LIB, 'ambient.mp3');
-  if (existsSync(bgMusic)) {
+  // ── 3. موسيقى خلفية ───────────────────
+  // أولوية: music من music-agent → ambient.mp3 محلي → بدون موسيقى
+  const bgMusic = resolveMusicPath(music);
+
+  if (bgMusic && existsSync(bgMusic)) {
     await mixWithMusic(tempPath, bgMusic, outputPath, 0.15);
+    logger.info('[EDIT] Background music mixed');
   } else {
     copyFileSync(tempPath, outputPath);
+    logger.info('[EDIT] No background music — using direct audio');
   }
 
   const result = {
-    episode:    screenplay.episode,
-    title:      screenplay.title,
+    episode:     screenplay.episode,
+    title:       screenplay.title,
     outputPath,
-    duration:   timeline.totalDuration,
-    scenes:     timeline.scenes.length,
+    duration:    timeline.totalDuration,
+    scenes:      timeline.scenes.length,
+    subtitles:   subtitles || null,
     generatedAt: new Date().toISOString(),
   };
 
@@ -84,24 +97,37 @@ export async function run(screenplay, visualManifest, audioManifest) {
   return result;
 }
 
-// ════════════════════════════════════════════
-// بناء الجدول الزمني
-// ════════════════════════════════════════════
-function buildTimeline(screenplay, visualManifest, audioManifest) {
-  const scenes = [];
-  let totalDuration = 0;
+// ══════════════════════════════════════════════════════════
+// اختيار مسار الموسيقى
+// ══════════════════════════════════════════════════════════
+function resolveMusicPath(music) {
+  // من music-agent
+  if (music?.path && existsSync(music.path))       return music.path;
+  if (music?.file && existsSync(music.file))       return music.file;
+  // ambient محلي
+  const ambient = join(MUSIC_LIB, 'ambient.mp3');
+  if (existsSync(ambient))                         return ambient;
+  return null;
+}
 
-  for (const vScene of visualManifest.scenes) {
-    const sceneAudio  = audioManifest.audioFiles.filter(a => a.sceneId === vScene.id);
-    const audioDur    = sceneAudio.reduce((s, a) => s + (a.duration || 3), 0);
-    const sceneDur    = Math.max(vScene.duration || 30, audioDur + 2);
+// ══════════════════════════════════════════════════════════
+// بناء الجدول الزمني
+// ══════════════════════════════════════════════════════════
+function buildTimeline(screenplay, visualManifest, audioManifest) {
+  const scenes       = [];
+  let   totalDuration = 0;
+
+  for (const vScene of (visualManifest?.scenes || [])) {
+    const sceneAudio = (audioManifest?.audioFiles || [])
+      .filter(a => a.sceneId === vScene.id);
+    const audioDur  = sceneAudio.reduce((s, a) => s + (a.duration || 3), 0);
+    const sceneDur  = Math.max(vScene.duration || 30, audioDur + 2);
 
     scenes.push({
       id:        vScene.id,
       imagePath: vScene.imagePath || FALLBACK_IMG,
       duration:  sceneDur,
       audio:     sceneAudio.filter(a => a.file && existsSync(a.file)),
-      music:     vScene.music || '',
     });
 
     totalDuration += sceneDur;
@@ -110,9 +136,9 @@ function buildTimeline(screenplay, visualManifest, audioManifest) {
   return { scenes, totalDuration };
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // بناء مقطع واحد
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function buildSegment(scene, outputPath) {
   return new Promise((resolve, reject) => {
     const img = existsSync(scene.imagePath) ? scene.imagePath : FALLBACK_IMG;
@@ -121,25 +147,21 @@ function buildSegment(scene, outputPath) {
       .input(img)
       .inputOptions(['-loop 1', `-t ${scene.duration}`]);
 
-    // إضافة ملفات الصوت
     if (scene.audio.length > 0) {
       for (const a of scene.audio) cmd = cmd.input(a.file);
     } else {
-      // صمت
       cmd = cmd.input('anullsrc=r=44100:cl=stereo').inputFormat('lavfi');
     }
 
-    // فلاتر الفيديو
     const vf = [
       'scale=1920:1080:force_original_aspect_ratio=decrease',
       'pad=1920:1080:(ow-iw)/2:(oh-ih)/2',
       'setsar=1',
     ].join(',');
 
-    // دمج الصوت إذا متعدد
     let audioFilter = '';
     if (scene.audio.length > 1) {
-      const inputs = scene.audio.map((_, i) => `[${i+1}:a]`).join('');
+      const inputs = scene.audio.map((_, i) => `[${i + 1}:a]`).join('');
       audioFilter  = `${inputs}concat=n=${scene.audio.length}:v=0:a=1[aout]`;
     }
 
@@ -162,15 +184,18 @@ function buildSegment(scene, outputPath) {
 
     cmd
       .output(outputPath)
-      .on('end',   () => { logger.debug(`[EDIT] Segment: ${scene.id}`); resolve(); })
-      .on('error', (err) => { logger.error(`[EDIT] Segment failed: ${scene.id}`, { error: err.message }); reject(err); })
+      .on('end',   resolve)
+      .on('error', (err) => {
+        logger.error(`[EDIT] Segment failed: ${scene.id}`, { error: err.message });
+        reject(err);
+      })
       .run();
   });
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // دمج المقاطع
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function concatSegments(concatPath, outputPath) {
   return new Promise((resolve, reject) => {
     ffmpeg()
@@ -184,9 +209,9 @@ function concatSegments(concatPath, outputPath) {
   });
 }
 
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 // مزج الموسيقى الخلفية
-// ════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function mixWithMusic(videoPath, musicPath, outputPath, musicVolume = 0.15) {
   return new Promise((resolve, reject) => {
     ffmpeg()
