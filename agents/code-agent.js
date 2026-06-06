@@ -189,7 +189,7 @@ function addToProducts(idea, art, worlds) {
     type:         'godot',
     category:     'game',
     status:       'available',
-    templateFile: 'godot-wrapper.html',
+    templateFile: template?.templateFile || 'godot-wrapper.html',
     godotSlug:    idea.id,
     accent:       art?.accent    || '#00ff88',
     accentRgb:    art?.accentRgb || '0,255,136',
@@ -499,6 +499,19 @@ export async function run(idea, story, levels, art, template) {
   // rule-153: تحقق من الحصة قبل البدء
   if (!canAfford('code-agent')) {
     throw new Error('InsufficientQuota: code-agent needs 9 calls');
+  }
+
+  // اقرأ template.json إذا لم يُمرَّر
+  if (!template) {
+    const templatePath = join(__dirname, 'template.json');
+    if (existsSync(templatePath)) {
+      try {
+        template = JSON.parse(readFileSync(templatePath, 'utf8'));
+        logger.info('[CODE] Template loaded from template.json', { file: template.templateFile });
+      } catch {
+        logger.warn('[CODE] Could not read template.json');
+      }
+    }
   }
 
   const soul    = soulContext('code-agent');
