@@ -1,70 +1,125 @@
-import { askGemini } from './_gemini.js';
-import { logger }    from '../logger.js';
+/**
+ * roadmap-agent.js — v1.1
+ *
+ * التغييرات عن v1.0:
+ *  - إضافة caller (rule-087, rule-128)
+ *  - إضافة maxOutputTokens (rule-101)
+ *  - إضافة canAfford (rule-153)
+ *  - إضافة soulContext (rule-056)
+ *  - prompt بالعربية — المشروع عربي
+ *  - [INFO]/[OK]/[ERROR]/[WARN] (rule-099)
+ *
+ * القواعد المطبقة:
+ *  rule-056 : soulContext قبل كل عمل
+ *  rule-087 : askGemini(prompt, temp, options, caller)
+ *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
+ *  rule-101 : maxOutputTokens
+ *  rule-102 : لا JSON.parse
+ *  rule-128 : caller logging
+ *  rule-153 : canAfford قبل البدء
+ */
 
+import { askGemini, canAfford } from './_gemini.js';
+import { soulContext }          from './_soul.js';
+import { readForAgent }         from './library-builder-agent.js';
+import { logger }               from '../logger.js';
+
+// ══════════════════════════════════════════════════════════
+// fallback عند الفشل
+// ══════════════════════════════════════════════════════════
 function fallbackRoadmap(reason) {
   return {
-    weekPriority: 'Improve quality and user retention',
+    weekPriority:   'تحسين الجودة والاحتفاظ بالجمهور',
     tasks: [
-      { task:'Fix reported bugs and improve performance', priority:'high', reason:reason },
-      { task:'Add new engaging content', priority:'medium', reason:reason },
-      { task:'Review analytics for growth opportunities', priority:'low', reason:reason },
+      { task: 'إصلاح الأخطاء المُبلَّغ عنها وتحسين الأداء', priority: 'high',   reason },
+      { task: 'إضافة محتوى جديد وجذاب',                      priority: 'medium', reason },
+      { task: 'مراجعة التحليلات لفرص النمو',                  priority: 'low',    reason },
     ],
-    focusArea: 'quality',
-    revenueGoal: 'grow steadily',
-    recommendation: 'Focus on fixing issues and adding value',
-    createdAt: new Date().toISOString(),
+    focusArea:      'quality',
+    revenueGoal:    'نمو تدريجي',
+    recommendation: 'ركّز على إصلاح المشاكل وإضافة قيمة للجمهور',
+    createdAt:      new Date().toISOString(),
   };
 }
 
-export async function run({ analytics, feedback, idea, code }) {
-  logger.info('Generating roadmap');
+// ══════════════════════════════════════════════════════════
+// الدالة الرئيسية
+// ══════════════════════════════════════════════════════════
+export async function run({ analytics, feedback, idea, code, universe } = {}) {
+  logger.info('[ROADMAP] Generating weekly roadmap');
+
+  // rule-153: تحقق من الحصة
+  if (!canAfford('roadmap')) {
+    logger.warn('[ROADMAP] Insufficient quota — using fallback');
+    return fallbackRoadmap('InsufficientQuota');
+  }
+
+  // rule-056: soulContext
+  const soul    = soulContext('roadmap-agent');
+  const library = readForAgent('roadmap-agent', 6);
+
+  const prompt = `${soul}
+${library}
+
+أنت مدير منتج محترف لمشروع ألعاب ومسلسلات رقمية.
+
+البيانات الحالية:
+- اتجاه الإيرادات: ${analytics?.trend || 'غير معروف'}
+- إجمالي الإيرادات: $${analytics?.totals?.revenueUSD ?? 0}
+- هذا الأسبوع: $${analytics?.thisWeek?.revenueUSD ?? 0}
+- نقاط الضعف: ${feedback?.weaknesses?.join(', ') || 'لا يوجد'}
+- أنواع مفقودة: ${feedback?.missingTypes?.join(', ') || 'لا يوجد'}
+- لعبة جديدة هذا الأسبوع: ${idea?.name?.en || idea?.name?.ar || 'لا يوجد'} (${code?.skipped ? 'تم تخطيها' : 'مضافة'})
+- الكون الحالي: ${universe?.name?.ar || universe?.name?.en || 'غير محدد'}
+- عدد العوالم: ${universe?.worlds?.length || 0}
+- عدد الحلقات: ${analytics?.series?.totalEpisodes || 0}
+
+ضع خطة الأسبوع القادم. أنتج JSON فقط — بدون أي نص خارج JSON:
+{
+  "weekPriority":   "الأولوية الرئيسية هذا الأسبوع",
+  "tasks": [
+    { "task": "المهمة الأولى",  "priority": "high",   "reason": "السبب" },
+    { "task": "المهمة الثانية", "priority": "medium",  "reason": "السبب" },
+    { "task": "المهمة الثالثة", "priority": "low",     "reason": "السبب" }
+  ],
+  "focusArea":      "marketing | content | quality | growth",
+  "revenueGoal":    "هدف الإيرادات الأسبوعي",
+  "recommendation": "توصية واحدة جوهرية"
+}`;
 
   let roadmap;
   try {
-    roadmap = await askGemini(`
-You are a product manager. Plan next week based on:
-- Revenue trend: ${analytics?.trend || 'unknown'}
-- Total revenue: $${analytics?.totals?.revenueUSD ?? 0}
-- This week: $${analytics?.thisWeek?.revenueUSD ?? 0}
-- Weaknesses: ${feedback?.weaknesses?.join(', ') || 'none'}
-- Missing types: ${feedback?.missingTypes?.join(', ') || 'none'}
-- New game this week: ${idea?.name?.en || 'none'} (${code?.skipped ? 'skipped' : 'added'})
-
-Return ONLY valid JSON:
-{
-  "weekPriority": "main priority",
-  "tasks": [
-    { "task": "", "priority": "high", "reason": "" },
-    { "task": "", "priority": "medium", "reason": "" },
-    { "task": "", "priority": "low", "reason": "" }
-  ],
-  "focusArea":      "marketing/content/quality/growth",
-  "revenueGoal":    "weekly goal in USD",
-  "recommendation": "one key recommendation"
-}`, 0.7);
+    roadmap = await askGemini(
+      prompt, 0.6,
+      { maxOutputTokens: 2048, topP: 0.85 },
+      'roadmap-agent'
+    );
   } catch (err) {
-    logger.error('Roadmap generation failed, using fallback', { error: err.message });
+    logger.error('[ROADMAP] Generation failed — using fallback', { error: err.message });
     return fallbackRoadmap(err.message);
   }
 
-  // التحقق من صحة المخرجات
   if (!roadmap || typeof roadmap !== 'object') {
-    logger.warn('Invalid roadmap object from Gemini, using fallback');
+    logger.warn('[ROADMAP] Invalid response — using fallback');
     return fallbackRoadmap('Invalid response');
   }
 
-  // التأكد من وجود الحقول الأساسية
-  if (!roadmap.weekPriority) roadmap.weekPriority = 'Continue improving';
-  if (!Array.isArray(roadmap.tasks) || roadmap.tasks.length === 0) {
+  // تأكيد الحقول الأساسية
+  if (!roadmap.weekPriority) roadmap.weekPriority = 'استمر في التحسين';
+  if (!Array.isArray(roadmap.tasks) || !roadmap.tasks.length) {
     roadmap.tasks = [
-      { task:'Review performance metrics', priority:'high', reason:'Ensure stability' },
-      { task:'Plan next features', priority:'medium', reason:'Keep momentum' },
-      { task:'Engage with users', priority:'low', reason:'Build community' },
+      { task: 'مراجعة مقاييس الأداء',   priority: 'high',   reason: 'ضمان الاستقرار' },
+      { task: 'التخطيط للميزات القادمة', priority: 'medium', reason: 'الحفاظ على الزخم' },
+      { task: 'التفاعل مع الجمهور',      priority: 'low',    reason: 'بناء المجتمع' },
     ];
   }
 
   roadmap.createdAt = new Date().toISOString();
 
-  logger.info('Roadmap created', { focus: roadmap.focusArea, goal: roadmap.revenueGoal });
+  logger.info('[OK] Roadmap created', {
+    focus: roadmap.focusArea,
+    goal:  roadmap.revenueGoal,
+  });
+
   return roadmap;
 }
