@@ -2,8 +2,8 @@ name: run-all-agents
 
 on:
   schedule:
-    - cron: '0 8  * * *'   # 8 صباحاً UTC — التشغيل الرئيسي
-    - cron: '0 14 * * *'   # 2 ظهراً UTC  — التشغيل الثاني
+    - cron: '0 5  * * *'   # 8 صباحاً UTC — التشغيل الرئيسي
+    - cron: '0 7 * * *'   # 2 ظهراً UTC  — التشغيل الثاني
   workflow_dispatch:
     inputs:
       mode:
