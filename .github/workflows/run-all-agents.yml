@@ -58,7 +58,8 @@ jobs:
             "assets/music",
             "assets/fonts",
             "episodes",
-            "series"
+            "series",
+            "scripts"
           )
           foreach ($d in $dirs) {
             New-Item -ItemType Directory -Force -Path $d | Out-Null
@@ -133,6 +134,21 @@ jobs:
           }
           Write-Host "[INFO] TOTAL left today: $totalLeft/40"
 
+          Write-Host "[INFO] === progress ==="
+          if (Test-Path "progress.json") {
+            $pg  = Get-Content "progress.json" | ConvertFrom-Json
+            $cur = if ($pg.current) {
+              $ep = if ($null -ne $pg.current.episode) { $pg.current.episode } else { $pg.current.id }
+              "$($pg.current.type):$ep"
+            } else { "none" }
+            Write-Host "[OK] Current:       $cur"
+            Write-Host "[OK] Next episode:  $($pg.series.nextEpisode)"
+            Write-Host "[OK] Episodes done: $($pg.series.totalEpisodes)"
+            Write-Host "[OK] Games done:    $($pg.games.done.Count)"
+          } else {
+            Write-Host "[INFO] No progress.json yet — first run"
+          }
+
           Write-Host "[INFO] === universe ==="
           if (Test-Path "universe.json") {
             $u = Get-Content "universe.json" | ConvertFrom-Json
@@ -177,7 +193,6 @@ jobs:
 
       # ══════════════════════════════════════════════════════
       # 5 — رفع artifact الحلقة
-      #   يعمل على: كل تشغيل scheduled + manual episode
       # ══════════════════════════════════════════════════════
       - name: Upload episode artifact
         uses: actions/upload-artifact@v4
@@ -212,6 +227,7 @@ jobs:
           git add    series.json          2>$null
           git add    products.json        2>$null
           git add    public/products.json 2>$null
+          if (Test-Path "progress.json")   { git add progress.json }
           if (Test-Path "public/games")    { git add public/games/ }
           if (Test-Path "universe.json")   { git add universe.json }
           if (Test-Path "godot-projects")  { git add godot-projects/ }
