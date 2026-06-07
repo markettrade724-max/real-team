@@ -165,6 +165,24 @@ export function canAfford(task) {
   return true;
 }
 
+/**
+ * يختار مفتاحاً يملك حصة كافية للمهمة كاملة — rule-176
+ */
+export function selectKeyForTask(needed) {
+  for (const k of KEYS) {
+    if (getQuotaForKey(k.budgetPath) >= needed) return k;
+  }
+  return null;
+}
+
+/**
+ * يحرر المفتاح بعد اكتمال مهمة — rule-177
+ * في v2.3: المفتاح يُختار ديناميكياً لكل استدعاء — لا حالة ثابتة للإعادة
+ */
+export function resetSessionKey() {
+  logger.info('[GEMINI] Session key released — next task will pick fresh key');
+}
+
 export function getBudgetStatus() {
   const keys = KEYS.map(k => {
     const b = loadBudget(k.budgetPath);
