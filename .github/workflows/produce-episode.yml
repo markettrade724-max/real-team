@@ -21,7 +21,7 @@ name: Produce Episode
 
 on:
   schedule:
-    - cron: '0 18 */3 * *'   # كل 3 أيام الساعة 18:00 UTC
+    - cron: '0 3 */3 * *'   # كل 3 أيام الساعة 18:00 UTC
   workflow_dispatch:
     inputs:
       episode_number:
