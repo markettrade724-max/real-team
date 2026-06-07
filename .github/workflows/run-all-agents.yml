@@ -2,8 +2,8 @@ name: run-all-agents
 
 on:
   schedule:
-    - cron: '0 5  * * *'   # 8 صباحاً UTC — التشغيل الرئيسي
-    - cron: '0 7 * * *'   # 2 ظهراً UTC  — التشغيل الثاني
+    - cron: '0 5 * * *'   # 5 صباحاً UTC — التشغيل الرئيسي
+    - cron: '0 7 * * *'   # 7 صباحاً UTC — التشغيل الثاني
   workflow_dispatch:
     inputs:
       mode:
@@ -129,10 +129,10 @@ jobs:
               Write-Host "[INFO] ${label}: $($b.total)/$($b.limit) used — $left left"
             } else {
               Write-Host "[INFO] ${label}: not initialized yet"
-              $totalLeft += 20
+              $totalLeft += 250   # Free Tier: 250 RPD per project
             }
           }
-          Write-Host "[INFO] TOTAL left today: $totalLeft/40"
+          Write-Host "[INFO] TOTAL left today: $totalLeft/500"
 
           Write-Host "[INFO] === progress ==="
           if (Test-Path "progress.json") {
