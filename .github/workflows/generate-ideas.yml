@@ -2,7 +2,7 @@ name: generate-ideas
 
 on:
   schedule:
-    - cron: '0 9 * * 1'  # كل إثنين الساعة 9 صباحاً
+    - cron: '0 2 * * 1'  # كل إثنين الساعة 9 صباحاً
   workflow_dispatch:       # تشغيل يدوي
 
 jobs:
