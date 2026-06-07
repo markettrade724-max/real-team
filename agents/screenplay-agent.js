@@ -1,72 +1,92 @@
 /**
- * screenplay-agent.js — v2.0
+ * screenplay-agent.js — v2.1
+ *
+ * التغييرات عن v2.0:
+ *  - options (3rd param): يقبل seriesContext أو { fromStep, existingData }
+ *  - حفظ فوري لـ backbone و scenes بعد كل خطوة — rule-188
+ *  - fromStep: يستأنف من خطوة محددة دون إعادة السابقة
+ *  - canAfford يحسب تكلفة الخطوات المتبقية فقط
  *
  * القواعد المطبقة:
  *  rule-056 : soulContext قبل كل عمل
  *  rule-087 : askGemini(prompt, temp, options, caller)
  *  rule-089 : كل الردود JSON
  *  rule-097 : لا تغيير للنموذج
- *  rule-098 : askGemini فقط — لا fetch مباشر
+ *  rule-098 : askGemini فقط
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
  *  rule-100 : soulContext يُرجع string
  *  rule-101 : maxOutputTokens لا maxTokens
- *  rule-102 : لا JSON.parse — _gemini.js يُرجع كائن
- *  rule-128 : caller logging للميزانية
+ *  rule-102 : لا JSON.parse
+ *  rule-128 : caller logging
  *  rule-131 : يقرأ audience-insights.json قبل الكتابة
- *
- *  rule-139 : 3 طلبات منفصلة: backbone → scenes → dialogue
+ *  rule-139 : 3 طلبات: backbone → scenes → dialogue
  *  rule-140 : maxOutputTokens: backbone=4096 / scenes=32768 / dialogue=32768
  *  rule-141 : temperature: backbone=0.6 / scenes=0.5 / dialogue=0.7
- *  rule-142 : library في systemPrompt منفصل عن prompt الرئيسي
+ *  rule-142 : library في prompt منفصل عن soul
+ *  rule-188 : كل خطوة تُحفظ فور اكتمالها
  */
 
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { askGemini, canAfford } from './_gemini.js';
+import { askGemini, canAfford, getRemainingQuota } from './_gemini.js';
 import { soulContext }  from './_soul.js';
 import { readForAgent } from './library-builder-agent.js';
 import { logger }       from '../logger.js';
 
-const __dirname   = dirname(fileURLToPath(import.meta.url));
-const RESULTS_DIR = join(__dirname, '..', 'agent-results');
+const __dirname     = dirname(fileURLToPath(import.meta.url));
+const RESULTS_DIR   = join(__dirname, '..', 'agent-results');
 const INSIGHTS_PATH = join(RESULTS_DIR, 'audience-insights.json');
 
-// ══════════════════════════════════════════════════════
-// أدوات مساعدة
-// ══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// ثوابت الخطوات
+// ═══════════════════════════════════════════════════════
+const STEPS       = ['backbone', 'scenes', 'dialogue'];
+const STEP_COSTS  = { backbone: 1, scenes: 1, dialogue: 1 };
 
+// ═══════════════════════════════════════════════════════
+// أدوات مساعدة
+// ═══════════════════════════════════════════════════════
 function ensureResultsDir() {
   if (!existsSync(RESULTS_DIR)) mkdirSync(RESULTS_DIR, { recursive: true });
 }
 
+function stepFile(episodeNumber, step) {
+  return join(RESULTS_DIR, `screenplay-${step}-ep${episodeNumber}.json`);
+}
+
+function saveStep(episodeNumber, step, data) {
+  writeFileSync(stepFile(episodeNumber, step), JSON.stringify(data, null, 2), 'utf8');
+  logger.info(`[SCREENPLAY] Step saved to disk: ${step}-ep${episodeNumber}`);
+}
+
+function loadStep(episodeNumber, step) {
+  const p = stepFile(episodeNumber, step);
+  if (!existsSync(p)) return null;
+  try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; }
+}
+
 function loadInsights() {
   if (!existsSync(INSIGHTS_PATH)) return null;
-  try { return JSON.parse(readFileSync(INSIGHTS_PATH, 'utf8')); }
-  catch { return null; }
+  try { return JSON.parse(readFileSync(INSIGHTS_PATH, 'utf8')); } catch { return null; }
 }
 
 function buildAudienceGuide(insights) {
   if (!insights?.recommendations?.forStoryAgent?.length) return '';
-  return insights.recommendations.forStoryAgent
-    .map(r => `- ${r}`).join('\n');
+  return insights.recommendations.forStoryAgent.map(r => `- ${r}`).join('\n');
 }
 
 function buildPreviousContext(seriesContext, episodeNumber) {
   if (!seriesContext?.previousEpisodes?.length) {
     return 'هذه الحلقة الأولى — ابدأ بإيقاع يبني العالم ويُعرّف البطل.';
   }
-  return seriesContext.previousEpisodes
-    .slice(-3)
-    .map(e => `- الحلقة ${e.number}: ${e.summary}`)
-    .join('\n');
+  return seriesContext.previousEpisodes.slice(-3)
+    .map(e => `- الحلقة ${e.number}: ${e.summary}`).join('\n');
 }
 
-// ── بناء الشخصيات من universe ──────────────────────
 function buildCharacters(universe) {
   const chars = [];
 
-  // البطل
   const proto = universe.soul?.protagonist;
   chars.push({
     name:        proto?.name        || 'البطل',
@@ -77,20 +97,18 @@ function buildCharacters(universe) {
     voice:       'ar-SA-HamedNeural',
   });
 
-  // الأعداء — حتى 2
   const enemies = universe.worlds?.[0]?.enemies || [];
   for (const enemy of enemies.slice(0, 2)) {
     chars.push({
-      name:        enemy.name?.ar   || enemy.name?.en || 'العدو',
+      name:        enemy.name?.ar || enemy.name?.en || 'العدو',
       role:        'antagonist',
       description: enemy.description || enemy.behavior || 'عدو غامض',
-      arc:         enemy.arc         || 'قوة لا ترحم',
-      flaw:        enemy.flaw        || 'غرور مدمر',
+      arc:         enemy.arc  || 'قوة لا ترحم',
+      flaw:        enemy.flaw || 'غرور مدمر',
       voice:       'ar-SA-ZariyahNeural',
     });
   }
 
-  // شخصية داعمة من soul إذا وجدت
   if (universe.soul?.companion) {
     chars.push({
       name:        universe.soul.companion.name || 'الرفيق',
@@ -114,10 +132,9 @@ function buildCharacters(universe) {
   return chars;
 }
 
-// ══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // الطلب 1 — العمود الفقري
-// ══════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════════════════
 async function generateBackbone(universe, episodeNumber, characters, prevContext, audienceGuide, soul) {
   logger.info('[SCREENPLAY] Step 1/3 — Backbone');
 
@@ -148,66 +165,40 @@ ${characters.map(c => `- ${c.name} (${c.role}): ${c.description} | arc: ${c.arc}
   "theme":            "الموضوع الجوهري",
   "emotionalJourney": "قوس العاطفة من البداية للنهاية",
   "acts": [
-    {
-      "act":          1,
-      "name":         "الإعداد",
-      "summary":      "ملخص الفصل في 3 جمل",
-      "emotionalArc": "الحالة العاطفية السائدة",
-      "sceneCount":   3
-    },
-    {
-      "act":          2,
-      "name":         "المواجهة",
-      "summary":      "ملخص الفصل في 3 جمل",
-      "emotionalArc": "الحالة العاطفية السائدة",
-      "sceneCount":   5
-    },
-    {
-      "act":          3,
-      "name":         "الحل",
-      "summary":      "ملخص الفصل في 3 جمل",
-      "emotionalArc": "الحالة العاطفية السائدة",
-      "sceneCount":   3
-    }
+    { "act": 1, "name": "الإعداد",   "summary": "3 جمل", "emotionalArc": "المزاج", "sceneCount": 3 },
+    { "act": 2, "name": "المواجهة",  "summary": "3 جمل", "emotionalArc": "المزاج", "sceneCount": 5 },
+    { "act": 3, "name": "الحل",      "summary": "3 جمل", "emotionalArc": "المزاج", "sceneCount": 3 }
   ],
-  "turningPoints": [
-    "نقطة التحول الأولى — نهاية الفصل الأول",
-    "نقطة اللا عودة  — منتصف الفصل الثاني",
-    "الذروة           — بداية الفصل الثالث"
-  ],
-  "cliffhanger":     "وصف نهاية الحلقة المشوّقة بدقة",
+  "turningPoints":   ["نقطة التحول الأولى", "نقطة اللا عودة", "الذروة"],
+  "cliffhanger":     "وصف نهاية الحلقة المشوّقة",
   "nextEpisodeHint": "تلميح غامض للحلقة القادمة"
 }`;
 
   const result = await askGemini(
     `${soul}\n\n${prompt}`,
-    0.6,
-    { maxOutputTokens: 4096, topP: 0.85 },
-    'screenplay-agent'
+    0.6, { maxOutputTokens: 4096, topP: 0.85 }, 'screenplay-agent'
   );
 
   if (!result?.acts?.length || result.acts.length < 3) {
-    throw new Error('[SCREENPLAY] Backbone invalid — missing acts');
+    throw new Error('Backbone invalid — missing acts');
   }
 
   logger.info('[OK] Backbone done', { title: result.title, theme: result.theme });
   return result;
 }
 
-// ══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // الطلب 2 — المشاهد
-// ══════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════════════════
 async function generateScenes(universe, backbone, characters, soul, library) {
   logger.info('[SCREENPLAY] Step 2/3 — Scenes');
 
-  // بناء قائمة المشاهد المطلوبة
   const sceneList = backbone.acts.map(act => ({
-    act:        act.act,
-    name:       act.name,
-    summary:    act.summary,
-    emotional:  act.emotionalArc,
-    sceneCount: act.sceneCount || 3,
+    act:       act.act,
+    name:      act.name,
+    summary:   act.summary,
+    emotional: act.emotionalArc,
+    count:     act.sceneCount || 3,
   }));
 
   const prompt = `
@@ -223,39 +214,23 @@ ${backbone.turningPoints.map((t, i) => `${i + 1}. ${t}`).join('\n')}
 الشخصيات: ${characters.map(c => c.name).join(' / ')}
 
 هيكل الفصول:
-${sceneList.map(a =>
-  `الفصل ${a.act} — ${a.name} (${a.sceneCount} مشاهد):\n  ${a.summary}\n  المزاج: ${a.emotional}`
-).join('\n\n')}
+${sceneList.map(a => `الفصل ${a.act} — ${a.name} (${a.count} مشاهد):\n  ${a.summary}\n  المزاج: ${a.emotional}`).join('\n\n')}
 
 اكتب تفاصيل كل مشهد.
 
-قواعد إلزامية لكل مشهد:
-- هدف درامي واحد واضح
-- camera وصف سينمائي حقيقي (زاوية + حركة)
-- lighting يخدم المزاج العاطفي
-- duration بين 45 و 120 ثانية
-- sfx صوت بيئي واقعي
-- music وصف الإيقاع والأداة الموسيقية
+قواعد كل مشهد: هدف درامي واحد / camera سينمائية / lighting عاطفية / duration 45-120s / sfx / music.
 
-أنتج JSON فقط — بدون أي نص خارج الـ JSON:
+أنتج JSON فقط:
 {
   "acts": [
     {
-      "act": 1,
-      "name": "الإعداد",
+      "act": 1, "name": "الإعداد",
       "scenes": [
         {
-          "id":        "S01",
-          "location":  "اسم المكان التفصيلي",
-          "time":      "نهار / ليل / فجر / غروب / داخلي / خارجي",
-          "mood":      "التوتر العاطفي للمشهد",
-          "goal":      "الهدف الدرامي لهذا المشهد",
-          "duration":  60,
-          "camera":    "وصف حركة الكاميرا والتأطير",
-          "lighting":  "وصف الإضاءة",
-          "action":    "وصف الحركة والأفعال بالتفصيل",
-          "sfx":       "المؤثرات الصوتية البيئية",
-          "music":     "وصف الموسيقى: الإيقاع والأداة والمزاج"
+          "id": "S01", "location": "المكان", "time": "نهار/ليل/داخلي/خارجي",
+          "mood": "المزاج", "goal": "الهدف الدرامي", "duration": 60,
+          "camera": "وصف الكاميرا", "lighting": "وصف الإضاءة",
+          "action": "الحركة والأفعال", "sfx": "المؤثرات الصوتية", "music": "وصف الموسيقى"
         }
       ]
     }
@@ -264,32 +239,25 @@ ${sceneList.map(a =>
 
   const result = await askGemini(
     `${soul}\n\n${prompt}`,
-    0.5,
-    { maxOutputTokens: 32768, topP: 0.85 },
-    'screenplay-agent'
+    0.5, { maxOutputTokens: 32768, topP: 0.85 }, 'screenplay-agent'
   );
 
-  if (!result?.acts?.length) {
-    throw new Error('[SCREENPLAY] Scenes invalid — missing acts');
-  }
+  if (!result?.acts?.length) throw new Error('Scenes invalid — missing acts');
 
-  // حساب عدد المشاهد
   const totalScenes = result.acts.flatMap(a => a.scenes || []).length;
   logger.info('[OK] Scenes done', { totalScenes });
   return result;
 }
 
-// ══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // الطلب 3 — الحوار
-// ══════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════════════════
 async function generateDialogue(scenes, characters, backbone, soul) {
   logger.info('[SCREENPLAY] Step 3/3 — Dialogue');
 
-  // قائمة المشاهد للحوار
   const sceneIds = scenes.acts
     .flatMap(a => a.scenes || [])
-    .map(s => `${s.id}: ${s.goal} | المكان: ${s.location} | المزاج: ${s.mood}`)
+    .map(s => `${s.id}: ${s.goal} | ${s.location} | ${s.mood}`)
     .join('\n');
 
   const charProfiles = characters
@@ -306,25 +274,21 @@ async function generateDialogue(scenes, characters, backbone, soul) {
 الشخصيات:
 ${charProfiles}
 
-المشاهد المطلوب كتابة حوارها:
+المشاهد:
 ${sceneIds}
 
-قواعد الحوار الإلزامية:
-- كل جملة تكشف شيئاً عن الشخصية أو تدفع الحبكة
-- لا كليشيهات — لا "أنت لا تفهم" / "سأنتقم"
-- كل شخصية لها صوت فريد لا يشبه الآخر
-- الجمل قصيرة في لحظات التوتر — طويلة في لحظات التأمل
-- direction: توجيه تمثيلي دقيق (نبرة + إيقاع + جسد)
+قواعد الحوار: جمل تكشف الشخصية / لا كليشيهات / صوت فريد لكل شخصية /
+جمل قصيرة في التوتر / direction تمثيلي دقيق.
 
-أنتج JSON فقط — بدون أي نص خارج الـ JSON:
+أنتج JSON فقط:
 {
   "dialogues": {
     "S01": [
       {
         "character":  "اسم الشخصية",
         "line":       "الحوار",
-        "emotion":    "الحالة العاطفية الداخلية",
-        "direction":  "توجيه التمثيل: الصوت والجسد والنظرة"
+        "emotion":    "الحالة العاطفية",
+        "direction":  "توجيه التمثيل"
       }
     ]
   }
@@ -332,40 +296,31 @@ ${sceneIds}
 
   const result = await askGemini(
     `${soul}\n\n${prompt}`,
-    0.7,
-    { maxOutputTokens: 32768, topP: 0.92 },
-    'screenplay-agent'
+    0.7, { maxOutputTokens: 32768, topP: 0.92 }, 'screenplay-agent'
   );
 
   if (!result?.dialogues || !Object.keys(result.dialogues).length) {
-    throw new Error('[SCREENPLAY] Dialogue invalid — empty dialogues');
+    throw new Error('Dialogue invalid — empty dialogues');
   }
 
-  const totalLines = Object.values(result.dialogues)
-    .reduce((s, lines) => s + lines.length, 0);
+  const totalLines = Object.values(result.dialogues).reduce((s, l) => s + l.length, 0);
   logger.info('[OK] Dialogue done', { totalLines });
   return result;
 }
 
-// ══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // دمج النتائج
-// ══════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════════════════
 function mergeScreenplay(backbone, scenes, dialogue, characters, universe, episodeNumber) {
-  const dialogues = dialogue.dialogues || {};
-
-  // دمج الحوار في المشاهد
-  const mergedActs = scenes.acts.map(act => ({
+  const dialogues    = dialogue.dialogues || {};
+  const mergedActs   = scenes.acts.map(act => ({
     ...act,
     scenes: (act.scenes || []).map(scene => ({
       ...scene,
       dialogue: dialogues[scene.id] || [],
     })),
   }));
-
-  // حساب المدة الكاملة
-  const totalSeconds = mergedActs
-    .flatMap(a => a.scenes)
+  const totalSeconds = mergedActs.flatMap(a => a.scenes)
     .reduce((s, sc) => s + (sc.duration || 60), 0);
 
   return {
@@ -385,25 +340,45 @@ function mergeScreenplay(backbone, scenes, dialogue, characters, universe, episo
   };
 }
 
-// ══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // الدالة الرئيسية
-// ══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+/**
+ * @param {object} universe
+ * @param {number} episodeNumber
+ * @param {object|null} options
+ *   - إذا كان { previousEpisodes } → seriesContext للحلقات السابقة
+ *   - إذا كان { fromStep, existingData } → استئناف من خطوة محددة
+ */
+export async function run(universe, episodeNumber = 1, options = null) {
+  // تحديد نوع options
+  const seriesContext = options?.previousEpisodes ? options : null;
+  const fromStep      = options?.fromStep || 'backbone';
+  const startIndex    = STEPS.indexOf(fromStep);
 
-export async function run(universe, episodeNumber = 1, seriesContext = null) {
-  logger.info('[SCREENPLAY] Starting v2.0', {
-    universe:      universe.id,
-    episode:       episodeNumber,
-    hasSeries:     !!seriesContext,
+  if (startIndex === -1) {
+    throw new Error(`Invalid fromStep: ${fromStep}. Must be one of: ${STEPS.join(', ')}`);
+  }
+
+  // تكلفة الخطوات المتبقية فقط
+  const remainingSteps = STEPS.slice(startIndex);
+  const neededCalls    = remainingSteps.reduce((s, step) => s + STEP_COSTS[step], 0);
+
+  logger.info('[SCREENPLAY] Starting v2.1', {
+    universe:   universe.id,
+    episode:    episodeNumber,
+    fromStep,
+    neededCalls,
+    quotaLeft:  getRemainingQuota(),
   });
 
   ensureResultsDir();
 
-  // rule-153: تحقق من الحصة قبل البدء
-  if (!canAfford('screenplay')) {
-    throw new Error('InsufficientQuota: screenplay needs 3 calls');
+  // rule-153: تحقق من الحصة للخطوات المتبقية فقط
+  if (getRemainingQuota() < neededCalls) {
+    throw new Error(`InsufficientQuota: need ${neededCalls} calls for steps [${remainingSteps.join(',')}]`);
   }
 
-  // ── تحضير السياق ───────────────────────────
   const soul          = soulContext('screenplay-agent');
   const library       = readForAgent('screenplay-agent', 8);
   const insights      = loadInsights();
@@ -411,32 +386,44 @@ export async function run(universe, episodeNumber = 1, seriesContext = null) {
   const prevContext   = buildPreviousContext(seriesContext, episodeNumber);
   const characters    = buildCharacters(universe);
 
-  if (audienceGuide) {
-    logger.info('[INFO] Audience insights loaded');
-  }
+  if (audienceGuide) logger.info('[INFO] Audience insights loaded');
 
-  // ── الطلب 1: العمود الفقري ──────────────────
+  // ── الخطوة 1: العمود الفقري ─────────────────
   let backbone;
-  try {
-    backbone = await generateBackbone(
-      universe, episodeNumber, characters,
-      prevContext, audienceGuide, soul
-    );
-  } catch (err) {
-    logger.error('[ERROR] Backbone failed', { error: err.message });
-    throw err;
+  if (fromStep === 'backbone') {
+    try {
+      backbone = await generateBackbone(
+        universe, episodeNumber, characters, prevContext, audienceGuide, soul
+      );
+      saveStep(episodeNumber, 'backbone', backbone); // rule-188: حفظ فوري
+    } catch (err) {
+      logger.error('[ERROR] Backbone failed', { error: err.message });
+      throw err;
+    }
+  } else {
+    // استئناف — حمّل من disk
+    backbone = loadStep(episodeNumber, 'backbone');
+    if (!backbone) throw new Error(`Backbone not found on disk for ep${episodeNumber} — cannot start from '${fromStep}'`);
+    logger.info('[SCREENPLAY] Backbone loaded from disk', { title: backbone.title });
   }
 
-  // ── الطلب 2: المشاهد ────────────────────────
+  // ── الخطوة 2: المشاهد ───────────────────────
   let scenesResult;
-  try {
-    scenesResult = await generateScenes(universe, backbone, characters, soul, library);
-  } catch (err) {
-    logger.error('[ERROR] Scenes failed', { error: err.message });
-    throw err;
+  if (['backbone', 'scenes'].includes(fromStep)) {
+    try {
+      scenesResult = await generateScenes(universe, backbone, characters, soul, library);
+      saveStep(episodeNumber, 'scenes', scenesResult); // rule-188: حفظ فوري
+    } catch (err) {
+      logger.error('[ERROR] Scenes failed', { error: err.message });
+      throw err;
+    }
+  } else {
+    scenesResult = loadStep(episodeNumber, 'scenes');
+    if (!scenesResult) throw new Error(`Scenes not found on disk for ep${episodeNumber} — cannot start from 'dialogue'`);
+    logger.info('[SCREENPLAY] Scenes loaded from disk', { acts: scenesResult.acts?.length });
   }
 
-  // ── الطلب 3: الحوار ─────────────────────────
+  // ── الخطوة 3: الحوار ────────────────────────
   let dialogueResult;
   try {
     dialogueResult = await generateDialogue(scenesResult, characters, backbone, soul);
@@ -445,28 +432,26 @@ export async function run(universe, episodeNumber = 1, seriesContext = null) {
     throw err;
   }
 
-  // ── دمج النتائج ─────────────────────────────
+  // ── دمج + حفظ ───────────────────────────────
   const screenplay = mergeScreenplay(
-    backbone, scenesResult, dialogueResult,
-    characters, universe, episodeNumber
+    backbone, scenesResult, dialogueResult, characters, universe, episodeNumber
   );
 
-  // ── حفظ الملف ───────────────────────────────
   const outputPath = join(RESULTS_DIR, `screenplay-ep${episodeNumber}.json`);
   writeFileSync(outputPath, JSON.stringify(screenplay, null, 2), 'utf8');
 
   const totalScenes = screenplay.acts.flatMap(a => a.scenes).length;
-  const totalLines  = screenplay.acts
-    .flatMap(a => a.scenes)
+  const totalLines  = screenplay.acts.flatMap(a => a.scenes)
     .reduce((s, sc) => s + (sc.dialogue?.length || 0), 0);
 
-  logger.info('[OK] Screenplay v2.0 done', {
-    episode:  episodeNumber,
-    title:    screenplay.title,
-    scenes:   totalScenes,
-    lines:    totalLines,
-    duration: `${Math.round(screenplay.totalDuration / 60)}min`,
-    geminiCalls: 3,
+  logger.info('[OK] Screenplay v2.1 done', {
+    episode:    episodeNumber,
+    title:      screenplay.title,
+    scenes:     totalScenes,
+    lines:      totalLines,
+    duration:   `${Math.round(screenplay.totalDuration / 60)}min`,
+    fromStep,
+    callsUsed:  neededCalls,
   });
 
   return screenplay;
