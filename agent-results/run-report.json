@@ -1,9 +1,9 @@
 {
-  "runId": "2026-06-08T1109",
-  "mode": "birth",
+  "runId": "2026-06-08T1203",
+  "mode": "production",
   "success": false,
-  "timestamp": "2026-06-08T11:09:50.262Z",
-  "totalDuration": "7ms",
+  "timestamp": "2026-06-08T12:03:42.502Z",
+  "totalDuration": "16ms",
   "budget": {
     "total": 40,
     "limit": 40,
@@ -39,7 +39,7 @@
       "episode": 1,
       "id": null,
       "startedAt": "2026-06-08T09:18:09.951Z",
-      "updatedAt": "2026-06-08T09:18:09.953Z",
+      "updatedAt": "2026-06-08T12:03:42.496Z",
       "failReason": "InsufficientQuota: series needs 3 calls for screenplay"
     },
     "nextEpisode": 1,
@@ -47,10 +47,10 @@
     "gamesDone": 0
   },
   "agents": {
-    "Idea Agent": {
+    "episode": {
       "success": false,
-      "duration": "0ms",
-      "error": "InsufficientQuota"
+      "duration": "—",
+      "error": "InsufficientQuota: series needs 3 calls for screenplay"
     }
   },
   "summary": {
