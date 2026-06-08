@@ -3,7 +3,6 @@ name: run-all-agents
 on:
   schedule:
     - cron: '0 5 * * *'   # 5 صباحاً UTC — التشغيل الرئيسي
-    - cron: '0 7 * * *'   # 7 صباحاً UTC — التشغيل الثاني
   workflow_dispatch:
     inputs:
       mode:
