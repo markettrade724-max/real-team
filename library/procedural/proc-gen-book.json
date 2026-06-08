@@ -1,0 +1,163 @@
+{
+  "title": "Procedural Generation in Game Design",
+  "author": "Shaker et al.",
+  "category": "procedural",
+  "summary": "Procedural Generation in Game Design by Shaker et al. explores the diverse techniques and applications of procedural content generation (PCG) within the realm of video games. It serves as a comprehensive guide for designers and developers looking to leverage algorithms to create vast, varied, and dynamic game worlds, challenges, and narratives.",
+  "coreRules": [
+    {
+      "id": 1,
+      "rule": "Perlin Noise / Simplex Noise",
+      "essence": "Generates natural-looking, continuous random values across a grid, ideal for organic textures and heightmaps.",
+      "example": "Creating realistic rolling hills, cloud patterns, or varying terrain roughness in a game world."
+    },
+    {
+      "id": 2,
+      "rule": "Cellular Automata",
+      "essence": "A grid of cells evolves based on simple rules applied to its neighbors, leading to complex organic patterns.",
+      "example": "Generating cave systems, evolving biomes, or creating intricate dungeon layouts."
+    },
+    {
+      "id": 3,
+      "rule": "L-Systems (Lindenmayer Systems)",
+      "essence": "Uses string rewriting rules to generate fractal-like structures, often used for plants and complex geometries.",
+      "example": "Procedurally generating diverse trees, bushes, or intricate alien flora."
+    },
+    {
+      "id": 4,
+      "rule": "Dungeon Generation Algorithms (e.g., BSP Trees, Room-Corridor)",
+      "essence": "Methods for creating navigable indoor spaces by dividing areas or connecting rooms with passages.",
+      "example": "Generating unique dungeon layouts, mazes, or building interiors for exploration."
+    },
+    {
+      "id": 5,
+      "rule": "Wave Function Collapse (WFC)",
+      "essence": "Generates content by observing local constraints and propagating information, ensuring consistency and variety.",
+      "example": "Creating seamless tile-based environments, coherent building facades, or complex puzzle layouts."
+    },
+    {
+      "id": 6,
+      "rule": "Markov Chains",
+      "essence": "Generates sequences of elements based on the probability of one element following another.",
+      "example": "Generating realistic-sounding text, music compositions, or sequential quest lines."
+    },
+    {
+      "id": 7,
+      "rule": "Genetic Algorithms",
+      "essence": "Mimics natural selection to evolve solutions to design problems by iteratively improving a population of candidates.",
+      "example": "Optimizing level layouts, balancing game mechanics, or designing unique creature behaviors."
+    },
+    {
+      "id": 8,
+      "rule": "Voronoi Diagrams",
+      "essence": "Partitions a plane into regions based on proximity to a set of seed points, creating distinct areas.",
+      "example": "Defining biomes, territories for factions, or generating cell-like structures for abstract art."
+    },
+    {
+      "id": 9,
+      "rule": "Fractal Generation (e.g., Mandelbrot, Julia sets)",
+      "essence": "Generates complex, self-similar patterns at different scales, often used for abstract art or landscapes.",
+      "example": "Creating infinitely detailed background visuals, abstract world maps, or unique skybox textures."
+    },
+    {
+      "id": 10,
+      "rule": "Grammars (e.g., Shape Grammars, Context-Free Grammars)",
+      "essence": "Uses a set of rules to generate complex structures by iteratively applying transformations.",
+      "example": "Designing diverse architectural styles for buildings, generating city layouts, or creating complex UI elements."
+    },
+    {
+      "id": 11,
+      "rule": "Noise-based Terrain Generation (e.g., Diamond-Square, Midpoint Displacement)",
+      "essence": "Specific algorithms for creating heightmaps by iteratively adding detail based on noise functions.",
+      "example": "Generating vast and varied outdoor landscapes, mountains, and valleys for open-world games."
+    },
+    {
+      "id": 12,
+      "rule": "Graph-based Generation",
+      "essence": "Represents game elements as nodes and relationships as edges to generate interconnected systems.",
+      "example": "Creating complex quest networks, interconnected level designs, or social relationships between NPCs."
+    },
+    {
+      "id": 13,
+      "rule": "Agent-based Generation",
+      "essence": "Uses multiple autonomous agents interacting with an environment to collectively build or modify content.",
+      "example": "Simulating city growth, generating organic path networks, or creating dynamic crowd behaviors."
+    },
+    {
+      "id": 14,
+      "rule": "Constraint Satisfaction Problems (CSPs)",
+      "essence": "Generates content by finding values for variables that satisfy a set of given constraints.",
+      "example": "Designing puzzles with specific solutions, generating balanced item sets, or creating valid level layouts."
+    },
+    {
+      "id": 15,
+      "rule": "Tiling Algorithms",
+      "essence": "Arranges pre-designed tiles or modules to form larger, coherent structures or maps.",
+      "example": "Constructing diverse interior spaces, modular buildings, or expansive 2D game maps."
+    },
+    {
+      "id": 16,
+      "rule": "Procedural Story Generation",
+      "essence": "Algorithms that create dynamic narratives, quests, and character backstories based on plot structures and archetypes.",
+      "example": "Generating unique side quests, character motivations, or overarching plotlines for RPGs."
+    },
+    {
+      "id": 17,
+      "rule": "Sound/Music Generation",
+      "essence": "Algorithms for creating dynamic and adaptive audio content, including sound effects and musical scores.",
+      "example": "Generating ambient background music that adapts to gameplay, or unique sound effects for items."
+    },
+    {
+      "id": 18,
+      "rule": "Item/Loot Generation",
+      "essence": "Creates varied in-game items with different properties, stats, and visual characteristics.",
+      "example": "Generating millions of unique weapons, armor pieces, or magical artifacts in a roguelike or RPG."
+    },
+    {
+      "id": 19,
+      "rule": "Biome Generation",
+      "essence": "Combines various techniques (e.g., noise, Voronoi) to define and populate distinct environmental regions.",
+      "example": "Creating diverse landscapes with deserts, forests, tundras, and oceans, each with unique flora and fauna."
+    },
+    {
+      "id": 20,
+      "rule": "Content Blending/Stitching",
+      "essence": "Techniques for seamlessly combining different procedurally generated elements or regions.",
+      "example": "Ensuring smooth transitions between different biomes or connecting distinct dungeon sections without visual artifacts."
+    }
+  ],
+  "byAgent": {
+    "world-birth-agent": {
+      "topRules": [
+        "Perlin Noise / Simplex Noise",
+        "Biome Generation",
+        "Noise-based Terrain Generation (e.g., Diamond-Square, Midpoint Displacement)"
+      ],
+      "why": "This reference is vital for the world-birth-agent because it provides the foundational algorithms and design principles for creating vast, diverse, and believable virtual environments from scratch, ensuring both scale and aesthetic coherence.",
+      "how": "The world-birth-agent applies this reference daily by utilizing noise functions for heightmaps, cellular automata for cave systems, and Voronoi diagrams for biome distribution, ensuring a rich and varied world structure.",
+      "prompt_injection": "Prioritize algorithms for large-scale environmental generation and seamless biome integration."
+    },
+    "code-agent": {
+      "topRules": [
+        "Wave Function Collapse (WFC)",
+        "L-Systems (Lindenmayer Systems)",
+        "Genetic Algorithms"
+      ],
+      "why": "This reference is crucial for the code-agent as it details the algorithmic mechanics and implementation considerations for various PCG techniques, enabling the agent to translate design concepts into efficient and robust code.",
+      "how": "The code-agent applies this reference by studying the mathematical underpinnings of algorithms like Perlin noise for efficient generation, optimizing data structures for L-systems, and implementing constraint propagation for WFC.",
+      "prompt_injection": "Focus on algorithmic efficiency, robust implementation, and scalability for procedural generation systems."
+    },
+    "inventor-agent": {
+      "topRules": [
+        "Procedural Story Generation",
+        "Item/Loot Generation",
+        "Grammars (e.g., Shape Grammars, Context-Free Grammars)"
+      ],
+      "why": "This reference is vital for the inventor-agent as it inspires novel ways to create dynamic, replayable, and surprising content, moving beyond static design to algorithmically driven creativity for game mechanics and narratives.",
+      "how": "The inventor-agent applies this reference by brainstorming how Markov chains can generate unique quest dialogue, how genetic algorithms can evolve creature designs, and how grammars can create innovative puzzle structures or item properties.",
+      "prompt_injection": "Explore novel applications of procedural generation to create unique game mechanics, items, and narrative experiences."
+    }
+  },
+  "id": "proc-gen-book",
+  "priority": 1,
+  "builtAt": "2026-06-08T06:39:58.189Z"
+}
