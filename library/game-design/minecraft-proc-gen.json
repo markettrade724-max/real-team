@@ -1,0 +1,153 @@
+{
+  "title": "Procedural Generation in Minecraft",
+  "author": "Mojang GDC",
+  "category": "game-design",
+  "summary": "ملخص المرجع في جملتين",
+  "coreRules": [
+    {
+      "id": 1,
+      "rule": "Layered Generation: Structure world generation in distinct, sequential layers, from broad strokes to fine details.",
+      "essence": "Build complexity incrementally.",
+      "example": "First determine biome type, then terrain height, then place features like trees and structures."
+    },
+    {
+      "id": 2,
+      "rule": "Noise Functions for Terrain: Utilize Perlin or Simplex noise functions to create organic, varied terrain heightmaps.",
+      "essence": "Generate natural-looking randomness.",
+      "example": "A 2D noise map determines the elevation of each block column, creating hills and valleys."
+    },
+    {
+      "id": 3,
+      "rule": "Biome-Driven Generation: Define distinct biomes with unique parameters (temperature, humidity, flora, fauna) that dictate local generation rules.",
+      "essence": "Create diverse ecological zones.",
+      "example": "A desert biome generates sand, cacti, and temples, while a forest biome generates trees and grass."
+    },
+    {
+      "id": 4,
+      "rule": "Deterministic Seed-based Worlds: Ensure that the entire world generation process is reproducible from a single numerical seed.",
+      "essence": "Guarantee consistent world recreation.",
+      "example": "Entering the same seed '12345' will always generate an identical world layout."
+    },
+    {
+      "id": 5,
+      "rule": "Chunk-based Processing: Divide the infinite world into manageable, fixed-size chunks for efficient generation, loading, and saving.",
+      "essence": "Modularize world data.",
+      "example": "A 16x16x256 block chunk is generated when a player approaches its boundary."
+    },
+    {
+      "id": 6,
+      "rule": "Infinite Seamless Exploration: Implement on-demand generation of new chunks as players explore, creating a seemingly endless world.",
+      "essence": "Expand the world dynamically.",
+      "example": "New terrain appears smoothly as the player walks towards the edge of loaded chunks."
+    },
+    {
+      "id": 7,
+      "rule": "Feature Distribution based on Biome/Noise: Place specific structures, trees, and resources using rules tied to biome type, local noise values, or other conditions.",
+      "essence": "Contextual placement of elements.",
+      "example": "Oak trees generate in forest biomes, while dungeons might appear randomly underground, influenced by a separate noise map."
+    },
+    {
+      "id": 8,
+      "rule": "Iterative Refinement of Details: Start with large-scale features and progressively add smaller, more intricate details in subsequent passes.",
+      "essence": "From macro to micro.",
+      "example": "First generate the main landmass, then carve out caves, then place individual ore veins."
+    },
+    {
+      "id": 9,
+      "rule": "Rule-based Block Placement: Define explicit rules for which blocks can be placed where, considering adjacent blocks and environmental context.",
+      "essence": "Ensure logical block arrangements.",
+      "example": "Water blocks can only be placed adjacent to other water blocks or at a certain height, and grass blocks only on top of dirt exposed to sky."
+    },
+    {
+      "id": 10,
+      "rule": "Vertical Dimension Integration: Design generation to account for and utilize the full vertical range of the world, from deep caves to high mountains.",
+      "essence": "Exploit 3D space.",
+      "example": "Separate noise functions for cave systems and ore distribution operate across the entire Y-axis."
+    },
+    {
+      "id": 11,
+      "rule": "Balanced Resource Distribution: Ensure that essential resources are distributed in a way that encourages exploration but prevents scarcity or overabundance in specific areas.",
+      "essence": "Maintain gameplay balance.",
+      "example": "Iron ore is common at mid-depths, while diamonds are rare and found only at very low depths."
+    },
+    {
+      "id": 12,
+      "rule": "Prioritize Player Experience: Design generation algorithms with the player's sense of discovery, challenge, and aesthetic appreciation in mind.",
+      "essence": "Gameplay-driven generation.",
+      "example": "Generating interesting vistas, hidden treasures, or challenging terrain features."
+    },
+    {
+      "id": 13,
+      "rule": "Performance-Conscious Algorithms: Optimize generation code for speed and memory efficiency to ensure smooth gameplay, especially during real-time chunk loading.",
+      "essence": "Efficient resource usage.",
+      "example": "Using fast noise algorithms and minimizing redundant calculations during chunk generation."
+    },
+    {
+      "id": 14,
+      "rule": "Modularity of Generation Components: Separate different aspects of generation (e.g., biome logic, structure generation, flora placement) into distinct, interchangeable modules.",
+      "essence": "Flexible and maintainable code.",
+      "example": "A 'tree generator' module can be swapped out or modified independently of the 'cave generator'."
+    },
+    {
+      "id": 15,
+      "rule": "Persistent World State: Implement a system to save and load generated chunks and player modifications to maintain world integrity across sessions.",
+      "essence": "Preserve player progress.",
+      "example": "When a player logs out and back in, all changes made to the world remain."
+    },
+    {
+      "id": 16,
+      "rule": "Smooth Biome Transitions: Implement blending techniques to create gradual and natural transitions between different biomes, avoiding abrupt changes.",
+      "essence": "Visual coherence.",
+      "example": "A forest gradually fades into a desert, with scattered trees and patches of sand in the transition zone."
+    },
+    {
+      "id": 17,
+      "rule": "Controlled Randomness: Use pseudo-random number generators and noise functions, but guide their output with parameters and rules to achieve desired patterns and avoid chaotic results.",
+      "essence": "Structured unpredictability.",
+      "example": "Randomly placing trees, but ensuring they don't overlap or appear too sparsely."
+    },
+    {
+      "id": 18,
+      "rule": "Scalability for Vast Worlds: Design the generation system to handle extremely large or infinite worlds without performance degradation as the world size increases.",
+      "essence": "Future-proof design.",
+      "example": "Chunk-based loading and unloading ensures only relevant parts of the world are in memory."
+    },
+    {
+      "id": 19,
+      "rule": "Post-processing and Decoration Pass: After initial terrain and feature generation, apply a final pass to add small aesthetic details and environmental dressing.",
+      "essence": "Add polish and realism.",
+      "example": "Placing tall grass, flowers, mushrooms, and small rocks on top of the generated terrain."
+    },
+    {
+      "id": 20,
+      "rule": "Robustness and Error Handling: Design generation logic to be resilient to unexpected inputs or edge cases, preventing crashes or malformed world segments.",
+      "essence": "Stable generation.",
+      "example": "Ensuring that structures don't generate partially outside the world boundary or in impossible locations."
+    }
+  ],
+  "byAgent": {
+    "world-birth-agent": {
+      "topRules": [
+        "Layered Generation: Structure world generation in distinct, sequential layers, from broad strokes to fine details.",
+        "Biome-Driven Generation: Define distinct biomes with unique parameters (temperature, humidity, flora, fauna) that dictate local generation rules.",
+        "Deterministic Seed-based Worlds: Ensure that the entire world generation process is reproducible from a single numerical seed."
+      ],
+      "why": "This reference is vital for the world-birth-agent as it provides the foundational architectural patterns for creating coherent and diverse procedural worlds, emphasizing how to build complexity from simple rules.",
+      "how": "The agent uses this reference to define the high-level generation pipeline, determine biome distribution strategies, and establish the core parameters that will govern the world's initial characteristics, ensuring a consistent and reproducible starting point.",
+      "prompt_injection": "Always consider the layered and biome-driven approach for initial world conceptualization, ensuring deterministic generation from a single seed."
+    },
+    "code-agent": {
+      "topRules": [
+        "Noise Functions for Terrain: Utilize Perlin or Simplex noise functions to create organic, varied terrain heightmaps.",
+        "Chunk-based Processing: Divide the infinite world into manageable, fixed-size chunks for efficient generation, loading, and saving.",
+        "Performance-Conscious Algorithms: Optimize generation code for speed and memory efficiency to ensure smooth gameplay, especially during real-time chunk loading."
+      ],
+      "why": "This reference is critical for the code-agent as it details the practical techniques and optimizations necessary to translate design concepts into efficient, scalable, and robust procedural generation code.",
+      "how": "The agent applies this reference daily by implementing noise functions for terrain and feature placement, developing efficient chunk loading/unloading systems, and optimizing algorithms to ensure smooth real-time world generation.",
+      "prompt_injection": "Prioritize efficient noise function implementation and chunk-based processing, always optimizing for performance in procedural generation code."
+    }
+  },
+  "id": "minecraft-proc-gen",
+  "priority": 2,
+  "builtAt": "2026-06-09T06:10:19.659Z"
+}

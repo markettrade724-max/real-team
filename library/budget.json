@@ -1,168 +1,169 @@
 {
-  "date": "2026-06-08",
+  "date": "2026-06-09",
   "total": 20,
   "limit": 20,
-  "library": 17,
-  "agents": 3,
+  "library": 18,
+  "agents": 2,
   "log": [
     {
-      "time": "06:27:16",
+      "time": "05:59:09",
       "caller": "screenplay-agent",
-      "success": true,
+      "success": false,
       "total": 1,
-      "left": 19
+      "left": 19,
+      "errorType": "network_503"
     },
     {
-      "time": "06:27:32",
+      "time": "05:59:42",
       "caller": "screenplay-agent",
       "success": false,
       "total": 2,
       "left": 18,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:28:32",
-      "caller": "screenplay-agent",
+      "time": "06:00:13",
+      "caller": "library-builder-agent",
       "success": false,
       "total": 3,
       "left": 17,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:28:33",
+      "time": "06:00:44",
       "caller": "library-builder-agent",
       "success": false,
       "total": 4,
       "left": 16,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:29:33",
+      "time": "06:01:18",
       "caller": "library-builder-agent",
       "success": false,
       "total": 5,
       "left": 15,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:29:33",
+      "time": "06:01:49",
       "caller": "library-builder-agent",
       "success": false,
       "total": 6,
       "left": 14,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:30:33",
+      "time": "06:01:50",
       "caller": "library-builder-agent",
       "success": false,
       "total": 7,
       "left": 13,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:30:33",
+      "time": "06:02:22",
       "caller": "library-builder-agent",
       "success": false,
       "total": 8,
       "left": 12,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:31:33",
+      "time": "06:02:24",
       "caller": "library-builder-agent",
       "success": false,
       "total": 9,
       "left": 11,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:31:33",
+      "time": "06:02:56",
       "caller": "library-builder-agent",
       "success": false,
       "total": 10,
       "left": 10,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:32:34",
+      "time": "06:02:57",
       "caller": "library-builder-agent",
       "success": false,
       "total": 11,
       "left": 9,
-      "errorType": "json_truncated"
+      "errorType": "network_503"
     },
     {
-      "time": "06:32:56",
+      "time": "06:03:54",
       "caller": "library-builder-agent",
       "success": false,
       "total": 12,
       "left": 8,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:33:56",
+      "time": "06:03:55",
       "caller": "library-builder-agent",
       "success": false,
       "total": 13,
       "left": 7,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:33:56",
+      "time": "06:04:36",
       "caller": "library-builder-agent",
       "success": false,
       "total": 14,
       "left": 6,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:34:56",
+      "time": "06:04:38",
       "caller": "library-builder-agent",
       "success": false,
       "total": 15,
       "left": 5,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:34:57",
+      "time": "06:05:09",
       "caller": "library-builder-agent",
       "success": false,
       "total": 16,
       "left": 4,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:35:57",
+      "time": "06:05:11",
       "caller": "library-builder-agent",
       "success": false,
       "total": 17,
       "left": 3,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:35:57",
+      "time": "06:05:42",
       "caller": "library-builder-agent",
       "success": false,
       "total": 18,
       "left": 2,
-      "errorType": "network_429"
+      "errorType": "network_503"
     },
     {
-      "time": "06:36:57",
+      "time": "06:05:42",
       "caller": "library-builder-agent",
       "success": false,
       "total": 19,
       "left": 1,
-      "errorType": "network_429"
+      "errorType": "json_truncated"
     },
     {
-      "time": "06:36:57",
+      "time": "06:06:10",
       "caller": "library-builder-agent",
       "success": false,
       "total": 20,
       "left": 0,
-      "errorType": "network_429"
+      "errorType": "network_503"
     }
   ]
 }

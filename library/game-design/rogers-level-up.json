@@ -1,0 +1,153 @@
+{
+  "title": "Level Up!",
+  "author": "Scott Rogers",
+  "category": "game-design",
+  "summary": "يقدم كتاب \"Level Up!\" لسكوت روجرز دليلاً شاملاً وعملياً لتصميم الألعاب، مع التركيز على المبادئ الأساسية لإنشاء تجارب ممتعة وجذابة. يغطي الكتاب كل شيء بدءًا من المفاهيم الأولية وحتى التنفيذ، مع نصائح قابلة للتطبيق مباشرة على تصميم المستويات.",
+  "coreRules": [
+    {
+      "id": 1,
+      "rule": "Guide the Player Clearly",
+      "essence": "Players should always know where to go and what their immediate objective is, minimizing confusion and frustration.",
+      "example": "Use visual cues like distinct pathways, lighting, or UI markers to direct the player towards the next objective or area."
+    },
+    {
+      "id": 2,
+      "rule": "Teach Through Play",
+      "essence": "Introduce new mechanics and concepts organically within the level, allowing players to learn by doing rather than through explicit tutorials.",
+      "example": "Present a simple jump over a small gap before introducing complex platforming sequences that combine multiple movement abilities."
+    },
+    {
+      "id": 3,
+      "rule": "Vary Pacing and Intensity",
+      "essence": "Levels should have a dynamic rhythm, alternating between moments of action, exploration, puzzle-solving, and periods of calm.",
+      "example": "Follow an intense combat encounter with a quiet exploration segment or a simple environmental puzzle to allow players to decompress."
+    },
+    {
+      "id": 4,
+      "rule": "Implement a Clear Challenge Curve",
+      "essence": "Difficulty should gradually increase throughout the level, introducing new challenges and combining existing mechanics in novel ways.",
+      "example": "Start with single, weak enemies, then introduce multiple enemies, then stronger enemy types, and finally environmental hazards combined with enemies."
+    },
+    {
+      "id": 5,
+      "rule": "Reward Exploration and Skill",
+      "essence": "Encourage players to deviate from the main path or master mechanics by offering tangible rewards for their efforts.",
+      "example": "Hidden collectibles, secret passages leading to powerful items, or shortcuts for players who demonstrate advanced traversal skills."
+    },
+    {
+      "id": 6,
+      "rule": "Use the 'Rule of Threes' for Mechanics",
+      "essence": "Introduce a mechanic simply, elaborate on it with variations, then test the player's mastery of it in a challenging scenario.",
+      "example": "First, a single moving platform; second, multiple moving platforms with enemies; third, a complex sequence requiring precise timing on moving platforms under pressure."
+    },
+    {
+      "id": 7,
+      "rule": "Design Memorable Landmarks",
+      "essence": "Create distinct visual elements that help players orient themselves within the level and remember different areas.",
+      "example": "A giant statue, a unique architectural feature, or a specific natural formation that stands out and serves as a navigational beacon."
+    },
+    {
+      "id": 8,
+      "rule": "Provide Meaningful Choices",
+      "essence": "Give players options that impact their experience, even if they ultimately converge to the same goal, fostering agency.",
+      "example": "Multiple paths to an objective (e.g., stealthy vs. combat, high ground vs. low ground), each with distinct pros and cons."
+    },
+    {
+      "id": 9,
+      "rule": "Ensure Clear Feedback",
+      "essence": "Players should always understand the consequences of their actions, both positive and negative, through clear visual and auditory cues.",
+      "example": "Visual effects for damage taken, sound cues for successful actions, and clear UI messages for objective updates."
+    },
+    {
+      "id": 10,
+      "rule": "Maintain Thematic Consistency",
+      "essence": "The level's aesthetics, mechanics, and narrative elements should align with the overall game's theme and setting for immersion.",
+      "example": "A futuristic sci-fi level should use appropriate architecture, technology, and enemy types, avoiding elements from a medieval fantasy setting."
+    },
+    {
+      "id": 11,
+      "rule": "Design for Flow and Movement",
+      "essence": "Levels should feel natural to navigate, minimizing frustrating dead ends or awkward movement sequences that disrupt player flow.",
+      "example": "Smooth transitions between areas, clear pathways, and intuitive traversal options that support the player's movement abilities."
+    },
+    {
+      "id": 12,
+      "rule": "Utilize Environmental Storytelling",
+      "essence": "Use the level's visual details and layout to convey narrative, lore, or character motivations without explicit dialogue.",
+      "example": "Scattered notes, abandoned equipment, signs of struggle, or specific architectural styles that hint at past events or inhabitants."
+    },
+    {
+      "id": 13,
+      "rule": "Incorporate Choke Points and Arenas",
+      "essence": "Design specific areas for focused encounters (choke points for funneling, arenas for open combat) to control combat flow and challenge.",
+      "example": "A narrow corridor leading to a large open room, forcing players to engage enemies in a specific sequence or formation."
+    },
+    {
+      "id": 14,
+      "rule": "Prioritize Playtesting and Iteration",
+      "essence": "Levels are never perfect on the first try; continuous testing and refinement are essential for identifying and fixing design issues.",
+      "example": "Observing players struggle with a puzzle and redesigning it, or finding a path is unclear and adding visual cues based on feedback."
+    },
+    {
+      "id": 15,
+      "rule": "Manage Player Expectations",
+      "essence": "Set up scenarios that hint at future challenges or rewards, building anticipation without misleading the player.",
+      "example": "Showing a powerful enemy in the distance that the player will face later, or a locked door hinting at a future key or ability."
+    },
+    {
+      "id": 16,
+      "rule": "Design with a 'Hook' in Mind",
+      "essence": "The beginning of a level should immediately grab the player's attention and establish the level's unique identity or primary challenge.",
+      "example": "An immediate action sequence, a striking visual, or an intriguing mystery presented right at the start of the level."
+    },
+    {
+      "id": 17,
+      "rule": "Balance Risk and Reward",
+      "essence": "Offer players choices where taking a harder or more dangerous path yields greater benefits, encouraging strategic decision-making.",
+      "example": "A difficult jump puzzle leading to a rare upgrade, or a powerful optional enemy guarding a valuable treasure."
+    },
+    {
+      "id": 18,
+      "rule": "Ensure Accessibility and Clarity of Objectives",
+      "essence": "Players should always understand their current objective and how to progress, regardless of their skill level or cognitive load.",
+      "example": "Clear UI objective markers, consistent visual language for interactive elements, and optional hint systems."
+    },
+    {
+      "id": 19,
+      "rule": "Avoid 'Pixel Hunting' and Ambiguity",
+      "essence": "Critical interactive elements or paths should be clearly visible and not require pixel-perfect searching or guesswork.",
+      "example": "Making sure a key item glows or stands out against the background, rather than blending perfectly into the environment."
+    },
+    {
+      "id": 20,
+      "rule": "Focus on the 'Fun Factor'",
+      "essence": "Ultimately, the level must be enjoyable and engaging, providing a satisfying and memorable experience for the player.",
+      "example": "If a mechanic feels tedious or frustrating during playtesting, redesign it to be more enjoyable, even if it means simplifying or removing it."
+    }
+  ],
+  "byAgent": {
+    "world-birth-agent": {
+      "topRules": [
+        "Guide the Player Clearly",
+        "Vary Pacing and Intensity",
+        "Design Memorable Landmarks"
+      ],
+      "why": "هذا المرجع حيوي لـ world-birth-agent لأنه يقدم إطارًا عمليًا لبناء بيئات لعب جذابة ومفهومة وممتعة من الألف إلى الياء، مع التركيز على تجربة اللاعب داخل الفضاء المصمم.",
+      "how": "يطبق world-birth-agent هذا المرجع في عمله اليومي من خلال استخدام المبادئ لتخطيط المستويات، وتصميم مسارات اللاعب، ودمج السرد البيئي، وضمان تقدم منطقي للتحديات والمكافآت خلال مراحل التصميم والتكرار الأولية.",
+      "prompt_injection": "تذكر دائماً أن تصميم المستوى يبدأ من تجربة اللاعب في الفضاء."
+    },
+    "code-agent": {
+      "topRules": [
+        "Teach Through Play",
+        "Implement a Clear Challenge Curve",
+        "Prioritize Playtesting and Iteration"
+      ],
+      "why": "هذا المرجع حيوي لـ code-agent لأنه يحدد 'لماذا' وراء خيارات تصميم المستويات، مما يمكنه من تطوير أنظمة لعب قوية ومرنة وفعالة تدعم وتعزز تجربة اللاعب المقصودة وآليات المستوى.",
+      "how": "يطبق code-agent هذا المرجع في عمله اليومي من خلال تطوير أدوات لمصممي المستويات (مثل أنظمة وضع الأعداء، وبرمجة الألغاز، وأنظمة التفاعل البيئي)، وتنفيذ آليات تدعم فلسفة 'التعليم من خلال اللعب'، وإنشاء أنظمة لتعديل الصعوبة الديناميكي وتقديم التغذية الراجعة.",
+      "prompt_injection": "ركز على بناء أنظمة تدعم مرونة تصميم المستويات وتجربة اللاعب."
+    }
+  },
+  "id": "rogers-level-up",
+  "priority": 2,
+  "builtAt": "2026-06-09T06:11:16.575Z"
+}

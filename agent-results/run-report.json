@@ -1,9 +1,9 @@
 {
-  "runId": "2026-06-08T1203",
+  "runId": "2026-06-09T0559",
   "mode": "production",
   "success": false,
-  "timestamp": "2026-06-08T12:03:42.502Z",
-  "totalDuration": "16ms",
+  "timestamp": "2026-06-09T06:14:55.641Z",
+  "totalDuration": "946.2s",
   "budget": {
     "total": 40,
     "limit": 40,
@@ -15,23 +15,23 @@
         "total": 20,
         "limit": 20,
         "left": 0,
-        "library": 17,
-        "agents": 3
+        "library": 18,
+        "agents": 2
       },
       {
         "key": "KEY_2",
         "total": 20,
         "limit": 20,
         "left": 0,
-        "library": 20,
-        "agents": 0
+        "library": 19,
+        "agents": 1
       }
     ]
   },
   "library": {
-    "built": 16,
+    "built": 19,
     "total": 56,
-    "percent": "29%"
+    "percent": "34%"
   },
   "progress": {
     "current": {
@@ -39,8 +39,8 @@
       "episode": 1,
       "id": null,
       "startedAt": "2026-06-08T09:18:09.951Z",
-      "updatedAt": "2026-06-08T12:03:42.496Z",
-      "failReason": "InsufficientQuota: series needs 3 calls for screenplay"
+      "updatedAt": "2026-06-09T06:00:13.577Z",
+      "failReason": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     },
     "nextEpisode": 1,
     "totalEpisodes": 0,
@@ -50,12 +50,17 @@
     "episode": {
       "success": false,
       "duration": "—",
-      "error": "InsufficientQuota: series needs 3 calls for screenplay"
+      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+    },
+    "world": {
+      "success": true,
+      "duration": "71.5s",
+      "error": null
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 0,
+    "total": 2,
+    "passed": 1,
     "failed": 1
   }
 }
