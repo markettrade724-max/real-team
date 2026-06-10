@@ -1,10 +1,10 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-10T08:44:58.156Z",
+  "updatedAt": "2026-06-10T10:59:20.746Z",
   "current": null,
   "series": {
-    "nextEpisode": 2,
-    "totalEpisodes": 1,
+    "nextEpisode": 3,
+    "totalEpisodes": 2,
     "episodes": {
       "1": {
         "status": "complete",
@@ -34,6 +34,35 @@
         "startedAt": "2026-06-08T09:18:09.951Z",
         "completedAt": "2026-06-10T08:44:58.156Z",
         "failReason": "InsufficientQuota: series needs 3 calls for screenplay"
+      },
+      "2": {
+        "status": "complete",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-06-10T10:59:20.743Z",
+            "title": "صدى الحنين",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-06-10T10:59:20.744Z",
+            "title": "صدى الحنين",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-06-10T10:59:20.745Z",
+            "title": "صدى الحنين",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-06-10T10:56:41.785Z",
+        "completedAt": "2026-06-10T10:59:20.746Z",
+        "failReason": null
       }
     }
   },
