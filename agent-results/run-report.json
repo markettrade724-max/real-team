@@ -1,30 +1,30 @@
 {
-  "runId": "2026-06-10T0611",
+  "runId": "2026-06-10T0843",
   "mode": "production",
   "success": true,
-  "timestamp": "2026-06-10T06:17:10.116Z",
-  "totalDuration": "320.2s",
+  "timestamp": "2026-06-10T08:48:13.190Z",
+  "totalDuration": "281.7s",
   "budget": {
-    "total": 12,
+    "total": 23,
     "limit": 40,
-    "left": 28,
-    "percent": "30%",
+    "left": 17,
+    "percent": "57%",
     "keys": [
       {
         "key": "KEY_1",
-        "total": 12,
+        "total": 20,
         "limit": 20,
-        "left": 8,
+        "left": 0,
         "library": 0,
-        "agents": 12
+        "agents": 20
       },
       {
         "key": "KEY_2",
-        "total": 0,
+        "total": 3,
         "limit": 20,
-        "left": 20,
+        "left": 17,
         "library": 0,
-        "agents": 0
+        "agents": 3
       }
     ]
   },
@@ -46,14 +46,14 @@
       "error": null
     },
     "world": {
-      "success": true,
-      "duration": "112.0s",
-      "error": null
+      "success": false,
+      "duration": "180.0s",
+      "error": "Timeout"
     }
   },
   "summary": {
     "total": 2,
-    "passed": 2,
-    "failed": 0
+    "passed": 1,
+    "failed": 1
   }
 }

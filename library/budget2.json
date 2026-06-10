@@ -1,8 +1,46 @@
 {
   "date": "2026-06-10",
-  "total": 0,
+  "total": 5,
   "limit": 20,
   "library": 0,
-  "agents": 0,
-  "log": []
+  "agents": 5,
+  "log": [
+    {
+      "time": "08:47:28",
+      "caller": "world-birth-agent",
+      "success": true,
+      "total": 1,
+      "left": 19
+    },
+    {
+      "time": "08:47:40",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 2,
+      "left": 18,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "08:47:52",
+      "caller": "world-birth-agent",
+      "success": true,
+      "total": 3,
+      "left": 17
+    },
+    {
+      "time": "08:48:15",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 4,
+      "left": 16,
+      "errorType": "network_503"
+    },
+    {
+      "time": "08:48:57",
+      "caller": "world-birth-agent",
+      "success": true,
+      "total": 5,
+      "left": 15
+    }
+  ]
 }

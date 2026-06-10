@@ -1,9 +1,9 @@
 {
   "date": "2026-06-10",
-  "total": 12,
+  "total": 20,
   "limit": 20,
   "library": 0,
-  "agents": 12,
+  "agents": 20,
   "log": [
     {
       "time": "06:11:49",
@@ -94,6 +94,67 @@
       "success": false,
       "total": 12,
       "left": 8,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "08:43:31",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 13,
+      "left": 7
+    },
+    {
+      "time": "08:43:48",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 14,
+      "left": 6
+    },
+    {
+      "time": "08:44:24",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 15,
+      "left": 5
+    },
+    {
+      "time": "08:45:13",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 16,
+      "left": 4,
+      "errorType": "network_503"
+    },
+    {
+      "time": "08:45:44",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 17,
+      "left": 3,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "08:46:15",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 18,
+      "left": 2,
+      "errorType": "network_503"
+    },
+    {
+      "time": "08:46:46",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 19,
+      "left": 1,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "08:47:16",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 20,
+      "left": 0,
       "errorType": "json_truncated"
     }
   ]
