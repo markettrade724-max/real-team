@@ -1,30 +1,30 @@
 {
-  "runId": "2026-06-09T0826",
+  "runId": "2026-06-10T0611",
   "mode": "production",
-  "success": false,
-  "timestamp": "2026-06-09T08:26:36.047Z",
-  "totalDuration": "11ms",
+  "success": true,
+  "timestamp": "2026-06-10T06:17:10.116Z",
+  "totalDuration": "320.2s",
   "budget": {
-    "total": 40,
+    "total": 12,
     "limit": 40,
-    "left": 0,
-    "percent": "100%",
+    "left": 28,
+    "percent": "30%",
     "keys": [
       {
         "key": "KEY_1",
-        "total": 20,
+        "total": 12,
         "limit": 20,
-        "left": 0,
-        "library": 18,
-        "agents": 2
+        "left": 8,
+        "library": 0,
+        "agents": 12
       },
       {
         "key": "KEY_2",
-        "total": 20,
+        "total": 0,
         "limit": 20,
-        "left": 0,
-        "library": 19,
-        "agents": 1
+        "left": 20,
+        "library": 0,
+        "agents": 0
       }
     ]
   },
@@ -34,28 +34,26 @@
     "percent": "34%"
   },
   "progress": {
-    "current": {
-      "type": "episode",
-      "episode": 1,
-      "id": null,
-      "startedAt": "2026-06-08T09:18:09.951Z",
-      "updatedAt": "2026-06-09T08:26:36.044Z",
-      "failReason": "InsufficientQuota: series needs 3 calls for screenplay"
-    },
-    "nextEpisode": 1,
-    "totalEpisodes": 0,
+    "current": null,
+    "nextEpisode": 2,
+    "totalEpisodes": 1,
     "gamesDone": 0
   },
   "agents": {
-    "episode": {
-      "success": false,
+    "screenplay": {
+      "success": true,
       "duration": "—",
-      "error": "InsufficientQuota: series needs 3 calls for screenplay"
+      "error": null
+    },
+    "world": {
+      "success": true,
+      "duration": "112.0s",
+      "error": null
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 0,
-    "failed": 1
+    "total": 2,
+    "passed": 2,
+    "failed": 0
   }
 }

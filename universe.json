@@ -1219,14 +1219,66 @@
         "description": "Default audio for The Ethereal Halls of Silence"
       },
       "addedAt": "2026-06-05T11:33:50.769Z"
+    },
+    {
+      "id": "world-20",
+      "dayNumber": 161,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "وادي الرفات النجمي",
+        "en": "The Valley of Astral Remnants"
+      },
+      "essence": "الرفات المتهالك",
+      "physicsLaw": "الذكريات المادية تتكثف وتتبلور في الفضاء، لتشكل بنى قابلة للانهيار وإعادة التكوين بفعل الأصداء الكونية.",
+      "atmosphere": "وادي شاسع غارق في صمت أزلي، تطفو فيه أطياف ضوئية من الغبار النجمي الباهت، تتراقص حول هياكل كونية ضخمة تآكلتها قرون النسيان. الهواء يحمل رنين حزينًا لقصص لم تكتمل، وكل نسمة تمر تهمس بحنين غامض، بينما تتلألأ بلورات الذاكرة المتكثفة كنقاط أمل خافتة في الظلام الكوني.",
+      "secret": "أن وادي الرفات النجمي ليس مجرد مقبرة كونية، بل هو قلب الصمت نفسه، حيث يتم تصفية وتخزين الذكريات المفقودة للحفاظ على \"نقاء\" الفراغ. استعادة الذكريات هنا لا تعيد الماضي فحسب، بل تمزق حجاب الصمت، كاشفة عن حقيقة الفراغ وتهديده الوجودي.",
+      "difficulty": "hard",
+      "backgroundColor": "#08081A",
+      "fogColor": "#1A1A33",
+      "lightColor": "#E0E0FF",
+      "enemies": [],
+      "weapon": null,
+      "vehicle": null,
+      "noise": {
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 86223,
+        "type": "simplex",
+        "description": "Default terrain for The Valley of Astral Remnants"
+      },
+      "shader": {
+        "type": "void",
+        "code": "shader_type spatial;\nrender_mode unshaded;\nvoid fragment() { ALBEDO = vec3(0.02, 0.0, 0.05); EMISSION = ALBEDO; }",
+        "parameters": {},
+        "description": "Default void shader"
+      },
+      "audio": {
+        "ambience": "distant echoes and cosmic hum",
+        "music_tempo": "slow",
+        "music_mood": "mysterious",
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "distant_rumble"
+        ],
+        "description": "Default audio for The Valley of Astral Remnants"
+      },
+      "addedAt": "2026-06-10T06:17:10.109Z"
     }
   ],
   "weapons": [],
   "enemies": [],
   "vehicles": [],
-  "evolutions": 45,
+  "evolutions": 46,
   "inventions": 3,
-  "lastEvolved": "2026-06-05T16:25:15.683Z",
+  "lastEvolved": "2026-06-10T06:17:10.112Z",
   "lastInvented": "2026-05-24T22:55:44.516Z",
   "revivals": 0,
   "lastRevived": "2026-06-05T11:37:03.471Z"
