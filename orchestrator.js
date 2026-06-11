@@ -1,20 +1,21 @@
 /**
- * orchestrator.js — v10.2
+ * orchestrator.js — v10.3
  *
- * الجديد عن v10.1:
- *  - جدول يومي محدد: كل يوم مهمة واحدة واضحة
- *  - fillRemainingQuota: revival فقط — المكتبة للسبت حصراً
- *  - productionDay: screenplay أولاً ثم game ثم revival
- *  - getDayTask(): يحدد أولوية اليوم
+ * المبدأ: يوم = مهمة واحدة — تركيز كامل
  *
  * الجدول الأسبوعي:
- *   السبت  → library     كل الـ 20
- *   الأحد  → inventor    كل الـ 20
- *   الاثنين → screenplay (3) + game Phase (4-5) + revival
- *   الثلاثاء → screenplay (3) + game Phase (4-5) + revival
- *   الأربعاء → screenplay (3) + game Phase (4-5) + revival
- *   الخميس → screenplay (3) + game Phase (4-5) + revival
- *   الجمعة → screenplay (3) + game Phase (4-5) + revival
+ *   السبت  (6) → library    — كل الحصة للمكتبة
+ *   الأحد  (0) → inventor   — كل الحصة للمخترع
+ *   الاثنين(1) → screenplay — 3 طلبات، حلقة جديدة
+ *   الثلاثاء(2)→ series     — إكمال الحلقة كاملاً (صوت+فيديو+رفع)
+ *   الأربعاء(3)→ game-gd    — Phase 1: كل ملفات .gd
+ *   الخميس (4) → game-tscn  — Phase 2: كل ملفات .tscn
+ *   الجمعة (5) → revival    — إحياء المنتجات
+ *
+ * القواعد المطبقة:
+ *   rule-099 / rule-153 / rule-154 / rule-155
+ *   rule-156 / rule-173 / rule-174 / rule-175
+ *   rule-187 / rule-188 / rule-192
  */
 
 import { writeFileSync, readFileSync, copyFileSync,
@@ -30,12 +31,11 @@ import {
 import { run as runLibrary, getLibraryStatus } from './agents/library-builder-agent.js';
 import { run as runScreenplay }                from './agents/screenplay-agent.js';
 import { run as runSeries }                    from './agents/series-agent.js';
-import { run as runRevival }                   from './agents/revival-agent.js';
 import { run as runAnalytics }                 from './agents/analytics-agent.js';
 import {
   loadProgress, saveProgress, getNextTask,
-  startEpisode,  completeEpisode,
-  startGame,     completeGame,
+  startEpisode, completeEpisode,
+  startGame,    completeGame,
   saveEpisodeStep, getEpisodeProgress,
   saveGameFile,    getGameProgress,
   failTask,
@@ -57,23 +57,26 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const fmt   = ms => ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
 
 const DAY = new Date().getDay();
-const IS_LIBRARY_DAY  = DAY === 6;
-const IS_INVENTOR_DAY = DAY === 0;
 
 // ══════════════════════════════════════════════════════════
-// أولوية اليوم — ماذا ينتج اليوم؟
+// مهمة اليوم — يوم = مهمة واحدة
 // ══════════════════════════════════════════════════════════
 function getDayTask() {
-  // السبت والأحد لهما وضع خاص
-  if (IS_LIBRARY_DAY)  return 'library';
-  if (IS_INVENTOR_DAY) return 'inventor';
-  // الاثنين-الجمعة: screenplay أولاً ثم game
-  return 'production';
+  const tasks = {
+    6: 'library',
+    0: 'inventor',
+    1: 'screenplay',
+    2: 'series',
+    3: 'game-gd',
+    4: 'game-tscn',
+    5: 'revival',
+  };
+  return tasks[DAY] || 'screenplay';
 }
 
 logger.info('[SCHEDULE] Today', {
-  day:     ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
-  task:    getDayTask(),
+  day:  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
+  task: getDayTask(),
 });
 
 // ══════════════════════════════════════════════════════════
@@ -109,16 +112,6 @@ function saveUniverse(u) {
   logger.info('[OK] Universe saved', { worlds: u.worlds?.length });
 }
 
-function loadProductsNeedingRevival() {
-  const p = join(__dirname, 'products.json');
-  if (!existsSync(p)) return [];
-  try {
-    return JSON.parse(readFileSync(p, 'utf8'))
-      .filter(pr => pr.status === 'needs_revival' || pr.health < 50)
-      .slice(0, 1);
-  } catch { return []; }
-}
-
 async function run(name, agentPath, args = [], costKey = null) {
   logger.info(`[RUN] ${name}`);
   if (costKey && !canAfford(costKey)) {
@@ -144,42 +137,13 @@ async function run(name, agentPath, args = [], costKey = null) {
 }
 
 // ══════════════════════════════════════════════════════════
-// fillRemainingQuota — revival فقط (library للسبت حصراً)
-// ══════════════════════════════════════════════════════════
-async function fillRemainingQuota(universe, log) {
-  let quota = getRemainingQuota();
-  if (quota < 2) return;
-
-  logger.info('[FILL] Filling remaining quota with revival', { quota });
-  let count = 0;
-
-  while (quota >= 2) {
-    const products = loadProductsNeedingRevival();
-    if (!products.length) {
-      logger.info('[FILL] No products need revival — stopping');
-      break;
-    }
-    const r = await run('Revival', './agents/revival-agent.js',
-      [products[0], universe], 'revival');
-    if (!r.success) break;
-    log[`revival_${++count}`] = r;
-    quota = getRemainingQuota();
-    await sleep(DELAY);
-  }
-
-  if (count > 0) logger.info(`[OK] Revival × ${count} completed`);
-  logger.info('[FILL] Done', { quotaLeft: getRemainingQuota() });
-}
-
-// ══════════════════════════════════════════════════════════
-// يوم المكتبة — السبت كاملاً
+// السبت — library كل الحصة
 // ══════════════════════════════════════════════════════════
 async function libraryDay(t0, runId) {
-  logger.info('[LIBRARY] Saturday — full quota for library');
+  logger.info('[LIBRARY] Saturday — full quota');
   const log = {};
 
   if (getLibraryStatus().remaining === 0) {
-    logger.info('[LIBRARY] Already complete');
     log.library = { success: true, data: { skipped: true }, duration: '0ms' };
     return saveReport(log, t0, runId, 'library', true);
   }
@@ -188,37 +152,29 @@ async function libraryDay(t0, runId) {
   let built = 0;
   try {
     while (getRemainingQuota() >= 2 && getLibraryStatus().remaining > 0) {
-      const result = await runLibrary();
-      built += result?.built || 0;
-      if (!result?.built) break;
-      logger.info('[LIBRARY] Batch done', {
-        percent:  `${getLibraryStatus().percent}%`,
-        quotaLeft: getRemainingQuota(),
-      });
+      const r = await runLibrary();
+      built += r?.built || 0;
+      if (!r?.built) break;
     }
     log.library = { success: true, data: { built }, duration: fmt(Date.now() - t0lib) };
+    logger.info('[OK] Library day done', { percent: `${getLibraryStatus().percent}%` });
   } catch (err) {
     log.library = { success: false, error: err.message, duration: fmt(Date.now() - t0lib) };
   }
 
-  // analytics في نهاية السبت
   try {
-    const universe = loadUniverse();
-    if (universe) {
-      const r = await runAnalytics(universe);
-      log.analytics = { success: true, data: r, duration: '—' };
-      save('analytics.json', r);
-    }
+    const u = loadUniverse();
+    if (u) { const r = await runAnalytics(u); save('analytics.json', r); }
   } catch {}
 
   return saveReport(log, t0, runId, 'library', log.library?.success || false);
 }
 
 // ══════════════════════════════════════════════════════════
-// يوم المخترع — الأحد كاملاً
+// الأحد — inventor كل الحصة
 // ══════════════════════════════════════════════════════════
 async function inventorDay(universe, t0, runId) {
-  logger.info('[INVENTOR] Sunday — full quota for inventor');
+  logger.info('[INVENTOR] Sunday — full quota');
   const log = {};
   backupUniverse();
 
@@ -239,179 +195,215 @@ async function inventorDay(universe, t0, runId) {
 }
 
 // ══════════════════════════════════════════════════════════
-// أيام الإنتاج — الاثنين إلى الجمعة
+// الاثنين — screenplay: كتابة الحلقة كاملة (3 طلبات)
 // ══════════════════════════════════════════════════════════
-async function productionDay(universe, t0, runId) {
+async function screenplayDay(universe, t0, runId) {
   const progress = loadProgress();
-  const log      = {};
+  const next     = getNextTask(progress);
+  const epNum    = next.type === 'continue' && next.task?.type === 'episode'
+    ? next.task.episode
+    : progress.series.nextEpisode;
 
-  logger.info('[PRODUCTION] Day', {
-    day:      ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
-    quota:    getRemainingQuota(),
-    current:  progress.current
-      ? `${progress.current.type}:${progress.current.episode ?? progress.current.id}`
-      : 'none',
-  });
+  logger.info('[SCREENPLAY] Monday — writing episode', { episode: epNum });
 
-  backupUniverse();
-
-  // ── 1. أولوية: الحلقة (3 طلبات) ─────────────
-  const epNext = getNextTask(progress);
-  let epDone   = false;
-
-  if (epNext.type === 'continue' && epNext.task?.type === 'episode') {
-    epDone = await produceEpisode(universe, epNext.task.episode, log, progress);
-  } else if (epNext.type === 'new' && getRemainingQuota() >= 3) {
-    epDone = await produceEpisode(universe, progress.series.nextEpisode, log, progress);
-  } else {
-    logger.info('[PRODUCTION] Episode skipped — insufficient quota');
-  }
-
-  // ── 2. بعد الحلقة: game إذا بقي 4+ طلبات ────
-  if (getRemainingQuota() >= 4) {
-    const gameNext = getNextGameTask(progress);
-    if (gameNext) {
-      await buildGame(universe, gameNext.id, log, progress, getRemainingQuota());
-    }
-  }
-
-  // ── 3. ما تبقى: revival فقط ──────────────────
-  await fillRemainingQuota(universe, log);
-
-  // حفظ universe إذا أُضيف عالم
-  if (log.world?.success && log.world.data) {
-    universe.worlds.push(log.world.data);
-    universe.evolutions  = (universe.evolutions || 0) + 1;
-    universe.lastEvolved = new Date().toISOString();
-    saveUniverse(universe);
-    clearBackup();
-  }
-
-  return saveReport(log, t0, runId, 'production', epDone);
-}
-
-// ══════════════════════════════════════════════════════════
-// إنتاج حلقة — خطوة بخطوة
-// ══════════════════════════════════════════════════════════
-async function produceEpisode(universe, episodeNumber, log, progress) {
-  const STEPS      = ['backbone', 'scenes', 'dialogue'];
-  const epProgress = getEpisodeProgress(progress, episodeNumber);
-  const pending    = epProgress.pendingSteps.length
-    ? epProgress.pendingSteps
-    : [...STEPS];
-
-  logger.info(`[EPISODE] ep${episodeNumber}`, {
-    completed: epProgress.completedSteps,
-    pending,
-    quota: getRemainingQuota(),
-  });
-
-  if (!pending.length) {
-    logger.info(`[EPISODE] ep${episodeNumber} already complete`);
-    return true;
-  }
+  const epProgress = getEpisodeProgress(progress, epNum);
+  const fromStep   = epProgress.pendingSteps[0] || 'backbone';
+  const log        = {};
 
   if (getRemainingQuota() < 1) {
-    logger.warn('[EPISODE] No quota — skipping');
-    return false;
+    logger.warn('[SCREENPLAY] No quota');
+    return saveReport(log, t0, runId, 'screenplay', false);
   }
 
-  startEpisode(episodeNumber);
+  startEpisode(epNum);
 
-  // screenplay-agent يعمل خطوة بخطوة حسب ما تبقى
-  const fromStep = pending[0];
   try {
-    const result = await runScreenplay(universe, episodeNumber, { fromStep });
+    const result = await runScreenplay(universe, epNum, { fromStep });
     log.screenplay = { success: true, data: result, duration: '—' };
 
-    for (const step of STEPS) {
-      if (!epProgress.completedSteps.includes(step)) {
-        saveEpisodeStep(episodeNumber, step, result);
-      }
+    for (const step of ['backbone', 'scenes', 'dialogue']) {
+      saveEpisodeStep(epNum, step, result);
     }
 
-    completeEpisode(episodeNumber);
+    completeEpisode(epNum);
     resetSessionKey();
 
-    logger.info('[OK] Episode complete', { episode: episodeNumber, title: result?.title });
-
-    // عالم جديد بعد الحلقة إذا بقيت حصة
-    if (getRemainingQuota() >= 1) {
-      log.world = await run('World Birth', './agents/world-birth-agent.js',
-        [universe], 'world');
-    }
-
-    return true;
+    logger.info('[OK] Screenplay done', { episode: epNum, title: result?.title });
+    return saveReport(log, t0, runId, 'screenplay', true);
   } catch (err) {
     log.screenplay = { success: false, error: err.message, duration: '—' };
     failTask(err.message);
-    logger.warn('[EPISODE] Failed — will retry tomorrow', { error: err.message });
-    return false;
+    logger.warn('[SCREENPLAY] Failed — retry tomorrow', { error: err.message });
+    return saveReport(log, t0, runId, 'screenplay', false);
   }
 }
 
 // ══════════════════════════════════════════════════════════
-// بناء لعبة — ملف بملف
+// الثلاثاء — series: إكمال الحلقة (صوت + فيديو + رفع)
 // ══════════════════════════════════════════════════════════
-function getNextGameTask(progress) {
-  if (progress.games?.current) return progress.games.current;
-  return null;
+async function seriesDay(universe, t0, runId) {
+  const progress = loadProgress();
+  const epNum    = progress.series.nextEpisode - 1 || 1;
+  const log      = {};
+
+  // ابحث عن screenplay محفوظ
+  const screenplayPath = join(RESULTS_DIR, `screenplay-ep${epNum}.json`);
+  if (!existsSync(screenplayPath)) {
+    logger.warn('[SERIES] No screenplay found — run screenplay day first', { episode: epNum });
+    return saveReport(log, t0, runId, 'series', false);
+  }
+
+  const screenplay = JSON.parse(readFileSync(screenplayPath, 'utf8'));
+  logger.info('[SERIES] Tuesday — full pipeline', { episode: epNum, title: screenplay.title });
+
+  log.series = await run('Series Pipeline', './agents/series-agent.js',
+    [universe, epNum, { screenplay }], null);
+
+  if (log.series?.success) {
+    logger.info('[OK] Episode fully produced', { episode: epNum });
+    if (universe) {
+      universe.evolutions  = (universe.evolutions || 0) + 1;
+      universe.lastEvolved = new Date().toISOString();
+      saveUniverse(universe);
+    }
+  } else {
+    logger.warn('[SERIES] Pipeline failed — will retry tomorrow');
+    failTask(log.series?.error || 'series-failed');
+  }
+
+  return saveReport(log, t0, runId, 'series', log.series?.success || false);
 }
 
-async function buildGame(universe, gameId, log, progress, budget) {
-  const gameProgress = getGameProgress(progress, gameId);
+// ══════════════════════════════════════════════════════════
+// الأربعاء — game Phase 1: كل .gd (4 طلبات)
+// ══════════════════════════════════════════════════════════
+async function gameGdDay(universe, t0, runId) {
+  const progress = loadProgress();
+  const gameId   = getNextGameId(progress);
+  const log      = {};
 
-  logger.info(`[GAME] ${gameId}`, {
-    completed: gameProgress.completedFiles.length,
-    pending:   gameProgress.pendingFiles.length,
-    budget,
-  });
+  if (!gameId) {
+    logger.info('[GAME-GD] No game to build');
+    return saveReport(log, t0, runId, 'game-gd', false);
+  }
 
+  logger.info('[GAME-GD] Wednesday — Phase 1 (.gd files)', { id: gameId });
   const idea     = loadResult('ideas.json');
   const story    = loadResult('story.json');
   const template = loadResult('template.json');
 
   if (!idea) {
-    logger.error('[GAME] ideas.json not found');
-    return false;
+    logger.error('[GAME-GD] ideas.json not found');
+    return saveReport(log, t0, runId, 'game-gd', false);
   }
 
   startGame(gameId);
+  const gProgress = getGameProgress(progress, gameId);
 
-  try {
-    log.code = await run('Code Agent', './agents/code-agent.js',
-      [idea, story, { worlds: universe.worlds }, universe.art, template, {
-        pendingFiles:   gameProgress.pendingFiles,
-        completedFiles: gameProgress.completedFiles,
-        budget,
-      }], 'code-agent');
+  log.code = await run('Code Agent Phase 1', './agents/code-agent.js',
+    [idea, story, { worlds: universe.worlds }, universe.art, template, {
+      pendingFiles:   gProgress.pendingFiles.filter(f => f.endsWith('.gd')),
+      completedFiles: gProgress.completedFiles,
+      budget:         4,
+    }], 'code-agent');
 
-    if (log.code?.success) {
-      const newFiles = log.code.data?.files || [];
-      for (const f of newFiles) saveGameFile(gameId, f.name, f.content);
-
-      const updated = getGameProgress(loadProgress(), gameId);
-      if (updated.pendingFiles.length === 0) {
-        completeGame(gameId);
-        resetSessionKey();
-        save('code.json', log.code.data);
-        logger.info('[OK] Game complete', { id: gameId });
-        triggerGodotExport(gameId);
-      } else {
-        logger.info('[OK] Game partial — will continue tomorrow', {
-          done:    updated.completedFiles.length,
-          pending: updated.pendingFiles.length,
-        });
-      }
-      return true;
-    }
-    failTask(log.code?.error || 'code-failed');
-    return false;
-  } catch (err) {
-    log.code = { success: false, error: err.message, duration: '—' };
-    failTask(err.message);
-    return false;
+  if (log.code?.success) {
+    for (const f of (log.code.data?.files || [])) saveGameFile(gameId, f.name, f.content);
+    logger.info('[OK] Game Phase 1 done', { id: gameId });
+  } else {
+    failTask(log.code?.error || 'game-gd-failed');
   }
+
+  return saveReport(log, t0, runId, 'game-gd', log.code?.success || false);
+}
+
+// ══════════════════════════════════════════════════════════
+// الخميس — game Phase 2: كل .tscn (5 طلبات)
+// ══════════════════════════════════════════════════════════
+async function gameTscnDay(universe, t0, runId) {
+  const progress = loadProgress();
+  const current  = progress.games?.current;
+  const log      = {};
+
+  if (!current) {
+    logger.info('[GAME-TSCN] No game in progress — run game-gd day first');
+    return saveReport(log, t0, runId, 'game-tscn', false);
+  }
+
+  logger.info('[GAME-TSCN] Thursday — Phase 2 (.tscn files)', { id: current.id });
+  const idea     = loadResult('ideas.json');
+  const story    = loadResult('story.json');
+  const template = loadResult('template.json');
+
+  const gProgress = getGameProgress(progress, current.id);
+  log.code = await run('Code Agent Phase 2', './agents/code-agent.js',
+    [idea, story, { worlds: universe.worlds }, universe.art, template, {
+      pendingFiles:   gProgress.pendingFiles.filter(f => f.endsWith('.tscn')),
+      completedFiles: gProgress.completedFiles,
+      budget:         5,
+    }], 'code-agent');
+
+  if (log.code?.success) {
+    for (const f of (log.code.data?.files || [])) saveGameFile(current.id, f.name, f.content);
+    const updated = getGameProgress(loadProgress(), current.id);
+    if (updated.pendingFiles.length === 0) {
+      completeGame(current.id);
+      resetSessionKey();
+      save('code.json', log.code.data);
+      triggerGodotExport(current.id);
+      logger.info('[OK] Game complete', { id: current.id });
+    }
+  } else {
+    failTask(log.code?.error || 'game-tscn-failed');
+  }
+
+  return saveReport(log, t0, runId, 'game-tscn', log.code?.success || false);
+}
+
+// ══════════════════════════════════════════════════════════
+// الجمعة — revival: إحياء المنتجات بكل الحصة
+// ══════════════════════════════════════════════════════════
+async function revivalDay(universe, t0, runId) {
+  logger.info('[REVIVAL] Friday — full quota for revival');
+  const log   = {};
+  let   count = 0;
+
+  while (getRemainingQuota() >= 2) {
+    const products = loadProductsNeedingRevival();
+    if (!products.length) {
+      logger.info('[REVIVAL] No products need revival');
+      break;
+    }
+    const r = await run(`Revival #${count + 1}`, './agents/revival-agent.js',
+      [products[0], universe], 'revival');
+    if (!r.success) break;
+    log[`revival_${++count}`] = r;
+    await sleep(DELAY);
+  }
+
+  logger.info('[OK] Revival day done', { count });
+  return saveReport(log, t0, runId, 'revival', count > 0);
+}
+
+function loadProductsNeedingRevival() {
+  const p = join(__dirname, 'products.json');
+  if (!existsSync(p)) return [];
+  try {
+    return JSON.parse(readFileSync(p, 'utf8'))
+      .filter(pr => pr.status === 'needs_revival' || pr.health < 50)
+      .slice(0, 1);
+  } catch { return []; }
+}
+
+function getNextGameId(progress) {
+  if (progress.games?.current) return progress.games.current.id;
+  const p = join(__dirname, 'products.json');
+  if (!existsSync(p)) return null;
+  try {
+    const done = progress.games?.done || [];
+    return JSON.parse(readFileSync(p, 'utf8'))
+      .find(pr => pr.type === 'godot' && !done.includes(pr.id))?.id || null;
+  } catch { return null; }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -424,42 +416,45 @@ async function main() {
   const universe = loadUniverse();
   const budget  = getBudgetStatus();
 
-  logger.info('[START] Orchestrator v10.2', {
+  logger.info('[START] Orchestrator v10.3', {
     runId,
     mode,
-    day:         ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
-    hasUniverse: !!universe,
-    quotaLeft:   budget.left,
-    keys:        budget.keys?.map(k => `${k.key}:${k.left}`).join(' | '),
-    library:     `${getLibraryStatus().percent}%`,
+    day:       ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][DAY],
+    task:      getDayTask(),
+    quotaLeft: budget.left,
+    keys:      budget.keys?.map(k => `${k.key}:${k.left}`).join(' | '),
+    library:   `${getLibraryStatus().percent}%`,
   });
 
   if (mode === 'birth' || !universe) return birthMode(t0, runId);
 
-  if (mode === 'library')   return libraryDay(t0, runId);
-  if (mode === 'invention') return inventorDay(universe, t0, runId);
-  if (mode === 'episode') {
-    const log = {}, p = loadProgress();
-    const ep  = process.env.EPISODE_NUMBER
-      ? parseInt(process.env.EPISODE_NUMBER) : p.series.nextEpisode;
-    await produceEpisode(universe, ep, log, p);
-    return saveReport(log, t0, runId, 'episode', log.screenplay?.success || false);
-  }
-  if (mode === 'code') {
-    const log = {}, p = loadProgress();
-    await buildGame(universe, process.env.GAME_ID || universe.id, log, p,
-      getRemainingQuota());
-    return saveReport(log, t0, runId, 'code', log.code?.success || false);
-  }
-  if (mode === 'sync') {
-    const log = {};
-    log.sync = await run('Supabase Sync', './scripts/sync-to-supabase.js', []);
-    return saveReport(log, t0, runId, 'sync', log.sync?.success || false);
-  }
+  // modes يدوية
+  const manualMap = {
+    library:   () => libraryDay(t0, runId),
+    invention: () => inventorDay(universe, t0, runId),
+    screenplay:() => screenplayDay(universe, t0, runId),
+    series:    () => seriesDay(universe, t0, runId),
+    code:      () => gameGdDay(universe, t0, runId),
+    revival:   () => revivalDay(universe, t0, runId),
+    sync:      async () => {
+      const log = {};
+      log.sync = await run('Supabase Sync', './scripts/sync-to-supabase.js', []);
+      return saveReport(log, t0, runId, 'sync', log.sync?.success || false);
+    },
+  };
+  if (manualMap[mode]) return manualMap[mode]();
 
-  if (IS_LIBRARY_DAY)  return libraryDay(t0, runId);
-  if (IS_INVENTOR_DAY) return inventorDay(universe, t0, runId);
-  return productionDay(universe, t0, runId);
+  // auto — حسب اليوم
+  const task = getDayTask();
+  switch (task) {
+    case 'library':    return libraryDay(t0, runId);
+    case 'inventor':   return inventorDay(universe, t0, runId);
+    case 'screenplay': return screenplayDay(universe, t0, runId);
+    case 'series':     return seriesDay(universe, t0, runId);
+    case 'game-gd':    return gameGdDay(universe, t0, runId);
+    case 'game-tscn':  return gameTscnDay(universe, t0, runId);
+    case 'revival':    return revivalDay(universe, t0, runId);
+  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -498,7 +493,7 @@ async function birthMode(t0, runId) {
 
   if (canAfford('world')) {
     const partial = { id: data.idea.id, name: data.idea.name, soul: data.soul, worlds: [] };
-    log.world  = await run('World 1', './agents/world-birth-agent.js', [partial], 'world');
+    log.world   = await run('World 1', './agents/world-birth-agent.js', [partial], 'world');
     data.worlds = log.world?.success ? [log.world.data] : [];
     save('levels.json', { worlds: data.worlds });
   }
@@ -536,19 +531,19 @@ function saveReport(log, t0, runId, mode, success) {
     totalDuration: fmt(Date.now() - t0),
     budget: {
       total: budget.total, limit: budget.limit,
-      left:  budget.left,  percent: `${budget.percent}%`,
-      keys:  budget.keys,
+      left:  budget.left,  keys: budget.keys,
     },
     library:  { built: lib.built, total: lib.total, percent: `${lib.percent}%` },
     progress: {
-      current:       progress.current,
       nextEpisode:   progress.series.nextEpisode,
       totalEpisodes: progress.series.totalEpisodes,
       gamesDone:     progress.games.done.length,
     },
     agents: Object.fromEntries(
       Object.entries(log).map(([k, v]) => [k, {
-        success: v?.success || false, duration: v?.duration || '—', error: v?.error || null,
+        success: v?.success || false,
+        duration: v?.duration || '—',
+        error: v?.error || null,
       }])
     ),
     summary: {
@@ -561,13 +556,12 @@ function saveReport(log, t0, runId, mode, success) {
   writeFileSync(join(RESULTS_DIR, 'run-report.json'),
     JSON.stringify(report, null, 2), 'utf8');
 
-  logger.info('[DONE] Orchestrator v10.2', {
+  logger.info('[DONE] Orchestrator v10.3', {
     mode, success,
     duration: report.totalDuration,
     passed:   report.summary.passed,
     failed:   report.summary.failed,
     quota:    `${budget.total}/${budget.limit}`,
-    library:  `${lib.percent}%`,
   });
 
   return report;
@@ -587,7 +581,7 @@ function triggerGodotExport(gameId = '') {
 }
 
 main().catch(err => {
-  logger.error('[CRASH] Orchestrator v10.2', { error: err.message });
+  logger.error('[CRASH] Orchestrator v10.3', { error: err.message });
   if (existsSync(UNIVERSE_BAK)) rollbackUniverse();
   process.exit(1);
 });
