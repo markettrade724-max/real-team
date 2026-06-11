@@ -1,22 +1,22 @@
 {
-  "runId": "2026-06-11T0907",
+  "runId": "2026-06-11T1123",
   "mode": "production",
   "success": false,
-  "timestamp": "2026-06-11T09:09:15.109Z",
-  "totalDuration": "90.1s",
+  "timestamp": "2026-06-11T11:25:15.509Z",
+  "totalDuration": "109.5s",
   "budget": {
-    "total": 13,
+    "total": 16,
     "limit": 40,
-    "left": 27,
-    "percent": "33%",
+    "left": 24,
+    "percent": "40%",
     "keys": [
       {
         "key": "KEY_1",
-        "total": 13,
+        "total": 16,
         "limit": 20,
-        "left": 7,
+        "left": 4,
         "library": 0,
-        "agents": 13
+        "agents": 16
       },
       {
         "key": "KEY_2",
@@ -39,7 +39,7 @@
       "episode": 3,
       "id": null,
       "startedAt": "2026-06-11T09:07:45.000Z",
-      "updatedAt": "2026-06-11T09:09:15.102Z",
+      "updatedAt": "2026-06-11T11:25:15.502Z",
       "failReason": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     },
     "nextEpisode": 3,
