@@ -1,30 +1,30 @@
 {
-  "runId": "2026-06-10T1056",
+  "runId": "2026-06-11T0638",
   "mode": "production",
   "success": true,
-  "timestamp": "2026-06-10T11:02:07.666Z",
-  "totalDuration": "325.9s",
+  "timestamp": "2026-06-11T06:43:57.957Z",
+  "totalDuration": "299.1s",
   "budget": {
-    "total": 35,
+    "total": 10,
     "limit": 40,
-    "left": 5,
-    "percent": "88%",
+    "left": 30,
+    "percent": "25%",
     "keys": [
       {
         "key": "KEY_1",
-        "total": 20,
+        "total": 10,
         "limit": 20,
-        "left": 0,
+        "left": 10,
         "library": 0,
-        "agents": 20
+        "agents": 10
       },
       {
         "key": "KEY_2",
-        "total": 15,
+        "total": 0,
         "limit": 20,
-        "left": 5,
+        "left": 20,
         "library": 0,
-        "agents": 15
+        "agents": 0
       }
     ]
   },
@@ -35,8 +35,8 @@
   },
   "progress": {
     "current": null,
-    "nextEpisode": 3,
-    "totalEpisodes": 2,
+    "nextEpisode": 4,
+    "totalEpisodes": 3,
     "gamesDone": 0
   },
   "agents": {
@@ -47,7 +47,7 @@
     },
     "world": {
       "success": true,
-      "duration": "151.9s",
+      "duration": "92.0s",
       "error": null
     }
   },

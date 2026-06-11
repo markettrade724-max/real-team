@@ -1,161 +1,83 @@
 {
-  "date": "2026-06-10",
-  "total": 20,
+  "date": "2026-06-11",
+  "total": 10,
   "limit": 20,
   "library": 0,
-  "agents": 20,
+  "agents": 10,
   "log": [
     {
-      "time": "06:11:49",
+      "time": "06:38:58",
       "caller": "screenplay-agent",
-      "success": false,
+      "success": true,
       "total": 1,
-      "left": 19,
-      "errorType": "json_truncated"
+      "left": 19
     },
     {
-      "time": "06:12:11",
+      "time": "06:39:16",
       "caller": "screenplay-agent",
-      "success": true,
+      "success": false,
       "total": 2,
-      "left": 18
+      "left": 18,
+      "errorType": "network_503"
     },
     {
-      "time": "06:12:31",
+      "time": "06:39:53",
       "caller": "screenplay-agent",
-      "success": false,
+      "success": true,
       "total": 3,
-      "left": 17,
-      "errorType": "network_503"
+      "left": 17
     },
     {
-      "time": "06:13:12",
+      "time": "06:40:46",
       "caller": "screenplay-agent",
-      "success": true,
+      "success": false,
       "total": 4,
-      "left": 16
-    },
-    {
-      "time": "06:13:54",
-      "caller": "screenplay-agent",
-      "success": false,
-      "total": 5,
-      "left": 15,
+      "left": 16,
       "errorType": "network_503"
     },
     {
-      "time": "06:14:37",
+      "time": "06:41:41",
       "caller": "screenplay-agent",
       "success": true,
-      "total": 6,
-      "left": 14
+      "total": 5,
+      "left": 15
     },
     {
-      "time": "06:15:18",
+      "time": "06:42:25",
       "caller": "world-birth-agent",
       "success": false,
-      "total": 7,
-      "left": 13,
+      "total": 6,
+      "left": 14,
       "errorType": "json_truncated"
     },
     {
-      "time": "06:15:28",
+      "time": "06:42:58",
       "caller": "world-birth-agent",
       "success": true,
-      "total": 8,
-      "left": 12
+      "total": 7,
+      "left": 13
     },
     {
-      "time": "06:15:46",
+      "time": "06:43:08",
       "caller": "world-birth-agent",
       "success": false,
-      "total": 9,
-      "left": 11,
+      "total": 8,
+      "left": 12,
       "errorType": "json_truncated"
     },
     {
-      "time": "06:15:59",
+      "time": "06:43:29",
+      "caller": "world-birth-agent",
+      "success": true,
+      "total": 9,
+      "left": 11
+    },
+    {
+      "time": "06:43:44",
       "caller": "world-birth-agent",
       "success": true,
       "total": 10,
       "left": 10
-    },
-    {
-      "time": "06:16:23",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 11,
-      "left": 9,
-      "errorType": "network_503"
-    },
-    {
-      "time": "06:16:54",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 12,
-      "left": 8,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "08:43:31",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 13,
-      "left": 7
-    },
-    {
-      "time": "08:43:48",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 14,
-      "left": 6
-    },
-    {
-      "time": "08:44:24",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 15,
-      "left": 5
-    },
-    {
-      "time": "08:45:13",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 16,
-      "left": 4,
-      "errorType": "network_503"
-    },
-    {
-      "time": "08:45:44",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 17,
-      "left": 3,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "08:46:15",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 18,
-      "left": 2,
-      "errorType": "network_503"
-    },
-    {
-      "time": "08:46:46",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 19,
-      "left": 1,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "08:47:16",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 20,
-      "left": 0,
-      "errorType": "json_truncated"
     }
   ]
 }
