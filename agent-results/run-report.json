@@ -1,22 +1,22 @@
 {
-  "runId": "2026-06-11T0638",
+  "runId": "2026-06-11T0907",
   "mode": "production",
-  "success": true,
-  "timestamp": "2026-06-11T06:43:57.957Z",
-  "totalDuration": "299.1s",
+  "success": false,
+  "timestamp": "2026-06-11T09:09:15.109Z",
+  "totalDuration": "90.1s",
   "budget": {
-    "total": 10,
+    "total": 13,
     "limit": 40,
-    "left": 30,
-    "percent": "25%",
+    "left": 27,
+    "percent": "33%",
     "keys": [
       {
         "key": "KEY_1",
-        "total": 10,
+        "total": 13,
         "limit": 20,
-        "left": 10,
+        "left": 7,
         "library": 0,
-        "agents": 10
+        "agents": 13
       },
       {
         "key": "KEY_2",
@@ -34,26 +34,28 @@
     "percent": "34%"
   },
   "progress": {
-    "current": null,
-    "nextEpisode": 4,
-    "totalEpisodes": 3,
+    "current": {
+      "type": "episode",
+      "episode": 3,
+      "id": null,
+      "startedAt": "2026-06-11T09:07:45.000Z",
+      "updatedAt": "2026-06-11T09:09:15.102Z",
+      "failReason": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+    },
+    "nextEpisode": 3,
+    "totalEpisodes": 2,
     "gamesDone": 0
   },
   "agents": {
     "screenplay": {
-      "success": true,
+      "success": false,
       "duration": "—",
-      "error": null
-    },
-    "world": {
-      "success": true,
-      "duration": "92.0s",
-      "error": null
+      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     }
   },
   "summary": {
-    "total": 2,
-    "passed": 2,
-    "failed": 0
+    "total": 1,
+    "passed": 0,
+    "failed": 1
   }
 }
