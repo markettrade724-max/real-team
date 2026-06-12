@@ -2,14 +2,14 @@
  * scripts/progress.js — v1.1
  *
  * التغييرات عن v1.0:
- *  - startGame: إذا نفس اللعبة → استمر من حيث توقف
- *  - startEpisode: إذا نفس الحلقة → استمر من حيث توقف
+ *  - startGame: لا تُعيد تهيئة اللعبة إذا كانت موجودة — نكمل من حيث انتهينا
+ *  - startEpisode: pendingSteps تُبنى من completedSteps — لا نعيد ما أُنجز
+ *  - failTask: رسالة log صحيحة — "retry same day next week"
  *
  * القواعد المطبقة:
- *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
- *  rule-172 : أكمل ما بدأت — لا تمسح التقدم السابق
  *  rule-187 : المهام الجارية أولوية مطلقة
- *  rule-188 : كل خطوة تُحفظ فور اكتمالها
+ *  rule-188 : كل خطوة تُحفظ فور اكتمالها — لا خسارة عند crash
+ *  rule-193 : 12 دالة مُصدَّرة
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -20,9 +20,17 @@ import { logger } from '../logger.js';
 const __dirname     = dirname(fileURLToPath(import.meta.url));
 const PROGRESS_PATH = join(__dirname, '..', 'progress.json');
 
+// ══════════════════════════════════════════════════════════
+// ثوابت
+// ══════════════════════════════════════════════════════════
 const EPISODE_STEPS   = ['backbone', 'scenes', 'dialogue'];
-const GAME_GD_FILES   = ['main_scene.gd', 'player.gd', 'enemy.gd', 'weapon.gd', 'bullet.gd'];
-const GAME_TSCN_FILES = ['main_scene.tscn', 'player.tscn', 'enemy.tscn', 'weapon.tscn', 'bullet.tscn'];
+
+const GAME_GD_FILES   = [
+  'main_scene.gd', 'player.gd', 'enemy.gd', 'weapon.gd', 'bullet.gd',
+];
+const GAME_TSCN_FILES = [
+  'main_scene.tscn', 'player.tscn', 'enemy.tscn', 'weapon.tscn', 'bullet.tscn',
+];
 const ALL_GAME_FILES  = [...GAME_GD_FILES, ...GAME_TSCN_FILES];
 
 // ══════════════════════════════════════════════════════════
@@ -46,8 +54,12 @@ function freshProgress() {
 }
 
 // ══════════════════════════════════════════════════════════
-// I/O
+// I/O — loadProgress / saveProgress
 // ══════════════════════════════════════════════════════════
+
+/**
+ * يقرأ progress.json أو يُنشئ ملفاً جديداً إن لم يكن موجوداً
+ */
 export function loadProgress() {
   if (!existsSync(PROGRESS_PATH)) {
     const fresh = freshProgress();
@@ -57,21 +69,32 @@ export function loadProgress() {
   try {
     return JSON.parse(readFileSync(PROGRESS_PATH, 'utf8'));
   } catch (err) {
-    logger.warn('[PROGRESS] Corrupt — resetting', { error: err.message });
+    logger.warn('[PROGRESS] Corrupt progress.json — resetting', { error: err.message });
     const fresh = freshProgress();
     saveProgress(fresh);
     return fresh;
   }
 }
 
+/**
+ * يحفظ progress مع تحديث updatedAt — rule-188
+ */
 export function saveProgress(progress) {
   progress.updatedAt = new Date().toISOString();
   writeFileSync(PROGRESS_PATH, JSON.stringify(progress, null, 2), 'utf8');
 }
 
 // ══════════════════════════════════════════════════════════
-// getNextTask
+// getNextTask — ماذا يفعل اليوم؟
 // ══════════════════════════════════════════════════════════
+
+/**
+ * يُحدد المهمة التالية:
+ *  - إذا كان هناك current → أكملها (rule-187)
+ *  - وإلا → ابدأ مهمة جديدة
+ *
+ * @returns {{ type: 'continue'|'new', task: object|null }}
+ */
 export function getNextTask(progress) {
   if (progress.current) {
     return { type: 'continue', task: progress.current };
@@ -82,16 +105,24 @@ export function getNextTask(progress) {
 // ══════════════════════════════════════════════════════════
 // حلقات المسلسل
 // ══════════════════════════════════════════════════════════
+
+/**
+ * يُعلن بداية حلقة أو استئنافها
+ * - إذا كانت الحلقة موجودة: نكمل من حيث انتهينا — لا نُعيد ما أُنجز
+ * - إذا كانت جديدة: نُنشئ سجلها من الصفر
+ */
 export function startEpisode(episodeNumber) {
   const p = loadProgress();
 
-  // rule-172: نفس الحلقة جارية → استمر
-  if (p.current?.type === 'episode' && p.current?.episode === episodeNumber) {
-    logger.info('[PROGRESS] Resuming episode', { episode: episodeNumber });
-    return;
-  }
-
-  if (!p.series.episodes[episodeNumber]) {
+  if (p.series.episodes[episodeNumber]) {
+    // استئناف — نكمل من حيث انتهينا
+    const ep        = p.series.episodes[episodeNumber];
+    ep.status       = 'in_progress';
+    ep.failReason   = null;
+    // pendingSteps = ما لم يُنجز فعلاً — لا نُعيد الصفر
+    ep.pendingSteps = EPISODE_STEPS.filter(s => !ep.completedSteps.includes(s));
+  } else {
+    // حلقة جديدة
     p.series.episodes[episodeNumber] = {
       status:         'in_progress',
       completedSteps: [],
@@ -101,9 +132,6 @@ export function startEpisode(episodeNumber) {
       completedAt:    null,
       failReason:     null,
     };
-  } else {
-    p.series.episodes[episodeNumber].status     = 'in_progress';
-    p.series.episodes[episodeNumber].failReason = null;
   }
 
   p.current = {
@@ -116,31 +144,48 @@ export function startEpisode(episodeNumber) {
   };
 
   saveProgress(p);
-  logger.info('[PROGRESS] Episode started', { episode: episodeNumber });
+  logger.info('[PROGRESS] Episode started', {
+    episode:   episodeNumber,
+    completed: p.series.episodes[episodeNumber].completedSteps,
+    pending:   p.series.episodes[episodeNumber].pendingSteps,
+  });
 }
 
+/**
+ * يحفظ نتيجة خطوة واحدة من الحلقة — rule-188
+ * يُستدعى فور اكتمال كل خطوة (backbone / scenes / dialogue)
+ */
 export function saveEpisodeStep(episodeNumber, step, data = null) {
   const p = loadProgress();
 
+  // ضمان وجود السجل
   if (!p.series.episodes[episodeNumber]) {
     p.series.episodes[episodeNumber] = {
-      status: 'in_progress', completedSteps: [], pendingSteps: [...EPISODE_STEPS],
-      data: {}, startedAt: new Date().toISOString(), completedAt: null, failReason: null,
+      status:         'in_progress',
+      completedSteps: [],
+      pendingSteps:   [...EPISODE_STEPS],
+      data:           {},
+      startedAt:      new Date().toISOString(),
+      completedAt:    null,
+      failReason:     null,
     };
   }
 
   const ep = p.series.episodes[episodeNumber];
+
   if (!ep.completedSteps.includes(step)) ep.completedSteps.push(step);
-  ep.pendingSteps = ep.pendingSteps.filter(s => s !== step);
-  ep.data[step]   = {
+  ep.pendingSteps = EPISODE_STEPS.filter(s => !ep.completedSteps.includes(s));
+
+  // احفظ مقتطفاً فقط لتجنب ضخامة الملف
+  ep.data[step] = {
     savedAt: new Date().toISOString(),
     title:   data?.title   || null,
     summary: data?.summary || null,
   };
 
   if (p.current) p.current.updatedAt = new Date().toISOString();
-  saveProgress(p);
 
+  saveProgress(p);
   logger.info('[PROGRESS] Episode step saved', {
     episode:   episodeNumber,
     step,
@@ -149,20 +194,32 @@ export function saveEpisodeStep(episodeNumber, step, data = null) {
   });
 }
 
+/**
+ * يُرجع حالة الحلقة: الخطوات المكتملة والمعلقة والبيانات المحفوظة
+ */
 export function getEpisodeProgress(progress, episodeNumber) {
   const ep = progress.series?.episodes?.[episodeNumber];
-  if (!ep) return { completedSteps: [], pendingSteps: [...EPISODE_STEPS], data: {} };
+  if (!ep) {
+    return {
+      completedSteps: [],
+      pendingSteps:   [...EPISODE_STEPS],
+      data:           {},
+    };
+  }
   return {
     completedSteps: ep.completedSteps || [],
-    pendingSteps:   ep.pendingSteps   || [...EPISODE_STEPS],
+    pendingSteps:   EPISODE_STEPS.filter(s => !(ep.completedSteps || []).includes(s)),
     data:           ep.data           || {},
   };
 }
 
+/**
+ * يُكمل الحلقة — يُحدث العدادات ويُفرغ current
+ */
 export function completeEpisode(episodeNumber) {
-  const p = loadProgress();
-
+  const p  = loadProgress();
   const ep = p.series.episodes[episodeNumber];
+
   if (ep) {
     ep.status       = 'complete';
     ep.completedAt  = new Date().toISOString();
@@ -184,41 +241,35 @@ export function completeEpisode(episodeNumber) {
 // ══════════════════════════════════════════════════════════
 // ألعاب Godot
 // ══════════════════════════════════════════════════════════
+
+/**
+ * يُعلن بداية لعبة أو استئنافها
+ * - إذا كانت اللعبة موجودة: نكمل من حيث انتهينا — لا نمسح الملفات المكتملة
+ * - إذا كانت جديدة: نُنشئ سجلها من الصفر
+ */
 export function startGame(gameId) {
   const p = loadProgress();
 
-  // rule-172: نفس اللعبة جارية → استمر من حيث توقف
-  if (p.games.current?.id === gameId && p.games.current?.status === 'in_progress') {
-    logger.info('[PROGRESS] Resuming game', {
-      id:        gameId,
-      completed: p.games.current.completedFiles?.length,
-      pending:   p.games.current.pendingFiles?.length,
-    });
-    // تأكد أن current يشير لها
-    if (!p.current || p.current.id !== gameId) {
-      p.current = {
-        type:       'game',
-        episode:    null,
-        id:         gameId,
-        startedAt:  p.games.current.startedAt,
-        updatedAt:  new Date().toISOString(),
-        failReason: null,
-      };
-      saveProgress(p);
-    }
-    return;
+  if (p.games.current?.id === gameId) {
+    // استئناف — نكمل من حيث انتهينا
+    const g     = p.games.current;
+    g.status    = 'in_progress';
+    g.failReason = null;
+    g.updatedAt  = new Date().toISOString();
+    // pendingFiles = ما لم يُنجز فعلاً — لا نُعيد الصفر
+    g.pendingFiles = ALL_GAME_FILES.filter(f => !g.completedFiles.includes(f));
+  } else {
+    // لعبة جديدة
+    p.games.current = {
+      id:             gameId,
+      status:         'in_progress',
+      completedFiles: [],
+      pendingFiles:   [...ALL_GAME_FILES],
+      startedAt:      new Date().toISOString(),
+      updatedAt:      new Date().toISOString(),
+      failReason:     null,
+    };
   }
-
-  // لعبة جديدة — ابدأ من الصفر
-  p.games.current = {
-    id:             gameId,
-    status:         'in_progress',
-    completedFiles: [],
-    pendingFiles:   [...ALL_GAME_FILES],
-    startedAt:      new Date().toISOString(),
-    updatedAt:      new Date().toISOString(),
-    failReason:     null,
-  };
 
   p.current = {
     type:       'game',
@@ -230,21 +281,29 @@ export function startGame(gameId) {
   };
 
   saveProgress(p);
-  logger.info('[PROGRESS] Game started', { id: gameId, pending: ALL_GAME_FILES.length });
+  logger.info('[PROGRESS] Game started', {
+    id:        gameId,
+    completed: p.games.current.completedFiles.length,
+    pending:   p.games.current.pendingFiles.length,
+  });
 }
 
+/**
+ * يُسجّل اكتمال ملف واحد — rule-188
+ */
 export function saveGameFile(gameId, filename, _content = null) {
   const p = loadProgress();
 
   if (!p.games.current || p.games.current.id !== gameId) {
-    logger.warn('[PROGRESS] saveGameFile: no matching game', { gameId, filename });
+    logger.warn('[PROGRESS] saveGameFile: no matching current game', { gameId, filename });
     return;
   }
 
   const g = p.games.current;
   if (!g.completedFiles.includes(filename)) g.completedFiles.push(filename);
-  g.pendingFiles = g.pendingFiles.filter(f => f !== filename);
+  g.pendingFiles = ALL_GAME_FILES.filter(f => !g.completedFiles.includes(f));
   g.updatedAt    = new Date().toISOString();
+
   if (p.current) p.current.updatedAt = new Date().toISOString();
 
   saveProgress(p);
@@ -256,17 +315,26 @@ export function saveGameFile(gameId, filename, _content = null) {
   });
 }
 
+/**
+ * يُرجع حالة اللعبة: الملفات المكتملة والمعلقة
+ */
 export function getGameProgress(progress, gameId) {
   const g = progress.games?.current;
   if (!g || g.id !== gameId) {
-    return { completedFiles: [], pendingFiles: [...ALL_GAME_FILES] };
+    return {
+      completedFiles: [],
+      pendingFiles:   [...ALL_GAME_FILES],
+    };
   }
   return {
     completedFiles: g.completedFiles || [],
-    pendingFiles:   g.pendingFiles   || [...ALL_GAME_FILES],
+    pendingFiles:   ALL_GAME_FILES.filter(f => !(g.completedFiles || []).includes(f)),
   };
 }
 
+/**
+ * يُكمل اللعبة — يُضيفها لـ done ويُفرغ current
+ */
 export function completeGame(gameId) {
   const p = loadProgress();
 
@@ -280,12 +348,21 @@ export function completeGame(gameId) {
   p.current       = null;
 
   saveProgress(p);
-  logger.info('[PROGRESS] Game complete', { id: gameId, totalDone: p.games.done.length });
+  logger.info('[PROGRESS] Game complete', {
+    id:        gameId,
+    totalDone: p.games.done.length,
+  });
 }
 
 // ══════════════════════════════════════════════════════════
-// فشل — يبقى current للإعادة غداً
+// فشل — يبقى current للإعادة نفس اليوم الأسبوع القادم
 // ══════════════════════════════════════════════════════════
+
+/**
+ * يُسجّل فشل المهمة الحالية
+ * - لا يُفرغ current — نكمل من نفس النقطة الأسبوع القادم
+ * - يحفظ سبب الفشل للمراجعة
+ */
 export function failTask(reason = 'unknown') {
   const p = loadProgress();
 
@@ -305,7 +382,7 @@ export function failTask(reason = 'unknown') {
   }
 
   saveProgress(p);
-  logger.warn('[PROGRESS] Task failed — will retry tomorrow', {
+  logger.warn('[PROGRESS] Task failed — will retry same day next week', {
     type:   p.current?.type,
     reason: reason.slice(0, 100),
   });
