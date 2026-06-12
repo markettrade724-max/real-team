@@ -1,13 +1,14 @@
 {
-  "runId": "2026-06-12T1101",
-  "mode": "revival",
+  "runId": "2026-06-12T1118",
+  "mode": "game-phase2",
   "success": false,
-  "timestamp": "2026-06-12T11:01:47.349Z",
-  "totalDuration": "9ms",
+  "timestamp": "2026-06-12T11:18:47.899Z",
+  "totalDuration": "12ms",
   "budget": {
     "total": 0,
     "limit": 40,
     "left": 40,
+    "percent": "0%",
     "keys": [
       {
         "key": "KEY_1",
@@ -33,6 +34,14 @@
     "percent": "34%"
   },
   "progress": {
+    "current": {
+      "type": "episode",
+      "episode": 3,
+      "id": null,
+      "startedAt": "2026-06-11T09:07:45.000Z",
+      "updatedAt": "2026-06-11T11:25:15.502Z",
+      "failReason": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+    },
     "nextEpisode": 3,
     "totalEpisodes": 2,
     "gamesDone": 0
