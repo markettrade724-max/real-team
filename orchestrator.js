@@ -334,7 +334,7 @@ function getNextGameTask(progress) {
 
   const products = loadProducts();
   const next = products.find(pr =>
-    pr.engine === 'godot' &&
+    pr.type === 'godot' &&
     !progress.games?.done?.includes(pr.id)
   );
 
