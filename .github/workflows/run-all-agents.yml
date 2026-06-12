@@ -14,12 +14,14 @@ on:
         options:
           - auto
           - birth
-          - episode
-          - invention
-          - revival
-          - sync
-          - code
+          - backbone
+          - scenes
+          - dialogue
+          - game-phase1
+          - game-phase2
+          - inventor
           - library
+          - sync
 
 jobs:
   orchestrate:
@@ -78,7 +80,91 @@ jobs:
           }
 
       # ══════════════════════════════════════════════════════
-      # 2 — تشغيل الـ orchestrator
+      # 2 — فحص ما قبل التشغيل
+      # ══════════════════════════════════════════════════════
+      - name: Pre-flight check
+        shell: pwsh
+        run: |
+          $mode = "${{ github.event.inputs.mode || 'auto' }}"
+          Write-Host "[INFO] === pre-flight check ==="
+          Write-Host "[INFO] Mode: $mode"
+
+          # فحص progress.json
+          if (Test-Path "progress.json") {
+            try {
+              $pg = Get-Content "progress.json" | ConvertFrom-Json
+              Write-Host "[OK] progress.json valid"
+
+              # تنبيه إذا كانت المهمة فاشلة من الأسبوع الماضي
+              if ($pg.current -and $pg.current.failReason) {
+                Write-Host "[WARN] Last task failed: $($pg.current.failReason)"
+                Write-Host "[WARN] Will retry: $($pg.current.type)"
+              }
+
+              # تقدم الحلقة
+              $ep = $pg.series.nextEpisode
+              if ($pg.series.episodes."$ep") {
+                $epState = $pg.series.episodes."$ep"
+                $done    = $epState.completedSteps -join ", "
+                $pending = ($epState.pendingSteps -join ", ")
+                Write-Host "[INFO] Episode $ep — done: [$done] pending: [$pending]"
+              } else {
+                Write-Host "[INFO] Episode $ep — not started yet"
+              }
+
+              # تقدم اللعبة
+              if ($pg.games.current) {
+                $g = $pg.games.current
+                Write-Host "[INFO] Game $($g.id) — files done: $($g.completedFiles.Count) pending: $($g.pendingFiles.Count)"
+              } else {
+                Write-Host "[INFO] No game in progress"
+              }
+            } catch {
+              Write-Host "[WARN] progress.json unreadable — will reset on run"
+            }
+          } else {
+            Write-Host "[INFO] No progress.json — first run"
+          }
+
+          # فحص الحصة المتبقية
+          Write-Host "[INFO] === quota check ==="
+          $totalLeft = 0
+          foreach ($file in @("library/budget.json","library/budget2.json")) {
+            $label = if ($file -match "budget2") { "KEY_2" } else { "KEY_1" }
+            if (Test-Path $file) {
+              try {
+                $b    = Get-Content $file | ConvertFrom-Json
+                $left = $b.limit - $b.total
+                $totalLeft += $left
+                Write-Host "[INFO] ${label}: $($b.total)/$($b.limit) used — $left left"
+              } catch {
+                $totalLeft += 20
+                Write-Host "[WARN] ${label}: unreadable budget — assuming 20 left"
+              }
+            } else {
+              $totalLeft += 20
+              Write-Host "[INFO] ${label}: not initialized — assuming 20 left"
+            }
+          }
+          Write-Host "[INFO] TOTAL left today: $totalLeft/40"
+
+          # تنبيه إذا كانت الحصة غير كافية لمهمة اليوم
+          $needed = @{
+            "library"     = 40; "inventor"    = 40
+            "backbone"    = 1;  "scenes"      = 1;  "dialogue"   = 1
+            "game-phase1" = 4;  "game-phase2" = 5
+          }
+          if ($mode -ne "auto" -and $needed.ContainsKey($mode)) {
+            $req = $needed[$mode]
+            if ($totalLeft -lt $req) {
+              Write-Host "[WARN] Quota insufficient for $mode — need $req have $totalLeft"
+            } else {
+              Write-Host "[OK] Quota sufficient for $mode — need $req have $totalLeft"
+            }
+          }
+
+      # ══════════════════════════════════════════════════════
+      # 3 — تشغيل الـ orchestrator
       # ══════════════════════════════════════════════════════
       - name: Run orchestrator
         shell: pwsh
@@ -100,86 +186,112 @@ jobs:
         run: node orchestrator.js
 
       # ══════════════════════════════════════════════════════
-      # 3 — تقرير النتائج
+      # 4 — تقرير النتائج
       # ══════════════════════════════════════════════════════
       - name: Show results
         if: always()
         shell: pwsh
         run: |
-          Write-Host "[INFO] === run report ==="
+          Write-Host "[INFO] ══════════════════════════════════"
+          Write-Host "[INFO]         RESULTS REPORT"
+          Write-Host "[INFO] ══════════════════════════════════"
+
+          # تقرير التشغيل
           if (Test-Path "agent-results/run-report.json") {
             $r = Get-Content "agent-results/run-report.json" | ConvertFrom-Json
-            Write-Host "[INFO] Mode:     $($r.mode)"
-            Write-Host "[INFO] Duration: $($r.totalDuration)"
-            Write-Host "[INFO] Passed:   $($r.summary.passed)"
-            Write-Host "[INFO] Failed:   $($r.summary.failed)"
-            Write-Host "[INFO] Library:  $($r.library.percent)% ($($r.library.built)/$($r.library.total))"
+            $status = if ($r.success) { "[OK]" } else { "[FAIL]" }
+            Write-Host "$status Mode:     $($r.mode)"
+            Write-Host "$status Duration: $($r.totalDuration)"
+            Write-Host "$status Passed:   $($r.summary.passed)"
+            Write-Host "$status Failed:   $($r.summary.failed)"
+
+            # تفاصيل كل وكيل
+            if ($r.agents) {
+              Write-Host "[INFO] --- agents ---"
+              $r.agents.PSObject.Properties | ForEach-Object {
+                $icon = if ($_.Value.success) { "[OK]" } else { "[FAIL]" }
+                $err  = if ($_.Value.error)   { " — $($_.Value.error)" } else { "" }
+                Write-Host "$icon $($_.Name): $($_.Value.duration)$err"
+              }
+            }
           } else {
-            Write-Warning "[WARN] No run report found"
+            Write-Host "[WARN] No run report found"
           }
 
-          Write-Host "[INFO] === budget (KEY_1 + KEY_2) ==="
+          # الحصة بعد التشغيل
+          Write-Host "[INFO] --- quota after run ---"
           $totalLeft = 0
           foreach ($file in @("library/budget.json","library/budget2.json")) {
             $label = if ($file -match "budget2") { "KEY_2" } else { "KEY_1" }
             if (Test-Path $file) {
-              $b = Get-Content $file | ConvertFrom-Json
-              $left = $b.limit - $b.total
-              $totalLeft += $left
-              Write-Host "[INFO] ${label}: $($b.total)/$($b.limit) used — $left left"
-            } else {
-              Write-Host "[INFO] ${label}: not initialized yet"
-              $totalLeft += 250   # Free Tier: 250 RPD per project
+              try {
+                $b    = Get-Content $file | ConvertFrom-Json
+                $left = $b.limit - $b.total
+                $totalLeft += $left
+                Write-Host "[INFO] ${label}: $($b.total)/$($b.limit) used — $left left"
+              } catch {
+                $totalLeft += 20
+              }
             }
           }
-          Write-Host "[INFO] TOTAL left today: $totalLeft/500"
+          Write-Host "[INFO] TOTAL left today: $totalLeft/40"
 
-          Write-Host "[INFO] === progress ==="
+          # تقدم الحلقة والألعاب
+          Write-Host "[INFO] --- progress ---"
           if (Test-Path "progress.json") {
-            $pg  = Get-Content "progress.json" | ConvertFrom-Json
-            $cur = if ($pg.current) {
-              $ep = if ($null -ne $pg.current.episode) { $pg.current.episode } else { $pg.current.id }
-              "$($pg.current.type):$ep"
-            } else { "none" }
-            Write-Host "[OK] Current:       $cur"
-            Write-Host "[OK] Next episode:  $($pg.series.nextEpisode)"
-            Write-Host "[OK] Episodes done: $($pg.series.totalEpisodes)"
-            Write-Host "[OK] Games done:    $($pg.games.done.Count)"
+            $pg = Get-Content "progress.json" | ConvertFrom-Json
+
+            # الحلقة
+            $ep      = $pg.series.nextEpisode
+            $epDone  = $pg.series.totalEpisodes
+            if ($pg.series.episodes."$ep") {
+              $epState  = $pg.series.episodes."$ep"
+              $backbone = if ($epState.completedSteps -contains "backbone")  { "done" } else { "pending" }
+              $scenes   = if ($epState.completedSteps -contains "scenes")    { "done" } else { "pending" }
+              $dialogue = if ($epState.completedSteps -contains "dialogue")  { "done" } else { "pending" }
+              Write-Host "[OK] Episode $ep — backbone:$backbone scenes:$scenes dialogue:$dialogue"
+            } else {
+              Write-Host "[INFO] Episode $ep — not started"
+            }
+            Write-Host "[OK] Episodes complete: $epDone"
+
+            # اللعبة
+            if ($pg.games.current) {
+              $g      = $pg.games.current
+              $phase  = if ($g.completedFiles.Count -lt 5) { "phase1" } else { "phase2" }
+              Write-Host "[OK] Game $($g.id) — $phase — files: $($g.completedFiles.Count)/10"
+            } else {
+              Write-Host "[INFO] No game in progress"
+            }
+            Write-Host "[OK] Games complete: $($pg.games.done.Count)"
           } else {
-            Write-Host "[INFO] No progress.json yet — first run"
+            Write-Host "[INFO] No progress.json yet"
           }
 
-          Write-Host "[INFO] === universe ==="
+          # universe
+          Write-Host "[INFO] --- universe ---"
           if (Test-Path "universe.json") {
             $u = Get-Content "universe.json" | ConvertFrom-Json
-            Write-Host "[OK] $($u.id) | Worlds: $($u.worlds.Count) | Evolutions: $($u.evolutions)"
+            Write-Host "[OK] $($u.id) | Worlds: $($u.worlds.Count) | Evolutions: $($u.evolutions) | Inventions: $($u.inventions)"
           } else {
-            Write-Warning "[WARN] No universe yet"
+            Write-Host "[WARN] No universe yet"
           }
 
-          Write-Host "[INFO] === series ==="
-          if (Test-Path "series.json") {
-            $s = Get-Content "series.json" | ConvertFrom-Json
-            Write-Host "[OK] $($s.title) | Episodes: $($s.episodes.Count) | Next: $($s.nextEpisode)"
-          } else {
-            Write-Host "[INFO] No series yet"
+          # المكتبة
+          Write-Host "[INFO] --- library ---"
+          if (Test-Path "agent-results/run-report.json") {
+            $r = Get-Content "agent-results/run-report.json" | ConvertFrom-Json
+            Write-Host "[OK] $($r.library.percent) ($($r.library.built)/$($r.library.total))"
           }
 
-          Write-Host "[INFO] === library ==="
-          if (Test-Path "library/index.json") {
-            $l = Get-Content "library/index.json" | ConvertFrom-Json
-            Write-Host "[OK] $($l.Count) references built"
-          } else {
-            Write-Host "[INFO] Library empty"
-          }
-
-          Write-Host "[INFO] === products ==="
+          # المنتجات
+          Write-Host "[INFO] --- products ---"
           if (Test-Path "products.json") {
             node -e "try{const p=JSON.parse(require('fs').readFileSync('products.json'));console.log('[OK] Products:',p.length);}catch(e){console.error('[ERROR]',e.message);}"
           }
 
       # ══════════════════════════════════════════════════════
-      # 4 — نسخ الملفات العامة
+      # 5 — نسخ الملفات العامة
       # ══════════════════════════════════════════════════════
       - name: Copy products to public
         shell: pwsh
@@ -188,11 +300,11 @@ jobs:
             Copy-Item products.json public/products.json -Force
             Write-Host "[OK] products.json copied to public/"
           } else {
-            Write-Warning "[WARN] products.json not found"
+            Write-Host "[WARN] products.json not found"
           }
 
       # ══════════════════════════════════════════════════════
-      # 5 — رفع artifact الحلقة
+      # 6 — رفع artifact الحلقة
       # ══════════════════════════════════════════════════════
       - name: Upload episode artifact
         uses: actions/upload-artifact@v4
@@ -200,7 +312,8 @@ jobs:
           always() && (
             github.event_name == 'schedule' ||
             (github.event_name == 'workflow_dispatch' &&
-             contains(github.event.inputs.mode, 'episode'))
+             contains(fromJson('["backbone","scenes","dialogue","auto"]'),
+             github.event.inputs.mode))
           )
         with:
           name: episode-${{ github.run_number }}
@@ -210,7 +323,7 @@ jobs:
           retention-days: 30
 
       # ══════════════════════════════════════════════════════
-      # 6 — Commit + Push مع retry — rule-158, rule-159
+      # 7 — Commit + Push مع retry — rule-158, rule-159
       # ══════════════════════════════════════════════════════
       - name: Commit and push
         shell: pwsh
@@ -227,13 +340,13 @@ jobs:
           git add    series.json          2>$null
           git add    products.json        2>$null
           git add    public/products.json 2>$null
-          if (Test-Path "progress.json")   { git add progress.json }
-          if (Test-Path "public/games")    { git add public/games/ }
-          if (Test-Path "universe.json")   { git add universe.json }
-          if (Test-Path "godot-projects")  { git add godot-projects/ }
-          if (Test-Path "godot-recipes")   { git add godot-recipes/ }
-          if (Test-Path "episodes")        { git add episodes/ }
-          if (Test-Path "assets")          { git add assets/ }
+          if (Test-Path "progress.json")  { git add progress.json }
+          if (Test-Path "public/games")   { git add public/games/ }
+          if (Test-Path "universe.json")  { git add universe.json }
+          if (Test-Path "godot-projects") { git add godot-projects/ }
+          if (Test-Path "godot-recipes")  { git add godot-recipes/ }
+          if (Test-Path "episodes")       { git add episodes/ }
+          if (Test-Path "assets")         { git add assets/ }
 
           $diff = git diff --staged --name-only
           if (-not $diff) {
@@ -241,19 +354,45 @@ jobs:
             exit 0
           }
 
-          $date = Get-Date -Format "yyyy-MM-dd HH:mm"
-          git commit -m "agents: $env:MODE run $date [skip ci]"
+          # commit message يعكس المهمة الفعلية — rule-158
+          $msg = switch ($env:MODE) {
+            "backbone"    { "agents: backbone done [skip ci]" }
+            "scenes"      { "agents: scenes done [skip ci]" }
+            "dialogue"    { "agents: dialogue done [skip ci]" }
+            "game-phase1" { "agents: game phase1 done [skip ci]" }
+            "game-phase2" { "agents: game phase2 done [skip ci]" }
+            "inventor"    { "agents: inventor done [skip ci]" }
+            "library"     { "agents: library updated [skip ci]" }
+            "birth"       { "agents: universe born [skip ci]" }
+            "sync"        { "agents: sync done [skip ci]" }
+            default {
+              # auto — اقرأ المهمة الفعلية من التقرير
+              $task = "auto"
+              if (Test-Path "agent-results/run-report.json") {
+                try {
+                  $r    = Get-Content "agent-results/run-report.json" | ConvertFrom-Json
+                  $task = $r.mode
+                } catch {}
+              }
+              "agents: $task done [skip ci]"
+            }
+          }
+
+          git commit -m $msg
 
           # push مع retry — rule-159
           $pushed = $false
           for ($i = 1; $i -le 3; $i++) {
             Write-Host "[INFO] Push attempt $i/3..."
+            git stash
             git pull --rebase origin main 2>$null
             if ($LASTEXITCODE -ne 0) {
               git rebase --abort 2>$null
+              git stash pop   2>$null
               Start-Sleep -Seconds (10 * $i)
               continue
             }
+            git stash pop 2>$null
             git push origin main
             if ($LASTEXITCODE -eq 0) {
               $pushed = $true
@@ -269,22 +408,57 @@ jobs:
           }
 
       # ══════════════════════════════════════════════════════
-      # 7 — QA bot بعد الـ deploy
+      # 8 — QA bot مع retry
       # ══════════════════════════════════════════════════════
       - name: Wait for Vercel deploy
         shell: pwsh
-        run: Start-Sleep -Seconds 30
+        run: |
+          Write-Host "[INFO] Waiting for Vercel deploy..."
+          $ready = $false
+          for ($i = 1; $i -le 6; $i++) {
+            Start-Sleep -Seconds 15
+            try {
+              $res = Invoke-WebRequest -Uri "$env:SITE_URL/products.json" `
+                       -UseBasicParsing -TimeoutSec 10 -ErrorAction Stop
+              if ($res.StatusCode -eq 200) {
+                Write-Host "[OK] Vercel ready after $($i * 15)s"
+                $ready = $true
+                break
+              }
+            } catch {
+              Write-Host "[INFO] Not ready yet — attempt $i/6"
+            }
+          }
+          if (-not $ready) {
+            Write-Host "[WARN] Vercel not confirmed ready — running QA anyway"
+          }
+        env:
+          SITE_URL: https://real-team.vercel.app
 
       - name: Run QA bot
         shell: pwsh
         env:
           SITE_URL: https://real-team.vercel.app
-        run: node scripts/qa-bot.js
+        run: |
+          $passed = $false
+          for ($i = 1; $i -le 3; $i++) {
+            Write-Host "[INFO] QA attempt $i/3..."
+            node scripts/qa-bot.js
+            if ($LASTEXITCODE -eq 0) {
+              $passed = $true
+              Write-Host "[OK] QA passed"
+              break
+            }
+            if ($i -lt 3) { Start-Sleep -Seconds 20 }
+          }
+          if (-not $passed) {
+            Write-Host "[WARN] QA failed after 3 attempts — check qa-results.json"
+          }
 
       - name: Upload QA report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: qa-report
+          name: qa-report-${{ github.run_number }}
           path: qa-results.json
           retention-days: 7
