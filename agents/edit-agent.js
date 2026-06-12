@@ -1,10 +1,9 @@
 /**
- * edit-agent.js — v2.1 (Node.js خالص)
+ * edit-agent.js — v2.2 (Node.js خالص)
  *
- * التغييرات عن v2.0:
- *  - run() يستلم subtitles و music (توافق series-agent v1.1)
- *  - موسيقى من music-agent إذا وجدت — وإلا ambient.mp3
- *  - logger.debug → logger.info (rule-099)
+ * التغييرات عن v2.1:
+ *  - buildSegment: معالجة صحيحة لـ audio.length === 0/1/N
+ *    (كان audio.length===1 يكسر ffmpeg بسبب غياب audio map)
  *
  * القواعد المطبقة:
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
@@ -50,6 +49,10 @@ export async function run(screenplay, visualManifest, audioManifest, subtitles =
     }
   }
 
+  if (segPaths.length === 0) {
+    throw new Error('No segments built — cannot assemble episode');
+  }
+
   // ── 2. دمج المقاطع ────────────────────
   const concatPath = join(epDir, 'concat.txt');
   writeFileSync(
@@ -62,7 +65,6 @@ export async function run(screenplay, visualManifest, audioManifest, subtitles =
   await concatSegments(concatPath, tempPath);
 
   // ── 3. موسيقى خلفية ───────────────────
-  // أولوية: music من music-agent → ambient.mp3 محلي → بدون موسيقى
   const bgMusic = resolveMusicPath(music);
 
   if (bgMusic && existsSync(bgMusic)) {
@@ -101,12 +103,10 @@ export async function run(screenplay, visualManifest, audioManifest, subtitles =
 // اختيار مسار الموسيقى
 // ══════════════════════════════════════════════════════════
 function resolveMusicPath(music) {
-  // من music-agent
-  if (music?.path && existsSync(music.path))       return music.path;
-  if (music?.file && existsSync(music.file))       return music.file;
-  // ambient محلي
+  if (music?.path && existsSync(music.path)) return music.path;
+  if (music?.file && existsSync(music.file)) return music.file;
   const ambient = join(MUSIC_LIB, 'ambient.mp3');
-  if (existsSync(ambient))                         return ambient;
+  if (existsSync(ambient))                   return ambient;
   return null;
 }
 
@@ -114,14 +114,14 @@ function resolveMusicPath(music) {
 // بناء الجدول الزمني
 // ══════════════════════════════════════════════════════════
 function buildTimeline(screenplay, visualManifest, audioManifest) {
-  const scenes       = [];
+  const scenes        = [];
   let   totalDuration = 0;
 
   for (const vScene of (visualManifest?.scenes || [])) {
     const sceneAudio = (audioManifest?.audioFiles || [])
       .filter(a => a.sceneId === vScene.id);
-    const audioDur  = sceneAudio.reduce((s, a) => s + (a.duration || 3), 0);
-    const sceneDur  = Math.max(vScene.duration || 30, audioDur + 2);
+    const audioDur   = sceneAudio.reduce((s, a) => s + (a.duration || 3), 0);
+    const sceneDur   = Math.max(vScene.duration || 30, audioDur + 2);
 
     scenes.push({
       id:        vScene.id,
@@ -137,21 +137,11 @@ function buildTimeline(screenplay, visualManifest, audioManifest) {
 }
 
 // ══════════════════════════════════════════════════════════
-// بناء مقطع واحد
+// بناء مقطع واحد — معالجة صحيحة لكل حالات الصوت
 // ══════════════════════════════════════════════════════════
 function buildSegment(scene, outputPath) {
   return new Promise((resolve, reject) => {
     const img = existsSync(scene.imagePath) ? scene.imagePath : FALLBACK_IMG;
-
-    let cmd = ffmpeg()
-      .input(img)
-      .inputOptions(['-loop 1', `-t ${scene.duration}`]);
-
-    if (scene.audio.length > 0) {
-      for (const a of scene.audio) cmd = cmd.input(a.file);
-    } else {
-      cmd = cmd.input('anullsrc=r=44100:cl=stereo').inputFormat('lavfi');
-    }
 
     const vf = [
       'scale=1920:1080:force_original_aspect_ratio=decrease',
@@ -159,32 +149,50 @@ function buildSegment(scene, outputPath) {
       'setsar=1',
     ].join(',');
 
-    let audioFilter = '';
-    if (scene.audio.length > 1) {
-      const inputs = scene.audio.map((_, i) => `[${i + 1}:a]`).join('');
-      audioFilter  = `${inputs}concat=n=${scene.audio.length}:v=0:a=1[aout]`;
-    }
+    const baseOpts = [
+      '-c:v libx264',
+      '-preset fast',
+      '-crf 23',
+      '-c:a aac',
+      '-b:a 128k',
+      `-t ${scene.duration}`,
+      '-pix_fmt yuv420p',
+      '-r 25',
+    ];
 
-    cmd
-      .outputOptions([
-        '-c:v libx264',
-        '-preset fast',
-        '-crf 23',
-        '-c:a aac',
-        '-b:a 128k',
-        `-t ${scene.duration}`,
-        '-pix_fmt yuv420p',
-        '-r 25',
-      ])
+    let cmd = ffmpeg()
+      .input(img)
+      .inputOptions(['-loop 1', `-t ${scene.duration}`])
       .videoFilters(vf);
 
-    if (audioFilter) {
-      cmd.complexFilter(audioFilter).outputOptions(['-map 0:v', '-map [aout]']);
+    if (scene.audio.length === 0) {
+      // ── لا صوت — نضيف صمت اصطناعي ──────────────────
+      cmd = cmd
+        .input('anullsrc=r=44100:cl=stereo')
+        .inputFormat('lavfi')
+        .outputOptions([...baseOpts, '-map 0:v', '-map 1:a']);
+
+    } else if (scene.audio.length === 1) {
+      // ── ملف صوتي واحد — map مباشر ────────────────────
+      cmd = cmd
+        .input(scene.audio[0].file)
+        .outputOptions([...baseOpts, '-map 0:v', '-map 1:a']);
+
+    } else {
+      // ── ملفات متعددة — concat الصوت ──────────────────
+      for (const a of scene.audio) cmd = cmd.input(a.file);
+
+      const inputs      = scene.audio.map((_, i) => `[${i + 1}:a]`).join('');
+      const audioFilter = `${inputs}concat=n=${scene.audio.length}:v=0:a=1[aout]`;
+
+      cmd = cmd
+        .complexFilter(audioFilter)
+        .outputOptions([...baseOpts, '-map 0:v', '-map [aout]']);
     }
 
     cmd
       .output(outputPath)
-      .on('end',   resolve)
+      .on('end', resolve)
       .on('error', (err) => {
         logger.error(`[EDIT] Segment failed: ${scene.id}`, { error: err.message });
         reject(err);
