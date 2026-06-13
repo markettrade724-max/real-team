@@ -14,9 +14,8 @@ on:
         options:
           - auto
           - birth
-          - backbone
-          - scenes
-          - dialogue
+          - screenplay
+          - production
           - game-phase1
           - game-phase2
           - inventor
@@ -150,9 +149,9 @@ jobs:
 
           # تنبيه إذا كانت الحصة غير كافية لمهمة اليوم
           $needed = @{
-            "library"     = 40; "inventor"    = 40
-            "backbone"    = 1;  "scenes"      = 1;  "dialogue"   = 1
-            "game-phase1" = 4;  "game-phase2" = 5
+            "library"      = 40; "inventor"     = 40
+            "screenplay"   = 3;  "production"   = 0
+            "game-phase1"  = 4;  "game-phase2"  = 5
           }
           if ($mode -ne "auto" -and $needed.ContainsKey($mode)) {
             $req = $needed[$mode]
@@ -312,7 +311,7 @@ jobs:
           always() && (
             github.event_name == 'schedule' ||
             (github.event_name == 'workflow_dispatch' &&
-             contains(fromJson('["backbone","scenes","dialogue","auto"]'),
+             contains(fromJson('["screenplay","production","auto"]'),
              github.event.inputs.mode))
           )
         with:
@@ -356,9 +355,8 @@ jobs:
 
           # commit message يعكس المهمة الفعلية — rule-158
           $msg = switch ($env:MODE) {
-            "backbone"    { "agents: backbone done [skip ci]" }
-            "scenes"      { "agents: scenes done [skip ci]" }
-            "dialogue"    { "agents: dialogue done [skip ci]" }
+            "screenplay"  { "agents: screenplay done [skip ci]" }
+            "production"  { "agents: episode produced [skip ci]" }
             "game-phase1" { "agents: game phase1 done [skip ci]" }
             "game-phase2" { "agents: game phase2 done [skip ci]" }
             "inventor"    { "agents: inventor done [skip ci]" }
