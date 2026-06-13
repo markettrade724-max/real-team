@@ -1,0 +1,163 @@
+{
+  "title": "The Archetypes",
+  "author": "Carl Jung",
+  "category": "psychology",
+  "summary": "Carl Jung's 'The Archetypes' explores universal, archaic patterns and images that derive from the collective unconscious and are the psychic counterpart of instinct. These archetypes manifest in myths, dreams, and art, shaping human experience and behavior across cultures.",
+  "coreRules": [
+    {
+      "id": 1,
+      "rule": "The Self",
+      "essence": "The archetype of wholeness, representing the integration of conscious and unconscious aspects of the psyche.",
+      "example": "Achieving individuation, feeling complete and balanced in one's life."
+    },
+    {
+      "id": 2,
+      "rule": "The Persona",
+      "essence": "The social mask or public image an individual presents to the world, often adapted to societal expectations.",
+      "example": "A professional acting confident and authoritative in a business meeting, regardless of inner doubts."
+    },
+    {
+      "id": 3,
+      "rule": "The Shadow",
+      "essence": "The repressed, unconscious aspects of the self, both negative (e.g., anger) and positive (e.g., unacknowledged creativity).",
+      "example": "A person's hidden jealousy or their unexpressed artistic talents."
+    },
+    {
+      "id": 4,
+      "rule": "The Anima",
+      "essence": "The feminine principle in a man's unconscious, influencing his emotional life, intuition, and relationships.",
+      "example": "A man's capacity for empathy, emotional expression, or artistic sensitivity."
+    },
+    {
+      "id": 5,
+      "rule": "The Animus",
+      "essence": "The masculine principle in a woman's unconscious, influencing her assertiveness, logic, and rational thought.",
+      "example": "A woman's capacity for logical reasoning, assertiveness, or objective analysis."
+    },
+    {
+      "id": 6,
+      "rule": "The Great Mother",
+      "essence": "Represents nurturing, life-giving, fertility, but also the devouring, suffocating, and destructive aspects.",
+      "example": "A protective and comforting parent, or an overwhelming and possessive force."
+    },
+    {
+      "id": 7,
+      "rule": "The Wise Old Man",
+      "essence": "A guide, mentor, or source of profound wisdom, spiritual insight, and knowledge.",
+      "example": "Dumbledore in 'Harry Potter' or Yoda in 'Star Wars'."
+    },
+    {
+      "id": 8,
+      "rule": "The Hero",
+      "essence": "Embodies courage, self-sacrifice, and the journey of overcoming obstacles to achieve transformation or salvation.",
+      "example": "Luke Skywalker's journey to defeat the Empire, or Frodo Baggins' quest to destroy the One Ring."
+    },
+    {
+      "id": 9,
+      "rule": "The Trickster",
+      "essence": "Disrupts norms, challenges authority, and brings change through chaos, humor, or cunning.",
+      "example": "Loki in Norse mythology, or Bugs Bunny's mischievous antics."
+    },
+    {
+      "id": 10,
+      "rule": "The Child",
+      "essence": "Symbolizes innocence, vulnerability, potential, new beginnings, and the future.",
+      "example": "The 'divine child' in myths, or the emergence of a new idea or project."
+    },
+    {
+      "id": 11,
+      "rule": "The Maiden (Innocent)",
+      "essence": "Represents purity, optimism, desire for safety, happiness, and often a journey of awakening.",
+      "example": "Sleeping Beauty, or a naive protagonist embarking on a new adventure."
+    },
+    {
+      "id": 12,
+      "rule": "The Explorer",
+      "essence": "Driven by a desire for truth, freedom, new experiences, and self-discovery through venturing into the unknown.",
+      "example": "Indiana Jones, or an individual embarking on a journey of personal growth and discovery."
+    },
+    {
+      "id": 13,
+      "rule": "The Creator",
+      "essence": "The innovator, artist, builder, driven by a desire to create something lasting and meaningful.",
+      "example": "A visionary architect, a prolific writer, or a groundbreaking scientist."
+    },
+    {
+      "id": 14,
+      "rule": "The Ruler",
+      "essence": "Seeks control, order, responsibility, and leadership, often embodying authority and stability.",
+      "example": "A benevolent king, a powerful CEO, or a respected political leader."
+    },
+    {
+      "id": 15,
+      "rule": "The Magician",
+      "essence": "Seeks transformation, knowledge, and mastery of the universe, often through esoteric understanding or technology.",
+      "example": "A spiritual healer, a brilliant scientist, or a sorcerer wielding powerful spells."
+    },
+    {
+      "id": 16,
+      "rule": "The Lover",
+      "essence": "Driven by a desire for intimacy, connection, passion, pleasure, and commitment.",
+      "example": "Romeo and Juliet, a passionate artist, or someone deeply devoted to a cause."
+    },
+    {
+      "id": 17,
+      "rule": "The Caregiver",
+      "essence": "Seeks to protect and care for others, embodying compassion, nurturing, and self-sacrifice.",
+      "example": "A dedicated nurse, a humanitarian worker, or a selfless parent."
+    },
+    {
+      "id": 18,
+      "rule": "The Rebel",
+      "essence": "Seeks revolution, liberation, to break rules, and challenge the status quo.",
+      "example": "A revolutionary leader, a punk rock musician, or a nonconformist challenging societal norms."
+    },
+    {
+      "id": 19,
+      "rule": "The Jester",
+      "essence": "Seeks joy, humor, to lighten the mood, sometimes irreverent, and often reveals truth through satire.",
+      "example": "A stand-up comedian, a court jester, or a playful friend who uses humor to defuse tension."
+    },
+    {
+      "id": 20,
+      "rule": "The Orphan",
+      "essence": "Seeks safety, belonging, and often feels abandoned, betrayed, or victimized.",
+      "example": "Harry Potter before discovering his magical heritage, or an individual feeling isolated and misunderstood."
+    }
+  ],
+  "byAgent": {
+    "soul-agent": {
+      "topRules": [
+        "The Self",
+        "The Shadow",
+        "The Anima/Animus"
+      ],
+      "why": "This reference is vital for the soul-agent to understand the deep, unconscious patterns that drive human behavior, emotions, and spiritual quests, facilitating profound self-discovery and integration.",
+      "how": "The soul-agent applies this by interpreting symbolic language in dreams and personal narratives, identifying archetypal influences in emotional states, and guiding individuals through processes of self-reflection and individuation to achieve psychological wholeness.",
+      "prompt_injection": "Consider the archetypal patterns of the collective unconscious when analyzing inner states and guiding personal development."
+    },
+    "story-agent": {
+      "topRules": [
+        "The Hero",
+        "The Shadow",
+        "The Wise Old Man"
+      ],
+      "why": "This reference is crucial for the story-agent to craft universally resonant narratives and characters by tapping into fundamental human experiences and motivations.",
+      "how": "The story-agent applies this by designing characters that embody specific archetypes, structuring plots around archetypal journeys (e.g., the Hero's Journey), and creating symbolic depth that resonates with a broad audience.",
+      "prompt_injection": "Weave archetypal character roles and narrative structures into the story to ensure universal resonance and emotional depth."
+    },
+    "world-birth-agent": {
+      "topRules": [
+        "The Great Mother",
+        "The Ruler",
+        "The Creator"
+      ],
+      "why": "This reference is essential for the world-birth-agent to construct deeply symbolic and psychologically rich worlds, complete with resonant mythologies, societal structures, and cultural values.",
+      "how": "The world-birth-agent applies this by designing pantheons of deities based on archetypal roles, shaping cultural narratives and rituals, and embedding archetypal symbols into the world's geography, history, and societal norms to give it profound meaning.",
+      "prompt_injection": "Integrate universal archetypal patterns into the world's mythology, societal structures, and symbolic landscape to create a deeply resonant and believable reality."
+    }
+  },
+  "id": "jung-archetypes",
+  "priority": 2,
+  "builtAt": "2026-06-13T06:19:00.725Z"
+}

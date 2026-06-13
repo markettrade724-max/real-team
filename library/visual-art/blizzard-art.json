@@ -1,0 +1,153 @@
+{
+  "title": "Blizzard Art Direction",
+  "author": "Blizzard GDC",
+  "category": "visual-art",
+  "summary": "This reference outlines Blizzard's core visual philosophy, emphasizing gameplay clarity, iconic design, and stylized aesthetics. It details how art serves to enhance player experience, build immersive worlds, and tell compelling stories through consistent, polished visuals.",
+  "coreRules": [
+    {
+      "id": 1,
+      "rule": "Readability & Clarity First",
+      "essence": "Ensure visual information is clear and easy to understand at a glance, especially in gameplay scenarios.",
+      "example": "Distinct character silhouettes, clear spell effects, visible enemy tells and attack patterns."
+    },
+    {
+      "id": 2,
+      "rule": "Iconic Silhouettes",
+      "essence": "Characters, creatures, and key objects should have instantly recognizable and memorable shapes.",
+      "example": "The distinct forms of Warcraft heroes, Overwatch characters, or StarCraft units."
+    },
+    {
+      "id": 3,
+      "rule": "Stylization over Realism",
+      "essence": "Embrace a stylized aesthetic that allows for exaggeration and timelessness, rather than chasing photorealism.",
+      "example": "World of Warcraft's vibrant, exaggerated aesthetic that remains fresh over decades."
+    },
+    {
+      "id": 4,
+      "rule": "Exaggeration for Impact",
+      "essence": "Push proportions, colors, and effects beyond reality to enhance visual impact, character, and emotional resonance.",
+      "example": "Oversized weapons, dramatic spell animations, and character poses that convey personality."
+    },
+    {
+      "id": 5,
+      "rule": "Strong Visual Hierarchy",
+      "essence": "Guide the player's eye to important information using contrast, scale, color, and detail.",
+      "example": "Prominent boss health bars, glowing quest markers, or distinct visual cues for interactable objects."
+    },
+    {
+      "id": 6,
+      "rule": "Distinctive Color Palettes",
+      "essence": "Use color strategically to define factions, environments, emotional states, and gameplay elements.",
+      "example": "The stark contrast between Alliance blue and Horde red, or Diablo's dark and desaturated palettes."
+    },
+    {
+      "id": 7,
+      "rule": "Sense of Scale",
+      "essence": "Convey the grandeur, size, and power of worlds, creatures, and structures effectively.",
+      "example": "Towering raid bosses, vast landscapes, or colossal siege engines that dwarf player characters."
+    },
+    {
+      "id": 8,
+      "rule": "Storytelling Through Visuals",
+      "essence": "Embed narrative, lore, and history directly into environmental details, character designs, and props.",
+      "example": "Ruined structures hinting at past conflicts, worn armor telling a character's journey, or cultural motifs in architecture."
+    },
+    {
+      "id": 9,
+      "rule": "Polish & Attention to Detail",
+      "essence": "Refine every visual element to a high standard, ensuring a cohesive, immersive, and premium feel.",
+      "example": "Smooth animations, intricate textures, subtle environmental effects, and satisfying UI feedback."
+    },
+    {
+      "id": 10,
+      "rule": "Gameplay-First Art",
+      "essence": "Art serves gameplay. Visuals should enhance, not hinder, the player experience and strategic understanding.",
+      "example": "Clear hitboxes, distinct attack animations, and environmental elements that don't obscure critical gameplay information."
+    },
+    {
+      "id": 11,
+      "rule": "Thematic Consistency",
+      "essence": "Maintain a unified visual theme and aesthetic across all assets within a game, faction, or environment.",
+      "example": "The consistent biological horror of the Zerg, the high-tech elegance of the Protoss, or the rugged fantasy of Orcs."
+    },
+    {
+      "id": 12,
+      "rule": "Distinct Faction/Character Identity",
+      "essence": "Ensure each major group or character has a unique, memorable, and instantly recognizable visual language.",
+      "example": "The visual differentiation between Terran, Zerg, and Protoss, or the unique designs of each Overwatch hero."
+    },
+    {
+      "id": 13,
+      "rule": "Impactful Abilities & Effects",
+      "essence": "Design spell and ability effects to be visually satisfying, clear, and communicate their power and function.",
+      "example": "The explosive impact of a Fireball, the ethereal glow of a healing spell, or the distinct visual of a character's ultimate ability."
+    },
+    {
+      "id": 14,
+      "rule": "Iteration & Feedback",
+      "essence": "Embrace a continuous cycle of creation, testing, and refinement based on internal and external feedback.",
+      "example": "Multiple concept art passes, playtesting visual clarity in combat, and adjusting effects based on player perception."
+    },
+    {
+      "id": 15,
+      "rule": "Emotional Resonance",
+      "essence": "Design visuals that evoke specific feelings, connect players to the world, and enhance the narrative experience.",
+      "example": "Heroic poses, desolate landscapes conveying despair, or vibrant celebrations evoking joy."
+    },
+    {
+      "id": 16,
+      "rule": "World-Building Through Art",
+      "essence": "Use visual elements to construct a believable, immersive, and lore-rich world, even if highly stylized.",
+      "example": "Architecture reflecting cultural history, unique flora and fauna defining biomes, or environmental wear and tear."
+    },
+    {
+      "id": 17,
+      "rule": "Legacy & Evolution",
+      "essence": "Respect the established visual legacy and core identity of a franchise while allowing for artistic growth and adaptation.",
+      "example": "Evolving character models and environmental detail in World of Warcraft over expansions while retaining core identity."
+    },
+    {
+      "id": 18,
+      "rule": "Accessibility & Readability for All",
+      "essence": "Consider different player perspectives and ensure key visual information is accessible and understandable.",
+      "example": "Implementing colorblind modes, designing clear UI elements, and ensuring important visual cues are not easily missed."
+    },
+    {
+      "id": 19,
+      "rule": "Visual Language of Power",
+      "essence": "Clearly communicate the strength, threat level, and importance of enemies and allies through their design.",
+      "example": "Larger size, more intricate armor, glowing effects, or unique animations for powerful entities like bosses."
+    },
+    {
+      "id": 20,
+      "rule": "\"Fun\" Factor",
+      "essence": "Inject a sense of playfulness, wonder, epicness, or charm that makes the visuals enjoyable and engaging.",
+      "example": "Humorous animations, fantastical creature designs, or visually satisfying destruction effects."
+    }
+  ],
+  "byAgent": {
+    "art-agent": {
+      "topRules": [
+        "Stylization over Realism",
+        "Iconic Silhouettes",
+        "Polish & Attention to Detail"
+      ],
+      "why": "This reference is vital for the art-agent as it provides the foundational principles for creating art that is both visually appealing and functionally integrated into the game experience, aligning with Blizzard's distinct aesthetic and quality standards.",
+      "how": "The art-agent applies this by prioritizing clear silhouettes and exaggerated forms in concept art, ensuring all assets contribute to gameplay readability, and meticulously refining details to achieve a high level of polish and thematic consistency.",
+      "prompt_injection": "Always ensure your visual designs adhere to Blizzard's philosophy of stylized clarity and iconic forms."
+    },
+    "world-birth-agent": {
+      "topRules": [
+        "World-Building Through Art",
+        "Storytelling Through Visuals",
+        "Sense of Scale"
+      ],
+      "why": "This reference is crucial for the world-birth-agent to establish coherent, immersive, and narratively rich environments that visually communicate lore, history, and gameplay spaces effectively, ensuring the world itself is a character.",
+      "how": "The world-birth-agent uses these principles to design environments where architecture, terrain, and props tell a story, ensure a consistent thematic feel across biomes, and craft spaces that convey appropriate scale and grandeur, all while supporting gameplay.",
+      "prompt_injection": "When designing worlds, prioritize visual storytelling, thematic consistency, and a strong sense of scale as per Blizzard's art direction."
+    }
+  },
+  "id": "blizzard-art",
+  "priority": 2,
+  "builtAt": "2026-06-13T06:21:50.069Z"
+}

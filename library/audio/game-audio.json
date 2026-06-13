@@ -1,0 +1,153 @@
+{
+  "title": "Game Audio Implementation",
+  "author": "Richard Stevens",
+  "category": "audio",
+  "summary": "يُعد كتاب \"Game Audio Implementation\" دليلاً عملياً يركز على الجوانب التقنية لدمج الصوت في الألعاب. يغطي الكتاب استخدام برمجيات الوسيط (middleware)، البرمجة النصية، التحسين، واستراتيجيات سير العمل لتحويل تصميم الصوت إلى واقع ملموس داخل محرك اللعبة.",
+  "coreRules": [
+    {
+      "id": 1,
+      "rule": "Implement robust audio asset management.",
+      "essence": "Organize audio files with clear naming conventions and folder structures for efficient retrieval and integration into the game.",
+      "example": "Using a consistent 'SFX_Player_Footstep_Grass_01' naming scheme and grouping all player sounds in a 'Player' folder within the audio project."
+    },
+    {
+      "id": 2,
+      "rule": "Leverage audio middleware effectively.",
+      "essence": "Utilize tools like Wwise or FMOD to manage complex audio behaviors, routing, and interactive systems outside of direct game code.",
+      "example": "Setting up a State Machine in Wwise to control music transitions based on game states (e.g., 'Exploration' to 'Combat')."
+    },
+    {
+      "id": 3,
+      "rule": "Design for dynamic and interactive audio playback.",
+      "essence": "Create audio systems that respond to in-game events, player actions, and environmental changes, rather than static playback.",
+      "example": "A footstep system that changes sound based on the player's current surface material (wood, stone, water)."
+    },
+    {
+      "id": 4,
+      "rule": "Prioritize audio performance optimization.",
+      "essence": "Manage memory usage, CPU load, and streaming to ensure audio doesn't negatively impact overall game performance.",
+      "example": "Converting large ambient loops to stream from disk instead of loading entirely into memory, or using compressed audio formats."
+    },
+    {
+      "id": 5,
+      "rule": "Implement clear communication and collaboration workflows.",
+      "essence": "Establish effective channels for audio designers, programmers, and game designers to communicate needs, issues, and progress.",
+      "example": "Using a shared task management system (e.g., Jira) to track audio implementation tasks and bugs, and regular sync meetings."
+    },
+    {
+      "id": 6,
+      "rule": "Utilize parameters for adaptive audio control.",
+      "essence": "Expose game variables as parameters to middleware, allowing real-time modification of audio properties like volume, pitch, or effects based on game state.",
+      "example": "Linking a 'player health' game parameter to the intensity of a heartbeat sound effect, increasing its volume and distortion as health decreases."
+    },
+    {
+      "id": 7,
+      "rule": "Plan for scalability and future content.",
+      "essence": "Design audio systems that can easily accommodate new sounds, features, and expansions without requiring major overhauls.",
+      "example": "Creating a generic 'weapon fire' event that can be easily assigned different sound assets for new weapons added later."
+    },
+    {
+      "id": 8,
+      "rule": "Conduct thorough in-game audio testing.",
+      "essence": "Always test audio within the actual game environment to catch bugs, mixing issues, and ensure proper integration, not just in isolation.",
+      "example": "Playing through a level multiple times, specifically listening for missing sounds, incorrect spatialization, or clipping."
+    },
+    {
+      "id": 9,
+      "rule": "Master spatial audio implementation.",
+      "essence": "Accurately position sounds in 3D space, and implement occlusion/obstruction to simulate how sound travels through environments.",
+      "example": "A monster's growl sounding muffled and distant when behind a thick wall, and clearer when in direct line of sight."
+    },
+    {
+      "id": 10,
+      "rule": "Implement real-time mixing and ducking logic.",
+      "essence": "Dynamically adjust the volume of different audio groups based on game context to ensure important sounds are heard and the mix is balanced.",
+      "example": "Automatically lowering (ducking) background music volume when dialogue starts playing."
+    },
+    {
+      "id": 11,
+      "rule": "Understand game engine audio capabilities and limitations.",
+      "essence": "Be aware of what the chosen game engine (e.g., Unity, Unreal) can and cannot do natively for audio, and when middleware is necessary.",
+      "example": "Knowing if the engine's built-in audio system supports advanced reverb zones or if a middleware solution is needed for that feature."
+    },
+    {
+      "id": 12,
+      "rule": "Stream large audio files to save memory.",
+      "essence": "For long, non-critical sounds (like ambient loops or music tracks), stream them directly from disk rather than loading them entirely into RAM.",
+      "example": "Streaming a 5-minute orchestral music track for a boss fight instead of loading the entire uncompressed file into memory at once."
+    },
+    {
+      "id": 13,
+      "rule": "Utilize sound banks effectively.",
+      "essence": "Group related audio assets into banks (e.g., 'Player_Bank', 'Environment_Bank') to load and unload them efficiently based on game needs.",
+      "example": "Loading the 'Forest_Bank' when the player enters a forest area, and unloading it when they leave, to manage memory."
+    },
+    {
+      "id": 14,
+      "rule": "Implement variation and randomization for sound events.",
+      "essence": "Use multiple sound assets for the same event and randomize their playback, pitch, or volume to prevent repetition and enhance realism.",
+      "example": "Having 5 different 'gunshot' sound variations for a single weapon, played randomly each time the weapon fires."
+    },
+    {
+      "id": 15,
+      "rule": "Profile audio performance regularly.",
+      "essence": "Use profiling tools to monitor CPU, memory, and voice count usage of audio in real-time, identifying bottlenecks and areas for optimization.",
+      "example": "Running a profiler during a busy combat scene to see if too many sound voices are playing simultaneously, causing performance drops."
+    },
+    {
+      "id": 16,
+      "rule": "Design for iterative development and easy adjustments.",
+      "essence": "Structure audio implementation to allow for quick changes and tweaks based on feedback without extensive re-coding.",
+      "example": "Exposing key audio parameters in middleware that can be adjusted by sound designers without programmer intervention."
+    },
+    {
+      "id": 17,
+      "rule": "Consider platform-specific audio requirements.",
+      "essence": "Be aware of different audio capabilities, limitations, and best practices for various target platforms (PC, console, mobile).",
+      "example": "Ensuring mobile builds use highly compressed audio and fewer simultaneous voices compared to a PC build, due to hardware constraints."
+    },
+    {
+      "id": 18,
+      "rule": "Implement robust error handling for audio events.",
+      "essence": "Design systems to gracefully handle cases where audio assets are missing, events fail to trigger, or resources are unavailable.",
+      "example": "Logging a warning message to the console if a requested sound event cannot be found, instead of crashing the game or silently failing."
+    },
+    {
+      "id": 19,
+      "rule": "Document audio implementation decisions.",
+      "essence": "Maintain clear documentation of how audio systems are set up, what parameters control them, and common troubleshooting steps.",
+      "example": "A wiki page detailing the middleware project structure, event naming conventions, and how to add new footstep sounds."
+    },
+    {
+      "id": 20,
+      "rule": "Collaborate closely with level designers for environmental audio.",
+      "essence": "Work with level designers to ensure audio zones, reverb settings, and ambient sounds accurately reflect the geometry and mood of the environment.",
+      "example": "Discussing with a level designer where to place a 'cave reverb zone' trigger and what specific ambient sounds should play in that area."
+    }
+  ],
+  "byAgent": {
+    "world-birth-agent": {
+      "topRules": [
+        "Master spatial audio implementation.",
+        "Collaborate closely with level designers for environmental audio.",
+        "Prioritize audio performance optimization."
+      ],
+      "why": "هذا المرجع حيوي لـ world-birth-agent لأنه يوفر الإطار العملي لإنشاء المشهد الصوتي الأساسي للعالم، مما يضمن تنفيذ الأصوات البيئية، التحديد المكاني، واعتبارات الأداء الأولية بشكل قوي من البداية.",
+      "how": "يطبق الوكيل هذا المرجع من خلال تصميم ودمج أنظمة الصوت المكاني الأساسية، وتحديد مناطق الصوت البيئي، والتعاون مع مصممي المستويات على وضع الأصوات المحيطة، والتأكد من تحسين البصمة الصوتية الأولية للعالم من أجل الأداء.",
+      "prompt_injection": "Ensure all foundational audio systems, especially spatial and environmental sounds, are robustly implemented and optimized for the initial world build."
+    },
+    "inventor-agent": {
+      "topRules": [
+        "Design for dynamic and interactive audio playback.",
+        "Utilize parameters for adaptive audio control.",
+        "Design for iterative development and easy adjustments."
+      ],
+      "why": "هذا المرجع حيوي لـ inventor-agent لأنه يوجه الدمج العملي للصوت في الميكانيكيات والأنظمة الجديدة، مما يضمن أن الابتكارات الجديدة تحتوي على مؤثرات صوتية ديناميكية، سريعة الاستجابة، وسهلة التعديل تعزز تفاعلها وتغذية اللاعب الراجعة.",
+      "how": "يطبق الوكيل هذا المرجع من خلال تصميم أحداث صوتية تفاعلية للميكانيكيات الجديدة، وربط معلمات اللعبة بخصائص الصوت للتغذية الراجعة الديناميكية، وهيكلة تنفيذ الصوت لتسهيل التكرار والتعديل مع تطور الميزات الجديدة.",
+      "prompt_injection": "When creating new mechanics or items, prioritize dynamic and interactive audio design, leveraging parameters for adaptive control and ensuring easy iteration."
+    }
+  },
+  "id": "game-audio",
+  "priority": 1,
+  "builtAt": "2026-06-13T06:13:50.856Z"
+}

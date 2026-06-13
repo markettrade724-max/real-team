@@ -1,37 +1,37 @@
 {
-  "runId": "2026-06-12T1118",
-  "mode": "game-phase2",
-  "success": false,
-  "timestamp": "2026-06-12T11:18:47.899Z",
-  "totalDuration": "12ms",
+  "runId": "2026-06-13T0606",
+  "mode": "library",
+  "success": true,
+  "timestamp": "2026-06-13T06:21:50.083Z",
+  "totalDuration": "907.2s",
   "budget": {
-    "total": 0,
+    "total": 40,
     "limit": 40,
-    "left": 40,
-    "percent": "0%",
+    "left": 0,
+    "percent": "100%",
     "keys": [
       {
         "key": "KEY_1",
-        "total": 0,
+        "total": 20,
         "limit": 20,
-        "left": 20,
-        "library": 0,
+        "left": 0,
+        "library": 20,
         "agents": 0
       },
       {
         "key": "KEY_2",
-        "total": 0,
+        "total": 20,
         "limit": 20,
-        "left": 20,
-        "library": 0,
+        "left": 0,
+        "library": 20,
         "agents": 0
       }
     ]
   },
   "library": {
-    "built": 19,
+    "built": 32,
     "total": 56,
-    "percent": "34%"
+    "percent": "57%"
   },
   "progress": {
     "current": {
@@ -46,10 +46,21 @@
     "totalEpisodes": 2,
     "gamesDone": 0
   },
-  "agents": {},
+  "agents": {
+    "library": {
+      "success": true,
+      "duration": "907.2s",
+      "error": null
+    },
+    "analytics": {
+      "success": true,
+      "duration": "—",
+      "error": null
+    }
+  },
   "summary": {
-    "total": 0,
-    "passed": 0,
+    "total": 2,
+    "passed": 2,
     "failed": 0
   }
 }
