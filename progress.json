@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-11T11:25:15.502Z",
+  "updatedAt": "2026-06-14T08:37:00.678Z",
   "current": {
     "type": "episode",
     "episode": 3,
     "id": null,
     "startedAt": "2026-06-11T09:07:45.000Z",
-    "updatedAt": "2026-06-11T11:25:15.502Z",
-    "failReason": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+    "updatedAt": "2026-06-14T08:37:00.678Z",
+    "failReason": "inventor-no-quota"
   },
   "series": {
     "nextEpisode": 3,
@@ -82,7 +82,7 @@
         "data": {},
         "startedAt": "2026-06-11T09:07:45.000Z",
         "completedAt": null,
-        "failReason": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+        "failReason": "inventor-no-quota"
       }
     }
   },
