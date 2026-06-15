@@ -1,8 +1,47 @@
 {
-  "date": "2026-06-14",
-  "total": 0,
+  "date": "2026-06-15",
+  "total": 5,
   "limit": 20,
   "library": 0,
-  "agents": 0,
-  "log": []
+  "agents": 5,
+  "log": [
+    {
+      "time": "07:06:43",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 1,
+      "left": 19
+    },
+    {
+      "time": "07:07:03",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 2,
+      "left": 18,
+      "errorType": "network_503"
+    },
+    {
+      "time": "07:08:04",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 3,
+      "left": 17
+    },
+    {
+      "time": "07:08:47",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 4,
+      "left": 16,
+      "errorType": "network_503"
+    },
+    {
+      "time": "07:09:18",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 5,
+      "left": 15,
+      "errorType": "network_503"
+    }
+  ]
 }
