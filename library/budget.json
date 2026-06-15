@@ -1,9 +1,9 @@
 {
   "date": "2026-06-15",
-  "total": 11,
+  "total": 15,
   "limit": 20,
   "library": 0,
-  "agents": 11,
+  "agents": 15,
   "log": [
     {
       "time": "07:06:43",
@@ -88,6 +88,37 @@
       "success": false,
       "total": 11,
       "left": 9,
+      "errorType": "503"
+    },
+    {
+      "time": "13:14:49",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 12,
+      "left": 8,
+      "errorType": "503"
+    },
+    {
+      "time": "13:15:21",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 13,
+      "left": 7
+    },
+    {
+      "time": "13:15:48",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 14,
+      "left": 6,
+      "errorType": "503"
+    },
+    {
+      "time": "13:16:20",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 15,
+      "left": 5,
       "errorType": "503"
     }
   ]
