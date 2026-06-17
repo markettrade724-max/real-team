@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-16T13:01:05.724Z",
-  "current": null,
+  "updatedAt": "2026-06-17T09:32:17.187Z",
+  "current": {
+    "type": "episode",
+    "episode": 4,
+    "id": null,
+    "startedAt": "2026-06-17T09:25:53.321Z",
+    "updatedAt": "2026-06-17T09:32:17.187Z",
+    "failReason": null
+  },
   "series": {
     "nextEpisode": 4,
     "totalEpisodes": 3,
@@ -92,6 +99,35 @@
         "startedAt": "2026-06-11T09:07:45.000Z",
         "completedAt": "2026-06-16T13:01:05.724Z",
         "failReason": "production-no-screenplay"
+      },
+      "4": {
+        "status": "in_progress",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-06-17T09:27:49.438Z",
+            "title": "صدى الرفات",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-06-17T09:31:04.178Z",
+            "title": "صدى الرفات",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-06-17T09:32:17.187Z",
+            "title": "صدى الرفات",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-06-17T09:25:53.321Z",
+        "completedAt": null,
+        "failReason": null
       }
     }
   },
