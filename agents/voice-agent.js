@@ -1,17 +1,16 @@
 /**
- * voice-agent.js — v2.1 (Node.js خالص)
+ * voice-agent.js — v2.2
  *
- * التغييرات عن v2.0:
- *  - يقرأ من screenplay.acts[].scenes (توافق مع screenplay-agent v2.0)
- *  - ملف فارغ عند الفشل → تخطي بدون كسر المانيفست
- *  - estimateDuration مُصحَّح للعربية (2.5 كلمة/ثانية)
- *  - تحقق من نص فارغ قبل TTS
- *  - تحقق من وجود episodes dir
+ * التغييرات عن v2.1:
+ *  - TTS بالتوازي: 5 مهام في وقت واحد بدل sequential
+ *  - buildNarratorLine: نتيجة نظيفة حتى عند الحقول الفارغة
+ *  - ar-KW-FahedNeural → ar-SA-ZariyahNeural (أكثر موثوقية)
+ *  - timeout على كل مهمة TTS (30 ثانية)
  *
  * القواعد المطبقة:
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
  *  rule-126 : Node.js خالص — لا bash — لا pip
- *  rule-138 : msedge-tts (بدل edge-tts-node)
+ *  rule-138 : msedge-tts
  */
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
@@ -22,16 +21,14 @@ import { logger }                                from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// أصوات عربية
 const VOICE_MAP = {
   protagonist: 'ar-SA-HamedNeural',
   antagonist:  'ar-SA-ZariyahNeural',
   supporting:  'ar-EG-ShakirNeural',
-  narrator:    'ar-KW-FahedNeural',
+  narrator:    'ar-SA-ZariyahNeural',  // v2.2: أكثر موثوقية
   default:     'ar-SA-HamedNeural',
 };
 
-// وصف الوقت للراوي
 const TIME_MAP = {
   'نهار':  'في وضح النهار',
   'ليل':   'تحت جنح الظلام',
@@ -39,89 +36,113 @@ const TIME_MAP = {
   'غروب':  'عند الغروب',
 };
 
+const CONCURRENCY = 5;  // v2.2: 5 مهام TTS بالتوازي
+const TTS_TIMEOUT = 30000; // 30 ثانية لكل مهمة
+
 // ══════════════════════════════════════════════════════════
 // الدالة الرئيسية
 // ══════════════════════════════════════════════════════════
-
 export async function run(screenplay) {
-  logger.info('[VOICE] Starting v2.1', { episode: screenplay.episode });
+  logger.info('[VOICE] Starting v2.2', { episode: screenplay.episode });
 
   const epDir  = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`);
   const outDir = join(epDir, 'audio');
   mkdirSync(outDir, { recursive: true });
 
-  // خريطة الشخصيات → أصوات
   const charVoices = {};
   for (const char of (screenplay.characters || [])) {
     charVoices[char.name] = char.voice || VOICE_MAP[char.role] || VOICE_MAP.default;
   }
 
-  // استخراج المشاهد من acts (screenplay-agent v2.0)
   const scenes = (screenplay.acts || []).flatMap(a => a.scenes || []);
-
   if (scenes.length === 0) {
-    logger.warn('[VOICE] No scenes found in screenplay');
+    logger.warn('[VOICE] No scenes found');
     return { episode: screenplay.episode, audioFiles: [], totalLines: 0 };
   }
 
-  const audioFiles = [];
-  let skipped = 0;
+  // ── بناء قائمة المهام ──────────────────────────────────
+  const tasks = [];
 
   for (const scene of scenes) {
-    // ── صوت الراوي ───────────────────────────────────
+    // راوي
     const narratorText = buildNarratorLine(scene);
     const narratorFile = join(outDir, `${scene.id}-narrator.mp3`);
-
-    if (!existsSync(narratorFile)) {
-      const ok = await generateTTS(narratorText, VOICE_MAP.narrator, narratorFile);
-      if (!ok) { skipped++; continue; }
-    }
-
-    audioFiles.push({
-      sceneId:  scene.id,
-      type:     'narrator',
-      text:     narratorText,
-      file:     narratorFile,
-      duration: estimateDuration(narratorText),
+    tasks.push({
+      text:      narratorText,
+      voice:     VOICE_MAP.narrator,
+      file:      narratorFile,
+      meta:      { sceneId: scene.id, type: 'narrator', text: narratorText },
     });
 
-    // ── حوار الشخصيات ────────────────────────────────
+    // حوار
     for (let i = 0; i < (scene.dialogue || []).length; i++) {
       const line = scene.dialogue[i];
-
-      // تخطي النص الفارغ
-      if (!line?.line?.trim()) {
-        logger.warn(`[VOICE] Empty dialogue line — ${scene.id} d${i + 1}`);
-        skipped++;
-        continue;
-      }
-
+      if (!line?.line?.trim()) continue;
       const voice = charVoices[line.character] || VOICE_MAP.default;
+      const text  = line.emotion === 'توتر' ? `...${line.line}` : line.line;
       const file  = join(outDir, `${scene.id}-d${i + 1}.mp3`);
-
-      // نبرة التوتر
-      const text = line.emotion === 'توتر' ? `...${line.line}` : line.line;
-
-      if (!existsSync(file)) {
-        const ok = await generateTTS(text, voice, file);
-        if (!ok) { skipped++; continue; }
-      }
-
-      audioFiles.push({
-        sceneId:   scene.id,
-        type:      'dialogue',
-        character: line.character,
-        emotion:   line.emotion,
-        direction: line.direction || '',
-        text:      line.line,
-        voice,
-        file,
-        duration:  estimateDuration(line.line),
+      tasks.push({
+        text, voice, file,
+        meta: {
+          sceneId:   scene.id,
+          type:      'dialogue',
+          character: line.character,
+          emotion:   line.emotion,
+          direction: line.direction || '',
+          text:      line.line,
+          voice,
+        },
       });
     }
   }
 
-  // ── حفظ المانيفست ────────────────────────────────────
+  logger.info('[VOICE] Tasks queued', { total: tasks.length, concurrency: CONCURRENCY });
+
+  // ── تنفيذ بالتوازي (CONCURRENCY = 5) ──────────────────
+  const results    = new Array(tasks.length).fill(null);
+  let   inFlight   = 0;
+  let   idx        = 0;
+  let   skipped    = 0;
+
+  await new Promise((resolve) => {
+    function launchNext() {
+      while (inFlight < CONCURRENCY && idx < tasks.length) {
+        const i    = idx++;
+        const task = tasks[i];
+
+        // تخطّ الملفات الموجودة
+        if (existsSync(task.file)) {
+          results[i] = { ...task.meta, file: task.file, duration: estimateDuration(task.meta.text || task.text) };
+          if (idx === tasks.length && inFlight === 0) resolve();
+          launchNext();
+          continue;
+        }
+
+        inFlight++;
+        generateTTS(task.text, task.voice, task.file)
+          .then(ok => {
+            if (ok) {
+              results[i] = { ...task.meta, file: task.file, duration: estimateDuration(task.meta.text || task.text) };
+            } else {
+              skipped++;
+            }
+          })
+          .catch(() => { skipped++; })
+          .finally(() => {
+            inFlight--;
+            if (idx < tasks.length) {
+              launchNext();
+            } else if (inFlight === 0) {
+              resolve();
+            }
+          });
+      }
+    }
+    launchNext();
+  });
+
+  const audioFiles = results.filter(Boolean);
+
   const manifest = {
     episode:     screenplay.episode,
     audioFiles,
@@ -130,24 +151,15 @@ export async function run(screenplay) {
     generatedAt: new Date().toISOString(),
   };
 
-  writeFileSync(
-    join(epDir, 'audio-manifest.json'),
-    JSON.stringify(manifest, null, 2), 'utf8'
-  );
+  writeFileSync(join(epDir, 'audio-manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
 
-  logger.info('[OK] Audio generated', {
-    files:   audioFiles.length,
-    skipped,
-    episode: screenplay.episode,
-  });
-
+  logger.info('[OK] Audio generated', { files: audioFiles.length, skipped });
   return manifest;
 }
 
 // ══════════════════════════════════════════════════════════
-// توليد TTS — msedge-tts
+// توليد TTS — مع timeout
 // ══════════════════════════════════════════════════════════
-
 async function generateTTS(text, voice, outputPath, retried = false) {
   if (!text?.trim()) {
     logger.warn(`[VOICE] Empty text — skipping ${outputPath}`);
@@ -155,21 +167,14 @@ async function generateTTS(text, voice, outputPath, retried = false) {
   }
 
   try {
-    const tts      = new MsEdgeTTS();
-    await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
-    const readable = tts.toStream(text);
-    const chunks   = [];
+    const buffer = await Promise.race([
+      doTTS(text, voice),
+      new Promise((_, rej) =>
+        setTimeout(() => rej(new Error('TTS timeout')), TTS_TIMEOUT)
+      ),
+    ]);
 
-    await new Promise((resolve, reject) => {
-      readable.on('data',  chunk => chunks.push(chunk));
-      readable.on('end',   resolve);
-      readable.on('error', reject);
-    });
-
-    const buffer = Buffer.concat(chunks);
-
-    // لا تكتب ملفاً فارغاً
-    if (buffer.length === 0) {
+    if (!buffer || buffer.length === 0) {
       logger.warn(`[VOICE] Empty audio buffer — ${outputPath}`);
       return false;
     }
@@ -183,27 +188,41 @@ async function generateTTS(text, voice, outputPath, retried = false) {
       await new Promise(r => setTimeout(r, 1500));
       return generateTTS(text, voice, outputPath, true);
     }
-    logger.error(`[VOICE] TTS failed permanently — ${outputPath}`, { error: err.message });
+    logger.error(`[VOICE] TTS failed — ${outputPath}`, { error: err.message });
     return false;
   }
+}
+
+async function doTTS(text, voice) {
+  const tts      = new MsEdgeTTS();
+  await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+  const readable = tts.toStream(text);
+  const chunks   = [];
+  await new Promise((resolve, reject) => {
+    readable.on('data',  c => chunks.push(c));
+    readable.on('end',   resolve);
+    readable.on('error', reject);
+  });
+  return Buffer.concat(chunks);
 }
 
 // ══════════════════════════════════════════════════════════
 // دوال مساعدة
 // ══════════════════════════════════════════════════════════
 
+// v2.2: نتيجة نظيفة حتى عند الحقول الفارغة
 function buildNarratorLine(scene) {
-  const timeDesc = TIME_MAP[scene.time] || '';
-  const location = scene.location || '';
-  return `${timeDesc}، في ${location}.`.trim().replace(/^،\s*/, '');
+  const parts = [];
+  const timeDesc = TIME_MAP[scene.time];
+  if (timeDesc) parts.push(timeDesc);
+  if (scene.location?.trim()) parts.push(`في ${scene.location.trim()}`);
+  if (scene.mood?.trim())     parts.push(scene.mood.trim());
+  if (parts.length === 0) return 'المشهد يبدأ';
+  return parts.join('، ') + '.';
 }
 
-/**
- * تقدير المدة للعربية
- * ~150 كلمة/دقيقة = 2.5 كلمة/ثانية
- */
+// ~150 كلمة/دقيقة = 2.5 كلمة/ثانية
 function estimateDuration(text) {
   if (!text) return 1;
-  const words = (text || '').trim().split(/\s+/).length;
-  return Math.max(1, Math.round(words / 2.5));
+  return Math.max(1, Math.round(text.trim().split(/\s+/).length / 2.5));
 }
