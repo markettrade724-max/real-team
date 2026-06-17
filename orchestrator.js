@@ -173,7 +173,7 @@ function loadSeries() {
   try { return JSON.parse(readFileSync(SERIES_PATH, 'utf8')); } catch { return null; }
 }
 
-function updateSeries(universe, screenplay, episodeFile) {
+function updateSeries(universe, screenplay, episodeFile, videoUrl = null, trailerUrl = null) {
   const series = loadSeries() || {
     id:          universe.id,
     title:       universe.name?.ar || universe.name?.en,
@@ -191,6 +191,8 @@ function updateSeries(universe, screenplay, episodeFile) {
     cliffhanger: screenplay.cliffhanger,
     file:        episodeFile?.outputPath || null,
     duration:    episodeFile?.duration   || 0,
+    videoUrl:    videoUrl                || null,
+    trailerUrl:  trailerUrl              || null,
     producedAt:  new Date().toISOString(),
   };
 
@@ -430,7 +432,7 @@ async function productionDay(universe, t0, runId) {
     log.trailer = trailerR;
 
     // تحديث series.json قبل upload
-    const series = updateSeries(universe, screenplay, editR.data);
+    let series = updateSeries(universe, screenplay, editR.data);
 
     // رفع
     logger.info('[PRODUCTION] Upload');
@@ -438,6 +440,16 @@ async function productionDay(universe, t0, runId) {
       (ep, s, tr) => runUpload(ep, s, tr),
       [editR.data, series, trailerR.success ? trailerR.data : null]);
     log.upload = uploadR;
+
+    // تحديث series.json بـ videoUrl و trailerUrl من Supabase
+    if (uploadR.success && (uploadR.data?.videoUrl || uploadR.data?.trailerUrl)) {
+      series = updateSeries(universe, screenplay, editR.data,
+        uploadR.data.videoUrl, uploadR.data.trailerUrl);
+      logger.info('[OK] series.json updated with video URLs', {
+        videoUrl:   uploadR.data.videoUrl,
+        trailerUrl: uploadR.data.trailerUrl,
+      });
+    }
 
     // إكمال الحلقة في progress.json
     completeEpisode(episode);
