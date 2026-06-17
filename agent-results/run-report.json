@@ -1,9 +1,9 @@
 {
-  "runId": "2026-06-17T1148",
-  "mode": "screenplay",
+  "runId": "2026-06-17T1202",
+  "mode": "sync",
   "success": false,
-  "timestamp": "2026-06-17T11:48:34.670Z",
-  "totalDuration": "13ms",
+  "timestamp": "2026-06-17T12:02:05.493Z",
+  "totalDuration": "88ms",
   "budget": {
     "total": 13,
     "limit": 40,
@@ -44,10 +44,10 @@
     "gamesDone": 0
   },
   "agents": {
-    "screenplay": {
+    "sync": {
       "success": false,
-      "duration": "—",
-      "error": "No screenplay produced"
+      "duration": "80ms",
+      "error": "m.run is not a function"
     }
   },
   "summary": {
