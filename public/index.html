@@ -3,7 +3,6 @@
 <head>
   <script src="/lang-router.js"></script>
 
-  <!-- Google Analytics — مرة واحدة فقط -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-578HP461SJ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -66,9 +65,9 @@
   .series-badge.show{display:inline-flex;}
   .series-inner{display:inline-flex;align-items:center;gap:10px;
     background:rgba(129,140,248,0.08);border:1px solid rgba(129,140,248,0.25);
-    padding:8px 18px;border-radius:12px;font-size:.82rem;}
-  .series-dot{width:7px;height:7px;border-radius:50%;background:#818cf8;
-    animation:pulse 2s infinite;}
+    padding:8px 18px;border-radius:12px;font-size:.82rem;cursor:pointer;}
+  .series-inner:hover{background:rgba(129,140,248,0.15);}
+  .series-dot{width:7px;height:7px;border-radius:50%;background:#818cf8;animation:pulse 2s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
   .scroll-cue{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
@@ -82,6 +81,46 @@
   .sec-lbl{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--acc);
     letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;}
   .sec-h{font-size:clamp(1.7rem,3.5vw,2.6rem);font-weight:900;letter-spacing:-1px;margin-bottom:40px;}
+
+  /* SERIES SECTION */
+  .series-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-top:32px;}
+  .ep-card{background:var(--s);border:1px solid var(--b);border-radius:18px;overflow:hidden;
+    transition:transform .3s,border-color .3s,box-shadow .3s;}
+  .ep-card:hover{transform:translateY(-6px);border-color:rgba(129,140,248,.3);box-shadow:0 20px 40px rgba(0,0,0,.4);}
+  .ep-thumb{position:relative;height:170px;background:linear-gradient(135deg,#05000f,#0a0020);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .ep-thumb video{width:100%;height:100%;object-fit:cover;display:none;}
+  .ep-play-btn{width:54px;height:54px;border-radius:50%;background:rgba(250,204,21,0.9);
+    display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+    transition:transform .2s,background .2s;cursor:pointer;z-index:2;}
+  .ep-play-btn:hover{transform:scale(1.1);background:var(--acc);}
+  .ep-num{position:absolute;top:10px;right:12px;font-family:'Space Mono',monospace;
+    font-size:.65rem;background:rgba(0,0,0,.6);padding:3px 8px;border-radius:6px;color:var(--acc);}
+  [dir=ltr] .ep-num{right:auto;left:12px;}
+  .ep-body{padding:16px 18px 18px;}
+  .ep-title{font-size:1.1rem;font-weight:900;margin-bottom:6px;}
+  .ep-meta{color:var(--mut);font-size:.78rem;margin-bottom:14px;font-family:'Space Mono',monospace;}
+  .ep-theme{color:var(--mut);font-size:.82rem;line-height:1.55;margin-bottom:14px;}
+  .ep-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .ep-btn-watch{background:var(--acc);color:#000;padding:8px 16px;border-radius:8px;
+    font-weight:700;font-size:.82rem;font-family:'Tajawal',sans-serif;
+    border:none;cursor:pointer;transition:transform .2s;}
+  .ep-btn-watch:hover{transform:scale(1.04);}
+  .ep-btn-trailer{background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.3);
+    color:var(--acc2);padding:8px 16px;border-radius:8px;font-size:.82rem;
+    font-family:'Tajawal',sans-serif;cursor:pointer;transition:transform .2s;}
+  .ep-btn-trailer:hover{background:rgba(129,140,248,.2);transform:scale(1.04);}
+
+  /* VIDEO MODAL */
+  .modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);
+    align-items:center;justify-content:center;padding:20px;}
+  .modal.open{display:flex;}
+  .modal-inner{position:relative;width:100%;max-width:900px;}
+  .modal-inner video{width:100%;border-radius:14px;max-height:80vh;}
+  .modal-close{position:absolute;top:-14px;right:-14px;width:36px;height:36px;
+    border-radius:50%;background:var(--acc);color:#000;border:none;cursor:pointer;
+    font-size:1.1rem;font-weight:900;display:flex;align-items:center;justify-content:center;}
+  [dir=ltr] .modal-close{right:-14px;left:auto;}
 
   /* FILTER */
   .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
@@ -132,7 +171,7 @@
   @keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(5px)}}
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s;}
   .reveal.vis{opacity:1;transform:translateY(0);}
-  @media(max-width:600px){nav{padding:10px 14px;}.grid{grid-template-columns:1fr;}.hero{padding:90px 14px 60px;}}
+  @media(max-width:600px){nav{padding:10px 14px;}.grid{grid-template-columns:1fr;}.hero{padding:90px 14px 60px;}.series-grid{grid-template-columns:1fr;}}
   </style>
   <script>
   window.getGameUrl=function(slug){
@@ -147,13 +186,24 @@
   <div class="logo">real<b>team</b></div>
   <div class="nav-r">
     <select class="lang-sel" id="langSel">
-      <option value="ar">🇸🇦 عربي</option><option value="en">🇬🇧 English</option>
-      <option value="fr">🇫🇷 Français</option><option value="es">🇪🇸 Español</option>
-      <option value="de">🇩🇪 Deutsch</option><option value="zh">🇨🇳 中文</option>
+      <option value="ar">🇸🇦 عربي</option>
+      <option value="en">🇬🇧 English</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="zh">🇨🇳 中文</option>
     </select>
     <a href="/admin.html" class="btn btn-g" style="padding:7px 14px;font-size:.78rem">🔐</a>
   </div>
 </nav>
+
+<!-- VIDEO MODAL -->
+<div class="modal" id="videoModal" onclick="closeModal(event)">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <video id="modalVideo" controls playsinline></video>
+  </div>
+</div>
 
 <section class="hero z">
   <div class="hero-pill" id="pill">ألعاب · تطبيقات · مجاني مع مشتريات</div>
@@ -163,14 +213,22 @@
     <a href="#catalog" class="btn btn-y" id="cta1">🎮 تصفح الكتالوج</a>
     <a href="https://ko-fi.com/aiagents" target="_blank" class="btn btn-g" id="cta2">☕ ادعم الفريق</a>
   </div>
-  <!-- Series Badge -->
-  <div class="series-badge" id="seriesBadge">
+  <div class="series-badge" id="seriesBadge" onclick="document.getElementById('seriesSec').scrollIntoView({behavior:'smooth'})">
     <div class="series-inner">
       <div class="series-dot"></div>
       <span id="seriesText">مسلسل جديد</span>
     </div>
   </div>
   <div class="scroll-cue"><span>scroll</span><div class="arr"></div></div>
+</section>
+
+<!-- SERIES SECTION -->
+<section class="sec z" id="seriesSec" style="display:none">
+  <div class="wrap">
+    <div class="sec-lbl">SERIES</div>
+    <h2 class="sec-h" id="seriesH">المسلسل</h2>
+    <div class="series-grid" id="seriesGrid"></div>
+  </div>
 </section>
 
 <section class="sec z" id="catalog">
@@ -199,92 +257,188 @@
 
 <script>
 const T={
-  ar:{pill:"ألعاب · أفلام · مسلسلات · مجاني",h1:"العب. شاهد.<br><em>اكتشف كوناً جديداً.</em>",hp:"ألعاب وأفلام ومسلسلات مستقلة مجانية — كون رقمي يتطور كل يوم.",cta1:"🎮 تصفح الكتالوج",cta2:"☕ ادعم الفريق",catLbl:"CATALOG",catH:"الكتالوج الكامل",howH:"كيف يعمل؟",s1h:"العب مجاناً",s1p:"كل ألعابنا مجانية 100% بدون اشتراك",s2h:"شاهد المسلسل",s2p:"حلقة جديدة كل 3 أيام — مولودة من الذكاء الاصطناعي",s3h:"ادعم الفريق",s3p:"Ko-fi أو PayPal — آمن وسريع وبدون حساب",s4h:"استمتع للأبد",s4p:"مشترياتك تُحفظ على جهازك — لا انتهاء صلاحية",play:"العب الآن",watch:"شاهد الآن",soon:"قريباً",iapCount:"{{n}} مشتريات داخلية",free:"مجاني",ft:'© 2026 realteam — <a href="https://ko-fi.com/aiagents" target="_blank">ko-fi.com/aiagents</a>',cats:{all:"الكل",game:"ألعاب",series:"مسلسلات",film:"أفلام"},series:"مسلسل — الحلقة {{n}} جاهزة"},
-  en:{pill:"Games · Films · Series · Free",h1:"Play. Watch.<br><em>Discover a new universe.</em>",hp:"Free independent games, films and series — a digital universe that evolves every day.",cta1:"🎮 Browse Catalog",cta2:"☕ Support Us",catLbl:"CATALOG",catH:"Full Catalog",howH:"How It Works",s1h:"Play for Free",s1p:"All our games are 100% free",s2h:"Watch the Series",s2p:"New episode every 3 days — born from AI",s3h:"Support Us",s3p:"Ko-fi or PayPal — safe and fast",s4h:"Enjoy Forever",s4p:"Your purchases are saved on your device",play:"Play Now",watch:"Watch Now",soon:"Coming Soon",iapCount:"{{n}} in-app purchases",free:"Free",ft:'© 2026 realteam — <a href="https://ko-fi.com/aiagents" target="_blank">ko-fi.com/aiagents</a>',cats:{all:"All",game:"Games",series:"Series",film:"Films"},series:"Series — Episode {{n}} ready"},
-  fr:{pill:"Jeux · Films · Séries · Gratuit",h1:"Joue. Regarde.<br><em>Découvre un nouvel univers.</em>",hp:"Jeux, films et séries indépendants gratuits — un univers digital qui évolue chaque jour.",cta1:"🎮 Voir le catalogue",cta2:"☕ Soutenir",catLbl:"CATALOGUE",catH:"Catalogue complet",howH:"Comment ça marche ?",s1h:"Jouez gratuitement",s1p:"Tous nos jeux sont 100% gratuits",s2h:"Regardez la série",s2p:"Nouvel épisode tous les 3 jours",s3h:"Soutenez-nous",s3p:"Ko-fi ou PayPal",s4h:"Profitez pour toujours",s4p:"Vos achats sont sauvegardés",play:"Jouer",watch:"Regarder",soon:"Bientôt",iapCount:"{{n}} achats intégrés",free:"Gratuit",ft:'© 2026 realteam',cats:{all:"Tout",game:"Jeux",series:"Séries",film:"Films"},series:"Série — Épisode {{n}} prêt"},
-  es:{pill:"Juegos · Películas · Series · Gratis",h1:"Juega. Mira.<br><em>Descubre un nuevo universo.</em>",hp:"Juegos, películas y series independientes gratuitos.",cta1:"🎮 Ver catálogo",cta2:"☕ Apoyar",catLbl:"CATÁLOGO",catH:"Catálogo completo",howH:"¿Cómo funciona?",s1h:"Juega gratis",s1p:"Todos nuestros juegos son 100% gratuitos",s2h:"Mira la serie",s2p:"Nuevo episodio cada 3 días",s3h:"Apóyanos",s3p:"Ko-fi o PayPal",s4h:"Disfruta para siempre",s4p:"Tus compras se guardan",play:"Jugar",watch:"Ver",soon:"Próximamente",iapCount:"{{n}} compras integradas",free:"Gratis",ft:'© 2026 realteam',cats:{all:"Todo",game:"Juegos",series:"Series",film:"Películas"},series:"Serie — Episodio {{n}} listo"},
-  de:{pill:"Spiele · Filme · Serien · Gratis",h1:"Spiel. Schau.<br><em>Entdecke ein neues Universum.</em>",hp:"Kostenlose unabhängige Spiele, Filme und Serien.",cta1:"🎮 Katalog ansehen",cta2:"☕ Unterstützen",catLbl:"KATALOG",catH:"Vollständiger Katalog",howH:"Wie funktioniert es?",s1h:"Kostenlos spielen",s1p:"Alle Spiele sind 100% kostenlos",s2h:"Serie ansehen",s2p:"Neue Folge alle 3 Tage",s3h:"Unterstütze uns",s3p:"Ko-fi oder PayPal",s4h:"Für immer genießen",s4p:"Deine Käufe werden gespeichert",play:"Spielen",watch:"Ansehen",soon:"Demnächst",iapCount:"{{n}} In-App-Käufe",free:"Kostenlos",ft:'© 2026 realteam',cats:{all:"Alle",game:"Spiele",series:"Serien",film:"Filme"},series:"Serie — Folge {{n}} bereit"},
-  zh:{pill:"游戏 · 电影 · 剧集 · 免费",h1:"玩。看。<br><em>探索新宇宙。</em>",hp:"免费独立游戏、电影和剧集 — 每天进化的数字宇宙。",cta1:"🎮 浏览目录",cta2:"☕ 支持我们",catLbl:"目录",catH:"完整目录",howH:"如何运作？",s1h:"免费玩",s1p:"所有游戏100%免费",s2h:"看剧集",s2p:"每3天一集新剧",s3h:"支持我们",s3p:"Ko-fi或PayPal",s4h:"永久享用",s4p:"你的购买保存在设备上",play:"开始玩",watch:"立即观看",soon:"即将推出",iapCount:"{{n}}个内购",free:"免费",ft:'© 2026 realteam',cats:{all:"全部",game:"游戏",series:"剧集",film:"电影"},series:"剧集 — 第{{n}}集已就绪"}
+  ar:{pill:"ألعاب · أفلام · مسلسلات · مجاني",h1:"العب. شاهد.<br><em>اكتشف كوناً جديداً.</em>",hp:"ألعاب وأفلام ومسلسلات مستقلة مجانية — كون رقمي يتطور كل يوم.",cta1:"🎮 تصفح الكتالوج",cta2:"☕ ادعم الفريق",catLbl:"CATALOG",catH:"الكتالوج الكامل",howH:"كيف يعمل؟",s1h:"العب مجاناً",s1p:"كل ألعابنا مجانية 100% بدون اشتراك",s2h:"شاهد المسلسل",s2p:"حلقة جديدة كل 3 أيام — مولودة من الذكاء الاصطناعي",s3h:"ادعم الفريق",s3p:"Ko-fi أو PayPal — آمن وسريع وبدون حساب",s4h:"استمتع للأبد",s4p:"مشترياتك تُحفظ على جهازك — لا انتهاء صلاحية",play:"العب الآن",watch:"شاهد الآن",trailer:"التريلر",soon:"قريباً",iapCount:"{{n}} مشتريات داخلية",free:"مجاني",ft:'© 2026 realteam — <a href="https://ko-fi.com/aiagents" target="_blank">ko-fi.com/aiagents</a>',cats:{all:"الكل",game:"ألعاب",series:"مسلسلات",film:"أفلام"},seriesBadge:"مسلسل — {{n}} حلقة جاهزة",seriesH:"ملحمة شظايا الذاكرة",ep:"الحلقة",min:"دقيقة"},
+  en:{pill:"Games · Films · Series · Free",h1:"Play. Watch.<br><em>Discover a new universe.</em>",hp:"Free independent games, films and series — a digital universe that evolves every day.",cta1:"🎮 Browse Catalog",cta2:"☕ Support Us",catLbl:"CATALOG",catH:"Full Catalog",howH:"How It Works",s1h:"Play for Free",s1p:"All our games are 100% free",s2h:"Watch the Series",s2p:"New episode every 3 days — born from AI",s3h:"Support Us",s3p:"Ko-fi or PayPal — safe and fast",s4h:"Enjoy Forever",s4p:"Your purchases are saved on your device",play:"Play Now",watch:"Watch Now",trailer:"Trailer",soon:"Coming Soon",iapCount:"{{n}} in-app purchases",free:"Free",ft:'© 2026 realteam — <a href="https://ko-fi.com/aiagents" target="_blank">ko-fi.com/aiagents</a>',cats:{all:"All",game:"Games",series:"Series",film:"Films"},seriesBadge:"Series — {{n}} episode(s) ready",seriesH:"Memory Shards Saga",ep:"Episode",min:"min"},
+  fr:{pill:"Jeux · Films · Séries · Gratuit",h1:"Joue. Regarde.<br><em>Découvre un nouvel univers.</em>",hp:"Jeux, films et séries indépendants gratuits.",cta1:"🎮 Voir le catalogue",cta2:"☕ Soutenir",catLbl:"CATALOGUE",catH:"Catalogue complet",howH:"Comment ça marche ?",s1h:"Jouez gratuitement",s1p:"Tous nos jeux sont 100% gratuits",s2h:"Regardez la série",s2p:"Nouvel épisode tous les 3 jours",s3h:"Soutenez-nous",s3p:"Ko-fi ou PayPal",s4h:"Profitez pour toujours",s4p:"Vos achats sont sauvegardés",play:"Jouer",watch:"Regarder",trailer:"Bande-annonce",soon:"Bientôt",iapCount:"{{n}} achats intégrés",free:"Gratuit",ft:'© 2026 realteam',cats:{all:"Tout",game:"Jeux",series:"Séries",film:"Films"},seriesBadge:"Série — {{n}} épisode(s) prêt(s)",seriesH:"Saga des Fragments de Mémoire",ep:"Épisode",min:"min"},
+  es:{pill:"Juegos · Películas · Series · Gratis",h1:"Juega. Mira.<br><em>Descubre un nuevo universo.</em>",hp:"Juegos, películas y series independientes gratuitos.",cta1:"🎮 Ver catálogo",cta2:"☕ Apoyar",catLbl:"CATÁLOGO",catH:"Catálogo completo",howH:"¿Cómo funciona?",s1h:"Juega gratis",s1p:"Todos nuestros juegos son 100% gratuitos",s2h:"Mira la serie",s2p:"Nuevo episodio cada 3 días",s3h:"Apóyanos",s3p:"Ko-fi o PayPal",s4h:"Disfruta para siempre",s4p:"Tus compras se guardan",play:"Jugar",watch:"Ver",trailer:"Tráiler",soon:"Próximamente",iapCount:"{{n}} compras integradas",free:"Gratis",ft:'© 2026 realteam',cats:{all:"Todo",game:"Juegos",series:"Series",film:"Películas"},seriesBadge:"Serie — {{n}} episodio(s) listo(s)",seriesH:"Saga de Fragmentos de Memoria",ep:"Episodio",min:"min"},
+  de:{pill:"Spiele · Filme · Serien · Gratis",h1:"Spiel. Schau.<br><em>Entdecke ein neues Universum.</em>",hp:"Kostenlose unabhängige Spiele, Filme und Serien.",cta1:"🎮 Katalog ansehen",cta2:"☕ Unterstützen",catLbl:"KATALOG",catH:"Vollständiger Katalog",howH:"Wie funktioniert es?",s1h:"Kostenlos spielen",s1p:"Alle Spiele sind 100% kostenlos",s2h:"Serie ansehen",s2p:"Neue Folge alle 3 Tage",s3h:"Unterstütze uns",s3p:"Ko-fi oder PayPal",s4h:"Für immer genießen",s4p:"Deine Käufe werden gespeichert",play:"Spielen",watch:"Ansehen",trailer:"Trailer",soon:"Demnächst",iapCount:"{{n}} In-App-Käufe",free:"Kostenlos",ft:'© 2026 realteam',cats:{all:"Alle",game:"Spiele",series:"Serien",film:"Filme"},seriesBadge:"Serie — {{n}} Folge(n) bereit",seriesH:"Gedächtnisscherben-Saga",ep:"Folge",min:"Min"},
+  zh:{pill:"游戏 · 电影 · 剧集 · 免费",h1:"玩。看。<br><em>探索新宇宙。</em>",hp:"免费独立游戏、电影和剧集。",cta1:"🎮 浏览目录",cta2:"☕ 支持我们",catLbl:"目录",catH:"完整目录",howH:"如何运作？",s1h:"免费玩",s1p:"所有游戏100%免费",s2h:"看剧集",s2p:"每3天一集新剧",s3h:"支持我们",s3p:"Ko-fi或PayPal",s4h:"永久享用",s4p:"你的购买保存在设备上",play:"开始玩",watch:"立即观看",trailer:"预告片",soon:"即将推出",iapCount:"{{n}}个内购",free:"免费",ft:'© 2026 realteam',cats:{all:"全部",game:"游戏",series:"剧集",film:"电影"},seriesBadge:"剧集 — {{n}}集已就绪",seriesH:"记忆碎片传说",ep:"第",min:"分钟"}
 };
 
-let lang=localStorage.getItem('rt_lang')||'ar';
-let products=[], activeFilter='all';
+let lang = localStorage.getItem('rt_lang') || 'ar';
+let products = [], seriesData = null, activeFilter = 'all';
 
-async function loadProducts(){
-  try{ const r=await fetch('/products.json'); products=await r.json(); }
-  catch{ products=[]; }
-  await loadSeries();
+// ══════════════════════════════════════════════════════
+// DATA LOADING
+// ══════════════════════════════════════════════════════
+async function loadProducts() {
+  try {
+    const r = await fetch('/products.json');
+    products = await r.json();
+  } catch { products = []; }
+}
+
+async function loadSeries() {
+  try {
+    const r = await fetch('/series.json');
+    if (!r.ok) return;
+    seriesData = await r.json();
+  } catch {}
+}
+
+async function init() {
+  await Promise.all([loadProducts(), loadSeries()]);
   applyLang();
 }
 
-async function loadSeries(){
-  try{
-    const r=await fetch('/api/admin/series',{headers:{'x-admin-token':''}});
-    if(!r.ok) return;
-    const d=await r.json();
-    if(d.success && d.episodes > 0){
-      const badge=document.getElementById('seriesBadge');
-      const text=document.getElementById('seriesText');
-      const t=T[lang]||T.en;
-      text.textContent=(t.series||'Series — Episode {{n}}').replace('{{n}}',d.episodes);
-      badge.classList.add('show');
-    }
-  } catch{}
-}
+// ══════════════════════════════════════════════════════
+// LANG
+// ══════════════════════════════════════════════════════
+function applyLang() {
+  const t   = T[lang] || T.en;
+  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = dir;
 
-function applyLang(){
-  const t=T[lang]||T.en;
-  const dir=lang==='ar'?'rtl':'ltr';
-  document.documentElement.lang=lang; document.documentElement.dir=dir;
-  document.getElementById('pill').textContent=t.pill;
-  document.getElementById('h1').innerHTML=t.h1;
-  document.getElementById('hp').textContent=t.hp;
-  document.getElementById('cta1').innerHTML=t.cta1;
-  document.getElementById('cta2').innerHTML=t.cta2;
-  document.getElementById('catLbl').textContent=t.catLbl;
-  document.getElementById('catH').textContent=t.catH;
-  document.getElementById('howH').textContent=t.howH;
-  ['1','2','3','4'].forEach(n=>{
-    document.getElementById('s'+n+'h').textContent=t['s'+n+'h'];
-    document.getElementById('s'+n+'p').textContent=t['s'+n+'p'];
+  document.getElementById('pill').textContent   = t.pill;
+  document.getElementById('h1').innerHTML        = t.h1;
+  document.getElementById('hp').textContent      = t.hp;
+  document.getElementById('cta1').innerHTML      = t.cta1;
+  document.getElementById('cta2').innerHTML      = t.cta2;
+  document.getElementById('catLbl').textContent  = t.catLbl;
+  document.getElementById('catH').textContent    = t.catH;
+  document.getElementById('howH').textContent    = t.howH;
+  document.getElementById('ft').innerHTML        = t.ft;
+  ['1','2','3','4'].forEach(n => {
+    document.getElementById('s'+n+'h').textContent = t['s'+n+'h'];
+    document.getElementById('s'+n+'p').textContent = t['s'+n+'p'];
   });
-  document.getElementById('ft').innerHTML=t.ft;
-  renderFilters(t); renderGrid(t);
+
+  renderSeries(t);
+  renderFilters(t);
+  renderGrid(t);
 }
 
-function renderFilters(t){
-  const cats=['all','game','series','film'];
-  document.getElementById('filters').innerHTML=cats.map(c=>`
-    <button class="filter-btn${activeFilter===c?' active':''}" onclick="setFilter('${c}')">${t.cats[c]||c}</button>`).join('');
+// ══════════════════════════════════════════════════════
+// SERIES
+// ══════════════════════════════════════════════════════
+function renderSeries(t) {
+  const sec  = document.getElementById('seriesSec');
+  const grid = document.getElementById('seriesGrid');
+  const badge = document.getElementById('seriesBadge');
+  const text  = document.getElementById('seriesText');
+
+  const eps = seriesData?.episodes || [];
+  if (!eps.length) { sec.style.display = 'none'; return; }
+
+  // badge
+  text.textContent = (t.seriesBadge || 'Series — {{n}} episode(s)').replace('{{n}}', eps.length);
+  badge.classList.add('show');
+
+  // section title
+  const seriesH = document.getElementById('seriesH');
+  if (seriesH) seriesH.textContent = seriesData.title || t.seriesH || 'Series';
+
+  // cards
+  grid.innerHTML = eps.map(ep => {
+    const dur    = ep.duration ? Math.round(ep.duration / 60) : null;
+    const durStr = dur ? `${dur} ${t.min}` : '';
+    return `
+    <div class="ep-card reveal">
+      <div class="ep-thumb" onclick="openModal('${ep.videoUrl || ''}')">
+        <span class="ep-num">${t.ep} ${ep.number}</span>
+        <div class="ep-play-btn">▶</div>
+      </div>
+      <div class="ep-body">
+        <div class="ep-title">${ep.title || ''}</div>
+        <div class="ep-meta">${t.ep} ${ep.number}${durStr ? ' · ' + durStr : ''}</div>
+        ${ep.theme ? `<div class="ep-theme">${ep.theme}</div>` : ''}
+        <div class="ep-btns">
+          ${ep.videoUrl
+            ? `<button class="ep-btn-watch" onclick="openModal('${ep.videoUrl}')">▶ ${t.watch}</button>`
+            : `<span style="color:var(--mut);font-size:.82rem">${t.soon}</span>`
+          }
+          ${ep.trailerUrl
+            ? `<button class="ep-btn-trailer" onclick="openModal('${ep.trailerUrl}')">🎬 ${t.trailer}</button>`
+            : ''
+          }
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  sec.style.display = 'block';
+  observe();
 }
 
-function setFilter(f){ activeFilter=f; applyLang(); }
+// ══════════════════════════════════════════════════════
+// VIDEO MODAL
+// ══════════════════════════════════════════════════════
+function openModal(url) {
+  if (!url) return;
+  const modal = document.getElementById('videoModal');
+  const video = document.getElementById('modalVideo');
+  video.src   = url;
+  modal.classList.add('open');
+  video.play().catch(() => {});
+}
 
-function renderGrid(t){
-  const filtered=products.filter(p=>activeFilter==='all'||p.category===activeFilter);
-  const g=document.getElementById('grid');
-  if(!filtered.length){ g.innerHTML='<p style="color:var(--mut);grid-column:1/-1;text-align:center;padding:48px">...</p>'; return; }
-  g.innerHTML=filtered.map(p=>{
-    const name=p.name[lang]||p.name.en;
-    const desc=p.desc[lang]||p.desc.en;
-    const av=p.status==='available';
-    const isNew=p.generatedAt&&(Date.now()-new Date(p.generatedAt))/864e5<7;
-    const iapCount=p.iap?.length||0;
-    return `<div class="card reveal" ${av?`onclick="location.href=getGameUrl('${p.slug}')"`:''}style="${av?'':'opacity:.6;cursor:default'}">
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('videoModal') &&
+      !e.target.classList.contains('modal-close')) return;
+  const modal = document.getElementById('videoModal');
+  const video = document.getElementById('modalVideo');
+  video.pause();
+  video.src = '';
+  modal.classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal({ target: document.getElementById('videoModal') });
+});
+
+// ══════════════════════════════════════════════════════
+// CATALOG
+// ══════════════════════════════════════════════════════
+function renderFilters(t) {
+  const cats = ['all','game','series','film'];
+  document.getElementById('filters').innerHTML = cats.map(c =>
+    `<button class="filter-btn${activeFilter===c?' active':''}" onclick="setFilter('${c}')">${t.cats[c]||c}</button>`
+  ).join('');
+}
+
+function setFilter(f) { activeFilter = f; applyLang(); }
+
+function renderGrid(t) {
+  const filtered = products.filter(p => activeFilter === 'all' || p.category === activeFilter);
+  const g = document.getElementById('grid');
+  if (!filtered.length) {
+    g.innerHTML = '<p style="color:var(--mut);grid-column:1/-1;text-align:center;padding:48px">...</p>';
+    return;
+  }
+  g.innerHTML = filtered.map(p => {
+    const name = p.name[lang] || p.name.en;
+    const desc = p.desc ? (p.desc[lang] || p.desc.en) : '';
+    const av   = p.status === 'available';
+    const isNew = p.generatedAt && (Date.now() - new Date(p.generatedAt)) / 864e5 < 7;
+    const iapCount = p.iap?.length || 0;
+    return `
+    <div class="card reveal" ${av ? `onclick="location.href=getGameUrl('${p.slug}')"` : ''}
+      style="${av ? '' : 'opacity:.6;cursor:default'}">
       <div class="card-img" style="background:linear-gradient(${p.gradient})">
-        ${isNew?'<span style="position:absolute;top:10px;right:10px;background:#facc15;color:#000;font-size:0.6rem;font-weight:900;padding:2px 8px;border-radius:20px;font-family:monospace;letter-spacing:1px;z-index:2">NEW</span>':''}
+        ${isNew ? '<span style="position:absolute;top:10px;right:10px;background:#facc15;color:#000;font-size:0.6rem;font-weight:900;padding:2px 8px;border-radius:20px;font-family:monospace;letter-spacing:1px;z-index:2">NEW</span>' : ''}
         <span style="position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(${p.accentRgb},.5))">${p.emoji||'🎮'}</span>
       </div>
       <div class="card-body">
         <div class="card-tags">
           <span class="tag tag-type">${p.type.toUpperCase()}</span>
           <span class="tag tag-cat">${p.category.toUpperCase()}</span>
-          ${!av?`<span class="tag tag-soon">SOON</span>`:''}
+          ${!av ? `<span class="tag tag-soon">SOON</span>` : ''}
         </div>
         <div class="card-title">${name}</div>
         <div class="card-desc">${desc}</div>
         <div class="card-footer">
-          <div class="card-iap"><strong>${t.free}</strong> ${iapCount>0?'· '+t.iapCount.replace('{{n}}',iapCount):''}</div>
+          <div class="card-iap"><strong>${t.free}</strong> ${iapCount>0 ? '· '+t.iapCount.replace('{{n}}',iapCount) : ''}</div>
           ${av
             ? `<a href="javascript:void(0)" onclick="event.stopPropagation();location.href=getGameUrl('${p.slug}')" class="btn-play">${p.category==='series'||p.category==='film' ? t.watch : t.play} →</a>`
             : `<span class="btn-soon">${t.soon}</span>`
@@ -296,16 +450,24 @@ function renderGrid(t){
   observe();
 }
 
-function observe(){
-  const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ob.unobserve(e.target);}});},{threshold:.1});
-  document.querySelectorAll('.reveal:not(.vis)').forEach(el=>ob.observe(el));
+function observe() {
+  const ob = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); ob.unobserve(e.target); } });
+  }, { threshold: .1 });
+  document.querySelectorAll('.reveal:not(.vis)').forEach(el => ob.observe(el));
 }
 
-document.getElementById('langSel').value=lang;
-document.getElementById('langSel').addEventListener('change',e=>{
-  lang=e.target.value; localStorage.setItem('rt_lang',lang); applyLang();
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+document.getElementById('langSel').value = lang;
+document.getElementById('langSel').addEventListener('change', e => {
+  lang = e.target.value;
+  localStorage.setItem('rt_lang', lang);
+  applyLang();
 });
-loadProducts();
+
+init();
 </script>
 
 <script src="/social-bar.js"></script>
