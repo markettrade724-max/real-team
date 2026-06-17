@@ -1,0 +1,130 @@
+extends CharacterBody3D
+
+@export var speed: float = 3.0
+@export var attack_range: float = 1.5
+@export var attack_damage: float = 10.0
+@export var attack_cooldown: float = 2.0
+@export var health: float = 100.0
+@export var navigation_agent_node_path: NodePath
+@export var player_node_path: NodePath
+
+@onready var _navigation_agent: NavigationAgent3D = get_node(navigation_agent_node_path)
+@onready var _player: CharacterBody3D = get_node(player_node_path) if has_node(player_node_path) else null
+
+var _current_health: float
+var _can_attack: bool = true
+var _is_dead: bool = false
+
+# Timer for attack cooldown
+var _attack_timer: Timer
+
+func _ready() -> void:
+	add_to_group("enemy")
+	_current_health = health
+	
+	# Setup collision layers and masks
+	# Layer 2 for enemies, Mask 3 (Layer 1 + Layer 2) to detect player and other enemies/world
+	set_collision_layer(2)
+	set_collision_mask(3)
+	
+	# Setup attack timer
+	_attack_timer = Timer.new()
+	_attack_timer.wait_time = attack_cooldown
+	_attack_timer.one_shot = true
+	_attack_timer.autostart = false
+	add_child(_attack_timer)
+	_attack_timer.timeout.connect(_on_attack_timer_timeout)
+	
+	# Ensure navigation agent is ready
+	if _navigation_agent:
+		_navigation_agent.path_desired_distance = 0.5
+		_navigation_agent.target_desired_distance = 0.5
+		# _navigation_agent.velocity_forced = Vector3.ZERO # Not strictly needed as CharacterBody3D controls its own velocity
+	else:
+		push_warning("NavigationAgent3D not found at path: %s" % navigation_agent_node_path)
+
+	if not _player:
+		push_warning("Player node not found at path: %s. Enemy will not move or attack." % player_node_path)
+
+func _physics_process(delta: float) -> void:
+	if _is_dead or not is_instance_valid(_player):
+		velocity = Vector3.ZERO
+		move_and_slide()
+		return
+
+	var target_position = _player.global_position
+	var distance_to_player = global_position.distance_to(target_position)
+
+	if distance_to_player <= attack_range:
+		# Stop movement when in attack range
+		velocity = Vector3.ZERO
+		if _can_attack:
+			_attack()
+	else:
+		# Move towards player
+		if _navigation_agent:
+			_navigation_agent.target_position = target_position
+			var next_path_position = _navigation_agent.get_next_path_position()
+			var direction = (next_path_position - global_position).normalized()
+			velocity = direction * speed
+		else:
+			# Fallback: simple direct movement if no navigation agent
+			var direction = (target_position - global_position).normalized()
+			velocity = direction * speed
+
+	move_and_slide()
+
+func _attack() -> void:
+	if _is_dead or not is_instance_valid(_player):
+		return
+
+	_can_attack = false
+	_attack_timer.start()
+
+	# --- Feedback for attack --- 
+	# Example: Play attack animation, sound effect, or particle effect
+	# print("Enemy attacks player for %s damage!" % attack_damage)
+	
+	# Assuming the player has a 'take_damage' method
+	if _player.has_method("take_damage"):
+		_player.take_damage(attack_damage)
+	else:
+		push_warning("Player does not have a 'take_damage' method.")
+
+func take_damage(amount: float) -> void:
+	if _is_dead:
+		return
+
+	_current_health -= amount
+	# --- Feedback for damage taken ---
+	# Example: Play hit animation, sound effect, flash material
+	# print("Enemy took %s damage. Current health: %s" % [amount, _current_health])
+
+	if _current_health <= 0:
+		die()
+
+func die() -> void:
+	if _is_dead:
+		return
+
+	_is_dead = true
+	# --- Feedback for death ---
+	# Example: Play death animation, sound effect, drop loot
+	# print("Enemy died!")
+
+	# Disconnect from navigation agent to prevent further pathfinding
+	if _navigation_agent:
+		_navigation_agent.target_position = global_position # Stop pathfinding
+
+	# Disable collision to prevent interaction after death
+	set_collision_layer(0)
+	set_collision_mask(0)
+	
+	# Queue free after a short delay to allow death animation/effects to play.
+	# The request specifically mentioned `is_inside_tree()` check for `die()`.
+	# `queue_free()` implicitly handles this, but it's good practice to ensure the node is valid.
+	if is_inside_tree():
+		queue_free()
+
+func _on_attack_timer_timeout() -> void:
+	_can_attack = true

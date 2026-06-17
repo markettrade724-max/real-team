@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-17T11:48:34.666Z",
+  "updatedAt": "2026-06-17T12:32:17.697Z",
   "current": {
-    "type": "episode",
-    "episode": 4,
-    "id": null,
-    "startedAt": "2026-06-17T09:25:53.321Z",
-    "updatedAt": "2026-06-17T11:48:34.666Z",
-    "failReason": "screenplay-failed: No screenplay produced"
+    "type": "game",
+    "episode": null,
+    "id": "memory-shards-saga",
+    "startedAt": "2026-06-17T12:29:27.320Z",
+    "updatedAt": "2026-06-17T12:32:17.697Z",
+    "failReason": null
   },
   "series": {
     "nextEpisode": 4,
@@ -132,7 +132,30 @@
     }
   },
   "games": {
-    "current": null,
+    "current": {
+      "id": "memory-shards-saga",
+      "status": "in_progress",
+      "completedFiles": [
+        "export_presets.cfg",
+        "project.godot",
+        "main_scene.gd",
+        "player.gd",
+        "enemy.gd",
+        "weapon.gd",
+        "bullet.gd",
+        "worlds.json"
+      ],
+      "pendingFiles": [
+        "main_scene.tscn",
+        "player.tscn",
+        "enemy.tscn",
+        "weapon.tscn",
+        "bullet.tscn"
+      ],
+      "startedAt": "2026-06-17T12:29:27.320Z",
+      "updatedAt": "2026-06-17T12:32:17.697Z",
+      "failReason": null
+    },
     "done": []
   }
 }
