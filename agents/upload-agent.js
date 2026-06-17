@@ -1,31 +1,31 @@
 /**
- * upload-agent.js — v1.3
+ * upload-agent.js — v1.4
  *
- * التغييرات عن v1.2:
- *  - Supabase Storage: رفع episode + trailer → URL عام
- *  - النتيجة تحتوي على supabase.videoUrl + supabase.trailerUrl
- *  - Supabase يُنفَّذ دائماً — YouTube و TikTok اختياريان
- *  - series.json يُحدَّث بـ videoUrl و trailerUrl بعد الرفع
+ * التغييرات عن v1.3:
+ *  - supabaseUploadFile: createReadStream بدل readFileSync — لا OOM
+ *  - updateSeriesUrls() محذوفة — orchestrator يتولى تحديث series.json
+ *  - run() يُرجع { videoUrl, trailerUrl } للـ orchestrator
+ *  - ensureBucket() ينشئ bucket تلقائياً إن لم يكن موجوداً
  *
  * القواعد المطبقة:
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
  *  rule-126 : Node.js خالص
  */
 
-import { readFileSync, existsSync, statSync, writeFileSync } from 'fs';
+import { readFileSync, existsSync, statSync, createReadStream } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { logger }        from '../logger.js';
 
 const __dirname     = dirname(fileURLToPath(import.meta.url));
-const SERIES_PATH   = join(__dirname, '..', 'series.json');
 const MAX_SIZE_WARN = 500 * 1024 * 1024; // 500MB
+const BUCKET        = 'episodes';
 
 // ══════════════════════════════════════════════════════════
 // الدالة الرئيسية
 // ══════════════════════════════════════════════════════════
 export async function run(episodeManifest, series, trailer = null) {
-  logger.info('[UPLOAD] Starting v1.3', { episode: episodeManifest.episode });
+  logger.info('[UPLOAD] Starting v1.4', { episode: episodeManifest.episode });
 
   if (!existsSync(episodeManifest.outputPath)) {
     throw new Error(`Video not found: ${episodeManifest.outputPath}`);
@@ -41,11 +41,8 @@ export async function run(episodeManifest, series, trailer = null) {
   const results = {};
 
   // ── Supabase Storage — أولوية قصوى ────────────────────
-  // يُنفَّذ دائماً — هو مصدر الفيديو على الموقع
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    results.supabase = await uploadToSupabase(
-      episodeManifest, trailer, series
-    );
+    results.supabase = await uploadToSupabase(episodeManifest, trailer);
   } else {
     logger.warn('[UPLOAD] Supabase credentials missing — skipping');
     results.supabase = { skipped: true, reason: 'no credentials' };
@@ -79,23 +76,31 @@ export async function run(episodeManifest, series, trailer = null) {
     results.tiktok = { skipped: true, reason: 'no credentials' };
   }
 
+  // ── إرجاع URLs للـ orchestrator ────────────────────────
+  // orchestrator يتولى تحديث series.json — لا تعارض
+  const videoUrl   = results.supabase?.videoUrl   || null;
+  const trailerUrl = results.supabase?.trailerUrl || null;
+
   logger.info('[OK] Upload done', {
-    supabase: results.supabase?.videoUrl || results.supabase?.skipped || results.supabase?.error,
-    youtube:  results.youtube?.url       || results.youtube?.skipped  || results.youtube?.error,
-    tiktok:   results.tiktok?.url        || results.tiktok?.skipped   || results.tiktok?.error,
+    supabase: videoUrl   || results.supabase?.skipped  || results.supabase?.error,
+    youtube:  results.youtube?.url || results.youtube?.skipped || results.youtube?.error,
+    tiktok:   results.tiktok?.url  || results.tiktok?.skipped  || results.tiktok?.error,
   });
 
-  return results;
+  return { ...results, videoUrl, trailerUrl };
 }
 
 // ══════════════════════════════════════════════════════════
 // Supabase Storage
 // ══════════════════════════════════════════════════════════
-async function uploadToSupabase(manifest, trailer, series) {
+async function uploadToSupabase(manifest, trailer) {
   logger.info('[SUPABASE] Uploading episode + trailer...');
   try {
+    // تأكد من وجود الـ bucket — ينشئه إن لم يكن موجوداً
+    await ensureBucket();
+
     const ep       = manifest.episode;
-    const videoUrl   = await supabaseUploadFile(
+    const videoUrl = await supabaseUploadFile(
       manifest.outputPath,
       `ep${ep}/episode-${ep}.mp4`,
       'video/mp4'
@@ -110,9 +115,6 @@ async function uploadToSupabase(manifest, trailer, series) {
       );
     }
 
-    // تحديث series.json بالـ URLs
-    updateSeriesUrls(ep, videoUrl, trailerUrl);
-
     logger.info('[OK] Supabase upload done', { videoUrl, trailerUrl });
     return { success: true, videoUrl, trailerUrl };
 
@@ -122,25 +124,78 @@ async function uploadToSupabase(manifest, trailer, series) {
   }
 }
 
+/**
+ * ينشئ bucket إن لم يكن موجوداً
+ */
+async function ensureBucket() {
+  const url = `${process.env.SUPABASE_URL}/storage/v1/bucket`;
+
+  // تحقق إذا موجود
+  const listRes = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'Content-Type':  'application/json',
+    },
+    signal: AbortSignal.timeout(10000),
+  });
+
+  if (listRes.ok) {
+    const buckets = await listRes.json();
+    if (Array.isArray(buckets) && buckets.find(b => b.name === BUCKET)) {
+      logger.info(`[SUPABASE] Bucket "${BUCKET}" exists`);
+      return;
+    }
+  }
+
+  // أنشئ الـ bucket
+  const createRes = await fetch(url, {
+    method:  'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'Content-Type':  'application/json',
+    },
+    body:   JSON.stringify({ id: BUCKET, name: BUCKET, public: true }),
+    signal: AbortSignal.timeout(10000),
+  });
+
+  if (!createRes.ok) {
+    const err = await createRes.text();
+    // إذا الخطأ "already exists" — تجاهله
+    if (err.includes('already exists') || err.includes('duplicate')) {
+      logger.info(`[SUPABASE] Bucket "${BUCKET}" already exists`);
+      return;
+    }
+    throw new Error(`Cannot create bucket: ${err}`);
+  }
+
+  logger.info(`[SUPABASE] Bucket "${BUCKET}" created`);
+}
+
+/**
+ * يرفع ملفاً على Supabase Storage بـ createReadStream
+ * لا يحمّل الملف كاملاً في الذاكرة — آمن لملفات 500MB+
+ */
 async function supabaseUploadFile(filePath, storagePath, contentType) {
-  const buffer = readFileSync(filePath);
-  const size   = buffer.length;
+  const size = statSync(filePath).size;
 
   logger.info(`[SUPABASE] Uploading ${storagePath}`, {
     size: `${(size / 1024 / 1024).toFixed(0)}MB`,
   });
 
-  // رفع الملف
-  const uploadUrl = `${process.env.SUPABASE_URL}/storage/v1/object/episodes/${storagePath}`;
+  const stream  = createReadStream(filePath);
+  const uploadUrl = `${process.env.SUPABASE_URL}/storage/v1/object/${BUCKET}/${storagePath}`;
+
   const res = await fetch(uploadUrl, {
     method:  'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-      'Content-Type':  contentType,
-      'x-upsert':      'true', // استبدال إذا موجود
+      'Authorization':  `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+      'Content-Type':   contentType,
+      'Content-Length': String(size),
+      'x-upsert':       'true',
     },
-    body:   buffer,
-    signal: AbortSignal.timeout(600000), // 10 دقائق للرفع
+    body:    stream,
+    duplex:  'half', // مطلوب لـ ReadStream مع fetch
+    signal:  AbortSignal.timeout(600000), // 10 دقائق
   });
 
   if (!res.ok) {
@@ -148,28 +203,9 @@ async function supabaseUploadFile(filePath, storagePath, contentType) {
     throw new Error(`Supabase upload failed (${res.status}): ${err}`);
   }
 
-  // URL العام
-  const publicUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/episodes/${storagePath}`;
+  const publicUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${storagePath}`;
   logger.info(`[OK] Supabase file ready`, { url: publicUrl });
   return publicUrl;
-}
-
-// تحديث series.json بـ videoUrl و trailerUrl
-function updateSeriesUrls(episode, videoUrl, trailerUrl) {
-  if (!existsSync(SERIES_PATH)) return;
-  try {
-    const series = JSON.parse(readFileSync(SERIES_PATH, 'utf8'));
-    const ep     = series.episodes?.find(e => e.number === episode);
-    if (ep) {
-      if (videoUrl)   ep.videoUrl   = videoUrl;
-      if (trailerUrl) ep.trailerUrl = trailerUrl;
-      series.updatedAt = new Date().toISOString();
-      writeFileSync(SERIES_PATH, JSON.stringify(series, null, 2), 'utf8');
-      logger.info('[OK] series.json updated with URLs', { episode, videoUrl });
-    }
-  } catch (err) {
-    logger.warn('[SUPABASE] Could not update series.json', { error: err.message });
-  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -245,8 +281,9 @@ async function initResumableUpload(token, metadata) {
 }
 
 async function uploadVideoFile(uploadUrl, videoPath, token) {
-  const buffer = readFileSync(videoPath);
-  const size   = buffer.length;
+  // YouTube يقبل ReadStream مع duplex
+  const size   = statSync(videoPath).size;
+  const stream = createReadStream(videoPath);
 
   logger.info('[YOUTUBE] Uploading file...', {
     size: `${(size / 1024 / 1024).toFixed(0)}MB`,
@@ -259,7 +296,8 @@ async function uploadVideoFile(uploadUrl, videoPath, token) {
       'Content-Type':   'video/mp4',
       'Content-Length': String(size),
     },
-    body:   buffer,
+    body:   stream,
+    duplex: 'half',
     signal: AbortSignal.timeout(300000),
   });
 
@@ -274,8 +312,9 @@ async function uploadVideoFile(uploadUrl, videoPath, token) {
 async function uploadToTiktok(videoPath, manifest, series) {
   logger.info('[TIKTOK] Uploading trailer...');
   try {
-    const buffer = readFileSync(videoPath);
-    const size   = buffer.length;
+    // TikTok يحتاج size مسبقاً — نقرأ فقط الحجم ثم نفتح stream
+    const size   = statSync(videoPath).size;
+    const buffer = readFileSync(videoPath); // trailer صغير — مقبول
 
     const initRes = await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
       method:  'POST',
