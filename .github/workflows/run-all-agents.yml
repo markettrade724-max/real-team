@@ -301,6 +301,12 @@ jobs:
           } else {
             Write-Host "[WARN] products.json not found"
           }
+          if (Test-Path "series.json") {
+            Copy-Item series.json public/series.json -Force
+            Write-Host "[OK] series.json copied to public/"
+          } else {
+            Write-Host "[WARN] series.json not found"
+          }
 
       # ══════════════════════════════════════════════════════
       # 6 — رفع artifact الحلقة
@@ -339,6 +345,7 @@ jobs:
           git add    series.json          2>$null
           git add    products.json        2>$null
           git add    public/products.json 2>$null
+          git add    public/series.json   2>$null
           if (Test-Path "progress.json")  { git add progress.json }
           if (Test-Path "public/games")   { git add public/games/ }
           if (Test-Path "universe.json")  { git add universe.json }
