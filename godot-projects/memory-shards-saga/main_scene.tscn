@@ -1,80 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://d3x0m806202p"]
+[gd_scene load_steps=3 format=3 uid="uid://d1234567890"]
 
-[ext_resource type="Script" path="res://main_scene.gd" id="1_script_id"]
-[sub_resource type="Environment" id="2_environment"]
+[ext_resource type="Script" path="res://main_scene.gd" id="1_abcde"]
+
+[sub_resource type="Environment" id="2_fghij"]
+background_mode = 0
+background_color = Color(0, 0, 0, 1)
 
 [node name="main_scene" type="Node3D"]
-script = ExtResource("1_script_id")
+script = ExtResource("1_abcde")
 process_mode = 3
 main_menu_layer = NodePath("MainMenuLayer")
 pause_menu_layer = NodePath("PauseMenuLayer")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("2_environment")
+environment = SubResource("2_fghij")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 0, 0)
 
 [node name="MainMenuLayer" type="CanvasLayer" parent="."]
-
-[node name="Control" type="Control" parent="MainMenuLayer"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="MainMenuLayer/Control"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -100.0
-offset_top = -50.0
-offset_right = 100.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Click or Touch to Start"
-horizontal_alignment = 1
-vertical_alignment = 1
+layer = 1
 
 [node name="PauseMenuLayer" type="CanvasLayer" parent="."]
-visible = false
-
-[node name="Control" type="Control" parent="PauseMenuLayer"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ColorRect" type="ColorRect" parent="PauseMenuLayer/Control"]
-modulate = Color(0, 0, 0, 0.5)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="PauseMenuLayer/Control"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -20.0
-offset_right = 100.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "PAUSED"
-horizontal_alignment = 1
-vertical_alignment = 1
+layer = 2
