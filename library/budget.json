@@ -1,9 +1,9 @@
 {
   "date": "2026-06-19",
-  "total": 14,
+  "total": 17,
   "limit": 20,
   "library": 0,
-  "agents": 14,
+  "agents": 17,
   "exhausted": false,
   "log": [
     {
@@ -109,6 +109,29 @@
       "success": true,
       "total": 14,
       "left": 6
+    },
+    {
+      "time": "11:23:06",
+      "caller": "code-agent",
+      "success": true,
+      "total": 15,
+      "left": 5
+    },
+    {
+      "time": "11:23:20",
+      "caller": "code-agent",
+      "success": false,
+      "total": 16,
+      "left": 4,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "11:23:34",
+      "caller": "code-agent",
+      "success": false,
+      "total": 17,
+      "left": 3,
+      "errorType": "json_truncated"
     }
   ]
 }
