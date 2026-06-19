@@ -1,15 +1,44 @@
 {
   "slug": "memory-shards-saga",
   "files": [
+    {
+      "name": "main_scene.tscn",
+      "content": "[gd_scene load_steps=3 format=3 uid=\"uid://d3x0m806202p\"]\n\n[ext_resource type=\"Script\" path=\"res://main_scene.gd\" id=\"1_script_id\"]\n[sub_resource type=\"Environment\" id=\"2_environment\"]\n\n[node name=\"main_scene\" type=\"Node3D\"]\nscript = ExtResource(\"1_script_id\")\nprocess_mode = 3\nmain_menu_layer = NodePath(\"MainMenuLayer\")\npause_menu_layer = NodePath(\"PauseMenuLayer\")\n\n[node name=\"WorldEnvironment\" type=\"WorldEnvironment\" parent=\".\"]\nenvironment = SubResource(\"2_environment\")\n\n[node name=\"DirectionalLight3D\" type=\"DirectionalLight3D\" parent=\".\"]\ntransform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 0, 0)\n\n[node name=\"MainMenuLayer\" type=\"CanvasLayer\" parent=\".\"]\n\n[node name=\"Control\" type=\"Control\" parent=\"MainMenuLayer\"]\nlayout_mode = 3\nanchors_preset = 15\nanchor_right = 1.0\nanchor_bottom = 1.0\ngrow_horizontal = 2\ngrow_vertical = 2\n\n[node name=\"Label\" type=\"Label\" parent=\"MainMenuLayer/Control\"]\nlayout_mode = 1\nanchors_preset = 7\nanchor_left = 0.5\nanchor_top = 1.0\nanchor_right = 0.5\nanchor_bottom = 1.0\noffset_left = -100.0\noffset_top = -50.0\noffset_right = 100.0\noffset_bottom = -20.0\ngrow_horizontal = 2\ngrow_vertical = 0\ntext = \"Click or Touch to Start\"\nhorizontal_alignment = 1\nvertical_alignment = 1\n\n[node name=\"PauseMenuLayer\" type=\"CanvasLayer\" parent=\".\"]\nvisible = false\n\n[node name=\"Control\" type=\"Control\" parent=\"PauseMenuLayer\"]\nlayout_mode = 3\nanchors_preset = 15\nanchor_right = 1.0\nanchor_bottom = 1.0\ngrow_horizontal = 2\ngrow_vertical = 2\n\n[node name=\"ColorRect\" type=\"ColorRect\" parent=\"PauseMenuLayer/Control\"]\nmodulate = Color(0, 0, 0, 0.5)\nlayout_mode = 1\nanchors_preset = 15\nanchor_right = 1.0\nanchor_bottom = 1.0\ngrow_horizontal = 2\ngrow_vertical = 2\n\n[node name=\"Label\" type=\"Label\" parent=\"PauseMenuLayer/Control\"]\nlayout_mode = 1\nanchors_preset = 7\nanchor_left = 0.5\nanchor_top = 0.5\nanchor_right = 0.5\nanchor_bottom = 0.5\noffset_left = -100.0\noffset_top = -20.0\noffset_right = 100.0\noffset_bottom = 20.0\ngrow_horizontal = 2\ngrow_vertical = 2\ntext = \"PAUSED\"\nhorizontal_alignment = 1\nvertical_alignment = 1\n"
+    },
+    {
+      "name": "player.tscn",
+      "content": "[gd_scene load_steps=3 format=3 uid=\"uid://player\"]\n\n[ext_resource type=\"Script\" path=\"res://player.gd\" id=\"1_abcdef\"]\n\n[sub_resource type=\"CapsuleShape3D\" id=\"2_ghijkl\"]\nheight = 1.8\nradius = 0.4\n\n[node name=\"player\" type=\"CharacterBody3D\"]\nscript = ExtResource(\"1_abcdef\")\nspeed = 5.0\njump_velocity = 4.5\nmouse_sensitivity = 0.002\nmax_health = 100\n\n[node name=\"CollisionShape3D\" type=\"CollisionShape3D\" parent=\".\"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)\nshape = SubResource(\"2_ghijkl\")\n\n[node name=\"CameraPivot\" type=\"Node3D\" parent=\".\"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)\n\n[node name=\"Camera3D\" type=\"Camera3D\" parent=\"CameraPivot\"]\ncurrent = true\n\n[node name=\"Weapon\" type=\"Node3D\" parent=\".\"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.7)\n"
+    },
+    {
+      "name": "enemy.tscn",
+      "content": "[gd_scene load_steps=3 format=3 uid=\"uid://d33m0n1c\"]\n\n[ext_resource type=\"Script\" path=\"res://enemy.gd\" id=\"1_d3m0n1c\"]\n\n[sub_resource type=\"CapsuleShape3D\" id=\"2_d3m0n1c\"]\nradius = 0.4\nheight = 1.8\n\n[node name=\"Enemy\" type=\"CharacterBody3D\"]\nscript = ExtResource(\"1_d3m0n1c\")\ncollision_layer = 2\ncollision_mask = 3\nspeed = 3.0\nattack_range = 1.5\nattack_damage = 10.0\nattack_cooldown = 2.0\nhealth = 100.0\nnavigation_agent_node_path = NodePath(\"NavigationAgent3D\")\nplayer_node_path = NodePath(\"\")\n\n[node name=\"CollisionShape3D\" type=\"CollisionShape3D\" parent=\".\"]\nshape = SubResource(\"2_d3m0n1c\")\n\n[node name=\"NavigationAgent3D\" type=\"NavigationAgent3D\" parent=\".\"]\n"
+    },
+    {
+      "name": "weapon.tscn",
+      "content": "[gd_scene load_steps=4 format=3 uid=\"uid://c3x71661661661661661661661661661\"]\n\n[ext_resource type=\"Script\" path=\"res://weapon.gd\" id=\"1_abcde\"]\n\n[sub_resource type=\"BoxMesh\" id=\"BoxMesh_xyz\"]\nsize = Vector3(0.2, 0.2, 1)\n\n[sub_resource type=\"StandardMaterial3D\" id=\"StandardMaterial3D_123\"]\ntransparency = 1\nalbedo_color = Color(0.3, 0.2, 0.4, 0.9)\nmetallic = 0.2\nroughness = 0.6\nemission_enabled = true\nemission = Color(0.1, 0.1, 0.15, 1)\nemission_energy_multiplier = 0.5\n\n[node name=\"Weapon\" type=\"Node3D\"]\nscript = ExtResource(\"1_abcde\")\nfire_rate = 0.2\nbullet_speed = 50.0\nbullet_damage = 10.0\nbullet_lifetime = 5.0\n\n[node name=\"muzzle_point\" type=\"Marker3D\" parent=\".\"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)\n\n[node name=\"WeaponMesh\" type=\"MeshInstance3D\" parent=\".\"]\nmesh = SubResource(\"BoxMesh_xyz\")\nmaterial_override = SubResource(\"StandardMaterial3D_123\")\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)\n"
+    },
+    {
+      "name": "bullet.tscn",
+      "content": "[gd_scene load_steps=4 format=3 uid=\"uid://d33333333333\"]\n\n[ext_resource type=\"Script\" path=\"res://bullet.gd\" id=\"1_abcde\"]\n\n[sub_resource type=\"SphereShape3D\" id=\"2_fghij\"]\nradius = 0.05\n\n[sub_resource type=\"SphereMesh\" id=\"3_klmno\"]\nradius = 0.05\nheight = 0.1\n\n[node name=\"Bullet\" type=\"RigidBody3D\"]\nscript = ExtResource(\"1_abcde\")\nspeed = 50.0\ndamage = 10.0\nlifetime = 5.0\ngravity_scale = 0.0\ncontact_monitor = true\nmax_contacts_reported = 1\ncollision_layer = 16\n\n[node name=\"CollisionShape3D\" type=\"CollisionShape3D\" parent=\".\"]\nshape = SubResource(\"2_fghij\")\n\n[node name=\"MeshInstance3D\" type=\"MeshInstance3D\" parent=\".\"]\nmesh = SubResource(\"3_klmno\")\n\n[connection signal=\"body_entered\" from=\".\" to=\".\" method=\"_on_body_entered\"]\n"
+    }
+  ],
+  "engine": "godot",
+  "isComplete": true,
+  "completedFiles": [
     "export_presets.cfg",
     "project.godot",
+    "main_scene.gd",
+    "player.gd",
+    "enemy.gd",
+    "weapon.gd",
+    "bullet.gd",
+    "worlds.json",
     "main_scene.tscn",
     "player.tscn",
     "enemy.tscn",
     "weapon.tscn",
-    "bullet.tscn",
-    "worlds.json"
+    "bullet.tscn"
   ],
-  "engine": "godot",
-  "totalFiles": 8
+  "pendingFiles": [],
+  "totalFiles": 5
 }

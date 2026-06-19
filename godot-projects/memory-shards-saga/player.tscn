@@ -1,28 +1,27 @@
-[gd_scene load_steps=4 format=3 uid="uid://c51515151516"]
+[gd_scene load_steps=3 format=3 uid="uid://player"]
 
-[ext_resource type="Script" path="res://player.gd" id="1_abcd"]
+[ext_resource type="Script" path="res://player.gd" id="1_abcdef"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1234"]
-albedo_color = Color(0.2, 0.6, 0.8, 1)
+[sub_resource type="CapsuleShape3D" id="2_ghijkl"]
+height = 1.8
+radius = 0.4
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_5678"]
-size = Vector3(1, 2, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_9012"]
-size = Vector3(1, 2, 1)
-
-[node name="Player" type="CharacterBody3D"]
-script = ExtResource("1_abcd")
-collision_layer = 1
-collision_mask = 1
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_9012")
-material_override = SubResource("StandardMaterial3D_1234")
+[node name="player" type="CharacterBody3D"]
+script = ExtResource("1_abcdef")
+speed = 5.0
+jump_velocity = 4.5
+mouse_sensitivity = 0.002
+max_health = 100
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_5678")
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("2_ghijkl")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="CameraPivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+current = true
+
+[node name="Weapon" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.7)

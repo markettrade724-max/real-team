@@ -1,20 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://c51515151518"]
+[gd_scene load_steps=4 format=3 uid="uid://c3x71661661661661661661661661661"]
 
-[ext_resource type="Script" path="res://weapon.gd" id="1_abcd"]
+[ext_resource type="Script" path="res://weapon.gd" id="1_abcde"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1234"]
-albedo_color = Color(0.5, 0.5, 0.5, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_xyz"]
+size = Vector3(0.2, 0.2, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_5678"]
-size = Vector3(0.2, 0.2, 0.8)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_123"]
+transparency = 1
+albedo_color = Color(0.3, 0.2, 0.4, 0.9)
+metallic = 0.2
+roughness = 0.6
+emission_enabled = true
+emission = Color(0.1, 0.1, 0.15, 1)
+emission_energy_multiplier = 0.5
 
 [node name="Weapon" type="Node3D"]
-script = ExtResource("1_abcd")
+script = ExtResource("1_abcde")
+fire_rate = 0.2
+bullet_speed = 50.0
+bullet_damage = 10.0
+bullet_lifetime = 5.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_5678")
-material_override = SubResource("StandardMaterial3D_1234")
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+[node name="muzzle_point" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 
-[node name="Muzzle" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.8)
+[node name="WeaponMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_xyz")
+material_override = SubResource("StandardMaterial3D_123")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)

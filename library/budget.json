@@ -1,9 +1,61 @@
 {
-  "date": "2026-06-18",
-  "total": 0,
+  "date": "2026-06-19",
+  "total": 7,
   "limit": 20,
   "library": 0,
-  "agents": 0,
+  "agents": 7,
   "exhausted": false,
-  "log": []
+  "log": [
+    {
+      "time": "06:54:46",
+      "caller": "code-agent",
+      "success": true,
+      "total": 1,
+      "left": 19
+    },
+    {
+      "time": "06:55:05",
+      "caller": "code-agent",
+      "success": true,
+      "total": 2,
+      "left": 18
+    },
+    {
+      "time": "06:55:26",
+      "caller": "code-agent",
+      "success": false,
+      "total": 3,
+      "left": 17,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "06:55:36",
+      "caller": "code-agent",
+      "success": true,
+      "total": 4,
+      "left": 16
+    },
+    {
+      "time": "06:55:48",
+      "caller": "code-agent",
+      "success": true,
+      "total": 5,
+      "left": 15
+    },
+    {
+      "time": "06:56:07",
+      "caller": "code-agent",
+      "success": false,
+      "total": 6,
+      "left": 14,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "06:56:21",
+      "caller": "code-agent",
+      "success": true,
+      "total": 7,
+      "left": 13
+    }
+  ]
 }
