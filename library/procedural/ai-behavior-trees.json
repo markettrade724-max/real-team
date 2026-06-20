@@ -1,0 +1,153 @@
+{
+  "title": "Behavior Trees for Game AI",
+  "author": "GDC",
+  "category": "procedural",
+  "summary": "مرجع 'Behavior Trees for Game AI' من GDC يقدم بنية قوية، معيارية، وتفاعلية للذكاء الاصطناعي في الألعاب. يركز على بناء سلوكيات معقدة للوكلاء عبر هيكل شجري هرمي من العقد المتخصصة، مما يتيح تصميماً وتصحيح أخطاء واضحين.",
+  "coreRules": [
+    {
+      "id": 1,
+      "rule": "Use a Hierarchical Structure",
+      "essence": "Organize AI logic into a tree with a single root, branching into parent and child nodes to manage complexity.",
+      "example": "An 'Enemy AI' root node branches into 'Attack Player' and 'Patrol Area' sub-trees, each handling specific high-level goals."
+    },
+    {
+      "id": 2,
+      "rule": "Master Node Types (Selector, Sequence, Decorator, Action)",
+      "essence": "Understand the distinct roles of each node type to build complex behaviors effectively and predictably.",
+      "example": "A Selector for 'decide what to do', a Sequence for 'perform an attack combo', an Action for 'move to target', and a Decorator to 'repeat an action'."
+    },
+    {
+      "id": 3,
+      "rule": "Prioritize with Selector Nodes",
+      "essence": "Selector nodes execute children from left to right, succeeding on the first successful child, effectively prioritizing behaviors.",
+      "example": "A Selector with 'Flee if low health' (leftmost) then 'Attack if enemy in range' ensures fleeing takes precedence over attacking."
+    },
+    {
+      "id": 4,
+      "rule": "Execute Steps with Sequence Nodes",
+      "essence": "Sequence nodes execute children from left to right, succeeding only if all children succeed, ensuring a series of steps completes in order.",
+      "example": "A Sequence for 'Reload Weapon' might include 'Check Ammo', 'Play Reload Animation', 'Increment Ammo Count', all must succeed."
+    },
+    {
+      "id": 5,
+      "rule": "Perform Actions with Action Nodes",
+      "essence": "Action nodes are the leaves of the tree, directly interacting with the game world to perform specific, atomic tasks.",
+      "example": "Nodes like 'MoveToTarget', 'Attack', 'PlaySound', 'PickUpItem' are direct commands to the agent's body or game systems."
+    },
+    {
+      "id": 6,
+      "rule": "Modify Behavior with Decorator Nodes",
+      "essence": "Decorators wrap a single child node, altering its return status or execution conditions (e.g., Inverter, Repeater, Conditional).",
+      "example": "An 'UntilFail' decorator around 'Patrol' makes the agent patrol indefinitely until an interruption or higher priority behavior takes over."
+    },
+    {
+      "id": 7,
+      "rule": "Implement Reactive AI with Tick-Based Execution",
+      "essence": "The entire tree is 'ticked' (evaluated) periodically, allowing agents to react dynamically and immediately to changes in the game state.",
+      "example": "Every frame, the AI re-evaluates its tree, immediately switching from 'Patrol' to 'Chase' if a player enters its sight range."
+    },
+    {
+      "id": 8,
+      "rule": "Manage Node States (Running, Success, Failure)",
+      "essence": "Each node returns one of three states, informing its parent how to proceed and maintaining ongoing actions across ticks.",
+      "example": "A 'MoveToTarget' action returns 'Running' until the target is reached, then 'Success', or 'Failure' if the path is blocked."
+    },
+    {
+      "id": 9,
+      "rule": "Promote Modularity and Reusability",
+      "essence": "Encapsulate common behaviors into sub-trees that can be reused across different agents or parts of a single agent's logic.",
+      "example": "A 'SearchForCover' sub-tree can be used by any agent needing to find defensive positions, reducing duplicate logic."
+    },
+    {
+      "id": 10,
+      "rule": "Utilize a Blackboard for Shared Data",
+      "essence": "Provide a central data store (blackboard) where nodes can read and write relevant game state information for coordination.",
+      "example": "Store 'target_position', 'current_health', or 'last_known_enemy_location' on the blackboard for all nodes to access and update."
+    },
+    {
+      "id": 11,
+      "rule": "Design for Interruptibility",
+      "essence": "Structure trees, especially with selectors at higher levels, to allow higher-priority behaviors to preempt lower-priority ones.",
+      "example": "A 'React to Damage' branch at the top of a selector allows an agent to immediately stop current actions and respond to being hit."
+    },
+    {
+      "id": 12,
+      "rule": "Ensure Clear Termination Conditions",
+      "essence": "Every action and sequence should have well-defined success and failure conditions to prevent infinite loops or stalled behaviors.",
+      "example": "'MoveToTarget' fails if the path is blocked; 'Attack' succeeds after a certain number of hits or a timer expires."
+    },
+    {
+      "id": 13,
+      "rule": "Build with Composability in Mind",
+      "essence": "Construct complex behaviors by combining simpler, well-defined nodes and sub-trees into larger, more sophisticated patterns.",
+      "example": "A 'Flank Enemy' behavior might compose 'MoveToCover', 'FindFlankingPosition', 'MoveToFlankingPosition', 'Attack' sub-trees."
+    },
+    {
+      "id": 14,
+      "rule": "Avoid Excessive Deep Nesting",
+      "essence": "Keep trees relatively shallow to maintain readability, debuggability, and reduce cognitive load for designers and programmers.",
+      "example": "Instead of 10 nested sequences, break down complex tasks into smaller, more manageable sub-trees or use blackboard states."
+    },
+    {
+      "id": 15,
+      "rule": "Integrate Debugging and Visualization Tools",
+      "essence": "Visualizing the tree's execution path and node states in real-time is crucial for understanding and fixing AI behavior.",
+      "example": "A tool that highlights active nodes, displays their return status, and shows blackboard values during gameplay."
+    },
+    {
+      "id": 16,
+      "rule": "Support Data-Driven Design",
+      "essence": "Allow designers to create, modify, and balance behavior trees without requiring code changes, empowering rapid iteration.",
+      "example": "Using a visual editor where designers can drag-and-drop nodes, configure their properties, and test behaviors directly."
+    },
+    {
+      "id": 17,
+      "rule": "Optimize for Performance",
+      "essence": "Consider the computational cost of tree traversal and node execution, especially for large numbers of agents or complex trees.",
+      "example": "Caching frequently accessed data, avoiding expensive calculations in every tick, or ticking less critical agents less often."
+    },
+    {
+      "id": 18,
+      "rule": "Handle Concurrent Behaviors (Carefully)",
+      "essence": "While BTs are sequential, decorators or custom nodes can manage parallel-like behaviors, but this adds significant complexity.",
+      "example": "A 'Parallel' decorator that runs multiple children simultaneously, succeeding if all succeed, or failing if any fail, for multi-tasking."
+    },
+    {
+      "id": 19,
+      "rule": "Design for Scalability",
+      "essence": "Ensure the BT architecture can handle an increasing number of agents and complexity of behaviors without breaking down.",
+      "example": "Using a robust blackboard system and modular sub-trees allows for easy expansion of AI capabilities and agent types."
+    },
+    {
+      "id": 20,
+      "rule": "Test Thoroughly and Iteratively",
+      "essence": "AI behavior is complex and emergent; continuous testing and iteration are essential to achieve desired and robust results.",
+      "example": "Running automated tests for specific behaviors and extensive playtesting to observe emergent AI patterns and edge cases."
+    }
+  ],
+  "byAgent": {
+    "code-agent": {
+      "topRules": [
+        "Master Node Types (Selector, Sequence, Decorator, Action)",
+        "Implement Reactive AI with Tick-Based Execution",
+        "Optimize for Performance"
+      ],
+      "why": "هذا المرجع حيوي لـ code-agent لأنه يوفر المخطط المعماري لتنفيذ نظام الذكاء الاصطناعي، مما يضمن بناءً فعالاً وقابلاً للتوسع وقابلاً للصيانة.",
+      "how": "يطبق code-agent هذا المرجع يومياً من خلال كتابة الكود الخاص بإطار عمل Behavior Tree، وتطوير أنواع العقد المخصصة (الإجراءات، الشروط، المزينون)، ودمجها مع حالة اللعبة، وضمان التنفيذ الفعال والموثوق به.",
+      "prompt_injection": "When generating code for AI, prioritize modularity, performance, and clear state management as per Behavior Tree principles."
+    },
+    "world-birth-agent": {
+      "topRules": [
+        "Use a Hierarchical Structure",
+        "Prioritize with Selector Nodes",
+        "Promote Modularity and Reusability"
+      ],
+      "why": "هذا المرجع حيوي لـ world-birth-agent لأنه يمكنه من تصميم سلوكيات ذكاء اصطناعي معقدة وواقعية للعوامل داخل العالم الذي يتم إنشاؤه، مما يضمن تفاعلات ديناميكية ومتماسكة.",
+      "how": "يطبق world-birth-agent هذا المرجع يومياً من خلال تحديد الأهداف عالية المستوى وردود الفعل للشخصيات غير القابلة للعب (NPCs)، وهيكلة عمليات اتخاذ القرار الخاصة بهم باستخدام أدوات الاختيار والتسلسل، وضمان أن السلوكيات تتناسب مع سرد العالم وآلياته، وربما توليد أشجار سلوك لأدوار محددة للشخصيات غير القابلة للعب.",
+      "prompt_injection": "When designing AI behaviors for world entities, ensure they are reactive, modular, and prioritize actions logically using Behavior Tree structures."
+    }
+  },
+  "id": "ai-behavior-trees",
+  "priority": 2,
+  "builtAt": "2026-06-20T06:16:39.983Z"
+}

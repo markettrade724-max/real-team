@@ -1,137 +1,97 @@
 {
-  "date": "2026-06-19",
-  "total": 17,
+  "date": "2026-06-20",
+  "total": 20,
   "limit": 20,
-  "library": 0,
-  "agents": 17,
-  "exhausted": false,
+  "library": 11,
+  "agents": 0,
+  "exhausted": true,
   "log": [
     {
-      "time": "06:54:46",
-      "caller": "code-agent",
-      "success": true,
+      "time": "06:08:36",
+      "caller": "library-builder-agent",
+      "success": false,
       "total": 1,
-      "left": 19
-    },
-    {
-      "time": "06:55:05",
-      "caller": "code-agent",
-      "success": true,
-      "total": 2,
-      "left": 18
-    },
-    {
-      "time": "06:55:26",
-      "caller": "code-agent",
-      "success": false,
-      "total": 3,
-      "left": 17,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "06:55:36",
-      "caller": "code-agent",
-      "success": true,
-      "total": 4,
-      "left": 16
-    },
-    {
-      "time": "06:55:48",
-      "caller": "code-agent",
-      "success": true,
-      "total": 5,
-      "left": 15
-    },
-    {
-      "time": "06:56:07",
-      "caller": "code-agent",
-      "success": false,
-      "total": 6,
-      "left": 14,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "06:56:21",
-      "caller": "code-agent",
-      "success": true,
-      "total": 7,
-      "left": 13
-    },
-    {
-      "time": "09:25:05",
-      "caller": "code-agent",
-      "success": true,
-      "total": 8,
-      "left": 12
-    },
-    {
-      "time": "09:25:17",
-      "caller": "code-agent",
-      "success": false,
-      "total": 9,
-      "left": 11,
+      "left": 19,
       "errorType": "503"
     },
     {
-      "time": "09:25:48",
-      "caller": "code-agent",
+      "time": "06:09:06",
+      "caller": "library-builder-agent",
       "success": false,
-      "total": 10,
-      "left": 10,
+      "total": 2,
+      "left": 18,
+      "errorType": "503"
+    },
+    {
+      "time": "06:09:07",
+      "caller": "library-builder-agent",
+      "success": false,
+      "total": 3,
+      "left": 17,
+      "errorType": "503"
+    },
+    {
+      "time": "06:09:38",
+      "caller": "library-builder-agent",
+      "success": false,
+      "total": 4,
+      "left": 16,
+      "errorType": "503"
+    },
+    {
+      "time": "06:09:39",
+      "caller": "library-builder-agent",
+      "success": false,
+      "total": 5,
+      "left": 15,
+      "errorType": "503"
+    },
+    {
+      "time": "06:10:10",
+      "caller": "library-builder-agent",
+      "success": false,
+      "total": 6,
+      "left": 14,
+      "errorType": "503"
+    },
+    {
+      "time": "06:10:11",
+      "caller": "library-builder-agent",
+      "success": false,
+      "total": 7,
+      "left": 13,
       "errorType": "json_truncated"
     },
     {
-      "time": "09:26:07",
-      "caller": "code-agent",
+      "time": "06:10:31",
+      "caller": "library-builder-agent",
+      "success": false,
+      "total": 8,
+      "left": 12,
+      "errorType": "503"
+    },
+    {
+      "time": "06:10:32",
+      "caller": "library-builder-agent",
+      "success": true,
+      "total": 9,
+      "left": 11
+    },
+    {
+      "time": "06:11:01",
+      "caller": "library-builder-agent",
+      "success": true,
+      "total": 10,
+      "left": 10
+    },
+    {
+      "time": "06:11:21",
+      "caller": "library-builder-agent",
       "success": false,
       "total": 11,
       "left": 9,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "09:26:18",
-      "caller": "code-agent",
-      "success": false,
-      "total": 12,
-      "left": 8,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "09:26:25",
-      "caller": "code-agent",
-      "success": true,
-      "total": 13,
-      "left": 7
-    },
-    {
-      "time": "09:26:42",
-      "caller": "code-agent",
-      "success": true,
-      "total": 14,
-      "left": 6
-    },
-    {
-      "time": "11:23:06",
-      "caller": "code-agent",
-      "success": true,
-      "total": 15,
-      "left": 5
-    },
-    {
-      "time": "11:23:20",
-      "caller": "code-agent",
-      "success": false,
-      "total": 16,
-      "left": 4,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "11:23:34",
-      "caller": "code-agent",
-      "success": false,
-      "total": 17,
-      "left": 3,
-      "errorType": "json_truncated"
+      "errorType": "429_RPD"
     }
-  ]
+  ],
+  "exhaustedAt": "2026-06-20T06:11:21.463Z"
 }

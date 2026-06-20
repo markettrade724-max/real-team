@@ -1,38 +1,38 @@
 {
-  "runId": "2026-06-19T1123",
-  "mode": "game-phase2",
+  "runId": "2026-06-20T0608",
+  "mode": "library",
   "success": true,
-  "timestamp": "2026-06-19T11:23:40.569Z",
-  "totalDuration": "34.0s",
+  "timestamp": "2026-06-20T06:18:41.545Z",
+  "totalDuration": "605.3s",
   "budget": {
-    "total": 17,
+    "total": 39,
     "limit": 40,
-    "left": 23,
+    "left": 1,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 17,
+        "total": 20,
         "limit": 20,
-        "left": 3,
-        "exhausted": false,
-        "library": 0,
-        "agents": 17
+        "left": 0,
+        "exhausted": true,
+        "library": 11,
+        "agents": 0
       },
       {
         "key": "KEY_2",
-        "total": 0,
+        "total": 19,
         "limit": 20,
-        "left": 20,
+        "left": 1,
         "exhausted": false,
-        "library": 0,
+        "library": 19,
         "agents": 0
       }
     ]
   },
   "library": {
-    "built": 32,
+    "built": 42,
     "total": 56,
-    "percent": "57%"
+    "percent": "75%"
   },
   "series": {
     "episodes": 1,
@@ -44,9 +44,9 @@
     "gamesDone": 0
   },
   "agents": {
-    "code": {
+    "library": {
       "success": true,
-      "duration": "34.0s",
+      "duration": "605.3s",
       "error": null
     }
   },
