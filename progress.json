@@ -1,17 +1,10 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-19T11:23:40.564Z",
-  "current": {
-    "type": "game",
-    "episode": null,
-    "id": "memory-shards-saga",
-    "startedAt": "2026-06-17T12:29:27.320Z",
-    "updatedAt": "2026-06-19T11:23:40.564Z",
-    "failReason": null
-  },
+  "updatedAt": "2026-06-20T12:36:46.787Z",
+  "current": null,
   "series": {
     "nextEpisode": 5,
-    "totalEpisodes": 4,
+    "totalEpisodes": 5,
     "episodes": {
       "1": {
         "status": "complete",
@@ -101,7 +94,7 @@
         "failReason": "production-no-screenplay"
       },
       "4": {
-        "status": "failed",
+        "status": "complete",
         "completedSteps": [
           "backbone",
           "scenes",
@@ -126,7 +119,7 @@
           }
         },
         "startedAt": "2026-06-17T09:25:53.321Z",
-        "completedAt": null,
+        "completedAt": "2026-06-20T12:36:46.787Z",
         "failReason": "screenplay-failed: No screenplay produced"
       }
     }
