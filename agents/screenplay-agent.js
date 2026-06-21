@@ -1,11 +1,11 @@
 /**
- * screenplay-agent.js — v2.1
+ * screenplay-agent.js — v2.2
  *
- * التغييرات عن v2.0:
- *  - options (3rd param): يقبل seriesContext أو { fromStep, existingData }
- *  - حفظ فوري لـ backbone و scenes بعد كل خطوة — rule-188
- *  - fromStep: يستأنف من خطوة محددة دون إعادة السابقة
- *  - canAfford يحسب تكلفة الخطوات المتبقية فقط
+ * التغييرات عن v2.1:
+ *  - الكتابة بالإنجليزية بدل العربية — يحل مشكلة استقرار Edge TTS
+ *  - الأصوات في buildCharacters → en-US-* / en-GB-* بدل ar-*
+ *  - كل الـ prompts والمخرجات JSON بالإنجليزية
+ *  - باقي البنية كما v2.1: 3 خطوات، حفظ فوري، استئناف من fromStep
  *
  * القواعد المطبقة:
  *  rule-056 : soulContext قبل كل عمل
@@ -78,10 +78,10 @@ function buildAudienceGuide(insights) {
 
 function buildPreviousContext(seriesContext, episodeNumber) {
   if (!seriesContext?.previousEpisodes?.length) {
-    return 'هذه الحلقة الأولى — ابدأ بإيقاع يبني العالم ويُعرّف البطل.';
+    return 'This is the first episode — start with a pace that builds the world and introduces the hero.';
   }
   return seriesContext.previousEpisodes.slice(-3)
-    .map(e => `- الحلقة ${e.number}: ${e.summary}`).join('\n');
+    .map(e => `- Episode ${e.number}: ${e.summary}`).join('\n');
 }
 
 function buildCharacters(universe) {
@@ -89,43 +89,43 @@ function buildCharacters(universe) {
 
   const proto = universe.soul?.protagonist;
   chars.push({
-    name:        proto?.name        || 'البطل',
+    name:        proto?.name        || 'The Hero',
     role:        'protagonist',
-    description: proto?.description || universe.soul?.essence || 'بطل مجهول المصير',
-    arc:         proto?.arc         || 'من الشك إلى اليقين',
-    flaw:        proto?.flaw        || 'الخوف من الخسارة',
-    voice:       'ar-SA-HamedNeural',
+    description: proto?.description || universe.soul?.essence || 'A hero of uncertain fate',
+    arc:         proto?.arc         || 'From doubt to certainty',
+    flaw:        proto?.flaw        || 'Fear of loss',
+    voice:       'en-US-GuyNeural',
   });
 
   const enemies = universe.worlds?.[0]?.enemies || [];
   for (const enemy of enemies.slice(0, 2)) {
     chars.push({
-      name:        enemy.name?.ar || enemy.name?.en || 'العدو',
+      name:        enemy.name?.en || enemy.name?.ar || 'The Enemy',
       role:        'antagonist',
-      description: enemy.description || enemy.behavior || 'عدو غامض',
-      arc:         enemy.arc  || 'قوة لا ترحم',
-      flaw:        enemy.flaw || 'غرور مدمر',
-      voice:       'ar-SA-ZariyahNeural',
+      description: enemy.description || enemy.behavior || 'A mysterious foe',
+      arc:         enemy.arc  || 'A merciless force',
+      flaw:        enemy.flaw || 'Destructive pride',
+      voice:       'en-US-AriaNeural',
     });
   }
 
   if (universe.soul?.companion) {
     chars.push({
-      name:        universe.soul.companion.name || 'الرفيق',
+      name:        universe.soul.companion.name || 'The Companion',
       role:        'supporting',
-      description: universe.soul.companion.description || 'صوت العقل',
-      arc:         universe.soul.companion.arc  || 'من التردد إلى الإيمان',
-      flaw:        universe.soul.companion.flaw || 'الثقة الزائدة',
-      voice:       'ar-EG-ShakirNeural',
+      description: universe.soul.companion.description || 'The voice of reason',
+      arc:         universe.soul.companion.arc  || 'From hesitation to faith',
+      flaw:        universe.soul.companion.flaw || 'Excessive trust',
+      voice:       'en-GB-RyanNeural',
     });
   } else if (chars.length < 3) {
     chars.push({
-      name:        'الرفيق',
+      name:        'The Companion',
       role:        'supporting',
-      description: 'رفيق البطل — يحمل أسراراً تُكشف لاحقاً',
-      arc:         'من التردد إلى الإيمان',
-      flaw:        'يخفي حقيقة تُغيّر مسار القصة',
-      voice:       'ar-EG-ShakirNeural',
+      description: 'The hero\'s companion — carries secrets revealed later',
+      arc:         'From hesitation to faith',
+      flaw:        'Hides a truth that will change the story\'s course',
+      voice:       'en-GB-RyanNeural',
     });
   }
 
@@ -139,39 +139,39 @@ async function generateBackbone(universe, episodeNumber, characters, prevContext
   logger.info('[SCREENPLAY] Step 1/3 — Backbone');
 
   const prompt = `
-أنت كاتب سيناريو محترف من طراز McKee و Syd Field و Truby.
+You are a professional screenwriter in the tradition of McKee, Syd Field, and Truby.
 
-الكون: "${universe.name?.ar || universe.name?.en}"
-الروح: "${universe.soul?.essence}"
-القانون الفيزيائي: "${universe.worlds?.[0]?.physics || 'غير محدد'}"
-السياق السابق: ${prevContext}
-${audienceGuide ? `\nتوجيهات الجمهور:\n${audienceGuide}` : ''}
+Universe: "${universe.name?.en || universe.name?.ar}"
+Essence: "${universe.soul?.essence}"
+Physical law: "${universe.worlds?.[0]?.physics || 'unspecified'}"
+Previous context: ${prevContext}
+${audienceGuide ? `\nAudience guidance:\n${audienceGuide}` : ''}
 
-الشخصيات:
-${characters.map(c => `- ${c.name} (${c.role}): ${c.description} | arc: ${c.arc} | عيب: ${c.flaw}`).join('\n')}
+Characters:
+${characters.map(c => `- ${c.name} (${c.role}): ${c.description} | arc: ${c.arc} | flaw: ${c.flaw}`).join('\n')}
 
-اكتب العمود الفقري للحلقة ${episodeNumber}.
+Write the backbone for episode ${episodeNumber}.
 
-قواعد البنية:
-- الفصل الأول  (25%): إعداد العالم + تعريف الصراع
-- الفصل الثاني (50%): تصعيد + نقطة لا عودة
-- الفصل الثالث (25%): ذروة + نهاية مشوّقة
+Structure rules:
+- Act 1 (25%): world setup + conflict introduction
+- Act 2 (50%): escalation + point of no return
+- Act 3 (25%): climax + cliffhanger ending
 
-أنتج JSON فقط — بدون أي نص خارج الـ JSON:
+Output JSON only — no text outside the JSON:
 {
   "episode":          ${episodeNumber},
-  "title":            "عنوان الحلقة",
-  "logline":          "جملة واحدة تلخص الحلقة",
-  "theme":            "الموضوع الجوهري",
-  "emotionalJourney": "قوس العاطفة من البداية للنهاية",
+  "title":            "Episode title",
+  "logline":          "One sentence summarizing the episode",
+  "theme":            "The core theme",
+  "emotionalJourney": "The emotional arc from start to end",
   "acts": [
-    { "act": 1, "name": "الإعداد",   "summary": "3 جمل", "emotionalArc": "المزاج", "sceneCount": 3 },
-    { "act": 2, "name": "المواجهة",  "summary": "3 جمل", "emotionalArc": "المزاج", "sceneCount": 5 },
-    { "act": 3, "name": "الحل",      "summary": "3 جمل", "emotionalArc": "المزاج", "sceneCount": 3 }
+    { "act": 1, "name": "Setup",       "summary": "3 sentences", "emotionalArc": "mood", "sceneCount": 3 },
+    { "act": 2, "name": "Confrontation", "summary": "3 sentences", "emotionalArc": "mood", "sceneCount": 5 },
+    { "act": 3, "name": "Resolution",  "summary": "3 sentences", "emotionalArc": "mood", "sceneCount": 3 }
   ],
-  "turningPoints":   ["نقطة التحول الأولى", "نقطة اللا عودة", "الذروة"],
-  "cliffhanger":     "وصف نهاية الحلقة المشوّقة",
-  "nextEpisodeHint": "تلميح غامض للحلقة القادمة"
+  "turningPoints":   ["first turning point", "point of no return", "climax"],
+  "cliffhanger":     "description of the episode's hook ending",
+  "nextEpisodeHint":   "a vague hint for the next episode"
 }`;
 
   const result = await askGemini(
@@ -204,33 +204,33 @@ async function generateScenes(universe, backbone, characters, soul, library) {
   const prompt = `
 ${library}
 
-الكون: "${universe.name?.ar || universe.name?.en}"
-عنوان الحلقة: "${backbone.title}"
-الموضوع: "${backbone.theme}"
+Universe: "${universe.name?.en || universe.name?.ar}"
+Episode title: "${backbone.title}"
+Theme: "${backbone.theme}"
 
-نقاط التحول:
+Turning points:
 ${backbone.turningPoints.map((t, i) => `${i + 1}. ${t}`).join('\n')}
 
-الشخصيات: ${characters.map(c => c.name).join(' / ')}
+Characters: ${characters.map(c => c.name).join(' / ')}
 
-هيكل الفصول:
-${sceneList.map(a => `الفصل ${a.act} — ${a.name} (${a.count} مشاهد):\n  ${a.summary}\n  المزاج: ${a.emotional}`).join('\n\n')}
+Act structure:
+${sceneList.map(a => `Act ${a.act} — ${a.name} (${a.count} scenes):\n  ${a.summary}\n  Mood: ${a.emotional}`).join('\n\n')}
 
-اكتب تفاصيل كل مشهد.
+Write the details for every scene.
 
-قواعد كل مشهد: هدف درامي واحد / camera سينمائية / lighting عاطفية / duration 45-120s / sfx / music.
+Rules per scene: one dramatic goal / cinematic camera / emotional lighting / duration 45-120s / sfx / music.
 
-أنتج JSON فقط:
+Output JSON only:
 {
   "acts": [
     {
-      "act": 1, "name": "الإعداد",
+      "act": 1, "name": "Setup",
       "scenes": [
         {
-          "id": "S01", "location": "المكان", "time": "نهار/ليل/داخلي/خارجي",
-          "mood": "المزاج", "goal": "الهدف الدرامي", "duration": 60,
-          "camera": "وصف الكاميرا", "lighting": "وصف الإضاءة",
-          "action": "الحركة والأفعال", "sfx": "المؤثرات الصوتية", "music": "وصف الموسيقى"
+          "id": "S01", "location": "the place", "time": "day/night/interior/exterior",
+          "mood": "the mood", "goal": "the dramatic goal", "duration": 60,
+          "camera": "camera description", "lighting": "lighting description",
+          "action": "action and movement", "sfx": "sound effects", "music": "music description"
         }
       ]
     }
@@ -261,34 +261,34 @@ async function generateDialogue(scenes, characters, backbone, soul) {
     .join('\n');
 
   const charProfiles = characters
-    .map(c => `- ${c.name} (${c.role}): ${c.description} | عيب: ${c.flaw} | arc: ${c.arc}`)
+    .map(c => `- ${c.name} (${c.role}): ${c.description} | flaw: ${c.flaw} | arc: ${c.arc}`)
     .join('\n');
 
   const prompt = `
-أنت كاتب حوار محترف. الحوار يكشف الشخصية — لا يشرح الحبكة.
+You are a professional dialogue writer. Dialogue reveals character — it does not explain plot.
 
-عنوان الحلقة: "${backbone.title}"
-الموضوع: "${backbone.theme}"
-قوس العاطفة: "${backbone.emotionalJourney}"
+Episode title: "${backbone.title}"
+Theme: "${backbone.theme}"
+Emotional arc: "${backbone.emotionalJourney}"
 
-الشخصيات:
+Characters:
 ${charProfiles}
 
-المشاهد:
+Scenes:
 ${sceneIds}
 
-قواعد الحوار: جمل تكشف الشخصية / لا كليشيهات / صوت فريد لكل شخصية /
-جمل قصيرة في التوتر / direction تمثيلي دقيق.
+Dialogue rules: lines reveal character / no clichés / a distinct voice for each character /
+short sentences under tension / precise acting direction.
 
-أنتج JSON فقط:
+Output JSON only:
 {
   "dialogues": {
     "S01": [
       {
-        "character":  "اسم الشخصية",
-        "line":       "الحوار",
-        "emotion":    "الحالة العاطفية",
-        "direction":  "توجيه التمثيل"
+        "character":  "character name",
+        "line":       "the dialogue",
+        "emotion":    "the emotional state",
+        "direction":  "acting direction"
       }
     ]
   }
@@ -336,6 +336,7 @@ function mergeScreenplay(backbone, scenes, dialogue, characters, universe, episo
     characters,
     totalDuration:    totalSeconds,
     universeId:       universe.id,
+    language:         'en',
     generatedAt:      new Date().toISOString(),
   };
 }
@@ -351,7 +352,6 @@ function mergeScreenplay(backbone, scenes, dialogue, characters, universe, episo
  *   - إذا كان { fromStep, existingData } → استئناف من خطوة محددة
  */
 export async function run(universe, episodeNumber = 1, options = null) {
-  // تحديد نوع options
   const seriesContext = options?.previousEpisodes ? options : null;
   const fromStep      = options?.fromStep || 'backbone';
   const startIndex    = STEPS.indexOf(fromStep);
@@ -360,11 +360,10 @@ export async function run(universe, episodeNumber = 1, options = null) {
     throw new Error(`Invalid fromStep: ${fromStep}. Must be one of: ${STEPS.join(', ')}`);
   }
 
-  // تكلفة الخطوات المتبقية فقط
   const remainingSteps = STEPS.slice(startIndex);
   const neededCalls    = remainingSteps.reduce((s, step) => s + STEP_COSTS[step], 0);
 
-  logger.info('[SCREENPLAY] Starting v2.1', {
+  logger.info('[SCREENPLAY] Starting v2.2 (English)', {
     universe:   universe.id,
     episode:    episodeNumber,
     fromStep,
@@ -374,7 +373,6 @@ export async function run(universe, episodeNumber = 1, options = null) {
 
   ensureResultsDir();
 
-  // rule-153: تحقق من الحصة للخطوات المتبقية فقط
   if (getRemainingQuota() < neededCalls) {
     throw new Error(`InsufficientQuota: need ${neededCalls} calls for steps [${remainingSteps.join(',')}]`);
   }
@@ -395,13 +393,12 @@ export async function run(universe, episodeNumber = 1, options = null) {
       backbone = await generateBackbone(
         universe, episodeNumber, characters, prevContext, audienceGuide, soul
       );
-      saveStep(episodeNumber, 'backbone', backbone); // rule-188: حفظ فوري
+      saveStep(episodeNumber, 'backbone', backbone);
     } catch (err) {
       logger.error('[ERROR] Backbone failed', { error: err.message });
       throw err;
     }
   } else {
-    // استئناف — حمّل من disk
     backbone = loadStep(episodeNumber, 'backbone');
     if (!backbone) throw new Error(`Backbone not found on disk for ep${episodeNumber} — cannot start from '${fromStep}'`);
     logger.info('[SCREENPLAY] Backbone loaded from disk', { title: backbone.title });
@@ -412,7 +409,7 @@ export async function run(universe, episodeNumber = 1, options = null) {
   if (['backbone', 'scenes'].includes(fromStep)) {
     try {
       scenesResult = await generateScenes(universe, backbone, characters, soul, library);
-      saveStep(episodeNumber, 'scenes', scenesResult); // rule-188: حفظ فوري
+      saveStep(episodeNumber, 'scenes', scenesResult);
     } catch (err) {
       logger.error('[ERROR] Scenes failed', { error: err.message });
       throw err;
@@ -444,7 +441,7 @@ export async function run(universe, episodeNumber = 1, options = null) {
   const totalLines  = screenplay.acts.flatMap(a => a.scenes)
     .reduce((s, sc) => s + (sc.dialogue?.length || 0), 0);
 
-  logger.info('[OK] Screenplay v2.1 done', {
+  logger.info('[OK] Screenplay v2.2 done', {
     episode:    episodeNumber,
     title:      screenplay.title,
     scenes:     totalScenes,
