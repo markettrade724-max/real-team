@@ -1,12 +1,11 @@
 /**
- * voice-agent.js — v2.3
+ * voice-agent.js — v3.0
  *
- * التغييرات عن v2.2:
- *  - تشخيص حقيقي لأخطاء TTS — err.message كان فارغاً (err.toString() احتياطي)
- *  - CONCURRENCY = 2 بدل 5 — Edge TTS WebSocket يفشل تحت ضغط متزامن عالٍ
- *  - retry بفاصل أطول (3s) + محاولة ثالثة قبل الاستسلام
- *  - تحقق من اتصال Edge TTS قبل البدء (preflight check)
- *  - لا تجزئة صامتة — كل فشل يُسجَّل بسبب واضح
+ * التغييرات عن v2.3:
+ *  - أصوات إنجليزية بدل العربية — en-US-* أكثر استقراراً بكثير على Edge TTS
+ *  - يحل مشكلة "Connect Error" التي ظهرت مع الأصوات العربية
+ *  - TIME_MAP / narrator line بالإنجليزية
+ *  - باقي البنية كما v2.3: preflight check + retry + concurrency محدود
  *
  * القواعد المطبقة:
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
@@ -22,41 +21,40 @@ import { logger }                                from '../logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// أصوات إنجليزية — مستقرة جداً على Edge TTS
 const VOICE_MAP = {
-  protagonist: 'ar-SA-HamedNeural',
-  antagonist:  'ar-SA-ZariyahNeural',
-  supporting:  'ar-EG-ShakirNeural',
-  narrator:    'ar-SA-ZariyahNeural',
-  default:     'ar-SA-HamedNeural',
+  protagonist: 'en-US-GuyNeural',
+  antagonist:  'en-US-AriaNeural',
+  supporting:  'en-GB-RyanNeural',
+  narrator:    'en-US-AriaNeural',
+  default:     'en-US-GuyNeural',
 };
 
 const TIME_MAP = {
-  'نهار': 'في وضح النهار',
-  'ليل':  'تحت جنح الظلام',
-  'فجر':  'عند الفجر',
-  'غروب': 'عند الغروب',
+  'day':     'in broad daylight',
+  'night':   'under the cover of darkness',
+  'dawn':    'at dawn',
+  'dusk':    'at dusk',
 };
 
-const CONCURRENCY  = 2;     // v2.3: أقل ضغطاً على Edge TTS WebSocket
-const TTS_TIMEOUT   = 25000; // 25 ثانية لكل محاولة
-const MAX_RETRIES   = 2;     // محاولتان إضافيتان = 3 إجمالاً
-const RETRY_DELAY   = 3000;  // 3 ثوانٍ بين المحاولات
+const CONCURRENCY  = 2;
+const TTS_TIMEOUT  = 25000;
+const MAX_RETRIES  = 2;
+const RETRY_DELAY  = 3000;
 
 // ══════════════════════════════════════════════════════════
 // الدالة الرئيسية
 // ══════════════════════════════════════════════════════════
 export async function run(screenplay) {
-  logger.info('[VOICE] Starting v2.3', { episode: screenplay.episode });
+  logger.info('[VOICE] Starting v3.0 (English)', { episode: screenplay.episode });
 
   const epDir  = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`);
   const outDir = join(epDir, 'audio');
   mkdirSync(outDir, { recursive: true });
 
-  // ── فحص أولي: هل Edge TTS متاح أصلاً؟ ──────────────────
   const preflightOk = await preflightCheck();
   if (!preflightOk) {
     logger.error('[VOICE] Preflight check failed — Edge TTS unreachable from this runner');
-    // لا نوقف الإنتاج — نُرجع manifest فارغاً موثقاً بالسبب
     const manifest = {
       episode: screenplay.episode, audioFiles: [], totalLines: 0,
       skipped: 0, error: 'EdgeTTS unreachable — preflight failed',
@@ -77,7 +75,6 @@ export async function run(screenplay) {
     return { episode: screenplay.episode, audioFiles: [], totalLines: 0 };
   }
 
-  // ── بناء قائمة المهام ──────────────────────────────────
   const tasks = [];
 
   for (const scene of scenes) {
@@ -92,7 +89,7 @@ export async function run(screenplay) {
       const line = scene.dialogue[i];
       if (!line?.line?.trim()) continue;
       const voice = charVoices[line.character] || VOICE_MAP.default;
-      const text  = line.emotion === 'توتر' ? `...${line.line}` : line.line;
+      const text  = (line.emotion || '').toLowerCase().includes('tense') ? `...${line.line}` : line.line;
       const file  = join(outDir, `${scene.id}-d${i + 1}.mp3`);
       tasks.push({
         text, voice, file,
@@ -106,9 +103,8 @@ export async function run(screenplay) {
 
   logger.info('[VOICE] Tasks queued', { total: tasks.length, concurrency: CONCURRENCY });
 
-  // ── تنفيذ بالتوازي محدود (CONCURRENCY = 2) ────────────
   const results  = new Array(tasks.length).fill(null);
-  const errors    = {}; // تجميع أسباب الفشل لتشخيص واضح
+  const errors    = {};
   let inFlight    = 0;
   let idx         = 0;
   let skipped     = 0;
@@ -174,12 +170,12 @@ export async function run(screenplay) {
 }
 
 // ══════════════════════════════════════════════════════════
-// فحص أولي — هل يمكن الوصول لخدمة Edge TTS؟
+// فحص أولي
 // ══════════════════════════════════════════════════════════
 async function preflightCheck() {
   try {
     const buffer = await Promise.race([
-      doTTS('اختبار', VOICE_MAP.default),
+      doTTS('Testing connection', VOICE_MAP.default),
       new Promise((_, rej) => setTimeout(() => rej(new Error('preflight-timeout')), 15000)),
     ]);
     const ok = buffer && buffer.length > 0;
@@ -192,7 +188,7 @@ async function preflightCheck() {
 }
 
 // ══════════════════════════════════════════════════════════
-// توليد TTS — مع retry حقيقي وتشخيص واضح
+// توليد TTS
 // ══════════════════════════════════════════════════════════
 async function generateTTS(text, voice, outputPath, attempt = 0) {
   if (!text?.trim()) {
@@ -246,9 +242,6 @@ async function doTTS(text, voice) {
   return Buffer.concat(chunks);
 }
 
-/**
- * يستخرج وصفاً مفهوماً للخطأ — err.message كان يأتي فارغاً (v2.2 bug)
- */
 function describeError(err) {
   if (!err) return 'unknown-error';
   if (err.message && err.message.trim()) return err.message;
@@ -264,13 +257,14 @@ function buildNarratorLine(scene) {
   const parts = [];
   const timeDesc = TIME_MAP[scene.time];
   if (timeDesc) parts.push(timeDesc);
-  if (scene.location?.trim()) parts.push(`في ${scene.location.trim()}`);
+  if (scene.location?.trim()) parts.push(`in ${scene.location.trim()}`);
   if (scene.mood?.trim())     parts.push(scene.mood.trim());
-  if (parts.length === 0) return 'المشهد يبدأ';
-  return parts.join('، ') + '.';
+  if (parts.length === 0) return 'The scene begins';
+  return parts.join(', ') + '.';
 }
 
 function estimateDuration(text) {
   if (!text) return 1;
+  // ~150 words/min = 2.5 words/sec — same rate for English
   return Math.max(1, Math.round(text.trim().split(/\s+/).length / 2.5));
 }
