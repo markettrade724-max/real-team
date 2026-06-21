@@ -1,11 +1,11 @@
 /**
- * subtitle-agent.js — v1.1
+ * subtitle-agent.js — v1.2
  *
- * التغييرات عن v1.0:
- *  - buildBurnScript محذوف (bash — rule-126)
- *  - buildTimeline يعمل من audioManifest مباشرة
- *  - visualManifest اختياري — لا crash عند غيابه
- *  - run() يستلم (screenplay, audioManifest) فقط
+ * التغييرات عن v1.1:
+ *  - الترجمة الأساسية إنجليزية (لا transliteration) — السيناريو نفسه بالإنجليزية الآن
+ *  - إضافة ترجمة فرنسية (fr) بقاموس مصطلحات بسيط — بدون Gemini (rule-137)
+ *  - formatLine بدل formatArabicLine — يدعم en/fr بنفس البنية
+ *  - الناتج: episode-en.srt + episode-fr.srt + episode.vtt
  *
  * لا يستهلك Gemini — rule-137
  * القواعد المطبقة:
@@ -29,35 +29,34 @@ export function run(screenplay, audioManifest) {
 
   if (!audioManifest?.audioFiles?.length) {
     logger.warn('[SUBTITLE] No audio manifest — skipping');
-    return { arSRT: null, enSRT: null, vtt: null, lines: 0 };
+    return { enSRT: null, frSRT: null, vtt: null, lines: 0 };
   }
 
   const outDir = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`, 'output');
   mkdirSync(outDir, { recursive: true });
 
-  // بناء الجدول الزمني من audioManifest مباشرة
   const timeline = buildTimeline(audioManifest);
 
-  // SRT عربي
-  const arSRT = generateSRT(timeline, 'ar');
-  writeFileSync(join(outDir, 'episode-ar.srt'), arSRT, 'utf8');
-
-  // SRT إنجليزي
+  // SRT إنجليزي — اللغة الأصلية للسيناريو
   const enSRT = generateSRT(timeline, 'en');
   writeFileSync(join(outDir, 'episode-en.srt'), enSRT, 'utf8');
 
-  // WebVTT
+  // SRT فرنسي — ترجمة بسيطة عبر قاموس مصطلحات شائعة
+  const frSRT = generateSRT(timeline, 'fr');
+  writeFileSync(join(outDir, 'episode-fr.srt'), frSRT, 'utf8');
+
+  // WebVTT — إنجليزي افتراضياً
   const vtt = generateVTT(timeline);
   writeFileSync(join(outDir, 'episode.vtt'), vtt, 'utf8');
 
   logger.info('[OK] Subtitles generated', {
     lines: timeline.length,
-    files: ['episode-ar.srt', 'episode-en.srt', 'episode.vtt'],
+    files: ['episode-en.srt', 'episode-fr.srt', 'episode.vtt'],
   });
 
   return {
-    arSRT: join(outDir, 'episode-ar.srt'),
     enSRT: join(outDir, 'episode-en.srt'),
+    frSRT: join(outDir, 'episode-fr.srt'),
     vtt:   join(outDir, 'episode.vtt'),
     lines: timeline.length,
   };
@@ -70,7 +69,6 @@ function buildTimeline(audioManifest) {
   const timeline  = [];
   let currentTime = 0;
 
-  // ترتيب: narrator أولاً ثم dialogue بالترتيب
   const sorted = [...audioManifest.audioFiles].sort((a, b) => {
     if (a.sceneId !== b.sceneId) return a.sceneId.localeCompare(b.sceneId);
     if (a.type === 'narrator') return -1;
@@ -81,7 +79,6 @@ function buildTimeline(audioManifest) {
   let lastSceneId = null;
 
   for (const audio of sorted) {
-    // هامش بين المشاهد
     if (lastSceneId && audio.sceneId !== lastSceneId) {
       currentTime += 1;
     }
@@ -94,12 +91,12 @@ function buildTimeline(audioManifest) {
       start:     currentTime,
       end:       currentTime + dur,
       text:      audio.text || '',
-      character: audio.character || 'راوٍ',
+      character: audio.character || 'Narrator',
       type:      audio.type,
       sceneId:   audio.sceneId,
     });
 
-    currentTime += dur + 0.3; // 300ms بين الجمل
+    currentTime += dur + 0.3;
   }
 
   return timeline;
@@ -111,9 +108,9 @@ function buildTimeline(audioManifest) {
 function generateSRT(timeline, lang) {
   const lines = [];
   for (const entry of timeline) {
-    const text = lang === 'en'
-      ? transliterate(entry.text)
-      : formatArabicLine(entry);
+    const text = lang === 'fr'
+      ? formatLine(entry, translateToFrench(entry.text))
+      : formatLine(entry, entry.text);
     lines.push(entry.index);
     lines.push(`${formatTime(entry.start)} --> ${formatTime(entry.end)}`);
     lines.push(text);
@@ -130,7 +127,7 @@ function generateVTT(timeline) {
   for (const entry of timeline) {
     lines.push(`${entry.index}`);
     lines.push(`${formatTimeVTT(entry.start)} --> ${formatTimeVTT(entry.end)} align:center`);
-    lines.push(formatArabicLine(entry));
+    lines.push(formatLine(entry, entry.text));
     lines.push('');
   }
   return lines.join('\n');
@@ -139,9 +136,9 @@ function generateVTT(timeline) {
 // ══════════════════════════════════════════════════════════
 // دوال مساعدة
 // ══════════════════════════════════════════════════════════
-function formatArabicLine(entry) {
-  if (entry.type === 'narrator') return `♪ ${entry.text}`;
-  return `${entry.character}: ${entry.text}`;
+function formatLine(entry, text) {
+  if (entry.type === 'narrator') return `♪ ${text}`;
+  return `${entry.character}: ${text}`;
 }
 
 function formatTime(seconds) {
@@ -163,14 +160,41 @@ function estimateDuration(text) {
   return Math.max(1.5, (text || '').split(/\s+/).length / 2.5);
 }
 
-function transliterate(text) {
-  const map = {
-    'أ':'a','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh',
-    'د':'d','ذ':'dh','ر':'r','ز':'z','س':'s','ش':'sh','ص':'s',
-    'ض':'d','ط':'t','ظ':'z','ع':'\'','غ':'gh','ف':'f','ق':'q',
-    'ك':'k','ل':'l','م':'m','ن':'n','ه':'h','و':'w','ي':'y',
-    'ا':'a','ة':'a','ى':'a','ء':'\'',
-    ' ':' ','،':',','؟':'?','!':'!','.':'.',
-  };
-  return text.split('').map(c => map[c] || c).join('');
+/**
+ * ترجمة بسيطة إنجليزي → فرنسي عبر قاموس عبارات/كلمات شائعة في السيناريوهات.
+ * ليست ترجمة كاملة دقيقة — هدفها تغطية لغوية أولية بدون Gemini (rule-137).
+ * تُحسَّن لاحقاً بمرحلة Gemini منفصلة إن لزم.
+ */
+const FR_PHRASES = [
+  [/\bI am\b/gi, 'Je suis'],
+  [/\byou are\b/gi, 'tu es'],
+  [/\bwe are\b/gi, 'nous sommes'],
+  [/\bI don't know\b/gi, 'je ne sais pas'],
+  [/\bI can't\b/gi, 'je ne peux pas'],
+  [/\bwhy\b/gi, 'pourquoi'],
+  [/\bbecause\b/gi, 'parce que'],
+  [/\bplease\b/gi, "s'il te plaît"],
+  [/\bno\b/gi, 'non'],
+  [/\byes\b/gi, 'oui'],
+  [/\bnever\b/gi, 'jamais'],
+  [/\balways\b/gi, 'toujours'],
+  [/\bthe truth\b/gi, 'la vérité'],
+  [/\bthe silence\b/gi, 'le silence'],
+  [/\bmemory\b/gi, 'mémoire'],
+  [/\bmemories\b/gi, 'souvenirs'],
+  [/\bfear\b/gi, 'peur'],
+  [/\bdarkness\b/gi, 'obscurité'],
+  [/\blight\b/gi, 'lumière'],
+  [/\btrust\b/gi, 'confiance'],
+  [/\bsecret\b/gi, 'secret'],
+];
+
+function translateToFrench(text) {
+  if (!text) return text;
+  // ملاحظة: قاموس تقريبي — يُبقي الجملة الأصلية مع استبدال ما يُعرف من العبارات
+  let result = text;
+  for (const [pattern, replacement] of FR_PHRASES) {
+    result = result.replace(pattern, replacement);
+  }
+  return result;
 }
