@@ -221,7 +221,7 @@ async function uploadToYoutube(manifest, series) {
         description:     buildYoutubeDescription(manifest, series),
         tags:            buildTags(series),
         categoryId:      '24',
-        defaultLanguage: 'ar',
+        defaultLanguage: 'en',
       },
       status: {
         privacyStatus:           'public',
@@ -369,33 +369,33 @@ async function uploadToTiktok(videoPath, manifest, series) {
 // بيانات وصفية
 // ══════════════════════════════════════════════════════════
 function buildYoutubeTitle(manifest, series) {
-  return `${series?.title || 'المسلسل'} — الحلقة ${manifest.episode}: ${manifest.title || ''}`.trim();
+  return `${series?.title || 'The Series'} — Episode ${manifest.episode}: ${manifest.title || ''}`.trim();
 }
 
 function buildYoutubeDescription(manifest, series) {
   return [
-    `${series?.title || 'مسلسل'} — الحلقة ${manifest.episode}`,
+    `${series?.title || 'Series'} — Episode ${manifest.episode}`,
     '',
     manifest.title || '',
     '',
     '━━━━━━━━━━━━━━━━━━━━━━',
-    'مسلسل مولود من الذكاء الاصطناعي',
-    'كون فريد يتطور كل يوم',
+    'A series born from artificial intelligence',
+    'A unique universe that evolves every day',
     '━━━━━━━━━━━━━━━━━━━━━━',
     '',
-    '#مسلسل_عربي #ذكاء_اصطناعي #قصة',
+    '#AISeries #ArtificialIntelligence #Story',
   ].join('\n');
 }
 
 function buildTiktokTitle(manifest, series) {
-  return `${series?.title || 'مسلسل'} الحلقة ${manifest.episode} #مسلسل #ذكاء_اصطناعي`;
+  return `${series?.title || 'Series'} Episode ${manifest.episode} #series #AI`;
 }
 
 function buildTags(series) {
   return [
-    'مسلسل عربي', 'ذكاء اصطناعي', 'قصة خيالية',
-    series?.title || 'مسلسل',
-    'AI Series', 'Arabic Drama',
+    'AI series', 'artificial intelligence', 'fiction story',
+    series?.title || 'series',
+    'AI Series', 'Sci-Fi Drama',
   ];
 }
 
