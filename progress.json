@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-21T12:47:42.986Z",
-  "current": null,
+  "updatedAt": "2026-06-22T10:37:38.597Z",
+  "current": {
+    "type": "episode",
+    "episode": 6,
+    "id": null,
+    "startedAt": "2026-06-22T10:32:19.117Z",
+    "updatedAt": "2026-06-22T10:37:38.597Z",
+    "failReason": null
+  },
   "series": {
     "nextEpisode": 6,
     "totalEpisodes": 6,
@@ -149,6 +156,35 @@
         },
         "startedAt": "2026-06-21T12:32:07.107Z",
         "completedAt": "2026-06-21T12:47:42.986Z",
+        "failReason": null
+      },
+      "6": {
+        "status": "in_progress",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-06-22T10:35:30.421Z",
+            "title": "صدى الفراغ",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-06-22T10:36:55.618Z",
+            "title": "صدى الفراغ",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-06-22T10:37:38.597Z",
+            "title": "صدى الفراغ",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-06-22T10:32:19.117Z",
+        "completedAt": null,
         "failReason": null
       }
     }
