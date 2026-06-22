@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-22T12:55:40.090Z",
+  "updatedAt": "2026-06-22T16:24:07.024Z",
   "current": {
     "type": "episode",
     "episode": 7,
     "id": null,
     "startedAt": "2026-06-22T12:04:49.066Z",
-    "updatedAt": "2026-06-22T12:55:40.090Z",
-    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+    "updatedAt": "2026-06-22T16:24:07.024Z",
+    "failReason": null
   },
   "series": {
     "nextEpisode": 7,
@@ -188,17 +188,33 @@
         "failReason": "screenplay-failed: No screenplay produced"
       },
       "7": {
-        "status": "failed",
-        "completedSteps": [],
-        "pendingSteps": [
+        "status": "in_progress",
+        "completedSteps": [
           "backbone",
           "scenes",
           "dialogue"
         ],
-        "data": {},
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-06-22T16:21:25.317Z",
+            "title": "ثمن الحقيقة",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-06-22T16:22:58.474Z",
+            "title": "ثمن الحقيقة",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-06-22T16:24:07.024Z",
+            "title": "ثمن الحقيقة",
+            "summary": null
+          }
+        },
         "startedAt": "2026-06-22T12:04:49.066Z",
         "completedAt": null,
-        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+        "failReason": null
       }
     }
   },
