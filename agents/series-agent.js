@@ -1,11 +1,18 @@
 /**
- * series-agent.js — v1.3
+ * series-agent.js — v1.4
  *
- * التغييرات عن v1.2:
- *  - screenplay: 3 استدعاءات منفصلة مع حفظ فوري بعد كل خطوة (rule-139 / rule-188)
+ * التغييرات عن v1.3:
+ *  - loadSeries: title يُبنى بأولوية name.en بدل name.ar (المسلسل الآن إنجليزي)
  *
  * الاستخدام:
  *  MODE=series node orchestrator.js
+ *
+ * تنبيه بنيوي (غير لغوي):
+ *  series-agent له بنية series.json مختلفة قليلاً عن updateSeries() في
+ *  orchestrator.js v10.5 (مثلاً summary بدل logline+theme منفصلين).
+ *  بما أن series-agent أداة يدوية فقط ولا يُستدعى من الجدول التلقائي،
+ *  لا تعارض فوري — لكن لا يجب تشغيله واستخدام production التلقائي
+ *  على نفس الحلقة لتجنب بنية مختلطة في series.json.
  *
  * القواعد المطبقة:
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
@@ -60,9 +67,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // الدالة الرئيسية
 // ══════════════════════════════════════════════════════════
 export async function run(universe, targetEpisode = null) {
-  logger.info('[SERIES] Starting v1.3', { universe: universe.id });
+  logger.info('[SERIES] Starting v1.4', { universe: universe.id });
 
-  // rule-153: وحدة كاملة أو لا شيء
   const quota = getRemainingQuota();
   if (quota < MIN_QUOTA) {
     throw new Error(
@@ -70,7 +76,6 @@ export async function run(universe, targetEpisode = null) {
     );
   }
 
-  // rule-172: مفتاح واحد لكل مهمة كاملة
   const key = selectKeyForTask(MIN_QUOTA);
   if (!key) {
     throw new Error(
@@ -93,18 +98,13 @@ export async function run(universe, targetEpisode = null) {
     worldState: series.worldState,
   };
 
-  // rule-187: أعلن بداية الحلقة
   startEpisode(nextEpisode);
 
   try {
-    // ══════════════════════════════════════════════════
-    // 1. السيناريو — 3 استدعاءات منفصلة (rule-139)
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 1/10 — Screenplay (3 calls)');
     let screenplay = null;
 
     for (const step of EPISODE_STEPS) {
-      // قراءة التقدم من disk في كل مرة — rule-188
       const current = getEpisodeProgress(loadProgress(), nextEpisode);
 
       if (current.completedSteps.includes(step)) {
@@ -124,72 +124,43 @@ export async function run(universe, targetEpisode = null) {
         throw new Error(`${step}-failed: invalid screenplay output`);
       }
 
-      // حفظ فوري بعد كل خطوة — rule-188
       saveEpisodeStep(nextEpisode, step, screenplay);
       logger.info(`[SERIES] ${step} done`, { episode: nextEpisode });
     }
 
     if (!screenplay) throw new Error('No screenplay produced');
 
-    // ══════════════════════════════════════════════════
-    // 2. تحسين الحوار — rule-185: نسخة عميقة
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 2/10 — Dialogue polish');
     const polishedScreenplay = await runDialogue(screenplay);
 
-    // ══════════════════════════════════════════════════
-    // 3. المشاهد البصرية
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 3/10 — Visual scenes');
     const visualScenes = await runScene(polishedScreenplay, universe);
 
-    // ══════════════════════════════════════════════════
-    // 4. الصوت — rule-182: screenplay فقط
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 4/10 — Voice');
     const audioManifest = await runVoice(polishedScreenplay);
 
-    // ══════════════════════════════════════════════════
-    // 5. الترجمة — rule-182: بدون visualManifest
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 5/10 — Subtitles');
     const subtitles = await runSubtitle(polishedScreenplay, audioManifest);
 
-    // ══════════════════════════════════════════════════
-    // 6. الصور
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 6/10 — Images');
     const visualManifest = await runVisual(visualScenes, nextEpisode);
 
-    // ══════════════════════════════════════════════════
-    // 7. الموسيقى
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 7/10 — Music');
     const music = await runMusic(polishedScreenplay, universe);
 
-    // ══════════════════════════════════════════════════
-    // 8. المونتاج
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 8/10 — Edit');
     const episode = await runEdit(
       polishedScreenplay, visualManifest, audioManifest, subtitles, music
     );
 
-    // ══════════════════════════════════════════════════
-    // 9. التريلر
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 9/10 — Trailer');
     const trailer = await runTrailer(
       polishedScreenplay, visualManifest, audioManifest, episode
     );
 
-    // ══════════════════════════════════════════════════
-    // 10. النشر
-    // ══════════════════════════════════════════════════
     logger.info('[SERIES] Step 10/10 — Upload');
     const uploadResult = await runUpload(episode, series, trailer);
 
-    // ── تحديث سجل المسلسل ────────────────────────────
     series.episodes.push({
       number:      nextEpisode,
       title:       screenplay.title,
@@ -207,11 +178,7 @@ export async function run(universe, targetEpisode = null) {
     series.lastProduced = new Date().toISOString();
 
     saveSeries(series);
-
-    // تزامن progress.json — rule-187/188
     completeEpisode(nextEpisode);
-
-    // rule-177: resetSessionKey بعد اكتمال المهمة
     resetSessionKey();
 
     logger.info('[OK] Episode produced', {
@@ -233,7 +200,6 @@ export async function run(universe, targetEpisode = null) {
     };
 
   } catch (err) {
-    // الخطوات المكتملة محفوظة — يُعاد نفس اليوم الأسبوع القادم
     failTask(err.message.slice(0, 120));
     logger.error('[SERIES] Production failed — will retry same day next week', {
       episode: nextEpisode,
@@ -253,7 +219,7 @@ function loadSeries(universe) {
 
   const series = {
     universeId:   universe.id,
-    title:        universe.name?.ar || universe.name?.en,
+    title:        universe.name?.en || universe.name?.ar,
     created:      new Date().toISOString(),
     nextEpisode:  1,
     lastProduced: null,
