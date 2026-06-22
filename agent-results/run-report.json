@@ -1,22 +1,22 @@
 {
-  "runId": "2026-06-22T1140",
-  "mode": "production",
-  "success": true,
-  "timestamp": "2026-06-22T11:46:48.416Z",
-  "totalDuration": "364.9s",
+  "runId": "2026-06-22T1204",
+  "mode": "screenplay",
+  "success": false,
+  "timestamp": "2026-06-22T12:06:02.173Z",
+  "totalDuration": "73.1s",
   "budget": {
-    "total": 9,
+    "total": 11,
     "limit": 40,
-    "left": 31,
+    "left": 29,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 9,
+        "total": 11,
         "limit": 20,
-        "left": 11,
+        "left": 9,
         "exhausted": false,
         "library": 0,
-        "agents": 9
+        "agents": 11
       },
       {
         "key": "KEY_2",
@@ -44,50 +44,15 @@
     "gamesDone": 0
   },
   "agents": {
-    "voice": {
-      "success": true,
-      "duration": "360ms",
-      "error": null
-    },
-    "scene": {
-      "success": true,
-      "duration": "2ms",
-      "error": null
-    },
-    "visual": {
-      "success": true,
-      "duration": "33.6s",
-      "error": null
-    },
-    "subtitle": {
-      "success": true,
-      "duration": "0ms",
-      "error": null
-    },
-    "music": {
-      "success": true,
-      "duration": "5ms",
-      "error": null
-    },
-    "edit": {
-      "success": true,
-      "duration": "297.4s",
-      "error": null
-    },
-    "trailer": {
-      "success": true,
-      "duration": "29.1s",
-      "error": null
-    },
-    "upload": {
-      "success": true,
-      "duration": "4.5s",
-      "error": null
+    "screenplay": {
+      "success": false,
+      "duration": "—",
+      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 8,
-    "failed": 0
+    "total": 1,
+    "passed": 0,
+    "failed": 1
   }
 }

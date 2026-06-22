@@ -1,9 +1,9 @@
 {
   "date": "2026-06-22",
-  "total": 9,
+  "total": 11,
   "limit": 20,
   "library": 0,
-  "agents": 9,
+  "agents": 11,
   "exhausted": false,
   "log": [
     {
@@ -71,6 +71,22 @@
       "success": true,
       "total": 9,
       "left": 11
+    },
+    {
+      "time": "12:05:04",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 10,
+      "left": 10,
+      "errorType": "503"
+    },
+    {
+      "time": "12:05:35",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 11,
+      "left": 9,
+      "errorType": "503"
     }
   ]
 }
