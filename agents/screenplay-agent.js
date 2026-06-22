@@ -219,6 +219,7 @@ ${sceneList.map(a => `Act ${a.act} — ${a.name} (${a.count} scenes):\n  ${a.sum
 Write the details for every scene.
 
 Rules per scene: one dramatic goal / cinematic camera / emotional lighting / duration 45-120s / sfx / music.
+The "time" field must be exactly one of: "day", "night", "dawn", "dusk" (lowercase, no other words).
 
 Output JSON only:
 {
@@ -227,7 +228,7 @@ Output JSON only:
       "act": 1, "name": "Setup",
       "scenes": [
         {
-          "id": "S01", "location": "the place", "time": "day/night/interior/exterior",
+          "id": "S01", "location": "the place", "time": "day",
           "mood": "the mood", "goal": "the dramatic goal", "duration": 60,
           "camera": "camera description", "lighting": "lighting description",
           "action": "action and movement", "sfx": "sound effects", "music": "music description"
