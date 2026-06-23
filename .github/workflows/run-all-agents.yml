@@ -78,6 +78,71 @@ jobs:
             Write-Host "[OK] fallback.png created"
           }
 
+      - name: Cache Piper voices
+        uses: actions/cache@v4
+        with:
+          path: piper
+          key: piper-voices-v1-${{ runner.os }}
+
+      - name: Install Piper TTS + voices
+        shell: pwsh
+        run: |
+          $piperDir = "piper"
+          New-Item -ItemType Directory -Force -Path $piperDir | Out-Null
+
+          # ── Binary ──────────────────────────────────────
+          if (-not (Test-Path "$piperDir/piper.exe")) {
+            Write-Host "[INFO] Downloading Piper binary..."
+            Invoke-WebRequest -Uri "https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip" -OutFile "piper.zip"
+            Expand-Archive -Path "piper.zip" -DestinationPath "." -Force
+            Remove-Item "piper.zip"
+            Write-Host "[OK] Piper binary ready"
+          } else {
+            Write-Host "[OK] Piper binary cached"
+          }
+
+          # ── النماذج الصوتية — 4 إنجليزية + 4 فرنسية ──────
+          $voices = @(
+            @{ lang="en"; name="en_US-joe-medium" },
+            @{ lang="en"; name="en_US-hfc_female-medium" },
+            @{ lang="en"; name="en_GB-alan-medium" },
+            @{ lang="en"; name="en_US-kristin-medium" },
+            @{ lang="fr"; name="fr_FR-tom-medium" },
+            @{ lang="fr"; name="fr_FR-upmc-medium" },
+            @{ lang="fr"; name="fr_FR-gilles-low" },
+            @{ lang="fr"; name="fr_FR-siwis-medium" }
+          )
+
+          foreach ($v in $voices) {
+            $name = $v.name
+            $lang = $v.lang
+            # استخراج locale وspeaker وquality من الاسم: en_US-joe-medium
+            $parts   = $name -split '-'
+            $locale  = $parts[0]                  # en_US
+            $speaker = $parts[1]                  # joe
+            $quality = $parts[2]                  # medium
+            $localeShort = $locale -split '_' | Select-Object -First 1  # en
+
+            $baseUrl = "https://huggingface.co/rhasspy/piper-voices/resolve/main/$localeShort/$locale/$speaker/$quality"
+            $onnxPath = "$piperDir/$name.onnx"
+            $jsonPath = "$piperDir/$name.onnx.json"
+
+            if (-not (Test-Path $onnxPath)) {
+              Write-Host "[INFO] Downloading voice: $name"
+              try {
+                Invoke-WebRequest -Uri "$baseUrl/$name.onnx" -OutFile $onnxPath -ErrorAction Stop
+                Invoke-WebRequest -Uri "$baseUrl/$name.onnx.json" -OutFile $jsonPath -ErrorAction Stop
+                Write-Host "[OK] $name ready"
+              } catch {
+                Write-Warning "[WARN] Failed to download $name — $($_.Exception.Message)"
+              }
+            } else {
+              Write-Host "[OK] $name cached"
+            }
+          }
+
+          Write-Host "[OK] Piper TTS setup complete"
+
       # ══════════════════════════════════════════════════════
       # 2 — فحص ما قبل التشغيل
       # ══════════════════════════════════════════════════════
