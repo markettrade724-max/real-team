@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-23T10:37:01.078Z",
-  "current": null,
+  "updatedAt": "2026-06-23T11:57:43.298Z",
+  "current": {
+    "type": "episode",
+    "episode": 8,
+    "id": null,
+    "startedAt": "2026-06-23T11:56:53.809Z",
+    "updatedAt": "2026-06-23T11:57:43.298Z",
+    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+  },
   "series": {
     "nextEpisode": 8,
     "totalEpisodes": 8,
@@ -208,6 +215,19 @@
         "startedAt": "2026-06-22T12:04:49.066Z",
         "completedAt": "2026-06-22T16:37:02.048Z",
         "failReason": null
+      },
+      "8": {
+        "status": "failed",
+        "completedSteps": [],
+        "pendingSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "data": {},
+        "startedAt": "2026-06-23T11:56:53.809Z",
+        "completedAt": null,
+        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
       }
     }
   },

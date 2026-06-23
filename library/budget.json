@@ -1,9 +1,26 @@
 {
   "date": "2026-06-23",
-  "total": 0,
+  "total": 2,
   "limit": 20,
   "library": 0,
-  "agents": 0,
+  "agents": 2,
   "exhausted": false,
-  "log": []
+  "log": [
+    {
+      "time": "11:57:08",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 1,
+      "left": 19,
+      "errorType": "503"
+    },
+    {
+      "time": "11:57:40",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 2,
+      "left": 18,
+      "errorType": "503"
+    }
+  ]
 }
