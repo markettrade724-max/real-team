@@ -1,17 +1,10 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-23T15:26:54.258Z",
-  "current": {
-    "type": "episode",
-    "episode": 8,
-    "id": null,
-    "startedAt": "2026-06-23T11:56:53.809Z",
-    "updatedAt": "2026-06-23T15:26:54.258Z",
-    "failReason": "screenplay-failed: No screenplay produced"
-  },
+  "updatedAt": "2026-06-23T15:40:25.906Z",
+  "current": null,
   "series": {
-    "nextEpisode": 8,
-    "totalEpisodes": 8,
+    "nextEpisode": 9,
+    "totalEpisodes": 9,
     "episodes": {
       "1": {
         "status": "complete",
@@ -217,7 +210,7 @@
         "failReason": null
       },
       "8": {
-        "status": "failed",
+        "status": "complete",
         "completedSteps": [
           "backbone",
           "scenes",
@@ -242,7 +235,7 @@
           }
         },
         "startedAt": "2026-06-23T11:56:53.809Z",
-        "completedAt": null,
+        "completedAt": "2026-06-23T15:40:25.906Z",
         "failReason": "screenplay-failed: No screenplay produced"
       }
     }
