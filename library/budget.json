@@ -1,9 +1,9 @@
 {
   "date": "2026-06-23",
-  "total": 4,
+  "total": 10,
   "limit": 20,
   "library": 0,
-  "agents": 4,
+  "agents": 10,
   "exhausted": false,
   "log": [
     {
@@ -36,6 +36,52 @@
       "success": false,
       "total": 4,
       "left": 16,
+      "errorType": "503"
+    },
+    {
+      "time": "12:29:02",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 5,
+      "left": 15,
+      "errorType": "503"
+    },
+    {
+      "time": "12:29:50",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 6,
+      "left": 14
+    },
+    {
+      "time": "12:30:08",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 7,
+      "left": 13,
+      "errorType": "503"
+    },
+    {
+      "time": "12:30:40",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 8,
+      "left": 12
+    },
+    {
+      "time": "12:31:33",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 9,
+      "left": 11,
+      "errorType": "503"
+    },
+    {
+      "time": "12:32:04",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 10,
+      "left": 10,
       "errorType": "503"
     }
   ]
