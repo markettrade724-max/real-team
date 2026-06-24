@@ -1,21 +1,20 @@
 {
-  "date": "2026-06-23",
-  "total": 16,
+  "date": "2026-06-24",
+  "total": 20,
   "limit": 20,
   "library": 0,
-  "agents": 16,
-  "exhausted": false,
+  "agents": 6,
+  "exhausted": true,
   "log": [
     {
-      "time": "11:57:08",
+      "time": "05:57:34",
       "caller": "screenplay-agent",
-      "success": false,
+      "success": true,
       "total": 1,
-      "left": 19,
-      "errorType": "503"
+      "left": 19
     },
     {
-      "time": "11:57:40",
+      "time": "05:57:51",
       "caller": "screenplay-agent",
       "success": false,
       "total": 2,
@@ -23,23 +22,21 @@
       "errorType": "503"
     },
     {
-      "time": "12:01:36",
+      "time": "05:58:24",
       "caller": "screenplay-agent",
-      "success": false,
+      "success": true,
       "total": 3,
-      "left": 17,
-      "errorType": "503"
+      "left": 17
     },
     {
-      "time": "12:02:07",
+      "time": "05:59:00",
       "caller": "screenplay-agent",
-      "success": false,
+      "success": true,
       "total": 4,
-      "left": 16,
-      "errorType": "503"
+      "left": 16
     },
     {
-      "time": "12:29:02",
+      "time": "05:59:42",
       "caller": "screenplay-agent",
       "success": false,
       "total": 5,
@@ -47,84 +44,13 @@
       "errorType": "503"
     },
     {
-      "time": "12:29:50",
+      "time": "06:00:31",
       "caller": "screenplay-agent",
-      "success": true,
+      "success": false,
       "total": 6,
-      "left": 14
-    },
-    {
-      "time": "12:30:08",
-      "caller": "screenplay-agent",
-      "success": false,
-      "total": 7,
-      "left": 13,
-      "errorType": "503"
-    },
-    {
-      "time": "12:30:40",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 8,
-      "left": 12
-    },
-    {
-      "time": "12:31:33",
-      "caller": "screenplay-agent",
-      "success": false,
-      "total": 9,
-      "left": 11,
-      "errorType": "503"
-    },
-    {
-      "time": "12:32:04",
-      "caller": "screenplay-agent",
-      "success": false,
-      "total": 10,
-      "left": 10,
-      "errorType": "503"
-    },
-    {
-      "time": "13:04:58",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 11,
-      "left": 9
-    },
-    {
-      "time": "13:05:17",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 12,
-      "left": 8
-    },
-    {
-      "time": "13:06:03",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 13,
-      "left": 7
-    },
-    {
-      "time": "13:07:01",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 14,
-      "left": 6
-    },
-    {
-      "time": "13:07:39",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 15,
-      "left": 5
-    },
-    {
-      "time": "13:08:24",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 16,
-      "left": 4
+      "left": 14,
+      "errorType": "429_RPD"
     }
-  ]
+  ],
+  "exhaustedAt": "2026-06-24T06:00:32.053Z"
 }
