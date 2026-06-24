@@ -1,13 +1,13 @@
 {
-  "runId": "2026-06-24T0936",
-  "mode": "production",
-  "success": true,
-  "timestamp": "2026-06-24T09:44:01.174Z",
-  "totalDuration": "458.3s",
+  "runId": "2026-06-24T1023",
+  "mode": "screenplay",
+  "success": false,
+  "timestamp": "2026-06-24T10:24:59.206Z",
+  "totalDuration": "101.8s",
   "budget": {
-    "total": 27,
+    "total": 31,
     "limit": 40,
-    "left": 13,
+    "left": 9,
     "keys": [
       {
         "key": "KEY_1",
@@ -20,12 +20,12 @@
       },
       {
         "key": "KEY_2",
-        "total": 7,
+        "total": 11,
         "limit": 20,
-        "left": 13,
+        "left": 9,
         "exhausted": false,
         "library": 0,
-        "agents": 7
+        "agents": 11
       }
     ]
   },
@@ -44,50 +44,15 @@
     "gamesDone": 0
   },
   "agents": {
-    "voice": {
-      "success": true,
-      "duration": "76.4s",
-      "error": null
-    },
-    "scene": {
-      "success": true,
-      "duration": "3ms",
-      "error": null
-    },
-    "visual": {
-      "success": true,
-      "duration": "21.1s",
-      "error": null
-    },
-    "subtitle": {
-      "success": true,
-      "duration": "17ms",
-      "error": null
-    },
-    "music": {
-      "success": true,
-      "duration": "7ms",
-      "error": null
-    },
-    "edit": {
-      "success": true,
-      "duration": "326.2s",
-      "error": null
-    },
-    "trailer": {
-      "success": true,
-      "duration": "29.4s",
-      "error": null
-    },
-    "upload": {
-      "success": true,
-      "duration": "5.2s",
-      "error": null
+    "screenplay": {
+      "success": false,
+      "duration": "—",
+      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
     }
   },
   "summary": {
-    "total": 8,
-    "passed": 8,
-    "failed": 0
+    "total": 1,
+    "passed": 0,
+    "failed": 1
   }
 }
