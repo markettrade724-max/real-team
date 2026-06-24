@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-24T17:09:05.600Z",
+  "updatedAt": "2026-06-24T21:58:54.587Z",
   "current": {
     "type": "episode",
     "episode": 10,
     "id": null,
     "startedAt": "2026-06-24T10:23:17.465Z",
-    "updatedAt": "2026-06-24T17:09:05.600Z",
-    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+    "updatedAt": "2026-06-24T21:58:54.587Z",
+    "failReason": "screenplay-failed: InsufficientQuota: need 2 calls for steps [scenes,dialogue]"
   },
   "series": {
     "nextEpisode": 10,
@@ -276,16 +276,23 @@
       },
       "10": {
         "status": "failed",
-        "completedSteps": [],
+        "completedSteps": [
+          "backbone"
+        ],
         "pendingSteps": [
-          "backbone",
           "scenes",
           "dialogue"
         ],
-        "data": {},
+        "data": {
+          "backbone": {
+            "savedAt": "2026-06-24T21:58:39.573Z",
+            "title": "The Shattered Anchor",
+            "summary": null
+          }
+        },
         "startedAt": "2026-06-24T10:23:17.465Z",
         "completedAt": null,
-        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+        "failReason": "screenplay-failed: InsufficientQuota: need 2 calls for steps [scenes,dialogue]"
       }
     }
   },
