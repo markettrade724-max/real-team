@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-23T15:40:25.906Z",
-  "current": null,
+  "updatedAt": "2026-06-24T08:24:26.484Z",
+  "current": {
+    "type": "episode",
+    "episode": 9,
+    "id": null,
+    "startedAt": "2026-06-24T08:18:51.452Z",
+    "updatedAt": "2026-06-24T08:24:26.484Z",
+    "failReason": null
+  },
   "series": {
     "nextEpisode": 9,
     "totalEpisodes": 9,
@@ -237,6 +244,35 @@
         "startedAt": "2026-06-23T11:56:53.809Z",
         "completedAt": "2026-06-23T15:40:25.906Z",
         "failReason": "screenplay-failed: No screenplay produced"
+      },
+      "9": {
+        "status": "in_progress",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-06-24T08:22:09.460Z",
+            "title": "قلب الصمت",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-06-24T08:23:44.318Z",
+            "title": "قلب الصمت",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-06-24T08:24:26.483Z",
+            "title": "قلب الصمت",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-06-24T08:18:51.452Z",
+        "completedAt": null,
+        "failReason": null
       }
     }
   },

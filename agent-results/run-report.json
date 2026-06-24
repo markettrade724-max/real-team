@@ -1,13 +1,13 @@
 {
-  "runId": "2026-06-24T0557",
+  "runId": "2026-06-24T0818",
   "mode": "screenplay",
-  "success": false,
-  "timestamp": "2026-06-24T06:00:32.058Z",
-  "totalDuration": "192.6s",
+  "success": true,
+  "timestamp": "2026-06-24T08:24:26.491Z",
+  "totalDuration": "335.0s",
   "budget": {
-    "total": 20,
+    "total": 27,
     "limit": 40,
-    "left": 20,
+    "left": 13,
     "keys": [
       {
         "key": "KEY_1",
@@ -20,12 +20,12 @@
       },
       {
         "key": "KEY_2",
-        "total": 0,
+        "total": 7,
         "limit": 20,
-        "left": 20,
+        "left": 13,
         "exhausted": false,
         "library": 0,
-        "agents": 0
+        "agents": 7
       }
     ]
   },
@@ -45,14 +45,14 @@
   },
   "agents": {
     "screenplay": {
-      "success": false,
+      "success": true,
       "duration": "—",
-      "error": "DailyQuotaExhausted: both keys hit 429 RPD"
+      "error": null
     }
   },
   "summary": {
     "total": 1,
-    "passed": 0,
-    "failed": 1
+    "passed": 1,
+    "failed": 0
   }
 }

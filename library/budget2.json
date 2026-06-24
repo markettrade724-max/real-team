@@ -1,9 +1,60 @@
 {
   "date": "2026-06-24",
-  "total": 0,
+  "total": 7,
   "limit": 20,
   "library": 0,
-  "agents": 0,
+  "agents": 7,
   "exhausted": false,
-  "log": []
+  "log": [
+    {
+      "time": "08:19:06",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 1,
+      "left": 19
+    },
+    {
+      "time": "08:19:21",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 2,
+      "left": 18
+    },
+    {
+      "time": "08:20:20",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 3,
+      "left": 17,
+      "errorType": "503"
+    },
+    {
+      "time": "08:21:37",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 4,
+      "left": 16
+    },
+    {
+      "time": "08:22:24",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 5,
+      "left": 15
+    },
+    {
+      "time": "08:23:01",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 6,
+      "left": 14
+    },
+    {
+      "time": "08:23:59",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 7,
+      "left": 13
+    }
+  ]
 }
