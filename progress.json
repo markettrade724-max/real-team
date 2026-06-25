@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-25T08:17:20.728Z",
+  "updatedAt": "2026-06-25T10:18:25.180Z",
   "current": {
-    "type": "game",
-    "episode": null,
-    "id": "memory-shards-saga",
-    "startedAt": "2026-06-17T12:29:27.320Z",
-    "updatedAt": "2026-06-25T08:17:20.728Z",
-    "failReason": null
+    "type": "episode",
+    "episode": 10,
+    "id": null,
+    "startedAt": "2026-06-24T10:23:17.465Z",
+    "updatedAt": "2026-06-25T10:18:25.180Z",
+    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
   },
   "series": {
     "nextEpisode": 10,
@@ -292,7 +292,7 @@
         },
         "startedAt": "2026-06-24T10:23:17.465Z",
         "completedAt": null,
-        "failReason": "screenplay-failed: InsufficientQuota: need 2 calls for steps [scenes,dialogue]"
+        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
       }
     }
   },
