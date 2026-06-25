@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-25T10:18:25.180Z",
+  "updatedAt": "2026-06-25T12:16:10.179Z",
   "current": {
     "type": "episode",
     "episode": 10,
     "id": null,
     "startedAt": "2026-06-24T10:23:17.465Z",
-    "updatedAt": "2026-06-25T10:18:25.180Z",
-    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+    "updatedAt": "2026-06-25T12:16:10.179Z",
+    "failReason": null
   },
   "series": {
     "nextEpisode": 10,
@@ -275,24 +275,33 @@
         "failReason": null
       },
       "10": {
-        "status": "failed",
+        "status": "in_progress",
         "completedSteps": [
-          "backbone"
-        ],
-        "pendingSteps": [
+          "backbone",
           "scenes",
           "dialogue"
         ],
+        "pendingSteps": [],
         "data": {
           "backbone": {
             "savedAt": "2026-06-24T21:58:39.573Z",
+            "title": "The Shattered Anchor",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-06-25T12:14:41.094Z",
+            "title": "The Shattered Anchor",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-06-25T12:16:10.179Z",
             "title": "The Shattered Anchor",
             "summary": null
           }
         },
         "startedAt": "2026-06-24T10:23:17.465Z",
         "completedAt": null,
-        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+        "failReason": null
       }
     }
   },

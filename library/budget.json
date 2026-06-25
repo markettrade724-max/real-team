@@ -1,9 +1,9 @@
 {
   "date": "2026-06-25",
-  "total": 3,
+  "total": 7,
   "limit": 20,
   "library": 0,
-  "agents": 3,
+  "agents": 7,
   "exhausted": false,
   "log": [
     {
@@ -28,6 +28,35 @@
       "total": 3,
       "left": 17,
       "errorType": "503"
+    },
+    {
+      "time": "12:13:32",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 4,
+      "left": 16
+    },
+    {
+      "time": "12:14:13",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 5,
+      "left": 15
+    },
+    {
+      "time": "12:14:56",
+      "caller": "screenplay-agent",
+      "success": false,
+      "total": 6,
+      "left": 14,
+      "errorType": "503"
+    },
+    {
+      "time": "12:15:49",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 7,
+      "left": 13
     }
   ]
 }
