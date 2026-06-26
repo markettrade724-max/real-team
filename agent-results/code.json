@@ -3,7 +3,7 @@
   "files": [
     {
       "name": "enemy.tscn",
-      "content": "[gd_scene load_steps=3 format=3 uid=\"uid://c00l_enemy_scene_id\"]\n\n[ext_resource type=\"Script\" path=\"res://enemy.gd\" id=\"1_script\"]\n\n[sub_resource type=\"CapsuleShape3D\" id=\"2_capsule\"]\nheight = 1.8\nradius = 0.4\n\n[node name=\"Enemy\" type=\"CharacterBody3D\"]\ncollision_layer = 2\ncollision_mask = 3\nscript = ExtResource(\"1_script\")\nspeed = 3.0\nattack_range = 1.5\nattack_damage = 10.0\nattack_cooldown = 2.0\nhealth = 100.0\nnavigation_agent_node_path = NodePath(\"NavigationAgent3D\")\nplayer_node_path = NodePath(\"/root/Game/Player\")\n\n[node name=\"CollisionShape3D\" type=\"CollisionShape3D\" parent=\"./\"]\nshape = SubResource(\"2_capsule\")\n\n[node name=\"NavigationAgent3D\" type=\"NavigationAgent3D\" parent=\"./\"]\n"
+      "content": "[gd_scene load_steps=3 format=3 uid=\"uid://c0mplex3nemy\"]\n\n[ext_resource type=\"Script\" path=\"res://enemy.gd\" id=\"1_4b85g\"]\n\n[sub_resource type=\"CapsuleShape3D\" id=\"2_0760e\"]\nradius = 0.4\nheight = 1.8\n\n[node name=\"Enemy\" type=\"CharacterBody3D\"]\ncollision_layer = 2\ncollision_mask = 3\nscript = ExtResource(\"1_4b85g\")\nspeed = 3.0\nattack_range = 1.5\nattack_damage = 10.0\nattack_cooldown = 2.0\nhealth = 100.0\nnavigation_agent_node_path = NodePath(\"NavigationAgent\")\nplayer_node_path = NodePath(\"\")\n\n[node name=\"CollisionShape\" type=\"CollisionShape3D\" parent=\".\"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)\nshape = SubResource(\"2_0760e\")\n\n[node name=\"NavigationAgent\" type=\"NavigationAgent3D\" parent=\".\"]\n"
     }
   ],
   "engine": "godot",
