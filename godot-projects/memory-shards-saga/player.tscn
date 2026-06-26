@@ -1,27 +1,28 @@
-[gd_scene load_steps=3 format=3 uid="uid://player_scene_uid"]
+[gd_scene load_steps=3 format=3 uid="uid://c0a1b2c3d4e5"]
 
-[ext_resource type="Script" path="res://player.gd" id="1_abcdef"]
+[ext_resource type="Script" path="res://player.gd" id="1_abcd"]
 
-[sub_resource type="CapsuleShape3D" id="1_ghijkl"]
-height = 1.8
+[sub_resource type="CapsuleShape3D" id="2_efgh"]
 radius = 0.4
+height = 1.8
 
 [node name="Player" type="CharacterBody3D"]
-script = ExtResource("1_abcdef")
+script = ExtResource("1_abcd")
 speed = 5.0
 jump_velocity = 4.5
 mouse_sensitivity = 0.002
 max_health = 100
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("1_ghijkl")
-position = Vector3(0, 0.9, 0)
+shape = SubResource("2_efgh")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 
 [node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]
-position = Vector3(0, 0.6, 0)
 current = true
 
 [node name="Weapon" type="Node3D" parent="."]
-position = Vector3(0.5, -0.3, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.2, -0.7)

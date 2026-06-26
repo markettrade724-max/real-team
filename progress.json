@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-26T08:25:52.708Z",
-  "current": null,
+  "updatedAt": "2026-06-26T10:24:40.306Z",
+  "current": {
+    "type": "game",
+    "episode": null,
+    "id": "genesis-3d",
+    "startedAt": "2026-06-26T10:23:44.902Z",
+    "updatedAt": "2026-06-26T10:24:40.306Z",
+    "failReason": null
+  },
   "series": {
     "nextEpisode": 11,
     "totalEpisodes": 11,
@@ -299,7 +306,27 @@
     }
   },
   "games": {
-    "current": null,
+    "current": {
+      "id": "genesis-3d",
+      "status": "in_progress",
+      "completedFiles": [
+        "main_scene.tscn",
+        "player.tscn",
+        "enemy.tscn",
+        "weapon.tscn",
+        "bullet.tscn"
+      ],
+      "pendingFiles": [
+        "main_scene.gd",
+        "player.gd",
+        "enemy.gd",
+        "weapon.gd",
+        "bullet.gd"
+      ],
+      "startedAt": "2026-06-26T10:23:44.902Z",
+      "updatedAt": "2026-06-26T10:24:40.306Z",
+      "failReason": null
+    },
     "done": [
       "memory-shards-saga"
     ]

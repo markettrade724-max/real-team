@@ -1,25 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://c00lbulletsceneid"]
+[gd_scene load_steps=4 format=3 uid="uid://d1e2f3g4h5i6j7k8l9m0"]
 
-[ext_resource type="Script" path="res://bullet.gd" id="1_0"]
+[ext_resource type="Script" path="res://bullet.gd" id="1_script_id"]
 
-[sub_resource type="SphereShape3D" id="2_1"]
+[sub_resource type="SphereShape3D" id="2_sphere_shape"]
 radius = 0.05
 
-[sub_resource type="SphereMesh" id="3_2"]
+[sub_resource type="SphereMesh" id="3_sphere_mesh"]
 radius = 0.05
 height = 0.1
 
 [node name="Bullet" type="RigidBody3D"]
-script = ExtResource("1_0")
+script = ExtResource("1_script_id")
 gravity_scale = 0.0
 contact_monitor = true
 max_contacts_reported = 1
-collision_layer = 8
+collision_layer = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("2_1")
+shape = SubResource("2_sphere_shape")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("3_2")
+mesh = SubResource("3_sphere_mesh")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

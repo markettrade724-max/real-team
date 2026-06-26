@@ -1,25 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://c0mplex3nemy"]
+[gd_scene load_steps=3 format=3 uid="uid://d321d321d321d321d321d321d321d321"]
 
-[ext_resource type="Script" path="res://enemy.gd" id="1_4b85g"]
+[ext_resource type="Script" path="res://enemy.gd" id="1_script"]
 
-[sub_resource type="CapsuleShape3D" id="2_0760e"]
-radius = 0.4
+[sub_resource type="CapsuleShape3D" id="2_capsule"]
 height = 1.8
+radius = 0.4
 
 [node name="Enemy" type="CharacterBody3D"]
+script = ExtResource("1_script")
 collision_layer = 2
 collision_mask = 3
-script = ExtResource("1_4b85g")
 speed = 3.0
 attack_range = 1.5
 attack_damage = 10.0
 attack_cooldown = 2.0
 health = 100.0
-navigation_agent_node_path = NodePath("NavigationAgent")
-player_node_path = NodePath("")
+navigation_agent_node_path = NodePath("NavigationAgent3D")
+player_node_path = NodePath("/root/Game/Player")
 
-[node name="CollisionShape" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-shape = SubResource("2_0760e")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("2_capsule")
+position = Vector3(0, 0.9, 0)
 
-[node name="NavigationAgent" type="NavigationAgent3D" parent="."]
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+]

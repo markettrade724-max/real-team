@@ -1,12 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://d1d1d1d1d1d1"]
+[gd_scene load_steps=4 format=3 uid="uid://d32d32d32d32"]
 
 [ext_resource type="Script" path="res://weapon.gd" id="1_abcde"]
 
-[sub_resource type="BoxMesh" id="2_fghij"]
-size = Vector3(0.2, 0.2, 1.0)
-
-[sub_resource type="StandardMaterial3D" id="3_klmno"]
-albedo_color = Color(0.5, 0.5, 0.5, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_xyz"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_123"]
 
 [node name="Weapon" type="Node3D"]
 script = ExtResource("1_abcde")
@@ -16,13 +13,13 @@ bullet_damage = 10.0
 bullet_lifetime = 5.0
 
 [node name="muzzle_point" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1) # Positioned 1 unit forward along the local -Z axis
 
 [node name="FireTimer" type="Timer" parent="."]
 wait_time = 0.2
 one_shot = true
 
-[node name="WeaponMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("2_fghij")
-material_override = SubResource("3_klmno")
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_xyz")
+material_override = SubResource("StandardMaterial3D_123")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5) # Positioned to represent the weapon body
