@@ -1,13 +1,13 @@
 {
-  "runId": "2026-06-27T0929",
-  "mode": "library",
-  "success": true,
-  "timestamp": "2026-06-27T09:29:13.802Z",
-  "totalDuration": "16ms",
+  "runId": "2026-06-27T1302",
+  "mode": "screenplay",
+  "success": false,
+  "timestamp": "2026-06-27T13:04:40.568Z",
+  "totalDuration": "100.7s",
   "budget": {
-    "total": 36,
+    "total": 39,
     "limit": 40,
-    "left": 4,
+    "left": 1,
     "keys": [
       {
         "key": "KEY_1",
@@ -20,12 +20,12 @@
       },
       {
         "key": "KEY_2",
-        "total": 16,
+        "total": 19,
         "limit": 20,
-        "left": 4,
+        "left": 1,
         "exhausted": false,
         "library": 16,
-        "agents": 0
+        "agents": 3
       }
     ]
   },
@@ -44,15 +44,15 @@
     "gamesDone": 1
   },
   "agents": {
-    "library": {
-      "success": true,
-      "duration": "0ms",
-      "error": null
+    "screenplay": {
+      "success": false,
+      "duration": "—",
+      "error": "InsufficientQuota: need 2 calls for steps [scenes,dialogue]"
     }
   },
   "summary": {
     "total": 1,
-    "passed": 1,
-    "failed": 0
+    "passed": 0,
+    "failed": 1
   }
 }
