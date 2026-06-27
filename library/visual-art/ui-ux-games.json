@@ -1,0 +1,153 @@
+{
+  "title": "UI/UX Design in Games",
+  "author": "GDC",
+  "category": "visual-art",
+  "summary": "The GDC reference on UI/UX Design in Games emphasizes creating intuitive, efficient, and immersive player experiences through thoughtful interface design. It highlights the importance of clarity, consistency, and player feedback to reduce cognitive load and enhance engagement.",
+  "coreRules": [
+    {
+      "id": 1,
+      "rule": "Clarity over Clutter",
+      "essence": "Prioritize clear, concise information display to reduce cognitive load.",
+      "example": "A minimalist HUD showing only essential health, ammo, and map, hiding secondary info until needed."
+    },
+    {
+      "id": 2,
+      "rule": "Consistency is Key",
+      "essence": "Maintain uniform visual language, interaction patterns, and terminology across all UI elements.",
+      "example": "All menus use the same button style, navigation logic, and icon set for common actions."
+    },
+    {
+      "id": 3,
+      "rule": "Feedback is Fundamental",
+      "essence": "Provide immediate and clear responses to player actions, confirming input and outcomes.",
+      "example": "Buttons highlight on hover/click, sound effects play for successful actions, and damage numbers pop up."
+    },
+    {
+      "id": 4,
+      "rule": "Prioritize Information Hierarchy",
+      "essence": "Guide the player's eye to the most important elements using size, color, and placement.",
+      "example": "Larger font for quest objectives, brighter color for critical warnings, and central placement for core gameplay info."
+    },
+    {
+      "id": 5,
+      "rule": "Contextual UI",
+      "essence": "Display UI elements only when relevant to the current situation or player state.",
+      "example": "Health bar only appears when taking damage, quest markers only when active, or interaction prompts near objects."
+    },
+    {
+      "id": 6,
+      "rule": "Accessibility for All",
+      "essence": "Design for a broad range of players, including those with disabilities, to ensure inclusivity.",
+      "example": "Implementing colorblind modes, adjustable text size, remappable controls, and subtitle options."
+    },
+    {
+      "id": 7,
+      "rule": "Learnability through Intuition",
+      "essence": "Design interfaces that are easy to understand and use without extensive tutorials.",
+      "example": "Using standardized icons for common actions (e.g., gear for settings) and familiar control schemes."
+    },
+    {
+      "id": 8,
+      "rule": "Efficiency in Interaction",
+      "essence": "Minimize the number of steps or clicks required for common and frequent actions.",
+      "example": "One-click equip for inventory items, quick-slot systems for abilities, or batch crafting options."
+    },
+    {
+      "id": 9,
+      "rule": "Visual Weight and Contrast",
+      "essence": "Use size, color, contrast, and negative space to differentiate elements and draw attention.",
+      "example": "Bright red for critical warnings, subtle grey for background elements, and larger text for primary information."
+    },
+    {
+      "id": 10,
+      "rule": "Spatial Awareness",
+      "essence": "Use UI to reinforce the player's understanding of their position and surroundings within the game world.",
+      "example": "A mini-map showing player position relative to objectives, directional damage indicators, or compass with markers."
+    },
+    {
+      "id": 11,
+      "rule": "Emotional Resonance",
+      "essence": "Ensure UI aesthetics complement the game's tone and enhance the player's emotional experience.",
+      "example": "A gritty, worn UI for a post-apocalyptic game; a sleek, futuristic UI for sci-fi; or a whimsical UI for a fantasy game."
+    },
+    {
+      "id": 12,
+      "rule": "Scalability and Responsiveness",
+      "essence": "Design UI to adapt gracefully to different screen sizes, resolutions, and input methods.",
+      "example": "UI elements resizing and rearranging automatically from PC to console to mobile interfaces."
+    },
+    {
+      "id": 13,
+      "rule": "Minimize Cognitive Load",
+      "essence": "Avoid overwhelming the player with too much information or too many choices at once.",
+      "example": "Progressive disclosure of complex systems, tooltips for detailed info on demand, or limited choices in critical moments."
+    },
+    {
+      "id": 14,
+      "rule": "Forgiveness and Error Prevention",
+      "essence": "Design to prevent mistakes and allow players to easily recover from them.",
+      "example": "\"Are you sure?\" prompts for irreversible actions, undo buttons, or clear error messages with solutions."
+    },
+    {
+      "id": 15,
+      "rule": "Animation for Clarity and Delight",
+      "essence": "Use subtle animations to guide attention, provide feedback, and add polish and personality.",
+      "example": "An item glowing when picked up, smooth menu transitions, or a character portrait subtly animating during dialogue."
+    },
+    {
+      "id": 16,
+      "rule": "Player Agency and Customization",
+      "essence": "Allow players to tailor aspects of the UI to their preferences and playstyle.",
+      "example": "Toggleable HUD elements, control remapping, color scheme options, or adjustable font sizes."
+    },
+    {
+      "id": 17,
+      "rule": "Clear Signposting and Affordance",
+      "essence": "Make it obvious what elements are interactive and what their function is.",
+      "example": "Buttons clearly looking like buttons, interactable objects having a glow, or clear labels for sliders and checkboxes."
+    },
+    {
+      "id": 18,
+      "rule": "Iterate and Test",
+      "essence": "Continuously gather feedback from players and refine the UI/UX based on real-world experience.",
+      "example": "Conducting playtesting sessions, A/B testing different UI layouts, and analyzing user telemetry data."
+    },
+    {
+      "id": 19,
+      "rule": "Performance Optimization",
+      "essence": "Ensure UI elements load quickly and do not negatively impact overall game performance.",
+      "example": "Efficient rendering of UI textures, optimized animation scripts, and minimizing draw calls for UI elements."
+    },
+    {
+      "id": 20,
+      "rule": "Narrative Integration",
+      "essence": "Weave UI elements into the game's story and world where appropriate to deepen immersion.",
+      "example": "An in-game map represented as a physical object the character holds, or a quest log designed as a worn journal."
+    }
+  ],
+  "byAgent": {
+    "code-agent": {
+      "topRules": [
+        "Performance Optimization",
+        "Scalability and Responsiveness",
+        "Feedback is Fundamental"
+      ],
+      "why": "This reference is vital for a code-agent as it provides the foundational principles for building robust, performant, and user-friendly UI systems. Understanding these rules ensures that the implemented UI not only functions correctly but also contributes positively to the overall player experience, avoiding technical debt and ensuring maintainability.",
+      "how": "A code-agent applies this reference by implementing UI elements with efficiency and scalability in mind, ensuring responsive feedback mechanisms, optimizing rendering performance, and developing flexible UI frameworks that can adapt to various platforms and player preferences. They translate design specifications into functional, optimized code.",
+      "prompt_injection": "Ensure all UI implementations adhere to GDC's best practices for performance and responsiveness."
+    },
+    "art-agent": {
+      "topRules": [
+        "Visual Weight and Contrast",
+        "Emotional Resonance",
+        "Consistency is Key"
+      ],
+      "why": "For an art-agent, this reference is crucial for understanding how visual design impacts player interaction and immersion. It guides them in creating aesthetically pleasing, readable, and thematically consistent UI elements that effectively communicate information and enhance the game's overall artistic vision.",
+      "how": "An art-agent applies this reference by designing visually coherent UI layouts, creating intuitive icons and typography, ensuring proper visual hierarchy and contrast for readability, and developing animations that provide clear feedback while aligning with the game's art style and emotional tone. They bring the UI to life visually.",
+      "prompt_injection": "Design UI elements with a strong emphasis on visual hierarchy, thematic consistency, and player readability, following GDC's UI/UX principles."
+    }
+  },
+  "id": "ui-ux-games",
+  "priority": 2,
+  "builtAt": "2026-06-27T05:49:40.797Z"
+}
