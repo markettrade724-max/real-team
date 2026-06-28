@@ -1,664 +1,134 @@
 /**
- * code-agent.js — v2.2
- *
- * التغييرات عن v2.1:
- *  - generateGDScripts يستقبل worldEnemies + worldWeapon كمعاملات صريحة
- *  - بيانات الأعداء والسلاح تُمرَّر من world-birth-agent عبر run()
- *  - إصلاح ReferenceError: worldEnemies/worldWeapon كانا خارج النطاق
- *
- * التغييرات عن v2.0:
- *  - taskConfig (6th param): { pendingFiles, completedFiles, budget }
- *  - Phase 1 (budget=4): كل .gd — يحفظ في disk + يُرجع للـ progress
- *  - Phase 2 (budget=5): كل .tscn — يقرأ .gd من disk كمرجع
- *  - files[] يُرجع { name, content } لدعم saveGameFile في orchestrator
- *  - إصلاح template scoping bug في addToProducts
- *  - canAfford مرن حسب budget المخصص لا 9 ثابت
- *
- * القواعد المطبقة:
- *  rule-056 : soulContext قبل كل عمل
- *  rule-058 : preset = 'Web' دائماً
- *  rule-070 : platform = 'Web' في Godot 4.x
- *  rule-087 : askGemini(prompt, temp, options, caller)
- *  rule-089 : كل الردود JSON
- *  rule-098 : askGemini فقط
- *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
- *  rule-101 : maxOutputTokens لا maxTokens
- *  rule-102 : لا JSON.parse
- *  rule-109 : انسخ products.json إلى public/
- *  rule-110 : project.godot يُبنى محلياً
- *  rule-128 : caller logging
- *  rule-146 : .gd  → maxOutputTokens: 8192  / temperature: 0.2
- *  rule-147 : .tscn → maxOutputTokens: 16384 / temperature: 0.2
- *  rule-148 : كل .tscn في استدعاء منفصل مع كوده كمرجع
- *  rule-149 : weapon.gd + bullet.gd في استدعاء واحد
- *  rule-153 : canAfford — وحدة كاملة أو لا شيء
- *  rule-188 : كل خطوة تُحفظ فور اكتمالها
- *  rule-189 : Phase 1 (.gd) ثم Phase 2 (.tscn)
- *  rule-190 : Phase 2 تقرأ .gd من godot-projects/{slug}/
+ * code-agent.js — addition v2.3
+ * New: runGameFix() — Thursday partial-fix mode (3 calls, full cycle)
+ * Root cause targeted: per-file isolated generation (rule-103/149) means
+ * Gemini never sees the whole codebase at once → broken cross-file wiring
+ * (signals, input actions, win/lose condition, score) even when each file
+ * is individually valid GDScript and exports successfully.
  */
 
-import {
-  writeFileSync, mkdirSync, existsSync,
-  readFileSync, readdirSync,
-} from 'fs';
-import { join, dirname }  from 'path';
-import { fileURLToPath }  from 'url';
-import { askGemini, getRemainingQuota } from './_gemini.js';
-import { soulContext }    from './_soul.js';
-import { readForAgent }   from './library-builder-agent.js';
-import { logger }         from '../logger.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// ══════════════════════════════════════════════════════════
-// هيكل الملفات
-// ══════════════════════════════════════════════════════════
-const GAME_GD_FILES   = [
-  'main_scene.gd', 'player.gd', 'enemy.gd', 'weapon.gd', 'bullet.gd',
-];
-const GAME_TSCN_FILES = [
-  'main_scene.tscn', 'player.tscn', 'enemy.tscn', 'weapon.tscn', 'bullet.tscn',
-];
-const ALL_GAME_FILES  = [...GAME_GD_FILES, ...GAME_TSCN_FILES];
-
-// ══════════════════════════════════════════════════════════
-// أدوات مساعدة
-// ══════════════════════════════════════════════════════════
-function getProjectDir(slug) {
-  return join(__dirname, '..', 'godot-projects', slug);
-}
-
-function writeProjectFile(slug, filename, content) {
-  const dir = getProjectDir(slug);
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, filename), content, 'utf8');
-  logger.info(`[OK] Written: ${slug}/${filename}`);
-}
-
-function readProjectFile(slug, filename) {
-  const p = join(getProjectDir(slug), filename);
-  if (!existsSync(p)) return null;
-  try { return readFileSync(p, 'utf8'); } catch { return null; }
-}
-
-function loadSavedGdFiles(slug) {
+function loadSavedTscnFiles(slug) {
   const files = {};
-  for (const name of GAME_GD_FILES) {
+  for (const name of GAME_TSCN_FILES) {
     const content = readProjectFile(slug, name);
     if (content) files[name] = content;
   }
   return files;
 }
 
-function loadRecipes(domain) {
-  const dir = join(__dirname, '..', 'godot-recipes', domain);
-  if (!existsSync(dir)) return '';
-  try {
-    const files = readdirSync(dir).filter(f => f.endsWith('.meta.json'));
-    if (!files.length) return '';
-    return files.slice(0, 3).map(f => {
-      const m = JSON.parse(readFileSync(join(dir, f), 'utf8'));
-      return `- ${m.label}: ${m.usage}`;
-    }).join('\n');
-  } catch { return ''; }
+// Backup before overwrite — same spirit as rule-154 (rollback safety)
+function backupProjectFile(slug, filename) {
+  const content = readProjectFile(slug, filename);
+  if (content == null) return;
+  const backupDir = join(getProjectDir(slug), '_backup');
+  if (!existsSync(backupDir)) mkdirSync(backupDir, { recursive: true });
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  writeFileSync(join(backupDir, `${filename}.${stamp}.bak`), content, 'utf8');
 }
 
-function generateExportPresets() {
-  return `[preset.0]
-name="Web"
-platform="Web"
-runnable=true
-dedicated_server=false
-custom_features=""
-export_filter="all_resources"
-include_filter=""
-exclude_filter=""
-export_path="./index.html"
-patches=PackedStringArray()
-encryption_include_filters=""
-encryption_exclude_folders=""
-encrypt_pck=false
-encrypt_directory=false
-
-[preset.0.options]
-custom_template/debug=""
-custom_template/release=""
-variant/extensions_support=false
-variant/thread_support=false
-vram_texture_compression/for_desktop=true
-vram_texture_compression/for_mobile=false
-html/export_icon=true
-html/custom_html_shell=""
-html/head_include=""
-html/canvas_resize_policy=2
-html/focus_canvas_on_start=true
-html/experimental_virtual_keyboard=false
-progressive_web_app/enabled=false
-`;
-}
-
-function buildProjectGodot(idea) {
-  return `; Engine configuration file.
-; Generated by universe agents — Godot 4.6.2
-config_version=5
-
-[application]
-config/name="${idea.name?.en || idea.id}"
-run/main_scene="res://main_scene.tscn"
-config/features=PackedStringArray("4.6", "Forward Plus")
-config/icon="res://icon.svg"
-
-[display]
-window/size/viewport_width=1280
-window/size/viewport_height=720
-
-[input]
-move_forward={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":87,"physical_keycode":87,"unicode":119)]
-}
-move_back={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":83,"physical_keycode":83,"unicode":115)]
-}
-move_left={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":65,"physical_keycode":65,"unicode":97)]
-}
-move_right={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":68,"physical_keycode":68,"unicode":100)]
-}
-jump={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"device":-1,"window_id":0,"keycode":32,"physical_keycode":32,"unicode":32)]
-}
-fire={
-"deadzone": 0.5,
-"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"device":-1,"window_id":0,"button_index":1,"pressed":true)]
-}
-
-[rendering]
-renderer/rendering_method="forward_plus"
-`;
-}
-
-function applyScriptRules(filename, code) {
-  if (typeof code !== 'string') return code;
-  code = code.replace(/^    /gm, '\t').replace(/^  /gm, '\t');
-  if (code.includes('await') && code.includes('queue_free()') && !code.includes('is_inside_tree')) {
-    code = code.replace(/(\tqueue_free\(\))/g, '\tif is_inside_tree():\n\t\tqueue_free()');
-  }
-  if (filename === 'player.gd' && !code.includes('add_to_group("player")')) {
-    code = code.replace('func _ready():\n', 'func _ready():\n\tadd_to_group("player")\n');
-  }
-  if (filename === 'enemy.gd' && !code.includes('add_to_group("enemy")')) {
-    code = code.replace('func _ready():\n', 'func _ready():\n\tadd_to_group("enemy")\n');
-  }
-  return code;
-}
-
-function fixLoadSteps(content) {
-  if (typeof content !== 'string') return content;
-  const ext = (content.match(/^\[ext_resource /gm) || []).length;
-  const sub = (content.match(/^\[sub_resource /gm) || []).length;
-  return content.replace(/\[gd_scene load_steps=\d+/, `[gd_scene load_steps=${ext + sub + 1}`);
-}
-
-function fixCamera3D(slug) {
-  try {
-    const p = join(getProjectDir(slug), 'player.tscn');
-    if (!existsSync(p)) return;
-    let c = readFileSync(p, 'utf8');
-    if (c.includes('type="Camera3D"') && !c.includes('current = true')) {
-      c = c.replace(
-        /(\[node name="[^"]*" type="Camera3D"[^\]]*\])/g,
-        '$1\ncurrent = true'
-      );
-      writeFileSync(p, c, 'utf8');
-      logger.info('[OK] Fixed Camera3D current=true');
-    }
-  } catch (err) {
-    logger.warn('[WARN] Could not fix Camera3D', { error: err.message });
-  }
-}
-
-// إصلاح: template يُمرَّر صريحاً — rule-189
-function addToProducts(idea, art, levels, template) {
-  const path     = join(__dirname, '..', 'products.json');
-  const pub      = join(__dirname, '..', 'public', 'products.json');
-  const products = existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : [];
-  if (products.find(p => p.id === idea.id)) {
-    logger.info('[INFO] Product already exists', { id: idea.id });
-    return;
-  }
-  products.unshift({
-    id:           idea.id,
-    slug:         idea.id,
-    type:         'godot',
-    category:     'game',
-    status:       'available',
-    templateFile: template?.templateFile || 'godot-wrapper.html',
-    godotSlug:    idea.id,
-    accent:       art?.accent    || '#00ff88',
-    accentRgb:    art?.accentRgb || '0,255,136',
-    gradient:     art?.gradient  || '135deg,#020209,#080820',
-    name:         idea.name,
-    desc:         idea.desc,
-    tags:         idea.tags || [],
-    iap:          [],
-    levels:       levels?.worlds?.map(w => ({
-      id: w.id, name: w.name, difficulty: w.difficulty,
-    })) || [],
-    controls: {
-      ar: { move: 'WASD للتحرك', look: 'الفأرة للنظر', fire: 'كليك يسار', jump: 'مسافة' },
-      en: { move: 'WASD to move', look: 'Mouse to look', fire: 'Left click', jump: 'Space' },
-    },
-    generated:   true,
-    generatedAt: new Date().toISOString(),
-  });
-  const json = JSON.stringify(products, null, 2);
-  writeFileSync(path, json, 'utf8');
-  mkdirSync(join(__dirname, '..', 'public'), { recursive: true });
-  writeFileSync(pub, json, 'utf8');
-  logger.info('[OK] Product added + copied to public/', { id: idea.id });
-}
-
-// ══════════════════════════════════════════════════════════
-// Phase 1 — توليد .gd
-// إصلاح v2.2: worldEnemies + worldWeapon كمعاملات صريحة
-// ══════════════════════════════════════════════════════════
-async function generateGDScripts(
-  idea, story, levels, soul, library,
-  targetFiles  = null,
-  worldEnemies = [],      // ← إصلاح: لم يكن يُمرَّر في v2.0
-  worldWeapon  = null     // ← إصلاح: لم يكن يُمرَّر في v2.0
-) {
-  logger.info('[CODE] Phase 1 — GDScript files');
-
-  const heroName    = story?.mainCharacter?.name || 'Hero';
-  const worldNames  = levels?.worlds?.slice(0, 3).map(w => w.name?.en).join(', ') || '';
-  const movementTip = loadRecipes('movement');
-  const files       = {};
-
-  // بيانات العالم — تُغني الكود بتفاصيل حقيقية
-  const enemyCtx = worldEnemies[0] ? `
-Enemy data from world:
-- speed: ${worldEnemies[0].speed || 3.0}
-- health: ${worldEnemies[0].health || 100}
-- damage: ${worldEnemies[0].damage || 15}
-- behavior: ${worldEnemies[0].behavior || 'patrol and attack'}` : '';
-
-  const weaponCtx = worldWeapon ? `
-Weapon data from world:
-- damage: ${worldWeapon.damage || 25}
-- fireRate: ${worldWeapon.fireRate || 1.5}
-- bulletSpeed: ${worldWeapon.bulletSpeed || 20}` : '';
-
-  // ── main_scene.gd ──────────────────────────────────────
-  if (!targetFiles || targetFiles.includes('main_scene.gd')) {
-    try {
-      const r = await askGemini(`${soul}\n${library}
-
-Godot 4.6.2 GDScript for main_scene.gd.
-Game: "${idea.name?.en}".
-Root node: Node3D.
-Rules:
-- process_mode = ALWAYS
-- handle InputEventMouseButton + InputEventScreenTouch to start game
-- pause / unpause logic with get_tree().paused
-- export var for main menu CanvasLayer
-
-Return JSON only — no text outside JSON:
-{ "main_scene.gd": "<complete GDScript code>" }`,
-        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
-      files['main_scene.gd'] = r?.['main_scene.gd'];
-    } catch (err) {
-      logger.error('[ERROR] main_scene.gd failed', { error: err.message });
-    }
-  }
-
-  // ── player.gd ───────────────────────────────────────────
-  if (!targetFiles || targetFiles.includes('player.gd')) {
-    try {
-      const r = await askGemini(`${soul}\n${library}
-
-Godot 4.6.2 GDScript for player.gd.
-Game: "${idea.name?.en}". Hero: ${heroName}.
-${movementTip ? `Movement recipe:\n${movementTip}` : ''}
-Rules:
-- extends CharacterBody3D
-- add_to_group("player") in _ready()
-- WASD movement + mouse look (captured)
-- jump with "jump" action
-- fire with "fire" action — calls weapon.shoot()
-- health system with signal player_died
-- is_inside_tree() before any queue_free() after await
-
-Return JSON only — no text outside JSON:
-{ "player.gd": "<complete GDScript code>" }`,
-        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
-      files['player.gd'] = r?.['player.gd'];
-    } catch (err) {
-      logger.error('[ERROR] player.gd failed', { error: err.message });
-    }
-  }
-
-  // ── enemy.gd ────────────────────────────────────────────
-  if (!targetFiles || targetFiles.includes('enemy.gd')) {
-    try {
-      const r = await askGemini(`${soul}\n${library}
-
-Godot 4.6.2 GDScript for enemy.gd.
-Game: "${idea.name?.en}". Worlds: ${worldNames}.
-${enemyCtx}
-Rules:
-- extends CharacterBody3D
-- add_to_group("enemy") in _ready()
-- NavigationAgent3D for pathfinding to player
-- attack when distance < attack_range
-- health + die() with is_inside_tree() check
-- collision_layer = 2, collision_mask = 3
-
-Return JSON only — no text outside JSON:
-{ "enemy.gd": "<complete GDScript code>" }`,
-        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
-      files['enemy.gd'] = r?.['enemy.gd'];
-    } catch (err) {
-      logger.error('[ERROR] enemy.gd failed', { error: err.message });
-    }
-  }
-
-  // ── weapon.gd + bullet.gd — في استدعاء واحد (rule-149) ─
-  const needWeapon = !targetFiles ||
-    targetFiles.includes('weapon.gd') || targetFiles.includes('bullet.gd');
-  if (needWeapon) {
-    try {
-      const r = await askGemini(`${soul}\n${library}
-
-Godot 4.6.2 GDScript — two files in one call.
-${weaponCtx}
-
-FILE 1: weapon.gd
-- extends Node3D
-- preload bullet scene: const BULLET = preload("res://bullet.tscn")
-- Marker3D child named "muzzle_point"
-- fire rate cooldown with can_shoot bool + Timer
-- func shoot() — instantiates bullet at muzzle_point
-
-FILE 2: bullet.gd
-- extends RigidBody3D
-- gravity_scale = 0.0
-- linear_velocity set in _ready() from forward direction
-- _on_body_entered(body): deal damage if body in "enemy" group
-- is_inside_tree() before queue_free() after any await
-- collision_layer = 4
-
-Return JSON only — no text outside JSON:
-{
-  "weapon.gd": "<complete GDScript code>",
-  "bullet.gd": "<complete GDScript code>"
-}`,
-        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
-      files['weapon.gd'] = r?.['weapon.gd'];
-      files['bullet.gd'] = r?.['bullet.gd'];
-    } catch (err) {
-      logger.error('[ERROR] weapon+bullet failed', { error: err.message });
-    }
-  }
-
-  return files;
-}
-
-// ══════════════════════════════════════════════════════════
-// Phase 2 — توليد .tscn
-// ══════════════════════════════════════════════════════════
-async function generateScenes(idea, gdFiles, soul, targetFiles = null) {
-  logger.info('[CODE] Phase 2 — .tscn scene files');
-
-  const scenes = {};
-
-  const SCENE_SPECS = [
-    {
-      name:   'main_scene.tscn',
-      prompt: `Godot 4.6.2 .tscn for main_scene.tscn.
-Reference GDScript (main_scene.gd):
-\`\`\`
-${(gdFiles['main_scene.gd'] || '').slice(0, 2000)}
-\`\`\`
-Rules:
-- Root: Node3D with script main_scene.gd
-- process_mode = 3 (ALWAYS) on root
-- WorldEnvironment child with default Environment
-- DirectionalLight3D child
-- CanvasLayer child for UI
-- load_steps = exact count of ext_resource + sub_resource`,
-    },
-    {
-      name:   'player.tscn',
-      prompt: `Godot 4.6.2 .tscn for player.tscn.
-Reference GDScript (player.gd):
-\`\`\`
-${(gdFiles['player.gd'] || '').slice(0, 2000)}
-\`\`\`
-Rules:
-- Root: CharacterBody3D with script player.gd
-- CollisionShape3D child (CapsuleShape3D h=1.8 r=0.4)
-- Node3D child "head" containing Camera3D (current=true) + Node3D "weapon_holder"
-- load_steps = exact count`,
-    },
-    {
-      name:   'enemy.tscn',
-      prompt: `Godot 4.6.2 .tscn for enemy.tscn.
-Reference GDScript (enemy.gd):
-\`\`\`
-${(gdFiles['enemy.gd'] || '').slice(0, 2000)}
-\`\`\`
-Rules:
-- Root: CharacterBody3D with script enemy.gd
-- CollisionShape3D child (CapsuleShape3D h=1.8 r=0.4)
-- NavigationAgent3D child
-- collision_layer=2, collision_mask=3
-- load_steps = exact count`,
-    },
-    {
-      name:   'weapon.tscn',
-      prompt: `Godot 4.6.2 .tscn for weapon.tscn.
-Reference GDScript (weapon.gd):
-\`\`\`
-${(gdFiles['weapon.gd'] || '').slice(0, 2000)}
-\`\`\`
-Rules:
-- Root: Node3D with script weapon.gd
-- Marker3D child named exactly "muzzle_point"
-- Timer child named "FireTimer"
-- MeshInstance3D child for visual
-- load_steps = exact count`,
-    },
-    {
-      name:   'bullet.tscn',
-      prompt: `Godot 4.6.2 .tscn for bullet.tscn.
-Reference GDScript (bullet.gd):
-\`\`\`
-${(gdFiles['bullet.gd'] || '').slice(0, 2000)}
-\`\`\`
-Rules:
-- Root: RigidBody3D with script bullet.gd
-- CollisionShape3D child (SphereShape3D r=0.05)
-- MeshInstance3D child (SphereMesh r=0.05)
-- gravity_scale=0.0, contact_monitor=true, max_contacts_reported=1
-- collision_layer=4
-- signal body_entered connected to _on_body_entered
-- load_steps = exact count`,
-    },
-  ];
-
-  for (const spec of SCENE_SPECS) {
-    if (targetFiles && !targetFiles.includes(spec.name)) continue;
-    try {
-      const r = await askGemini(`${soul}
-
-${spec.prompt}
-
-Return JSON only — no text outside JSON:
-{ "${spec.name}": "<complete .tscn content>" }`,
-        0.2, { maxOutputTokens: 16384, topP: 0.85 }, 'code-agent');
-
-      const content = r?.[spec.name];
-      if (!content || typeof content !== 'string' || content.trim().length < 10) {
-        logger.warn(`[WARN] Empty scene: ${spec.name}`);
-        continue;
-      }
-      scenes[spec.name] = content;
-      logger.info(`[OK] Scene generated: ${spec.name}`);
-    } catch (err) {
-      logger.error(`[ERROR] Scene failed: ${spec.name}`, { error: err.message });
-    }
-  }
-
-  return scenes;
-}
-
-// ══════════════════════════════════════════════════════════
-// الدالة الرئيسية
-// ══════════════════════════════════════════════════════════
-
-/**
- * @param {object} idea
- * @param {object} story
- * @param {object} levels
- * @param {object} art
- * @param {object} template
- * @param {object} taskConfig  — { pendingFiles?, completedFiles?, budget? }
- */
-export async function run(idea, story, levels, art, template, taskConfig = {}) {
-  const {
-    pendingFiles   = null,
-    completedFiles = [],
-    budget         = 9,
-  } = taskConfig;
-
-  logger.info('[CODE] Code Agent v2.2 started', {
-    id: idea.id, budget,
-    pendingFiles:   pendingFiles?.length ?? 'all',
-    completedFiles: completedFiles.length,
-  });
-
-  const isGodot = idea.type === 'godot';
-  if (!isGodot) {
-    logger.info('[CODE] Non-Godot project — skipping');
-    return { slug: idea.id, files: [], engine: 'phaser', isComplete: true };
-  }
+export async function runGameFix(idea, taskConfig = {}) {
+  const slug = idea.id;
+  logger.info('[CODE-FIX] Game-fix cycle started', { slug });
 
   const available = getRemainingQuota();
-  const needed    = pendingFiles?.every(f => f.endsWith('.tscn')) ? 5 : 4;
-  if (available < needed) {
-    throw new Error(`InsufficientQuota: need ${needed} calls, have ${available}`);
+  if (available < 3) {
+    throw new Error(`InsufficientQuota: game-fix needs 3 calls, have ${available}`);
   }
 
-  // template من disk إذا لم يُمرَّر
-  if (!template) {
-    const tp = join(__dirname, 'template.json');
-    if (existsSync(tp)) {
-      try { template = JSON.parse(readFileSync(tp, 'utf8')); } catch {}
-    }
+  const soul      = soulContext('code-agent');
+  const gdFiles    = loadSavedGdFiles(slug);
+  const tscnFiles  = loadSavedTscnFiles(slug);
+
+  if (Object.keys(gdFiles).length === 0) {
+    throw new Error(`No saved .gd files for ${slug} — cannot run game-fix`);
   }
 
-  const soul    = soulContext('code-agent');
-  const library = readForAgent('code-agent', 8);
-  const slug    = idea.id;
+  const report = { slug, steps: [], appliedFixes: [] };
 
-  // ── استخراج بيانات العالم ──────────────────────────────
-  const firstWorld   = levels?.worlds?.[0] || null;
-  const worldEnemies = firstWorld?.enemies || [];
-  const worldWeapon  = firstWorld?.weapon  || null;
+  // ── Call 1/3 — cross-file GDScript wiring audit + fix ──────
+  const gdBundle = Object.entries(gdFiles)
+    .map(([name, code]) => `--- ${name} ---\n${code}`).join('\n\n');
 
-  const outputFiles = []; // { name, content }
+  const step1 = await askGemini(`${soul}
 
-  const onlyTscn = pendingFiles?.every(f => f.endsWith('.tscn'));
+Review this complete Godot 4.6.2 GDScript codebase as ONE connected system, not isolated files.
+Check specifically for:
+1. Input actions referenced (e.g. "fire", "jump") not matching project.godot input map
+2. Signals emitted in one script but never connected/listened to elsewhere
+3. Missing win/lose condition — any path that actually ends the game?
+4. Missing visible score/feedback
+5. @export vars or get_node() paths likely absent from the matching .tscn
 
-  // ── ملفات ثابتة ────────────────────────────────────────
-  if (!onlyTscn) {
-    const presets  = generateExportPresets();
-    const godotCfg = buildProjectGodot(idea);
-    writeProjectFile(slug, 'export_presets.cfg', presets);
-    writeProjectFile(slug, 'project.godot',      godotCfg);
-    outputFiles.push({ name: 'export_presets.cfg', content: presets });
-    outputFiles.push({ name: 'project.godot',      content: godotCfg });
+Codebase:
+${gdBundle}
+
+Return JSON only. For files needing a fix, return COMPLETE corrected content. Omit files needing no change.
+{ "issues": ["<short description per problem>"], "fixedFiles": { "<file.gd>": "<complete corrected code>" } }`,
+    0.3, { maxOutputTokens: 16384, topP: 0.85 }, 'code-agent-fix');
+
+  for (const [name, code] of Object.entries(step1?.fixedFiles || {})) {
+    backupProjectFile(slug, name);
+    const fixed = applyScriptRules(name, code);
+    writeProjectFile(slug, name, fixed);
+    gdFiles[name] = fixed;
+    report.appliedFixes.push(name);
   }
+  report.steps.push({ step: 'gd-wiring-audit', issues: step1?.issues || [] });
 
-  // ── Phase 1: .gd ──────────────────────────────────────
-  let gdFiles = {};
+  // ── Call 2/3 — scene/script cross-check ────────────────────
+  const tscnBundle = Object.entries(tscnFiles)
+    .map(([name, c]) => `--- ${name} ---\n${c.slice(0, 1500)}`).join('\n\n');
 
-  if (!onlyTscn) {
-    const gdTarget = pendingFiles?.filter(f => f.endsWith('.gd')) ?? null;
-    gdFiles = await generateGDScripts(
-      idea, story, levels, soul, library,
-      gdTarget,
-      worldEnemies,   // ← v2.2: يُمرَّران صريحاً
-      worldWeapon     // ← v2.2: يُمرَّران صريحاً
-    );
+  const step2 = await askGemini(`${soul}
 
-    for (const [name, code] of Object.entries(gdFiles)) {
-      if (!code) continue;
-      const fixed = applyScriptRules(name, code);
-      writeProjectFile(slug, name, fixed);
-      outputFiles.push({ name, content: fixed }); // rule-188
-    }
+Cross-check these .tscn scenes against the (already fixed) GDScript for node-name mismatches:
+- muzzle_point on weapon.tscn must exist and match weapon.gd get_node() calls
+- Camera3D must have current=true on player.tscn
+- NavigationAgent3D must exist on enemy.tscn if enemy.gd uses it
+- CollisionShape3D shapes must exist where scripts assume physics
+
+GDScript (fixed):
+${gdBundle}
+
+Scenes:
+${tscnBundle}
+
+Return JSON only, complete corrected content for files needing fixes:
+{ "issues": [...], "fixedFiles": { "<file.tscn>": "<complete corrected content>" } }`,
+    0.3, { maxOutputTokens: 16384, topP: 0.85 }, 'code-agent-fix');
+
+  for (const [name, content] of Object.entries(step2?.fixedFiles || {})) {
+    backupProjectFile(slug, name);
+    writeProjectFile(slug, name, fixLoadSteps(content));
+    report.appliedFixes.push(name);
   }
+  report.steps.push({ step: 'tscn-wiring-audit', issues: step2?.issues || [] });
+  fixCamera3D(slug);
 
-  // ── Phase 2: .tscn ────────────────────────────────────
-  const doTscn = !pendingFiles || pendingFiles.some(f => f.endsWith('.tscn'));
+  // ── Call 3/3 — core loop glue: win/lose + score ────────────
+  const step3 = await askGemini(`${soul}
 
-  if (doTscn && (budget >= 9 || onlyTscn)) {
-    if (onlyTscn) {
-      gdFiles = loadSavedGdFiles(slug); // rule-190
-      logger.info('[CODE] Loaded saved GD from disk', { count: Object.keys(gdFiles).length });
-    }
-    const tscnTarget = pendingFiles?.filter(f => f.endsWith('.tscn')) ?? null;
-    const sceneFiles = await generateScenes(idea, gdFiles, soul, tscnTarget);
+main_scene.gd (current):
+${gdFiles['main_scene.gd'] || ''}
 
-    for (const [name, content] of Object.entries(sceneFiles)) {
-      const fixed = fixLoadSteps(content);
-      writeProjectFile(slug, name, fixed);
-      outputFiles.push({ name, content: fixed }); // rule-188
-    }
-    fixCamera3D(slug);
+Confirmed issue: nothing happens when playing — no visible win/lose or score.
+Add directly into main_scene.gd:
+- score variable, incremented when an enemy dies (connect via "enemy" group/signal)
+- lose condition on player_died signal → show Game Over UI, get_tree().paused = true
+- win condition when "enemy" group is empty → show Victory UI
+- a visible Label (CanvasLayer/Control) updated live with score + end-state text
+
+Return JSON only:
+{ "main_scene.gd": "<complete corrected code>" }`,
+    0.3, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent-fix');
+
+  if (step3?.['main_scene.gd']) {
+    backupProjectFile(slug, 'main_scene.gd');
+    writeProjectFile(slug, 'main_scene.gd', applyScriptRules('main_scene.gd', step3['main_scene.gd']));
+    report.appliedFixes.push('main_scene.gd');
   }
+  report.steps.push({ step: 'core-loop-glue' });
 
-  // ── levels.json ─────────────────────────────────────────
-  if (levels && !onlyTscn) {
-    const lvl = JSON.stringify(levels, null, 2);
-    writeProjectFile(slug, 'worlds.json', lvl);
-    outputFiles.push({ name: 'worlds.json', content: lvl });
-  }
-
-  // ── اكتمال؟ ─────────────────────────────────────────────
-  const allDone    = [...completedFiles, ...outputFiles.map(f => f.name)];
-  const gdDone     = GAME_GD_FILES.every(f => allDone.includes(f));
-  const tscnDone   = GAME_TSCN_FILES.every(f => allDone.includes(f));
-  const isComplete = gdDone && tscnDone;
-
-  if (isComplete) addToProducts(idea, art, levels, template);
-
-  const pendingRemaining = isComplete ? [] : [
-    ...(!gdDone   ? GAME_GD_FILES.filter(f   => !allDone.includes(f)) : []),
-    ...(!tscnDone ? GAME_TSCN_FILES.filter(f => !allDone.includes(f)) : []),
-  ];
-
-  logger.info('[OK] Code Agent v2.2 finished', {
-    slug, isComplete,
-    outputFiles:      outputFiles.length,
-    pendingRemaining: pendingRemaining.length,
-  });
-
-  return {
-    slug,
-    files:          outputFiles,
-    engine:         'godot',
-    isComplete,
-    completedFiles: allDone,
-    pendingFiles:   pendingRemaining,
-    totalFiles:     outputFiles.length,
-  };
+  logger.info('[OK] Game-fix cycle finished', { slug, fixedCount: report.appliedFixes.length });
+  return report;
 }
