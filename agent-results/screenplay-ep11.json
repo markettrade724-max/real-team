@@ -18,82 +18,118 @@
       "scenes": [
         {
           "id": "S01",
-          "location": "Edge of the Whispering Nebula — a vast, swirling cosmic cloud of iridescent dust and faint, ghostly light.",
+          "location": "Edge of the Whispering Nebula, inside the vessel",
           "time": "dusk",
-          "mood": "Mysterious longing, cautious anticipation, growing unease.",
-          "goal": "Establish the setting, the Hero's quest, and the initial sense of 'الحنين' from the Nebula. Introduce the Companion's subtle unease.",
-          "duration": 90,
-          "camera": "WIDE SHOT of the Hero's sleek, silent vessel approaching the Nebula. SLOW PUSH IN on the main viewport, revealing the Hero's contemplative face, then a GLANCE to the Companion, whose posture is unusually rigid.",
-          "lighting": "Soft, ethereal blues and purples from the Nebula's glow, contrasting with the warm, contained light within the ship. Shadows play on the Companion's face, hinting at hidden thoughts.",
-          "action": "The Hero navigates the ship with practiced ease, eyes scanning the swirling cosmic dust. They reach out, almost instinctively, towards the viewport as if to touch the distant light. The Companion sits quietly, hands clasped, gaze fixed on the approaching anomaly, a flicker of apprehension crossing their features.",
-          "sfx": "Low, resonant HUM of the ship's engines. Distant, almost imperceptible WHISPERS and CHIMES carried on the cosmic winds. A faint, melancholic SYNTH PAD.",
-          "music": "Ethereal, melancholic pads with a sense of wonder and underlying tension. A single, sustained note that slowly rises.",
+          "mood": "Mysterious longing, cautious anticipation",
+          "goal": "Establish the setting and the initial sense of 'الحنين' (nostalgia/longing), introduce Companion's subtle unease.",
+          "duration": 75,
+          "camera": "WIDE SHOT of the nebula, a cosmic canvas of swirling colors. SLOW PUSH IN on the HERO and COMPANION'S small vessel, dwarfed by the grandeur. CLOSE UP on Hero's face, a mix of awe and melancholy. QUICK CUT to Companion, eyes darting, a subtle tension in their jaw.",
+          "lighting": "Ethereal, soft glows from the nebula itself, casting long, shifting shadows within the vessel. A sense of ancient light.",
+          "action": "The vessel drifts slowly into the nebula. Hero gazes out, hand reaching towards the swirling patterns. Companion stands a few paces back, observing the Hero and the nebula with a guarded expression, occasionally glancing at the ship's console.",
+          "sfx": "Low, resonant HUM of the nebula, like distant, mournful whispers. Gentle THUD of the vessel's hull against stray cosmic dust. Faint, almost imperceptible CHIMES.",
+          "music": "Haunting, slow strings with ethereal synth pads, building a sense of vastness and ancient sorrow.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "It calls to me. A whisper, like a forgotten melody carried on starlight. This... 'الحنين'.",
-              "emotion": "Mysterious longing, awe",
-              "direction": "Gazing out at the swirling nebula, a hand pressed to the viewport, eyes wide with a fragile hope."
+              "character": "Lyra",
+              "line": "Look, Kael. The Nebula breathes. It feels… familiar, somehow. Like a whisper I’ve almost caught before.",
+              "emotion": "Mysterious longing, wonder",
+              "direction": "Eyes wide, gazing out at the nebula, a hand pressed to the viewport."
             },
             {
-              "character": "Companion",
-              "line": "The Whispering Nebula. They say it’s a graveyard of thoughts. Not all whispers are benign, Hero. Some are lures.",
-              "emotion": "Subtle unease, cautious anticipation",
-              "direction": "Standing slightly behind Hero, arms crossed, eyes scanning the shifting colors with a flicker of apprehension."
+              "character": "Kael",
+              "line": "Familiarity can be a trick of the light, Lyra. This place… it’s a graveyard of stars, and perhaps, of minds.",
+              "emotion": "Cautious anticipation, subtle unease",
+              "direction": "Shifts weight, glances at Lyra, then quickly back to the controls, fingers tapping restlessly."
+            },
+            {
+              "character": "Lyra",
+              "line": "But the longing… it’s real. A pull. Don't you feel it? The weight of untold stories.",
+              "emotion": "Deep longing, insistent",
+              "direction": "Turns to Kael, searching his face, a hopeful glint in her eyes."
+            },
+            {
+              "character": "Kael",
+              "line": "I feel the cold. And the vastness. It's a different kind of pull.",
+              "emotion": "Dismissive, but with underlying worry",
+              "direction": "Avoids Lyra's gaze, shivers subtly, pulls his cloak tighter."
             }
           ]
         },
         {
           "id": "S02",
-          "location": "Deep within the Whispering Nebula — an asteroid field of glowing, translucent memory shards, each pulsing with a soft, internal light.",
+          "location": "Deeper within the Whispering Nebula, where memory shards float like luminous debris",
           "time": "night",
-          "mood": "Intense curiosity, growing awe, underlying dread.",
-          "goal": "Hero interacts with fragmented memories, deepening the sense of loss and longing. Companion's apprehension grows, hinting at a secret.",
-          "duration": 100,
-          "camera": "CLOSE UP on Hero's hand reaching for a floating shard. TRACKING SHOT as the Hero drifts amongst the shards, their face illuminated by the shifting light. OVER THE SHOULDER of the Companion, watching the Hero with a mixture of concern and resignation.",
-          "lighting": "Dynamic, shifting light from the glowing memory shards, casting intricate patterns on the Hero and Companion. The light is beautiful but also feels ancient and heavy.",
-          "action": "The Hero, tethered, drifts out of the ship, drawn to a particularly vibrant shard. As their fingers brush its surface, a cascade of fleeting images — a child's laughter, a forgotten city, a star's dying breath — floods their mind, causing them to flinch. The Companion, observing from the ship's airlock, grips the frame, their breath held.",
-          "sfx": "Fragmented, overlapping WHISPERS and ECHOES of voices, laughter, and distant cries. The gentle CLINK of cosmic dust against the ship's hull. A low, sustained, almost mournful HUM from the shards.",
-          "music": "Sparse, haunting melodies, punctuated by sudden, brief swells of orchestral emotion, then fading back to silence. A sense of profound loss.",
+          "mood": "Growing unease, irresistible curiosity",
+          "goal": "Show memories as physical entities, deepen the mystery, and highlight Companion's growing apprehension.",
+          "duration": 75,
+          "camera": "MEDIUM SHOT of Hero reaching out, fingers brushing against a glowing, crystalline shard. PULL BACK to reveal dozens more, some pulsing faintly. Hero's POV looking at the shard, seeing fleeting, distorted images within. Companion in the background, arms crossed, posture rigid.",
+          "lighting": "Pulsing, internal light from the memory shards illuminates the scene, casting shifting patterns. Deep cosmic blues and purples dominate, creating an intimate, yet unsettling space.",
+          "action": "Hero carefully maneuvers the vessel closer to a particularly vibrant memory shard. They extend a gloved hand, touching its surface. A jolt, a flash of an unknown, ancient face. Hero recoils slightly, then leans in, fascinated. Companion steps forward, a hand briefly on Hero's shoulder, a silent warning. Hero shrugs it off, compelled.",
+          "sfx": "Soft, crystalline CHIMES as shards brush past. A faint, almost subliminal WHISPERING, just beyond comprehension. The JOLT of energy as Hero touches the shard.",
+          "music": "The ethereal pads become more dissonant, with a low, growing drone. A sense of something ancient stirring.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "Look. Each shard… a story. A life. I can almost touch the echo of their joy, their sorrow. So many lost threads.",
-              "emotion": "Intense curiosity, profound empathy, growing awe",
-              "direction": "Drifting gently amidst the glowing memory shards, reaching out a hesitant finger towards one, eyes reflecting its light."
+              "character": "Lyra",
+              "line": "These… these are memories. Floating free. See their luminescence? Each one a tiny sun of a forgotten life.",
+              "emotion": "Irresistible curiosity, awe",
+              "direction": "Reaches out, as if to touch a shimmering shard passing the viewport, a breathless wonder in her voice."
             },
             {
-              "character": "Companion",
-              "line": "And some threads are best left untangled. This place… it feeds. On curiosity, on longing. It offers what you seek, but at a price.",
-              "emotion": "Growing apprehension, veiled warning",
-              "direction": "Keeping a watchful distance, voice low and strained, a hand unconsciously going to a hidden pouch at their belt."
+              "character": "Kael",
+              "line": "They are fragments. Unstable. We don't know what they contain. Or what they might awaken.",
+              "emotion": "Growing apprehension, warning",
+              "direction": "His voice is taut, eyes darting between Lyra and the swirling debris, a hand resting near an emergency panel."
+            },
+            {
+              "character": "Lyra",
+              "line": "But they hold truth. The Void remembers, Kael. Every story. Maybe mine is here, among these ashes.",
+              "emotion": "Determined, hopeful",
+              "direction": "Her gaze is fixed on a particularly bright shard, a flicker of desperate hope on her face."
+            },
+            {
+              "character": "Kael",
+              "line": "Some truths are best left buried. Or forgotten. For a reason.",
+              "emotion": "Foreboding, veiled fear",
+              "direction": "Muttering, he turns away, fiddling with a console, his back to Lyra."
             }
           ]
         },
         {
           "id": "S03",
-          "location": "Core chamber of the Whispering Nebula — a vast cavern where a single, colossal memory shard pulses with blinding, internal light, radiating a powerful psychic resonance.",
+          "location": "Heart of the Whispering Nebula, approaching the central, largest memory shard",
           "time": "night",
-          "mood": "Heightened tension, irresistible pull, dawning suspicion.",
-          "goal": "Identify the central, powerful memory shard and the growing tension between Hero's drive and Companion's caution.",
-          "duration": 110,
-          "camera": "WIDE SHOT revealing the immense scale of the central shard. PUSH IN on the Hero, captivated. CUT TO the Companion, their face etched with alarm, trying to pull the Hero back. DUTCH ANGLE as the shard's light intensifies.",
-          "lighting": "Intense, pulsating light emanating from the central shard, casting deep, elongated shadows. The light is almost painful to look at, overwhelming the scene.",
-          "action": "The Hero is inexorably drawn towards the colossal shard, their hand outstretched, a look of profound recognition dawning on their face. The Companion, now overtly agitated, grabs the Hero's arm, whispering urgent warnings. The shard's pulse quickens, its light flaring, momentarily overwhelming their senses.",
-          "sfx": "A deep, resonant PULSE that vibrates through their bodies. The Companion's strained BREATHING. A high-pitched WHINE building from the shard, almost painful to hear. The Hero's sharp INTAKE OF BREATH.",
-          "music": "A building, dissonant drone with a rising sense of urgency. Percussive hits that mimic a heartbeat. A sudden, sharp crescendo as the shard flares.",
+          "mood": "Tense anticipation, escalating unease",
+          "goal": "Build tension towards the central memory, escalate Companion's hidden fear.",
+          "duration": 75,
+          "camera": "TRACKING SHOT following Hero's focused gaze towards the immense, central shard, glowing with an intense, internal light. WIDE SHOT showing the small vessel dwarfed by the shard. CLOSE UP on Companion's face, eyes wide with a mix of fear and resignation, a bead of sweat on their brow.",
+          "lighting": "The central memory shard emits a blinding, pure white light that pulses rhythmically, casting stark, long shadows. The surrounding nebula is darker, almost swallowed by its brilliance.",
+          "action": "Hero guides the vessel directly towards the central memory shard, ignoring Companion's increasingly anxious glances. Companion places a hand on the control panel, hesitates, then withdraws it, a silent battle playing out on their face. Hero reaches out, almost touching the shard through the viewport.",
+          "sfx": "The WHISPERS grow louder, more insistent, almost forming words but remaining unintelligible. A deep, resonating PULSE from the central shard. The vessel's engines strain faintly.",
+          "music": "The drone intensifies, joined by a rapid, low percussion that suggests a heartbeat. A sense of impending revelation and danger.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "There. That one. It pulses with such… intensity. It feels like a core. A truth. I have to reach it.",
-              "emotion": "Irresistible pull, heightened determination",
-              "direction": "Eyes fixed on the colossal memory shard, a tremor of excitement running through them, beginning to move forward with purpose."
+              "character": "Lyra",
+              "line": "There. The core. It pulses. That's it, Kael. That's the heart of it all.",
+              "emotion": "Tense anticipation, resolute",
+              "direction": "Points to a massive, throbbing memory shard ahead, her voice low with excitement and conviction."
             },
             {
-              "character": "Companion",
-              "line": "Hero, wait. The resonance… it’s too strong. It’s not just a memory. It’s a nexus. And something else feels drawn to it, too.",
-              "emotion": "Urgent caution, dawning suspicion",
-              "direction": "Grabbing Hero's arm, face etched with worry, glancing nervously into the deeper shadows of the cavern."
+              "character": "Kael",
+              "line": "It's too big. Too… dense. What if it's not yours? What if it's something else entirely?",
+              "emotion": "Escalating unease, pleading",
+              "direction": "His voice is tight, a tremor in his hand as he reaches for her arm, his eyes wide with genuine fear."
+            },
+            {
+              "character": "Lyra",
+              "line": "It calls to me. I feel it. The answer is there. We've come too far to turn back.",
+              "emotion": "Unwavering determination, a hint of desperation",
+              "direction": "Shakes off his hand gently, her gaze unwavering from the central shard, jaw set."
+            },
+            {
+              "character": "Kael",
+              "line": "This isn't just about answers, Lyra. This is about… survival.",
+              "emotion": "Desperate warning, internal conflict",
+              "direction": "His voice drops to a near whisper, his shoulders slumped, unable to meet her gaze."
             }
           ]
         }
@@ -105,130 +141,196 @@
       "scenes": [
         {
           "id": "S04",
-          "location": "Core chamber, near the central memory shard — the air thick with psychic energy.",
+          "location": "Adjacent to the central memory shard, within the vessel",
           "time": "night",
-          "mood": "Sudden terror, overwhelming dread, desperate struggle.",
-          "goal": "The Silence makes its presence known, initiating a psychological attack.",
-          "duration": 120,
-          "camera": "RAPID CUTS between the Hero and Companion, their faces contorted in pain. HANDHELD SHOT conveying disorientation as the environment distorts. EXTREME CLOSE UP on the Hero's eyes, wide with terror.",
-          "lighting": "The intense light of the shard flickers erratically, casting monstrous, shifting shadows. Brief, blinding flashes of white light punctuate the darkness, disorienting the viewer.",
-          "action": "As the Hero reaches for the shard, an invisible force slams into their minds. Visions of cosmic emptiness and forgotten screams assault them. The Hero stumbles back, clutching their head, a silent scream on their lips. The Companion, too, recoils, shielding their own mind, their face a mask of grim determination.",
-          "sfx": "A deafening, high-frequency SCREECH that seems to emanate from everywhere. Fragmented, distorted WHISPERS that twist into accusations. The Hero's gasping BREATHS. The sound of something CRACKING, like ice under immense pressure.",
-          "music": "Abrupt, jarring dissonance. A chaotic blend of low rumbling and high-pitched, piercing strings. Moments of absolute silence, then a sudden, overwhelming sonic assault.",
+          "mood": "Fearful, desperate, overwhelming grief",
+          "goal": "Introduce the direct threat of the Silence and its ability to exploit personal grief.",
+          "duration": 75,
+          "camera": "EXTREME CLOSE UP on Hero's hand reaching for the shard. SUDDEN JUMP CUT to Hero clutching their head, eyes wide with terror and pain. WIDE SHOT as the vessel is engulfed by an encroaching, inky blackness that emanates from the shard. Hero falls to their knees, writhing. Companion watches, paralyzed for a moment.",
+          "lighting": "The brilliant light of the shard is abruptly swallowed by the suffocating blackness of the Silence, leaving only dim, emergency red lights flickering within the vessel.",
+          "action": "As Hero's fingers brush the central memory shard, a wave of palpable cold and darkness washes over them. Hero collapses, gripped by a vivid, agonizing personal memory – a loved one's final breath, a moment of profound loss. The Silence manifests as tendrils of shadow reaching into the vessel. Companion recoils, then moves towards Hero, a flicker of panic in their eyes.",
+          "sfx": "A high-pitched, agonizing SCREAM from Hero, distorted and echoing. The CRACKLE of the Silence's energy. A deep, guttural ROAR that seems to come from within Hero's mind.",
+          "music": "Abrupt, jarring dissonant chords. A sudden drop in tempo, replaced by a suffocating, low frequency hum and the sound of frantic, shallow breathing.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "No… not a memory. A void. It’s… reaching inside. Cold. Empty.",
-              "emotion": "Sudden terror, overwhelming dread",
-              "direction": "Clutching their head, gasping for breath as a suffocating presence presses in, eyes wide with horror."
+              "character": "Lyra",
+              "line": "What is this… cold? It’s not just the void. It’s reaching… inside.",
+              "emotion": "Fearful, overwhelmed by grief",
+              "direction": "Clutches her chest, a gasp escaping her lips as an invisible pressure descends, tears welling in her eyes."
             },
             {
-              "character": "Companion",
-              "line": "The Silence. It found us. Fight it, Hero! Don’t let it anchor!",
-              "emotion": "Desperate struggle, fear",
-              "direction": "Stumbling back, shielding their own mind with visible effort, trying to move towards Hero but struggling against the psychic pressure."
+              "character": "Kael",
+              "line": "The Silence. It found us. It preys on what’s lost. Your grief, Lyra. It’s a beacon.",
+              "emotion": "Desperate alarm, urgent",
+              "direction": "Stumbles back, pulling at controls frantically, his face pale with horror as tendrils of shadow press against the vessel."
+            },
+            {
+              "character": "Lyra",
+              "line": "I… I see them. Faces. Whispers. Everything I forgot… everything I never knew…",
+              "emotion": "Overwhelming sorrow, confusion",
+              "direction": "Her body trembles, eyes unfocused as if seeing spectral figures, a low moan escaping her."
+            },
+            {
+              "character": "Kael",
+              "line": "Fight it, Lyra! Don't let it in! It feeds on despair!",
+              "emotion": "Panicked, desperate",
+              "direction": "Shouts, grabbing her shoulders, trying to shake her from her trance, his own fear palpable."
             }
           ]
         },
         {
           "id": "S05",
-          "location": "Hero's mindscape, projected onto the core chamber — a desolate, starless void where a single, familiar figure stands, back turned.",
+          "location": "Inside the vessel, surrounded by the Silence",
           "time": "night",
-          "mood": "Profound grief, seductive despair, near-surrender.",
-          "goal": "Hero confronts a deeply personal, grief-laden memory projected by the Silence, almost succumbing to its allure.",
-          "duration": 110,
-          "camera": "SLOW PUSH IN on the familiar figure. REVERSE SHOT to the Hero's face, tears streaming. WIDE SHOT of the Hero collapsing to their knees in the void, reaching out.",
-          "lighting": "The only light comes from the faint, ghostly outline of the familiar figure, casting long, mournful shadows. The overall environment is oppressive darkness, a void of memory.",
-          "action": "The Silence projects the Hero's deepest loss: a beloved figure, now a shimmering, unreachable phantom in a desolate void. The Hero cries out, reaching desperately, almost succumbing to the seductive promise of oblivion if they just 'let go.' Their body trembles, their resolve falters, almost accepting the Silence's embrace.",
-          "sfx": "A soft, mournful WHISPER of the beloved's name, almost imperceptible. The Hero's choked SOBS. The vast, empty SILENCE of the void, broken only by their anguish.",
-          "music": "A solo, heart-wrenching cello melody, slow and agonizing. A subtle, underlying drone that suggests the vastness of the void and the seductive pull of nothingness.",
+          "mood": "Desperate, inner turmoil, near-oblivion",
+          "goal": "Show the Hero's near-defeat and the Companion's internal struggle before intervention.",
+          "duration": 75,
+          "camera": "SLOW PUSH IN on Hero's face, contorted in grief, tears streaming. Images of the personal memory flash across the screen, blurry and distorted. Companion stands over Hero, hand hovering, a visible struggle on their face – torn between fear and a deeper obligation.",
+          "lighting": "The oppressive darkness of the Silence makes details hard to discern. Hero's face is dimly lit by the faint, internal glow of the memory shard, now pulsing erratically.",
+          "action": "Hero is lost in the memory, whispering pleas to the phantom of their lost loved one, almost embracing the oblivion offered by the Silence. Their grip on reality weakens. Companion clenches their fists, jaw tight, looking from the struggling Hero to the encroaching darkness. A moment of profound hesitation, their own fear warring with a desperate need to act.",
+          "sfx": "Hero's choked SOBS and gasps. The insidious WHISPERING of the Silence, promising peace, oblivion. The faint, rapid THUMP of Companion's heart.",
+          "music": "A mournful, solo cello plays a lament, slowly fading into a chilling, sustained high-pitched whine, signifying the approach of oblivion.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "You… you were always there. My guiding star. How could I forget? Just… let me stay here. In this quiet.",
-              "emotion": "Profound grief, seductive despair, near-surrender",
-              "direction": "Kneeling on the desolate mental landscape, reaching out a trembling hand towards the familiar, shadowy figure, tears streaming down their face, voice barely a whisper."
+              "character": "Lyra",
+              "line": "It’s too much. The weight… of all that wasn't. I can't…",
+              "emotion": "Near-oblivion, utter despair",
+              "direction": "Slumps to the floor, eyes glazed, her form flickering faintly as if dissolving, tears streaming silently."
+            },
+            {
+              "character": "Kael",
+              "line": "No! Not like this. Not you…",
+              "emotion": "Desperate, inner turmoil",
+              "direction": "Kneels beside her, a hand hovering, torn. He glances at a hidden compartment on his wrist, then back at Lyra, anguish on his face."
+            },
+            {
+              "character": "Lyra",
+              "line": "(Whispering) Empty… I’m empty…",
+              "emotion": "Fading consciousness, profound loss",
+              "direction": "Her voice barely audible, head lolling, breath shallow."
+            },
+            {
+              "character": "Kael",
+              "line": "Forgive me. This is the only way.",
+              "emotion": "Grim resolve, profound sadness",
+              "direction": "His jaw tightens. He makes a sudden, decisive movement towards his wrist, a hidden device activating."
             }
           ]
         },
         {
           "id": "S06",
-          "location": "Core chamber — the Hero is on the verge of succumbing, the Companion struggles nearby.",
+          "location": "Inside the vessel, still engulfed by the Silence",
           "time": "night",
-          "mood": "Desperate urgency, sudden shock, forced revelation.",
-          "goal": "Companion intervenes, using a hidden ability or knowledge to save the Hero, partially exposing their secret.",
-          "duration": 90,
-          "camera": "CLOSE UP on the Companion's strained face, then their hands as they activate a hidden device/power. SHAKY CAM as energy surges. QUICK CUT to the Hero, snapping out of the trance.",
-          "lighting": "A sudden, intense burst of energy-light from the Companion, momentarily pushing back the oppressive darkness. This light is sharp, almost painful, unlike the Nebula's gentle glow.",
-          "action": "Just as the Hero's eyes begin to glaze over, the Companion lets out a guttural cry. With a surge of raw, unfamiliar energy, they project a powerful psychic shield, or activate a hidden device that emits a disruptive pulse, tearing the Hero free from the Silence's grip. The effort visibly drains the Companion, their secret power briefly exposed before they quickly conceal it.",
-          "sfx": "A sharp, CRACKLING energy discharge. A pained GRUNT from the Companion. The Hero's sudden GASP for air. The retreating, echoing SCREECH of the Silence.",
-          "music": "A sudden, violent orchestral hit, followed by a frantic, driving string section. A brief, triumphant burst, then a return to tense, uncertain underscoring.",
+          "mood": "Tense, desperate action, dawning suspicion",
+          "goal": "Save the Hero, partially reveal Companion's secret, create tension between them.",
+          "duration": 75,
+          "camera": "RAPID CUTS between Hero's suffering face and Companion's decisive action. CLOSE UP on Companion's eyes, glowing faintly as they channel energy. WIDE SHOT as a wave of shimmering force erupts from Companion, pushing back the tendrils of Silence. Hero gasps, returning to consciousness, sees Companion's glowing eyes.",
+          "lighting": "A sudden, brilliant burst of energy from Companion momentarily illuminates the vessel, pushing back the darkness. The light quickly recedes, leaving a stark, uneasy dimness.",
+          "action": "With a guttural cry, Companion unleashes a surge of unknown energy. Their eyes glow with an inner light, and a protective barrier of shimmering force erupts, repelling the Silence's tendrils. The Silence recoils with a hiss, momentarily broken. Hero gasps, the personal memory fading, and looks up, seeing the raw power emanating from Companion, a look of shock and dawning suspicion on their face.",
+          "sfx": "A powerful, resonating THUM from Companion's energy burst. The Silence's pained HISS and retreat. Hero's sharp INHALE.",
+          "music": "A sudden, powerful orchestral swell, then an abrupt cut to a tense, low string motif, filled with suspicion.",
           "dialogue": [
             {
-              "character": "Companion",
-              "line": "Hero! No! This isn't real! It's a lie! Remember the quest! Remember *us*!",
-              "emotion": "Desperate urgency, pained exertion",
-              "direction": "With a guttural cry, Companion pushes past the psychic barrier, a faint, shimmering energy emanating from their hands as they forcibly pull Hero back from the brink, eyes squeezing shut in concentration."
+              "character": "Kael",
+              "line": "Hold on! Just… hold on!",
+              "emotion": "Tense, desperate action",
+              "direction": "A pulse of energy radiates from his hidden device, pushing back the encroaching shadows. He struggles, grunting with effort."
             },
             {
-              "character": "Hero",
-              "line": "What… what was that? How did you…?",
-              "emotion": "Shock, confusion, dazed",
-              "direction": "Stumbling, disoriented, staring at Companion with a mix of gratitude and sudden, unsettling suspicion."
+              "character": "Lyra",
+              "line": "(Gasping) Kael… what was that? Where…",
+              "emotion": "Disoriented, dawning suspicion",
+              "direction": "Her eyes snap open, body trembling, she pushes herself up, noticing the strange energy emanating from him."
+            },
+            {
+              "character": "Kael",
+              "line": "A shield. Temporary. Just focus on breathing. We're not safe yet.",
+              "emotion": "Evasive, urgent",
+              "direction": "He avoids her gaze, his face strained, wiping a bead of sweat from his brow, quickly concealing the device."
+            },
+            {
+              "character": "Lyra",
+              "line": "I saw… a flicker. Something familiar, in your hand. Not just a shield.",
+              "emotion": "Suspicious, regaining clarity",
+              "direction": "Her eyes narrow, observing him intently, the fog of despair lifting to reveal a sharp, analytical edge."
             }
           ]
         },
         {
           "id": "S07",
-          "location": "A secluded alcove within the Nebula, away from the core — dimly lit by distant memory shards.",
-          "time": "dawn",
-          "mood": "Wary relief, dawning suspicion, lingering fear.",
-          "goal": "Hero and Companion retreat, the Hero grappling with the near-death experience and the Companion's mysterious actions.",
-          "duration": 80,
-          "camera": "TWO SHOT of Hero and Companion, physically close but emotionally distant. SLOW PUSH IN on the Hero's questioning gaze. CUT TO Companion, avoiding eye contact.",
-          "lighting": "Faint, cool light from the distant Nebula, casting long, ambiguous shadows. The alcove is mostly dark, creating a sense of intimacy but also concealment.",
-          "action": "The Hero, still shaking, stares at the Companion, questions burning in their eyes. The Companion, pale and exhausted, avoids their gaze, tending to a hidden wound or simply trying to regain composure. The silence between them is heavy, filled with unspoken accusations and the weight of the Companion's exposed power.",
-          "sfx": "The Hero's ragged BREATHING. The soft, rhythmic HUM of the Nebula. The Companion's subtle SHIFTING, betraying discomfort. The distant, faint WHISPERS of the memory shards.",
-          "music": "Sparse, ambient tones with a feeling of unease. A low, questioning motif on a woodwind. The absence of dialogue emphasizes the subtext.",
+          "location": "Inside the vessel, the Silence temporarily repelled, but the atmosphere is thick with unspoken questions",
+          "time": "dusk",
+          "mood": "Suspicion, forced resolve, lingering fear",
+          "goal": "Explore the new tension between Hero and Companion, reinforce the danger.",
+          "duration": 75,
+          "camera": "MEDIUM SHOT of Hero slowly getting up, rubbing their temples, eyes fixed on Companion. Companion avoids eye contact, tending to a console, movements stiff. SLOW PUSH IN on Companion's back, conveying their evasiveness.",
+          "lighting": "The nebula's faint, shifting light filters in, creating long, uncertain shadows. A cool, blue-grey light dominates, reflecting the emotional distance.",
+          "action": "Hero slowly rises, still shaken, but their gaze is now sharp, questioning, fixed on Companion. 'What was that?' Hero demands, voice hoarse. Companion turns, a practiced, almost dismissive shrug. 'A contingency. Standard protocol for... extreme environmental hazards.' Their explanation is too quick, too smooth. Hero narrows their eyes, not convinced, but the lingering threat of the Silence still hangs heavy.",
+          "sfx": "The faint, distant WHISPERS of the nebula return, a reminder of the external threat. The soft HUM of the vessel's systems.",
+          "music": "A sparse, unsettling synth line, with a recurring, low piano note, emphasizing the tension and unspoken words.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "You saved me. But that… that light. That power. You never told me you possessed such a thing.",
-              "emotion": "Wary relief, dawning suspicion",
-              "direction": "Huddled in the alcove, voice low, eyes fixed on Companion with a newfound mistrust."
+              "character": "Lyra",
+              "line": "What was that device, Kael? And why have you kept it hidden?",
+              "emotion": "Demanding, suspicious",
+              "direction": "Stands rigid, arms crossed, her voice cold and steady, staring him down."
             },
             {
-              "character": "Companion",
-              "line": "There are… many things I haven't told you. For your protection. For the mission. It was… a last resort.",
-              "emotion": "Guarded, evasive, lingering fear",
-              "direction": "Averting their gaze, nursing a visibly strained arm, their usual composure fractured by the recent struggle."
+              "character": "Kael",
+              "line": "It’s… a relic. A last resort. I was instructed to use it only in dire circumstances.",
+              "emotion": "Evasive, defensive",
+              "direction": "Shifts uncomfortably, avoiding her gaze, his hands clasped tightly behind his back."
+            },
+            {
+              "character": "Lyra",
+              "line": "Instructed by whom? And why did it feel like… a part of the Silence itself?",
+              "emotion": "Accusatory, wary",
+              "direction": "Takes a step closer, her suspicion deepening, a flicker of fear in her eyes."
+            },
+            {
+              "character": "Kael",
+              "line": "It's complex, Lyra. There are things you don't understand. Can't understand. Not yet. The Silence is still out there. We need to focus.",
+              "emotion": "Forced resolve, agitated",
+              "direction": "Turns abruptly towards the viewport, gesturing vaguely at the receding shadows, trying to change the subject."
             }
           ]
         },
         {
           "id": "S08",
-          "location": "The secluded alcove — the Hero sits, contemplating the retrieved memory shard, which now glows faintly.",
-          "time": "dawn",
-          "mood": "Forced resolve, quiet determination, underlying desperation.",
-          "goal": "Despite the danger and new suspicions, the Hero resolves to continue, driven by the need for truth.",
-          "duration": 70,
-          "camera": "CLOSE UP on the Hero's hand clutching the retrieved shard. PULL BACK to reveal their determined expression. WIDE SHOT as the Hero stands, making a silent decision.",
-          "lighting": "The first faint rays of dawn begin to filter into the Nebula, painting the edges of the alcove with soft, hopeful light, contrasting with the Hero's grim resolve.",
-          "action": "The Hero holds the retrieved memory shard, its faint glow reflecting in their eyes. They look from the shard to the Companion, then back to the shard, a silent battle raging within. Despite the fear and the new questions about the Companion, the need for answers outweighs all else. They rise, a grim resolve hardening their features, ready to face whatever comes next.",
-          "sfx": "The soft, rhythmic PULSE of the memory shard. The Hero's deliberate, heavy FOOTFALLS as they stand. A faint, distant, almost imperceptible GROWL of the Silence, a reminder of its presence.",
-          "music": "A slow, building, determined melody, tinged with melancholy. A sense of inevitable progression, despite the odds. A subtle, underlying hum of quiet power.",
+          "location": "Inside the vessel, facing the central memory shard",
+          "time": "night",
+          "mood": "Grim determination, lingering fear, deep curiosity",
+          "goal": "Recommit the Hero to the mission, despite the personal cost and new suspicions.",
+          "duration": 75,
+          "camera": "CLOSE UP on Hero's determined jawline. PULL BACK to show Hero standing resolutely before the central memory shard, which now pulses with a steady, inviting glow. Companion stands further back, observing Hero with a mix of concern and resignation.",
+          "lighting": "The memory shard emits a steady, inviting, yet still mysterious glow, contrasting with the dark, reflective surfaces of the vessel. A single, focused beam of light on Hero.",
+          "action": "Hero takes a deep breath, pushing aside the fear and the questions about Companion. The desire for truth, for understanding the Silence, overrides all else. They reach out a steady hand towards the central memory shard, a grim resolve etched on their face. Companion watches, a silent acknowledgment of the dangerous path Hero is choosing.",
+          "sfx": "The steady, rhythmic PULSE of the memory shard. Hero's deep, deliberate BREATH.",
+          "music": "A slow, building orchestral piece, with a strong, low brass section, conveying determination mixed with a sense of impending doom.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "Lies. Secrets. They cling to this journey like cosmic dust. But that shard… it still calls. The truth, however painful, is what I seek. I cannot turn back.",
-              "emotion": "Forced resolve, quiet determination, underlying desperation",
-              "direction": "Holding the now faintly glowing memory shard, its light illuminating their resolute, yet weary, face. They rise slowly, eyes hardened."
+              "character": "Lyra",
+              "line": "You're right. The Silence. And that shard. My memories. They're still waiting.",
+              "emotion": "Grim determination, lingering suspicion",
+              "direction": "Her gaze hardens, turning from Kael to the central memory shard, a renewed resolve in her stance."
             },
             {
-              "character": "Companion",
-              "line": "Then we go. Together. Whatever it costs.",
-              "emotion": "Resignation, grim loyalty",
-              "direction": "Meeting Hero's gaze, a shadow of pain in their own eyes, but a firm set to their jaw."
+              "character": "Kael",
+              "line": "Lyra, after what just happened… perhaps we should reconsider. There might be other ways.",
+              "emotion": "Lingering fear, cautious",
+              "direction": "His voice is hesitant, still wary of the danger, glancing nervously at the shard."
+            },
+            {
+              "character": "Lyra",
+              "line": "No. I need to know. Whatever truth lies there, whatever cost. I will face it. And you will help me.",
+              "emotion": "Unwavering resolve, a hint of demand",
+              "direction": "Her voice is firm, a steely glint in her eyes as she looks back at Kael, challenging him."
+            },
+            {
+              "character": "Kael",
+              "line": "Of course. To the end.",
+              "emotion": "Resigned, burdened",
+              "direction": "He sighs, shoulders slumping slightly, then nods, a deep sadness etched on his face, but no defiance."
             }
           ]
         }
@@ -240,76 +342,124 @@
       "scenes": [
         {
           "id": "S09",
-          "location": "A makeshift projection space within the damaged ship — the retrieved memory shard floats, projecting a chilling, holographic vision.",
-          "time": "day",
-          "mood": "Shock, profound despair, devastating betrayal.",
-          "goal": "The retrieved memory shard projects the full, devastating truth: Silence's origin and its direct, personal connection to the Hero's past.",
-          "duration": 120,
-          "camera": "CLOSE UP on the holographic projection, revealing disturbing details. WIDE SHOT of the Hero collapsing, overwhelmed. PUSH IN on the Companion's face, a mix of pity and guilt.",
-          "lighting": "The only light comes from the stark, cold blue of the holographic projection, casting harsh, unflattering light on the Hero and Companion. The ship's interior is otherwise dark, emphasizing the vision.",
-          "action": "The retrieved memory shard activates, projecting a chilling holographic vision: the Silence's origin is revealed, not as an external force, but a consequence of a forgotten cosmic betrayal, a sacrifice made long ago. The vision then shifts, revealing a direct, deeply personal connection to the Hero's own forgotten past – a loved one's sacrifice, a decision they made that inadvertently birthed the Silence. The Hero gasps, collapsing, shattered by the devastating truth.",
-          "sfx": "Fragmented, distorted VOICES from the projection, building to a crescendo of despair. The Hero's choked CRY. The soft, mechanical HUM of the projection device. A distant, mournful WHALE-LIKE CRY, resonating with cosmic grief.",
-          "music": "A sudden, jarring dissonance, followed by a slow, descending, mournful string melody. A sense of utter desolation and betrayal. The music feels like a wound opening.",
+          "location": "Inside the vessel, the central memory shard activated",
+          "time": "night",
+          "mood": "Shock, devastating revelation, betrayal",
+          "goal": "Deliver the core revelation, connecting the Silence to the Hero personally.",
+          "duration": 75,
+          "camera": "WIDE SHOT as the memory shard projects a holographic, swirling vision within the vessel. Hero and Companion are bathed in its light. CLOSE UP on Hero's face, going from confusion to horror as the vision clarifies. QUICK CUTS to key moments in the vision: a familiar face, a betrayal, the birth of the Silence.",
+          "lighting": "The projected vision casts dynamic, shifting lights and shadows, primarily in cold blues and purples, within the vessel. The light is harsh, unforgiving, revealing.",
+          "action": "Hero activates the central memory shard. It flares, then projects a chilling, immersive vision: not just the cosmic origin of the Silence, but a specific, personal betrayal from Hero's forgotten past – a loved one's desperate act, a sacrifice, or a loss that directly fueled the Silence's creation or power. Hero stumbles back, clutching their chest, the weight of the forgotten truth crushing them. Companion stands frozen, watching Hero's agony.",
+          "sfx": "A cacophony of distorted VOICES and SCREAMS from the vision. The CRACKLE of ancient energy. Hero's choked GASP of realization.",
+          "music": "A sudden, sharp, discordant orchestral hit, followed by a chilling, high-pitched wail that slowly descends into a deep, mournful dirge.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "No… it can’t be. The Silence… it wasn't born from nothing. It was… made. From *us*. From *me*.",
-              "emotion": "Shock, profound despair, devastating betrayal",
-              "direction": "Stumbling back from the chilling holographic vision, hands flying to their mouth, eyes wide with a horror that shatters their spirit."
+              "character": "Lyra",
+              "line": "It's… me. All of it. The Silence… it's not just a threat. It's… an echo. Of my own forgotten purpose.",
+              "emotion": "Shock, devastating revelation",
+              "direction": "Her hand flies to her mouth, eyes wide with horror and dawning understanding as images flood her mind from the activated shard."
+            },
+            {
+              "character": "Kael",
+              "line": "Lyra… I…",
+              "emotion": "Guilt, profound sadness",
+              "direction": "He takes a hesitant step forward, his voice choked, unable to form words, his face a mask of sorrow."
+            },
+            {
+              "character": "Lyra",
+              "line": "You knew. All this time. You knew what I was. What I… unleashed. This longing… it was a trap. A betrayal.",
+              "emotion": "Betrayal, raw pain",
+              "direction": "Turns slowly to Kael, her eyes blazing with a mix of pain and fury, a single tear tracing a path down her cheek."
+            },
+            {
+              "character": "Kael",
+              "line": "I swore an oath. To protect you. To prevent this awakening. I tried, Lyra. I truly tried.",
+              "emotion": "Desperate plea, confession",
+              "direction": "His voice breaks, reaching out a trembling hand, but not daring to touch her, his gaze pleading."
             }
           ]
         },
         {
           "id": "S10",
-          "location": "Observing from the ship's viewport — the Whispering Nebula itself begins to unravel, consumed by a rapidly expanding void.",
-          "time": "day",
-          "mood": "Helpless terror, overwhelming destruction, profound loss.",
-          "goal": "The Silence, having been drawn by the powerful memory, consumes a significant cosmic landmark, demonstrating its terrifying power and the immediate consequences of their actions.",
-          "duration": 110,
-          "camera": "EXTREME WIDE SHOT of the Nebula being devoured, a black hole expanding. PUSH IN on the Hero and Companion, small and helpless against the cosmic horror. SLOW ZOOM OUT as the landmark disappears.",
-          "lighting": "The vibrant colors of the Nebula are rapidly extinguished by an encroaching, absolute darkness. The ship's interior lights seem dim and insignificant against the cosmic scale of destruction.",
-          "action": "As the truth is revealed, the Silence, drawn by the powerful memory, manifests on a terrifying scale. Outside the viewport, the beautiful Whispering Nebula begins to unravel, its iridescent dust and glowing shards consumed by a rapidly expanding void. The Hero and Companion watch, horrified and helpless, as a cosmic landmark, a place of profound memory, is erased from existence.",
-          "sfx": "A deep, guttural ROAR that shakes the ship. The sound of cosmic matter being CRUSHED and PULVERIZED. A terrifying, sucking VACUUM sound as the void expands. The Hero's and Companion's ragged BREATHING.",
-          "music": "A terrifying, low-frequency rumble that vibrates the very air. High-pitched, screeching strings that evoke cosmic horror. The music builds to an overwhelming, crushing crescendo, then fades into an echoing void.",
+          "location": "Outside the vessel, the Whispering Nebula",
+          "time": "night",
+          "mood": "Despair, cosmic devastation, overwhelming power",
+          "goal": "Show the immediate, devastating consequences of the revelation and the Silence's power.",
+          "duration": 75,
+          "camera": "EXTREME WIDE SHOT of the Whispering Nebula, now being actively consumed by an expanding, inky blackness. The central memory shard's light winks out. PULL BACK from the vessel, showing it tossed violently as the cosmic landmark is devoured.",
+          "lighting": "The vibrant colors of the nebula are rapidly extinguished by the encroaching blackness, leaving only pockets of dying light. The scene becomes stark, terrifyingly dark.",
+          "action": "The revelation acts as a beacon. The Silence, now fully aware, surges back with unimaginable force, consuming the Whispering Nebula itself. The nebula, a cosmic landmark, collapses into nothingness, leaving behind a void. The vessel is caught in the cosmic maelstrom, thrown violently. Hero is still reeling from the personal truth, unable to react, while Companion desperately tries to stabilize the ship.",
+          "sfx": "A deafening ROAR as the nebula is consumed. The SCREAM of tearing space. The violent SHUDDERING and GROANING of the vessel.",
+          "music": "A massive, overwhelming wall of sound – deep, guttural bass, shrieking strings, and chaotic percussion – conveying cosmic destruction.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "It’s consuming everything. The Nebula… it’s gone. Because of us. Because of what we unearthed.",
-              "emotion": "Helpless terror, overwhelming destruction, profound loss",
-              "direction": "Pressing against the viewport, watching in horrified silence as the vibrant Nebula is devoured, a choked sob escaping their lips."
+              "character": "Lyra",
+              "line": "No! This can't be! All those stories… devoured because of me?",
+              "emotion": "Despair, horror",
+              "direction": "Stumbles back, collapsing against the console, her gaze fixed on the viewport as the nebula outside begins to collapse."
             },
             {
-              "character": "Companion",
-              "line": "The truth always has consequences. And the Silence… it just got stronger.",
-              "emotion": "Grim acceptance, deep concern",
-              "direction": "Standing beside Hero, a hand resting gently on their shoulder, voice devoid of hope, eyes reflecting the encroaching void."
+              "character": "Kael",
+              "line": "The awakening… it's tearing the nebula apart. The Silence feeds on shattered truths.",
+              "emotion": "Utter defeat, profound sorrow",
+              "direction": "His voice is hollow, watching the devastation unfold with a vacant stare, knowing the full weight of the consequence."
+            },
+            {
+              "character": "Lyra",
+              "line": "My identity… it's a weapon. A blight. Everything I sought… it was a lie.",
+              "emotion": "Self-loathing, overwhelming grief",
+              "direction": "Her body wracked with sobs, she buries her face in her hands, the cosmic horror reflected in the vessel's dim light."
+            },
+            {
+              "character": "Kael",
+              "line": "The Silence grows stronger with every memory lost. We have to… we have to move.",
+              "emotion": "Urgent, but resigned",
+              "direction": "He forces himself to move, hands shaking as he tries to pilot the vessel away from the imploding nebula."
             }
           ]
         },
         {
           "id": "S11",
-          "location": "Stranded on a fragment of the now-dying Nebula — the ship is damaged, the surrounding space is a desolate, expanding void.",
-          "time": "dusk",
-          "mood": "Despair, isolation, fractured hope, desperate resolve.",
-          "goal": "Hero and Companion are stranded, their bond irrevocably altered by the revealed truths and the Companion's exposed secret.",
-          "duration": 100,
-          "camera": "WIDE SHOT of the two figures on the desolate fragment, surrounded by the encroaching void. CLOSE UP on their faces, showing the chasm between them. PULL BACK to a lonely, lingering shot.",
-          "lighting": "The last vestiges of dusk cast long, cold shadows across the desolate fragment. The light is dying, mirroring their despair, with the encroaching void as an absolute, consuming darkness.",
-          "action": "Stranded on a desolate fragment of the dying Nebula, their ship damaged, the Hero and Companion stand apart. The truth of the Hero's past and the Companion's exposed secret has created an unbridgeable chasm between them. They look at each other, not with shared resolve, but with a complex mix of despair, betrayal, and a desperate, isolated determination to survive. The Silence's shadow looms, a constant, suffocating presence.",
-          "sfx": "The eerie, profound SILENCE of the void, broken only by the faint, distant GRINDING of cosmic matter. The Hero's and Companion's heavy, isolated BREATHS. A faint, almost imperceptible WHISPER of the Silence, a promise of oblivion.",
-          "music": "A single, sustained, mournful note on a synth, slowly fading. A sense of profound emptiness and isolation. A quiet, unsettling drone that hints at the omnipresent threat of the Silence.",
+          "location": "Drifting in the cosmic void, where the Whispering Nebula once was",
+          "time": "dawn",
+          "mood": "Profound loss, despair, desperate resolve, altered bond",
+          "goal": "Conclude the episode with a sense of profound loss, altered relationships, and an uncertain path forward.",
+          "duration": 75,
+          "camera": "WIDE SHOT of the vessel, a tiny speck in the vast, empty void where the nebula once thrived. SLOW PUSH IN on Hero and Companion, standing apart, the silence between them heavy. CLOSE UP on Hero's eyes, filled with grief and a new, cold resolve.",
+          "lighting": "The first faint light of a distant star or cosmic dawn begins to filter into the void, casting long, stark shadows. A cold, pale light, offering no warmth.",
+          "action": "The vessel drifts silently in the newly formed void. Hero and Companion stand apart, the shared truth and the Companion's exposed secret creating an unbridgeable chasm. Hero looks out at the emptiness, the weight of their forgotten past and the Silence's power pressing down. A flicker of desperate resolve ignites in their eyes, a grim determination to fight back, but the cost is clear. Companion watches them, a silent, complex mix of guilt and shared burden on their face. Their bond is irrevocably altered, but a new, grim path has opened.",
+          "sfx": "The absolute SILENCE of the void, broken only by the faint, rhythmic HUM of the vessel's life support.",
+          "music": "A single, sustained, mournful note on a low brass instrument, slowly fading into a tense, unresolved chord, leaving a feeling of profound loss and an uncertain future.",
           "dialogue": [
             {
-              "character": "Hero",
-              "line": "Stranded. Betrayed by my own past. And you… you knew. All this time. What purpose was served by your silence?",
-              "emotion": "Despair, isolation, fractured hope",
-              "direction": "Sitting amidst the damaged ship's console, voice raw with grief and resentment, not looking at Companion."
+              "character": "Lyra",
+              "line": "It's gone. All of it. The Whispering Nebula. All those forgotten stories… swallowed.",
+              "emotion": "Profound loss, emptiness",
+              "direction": "Stares blankly at the void where the nebula once was, her voice flat, devoid of emotion."
             },
             {
-              "character": "Companion",
-              "line": "To protect you. To preserve the possibility of a future. A future that now hangs by a thread. But that thread… it still exists.",
-              "emotion": "Sorrow, desperate resolve, accepting consequence",
-              "direction": "Standing over Hero, their face a mask of sorrow and weary determination, offering a hand, not for comfort, but for shared purpose."
+              "character": "Kael",
+              "line": "I failed. I should have… prevented this. Forgive me, Lyra.",
+              "emotion": "Guilt-ridden, despair",
+              "direction": "Stands a respectful distance away, head bowed, unable to meet her gaze, his voice barely a whisper."
+            },
+            {
+              "character": "Lyra",
+              "line": "Forgiveness? I don't even know who I am. Or who you are, anymore. But the Silence… it will not claim everything.",
+              "emotion": "Desperate resolve, altered bond",
+              "direction": "Turns slowly, her eyes now burning with a cold, hard light, not at Kael, but through him, towards the endless void."
+            },
+            {
+              "character": "Kael",
+              "line": "What will we do?",
+              "emotion": "Uncertain, seeking direction",
+              "direction": "Looks up, a flicker of hope mixed with fear in his eyes, waiting for her command."
+            },
+            {
+              "character": "Lyra",
+              "line": "We fight. Not for what was, but for what still is. Every story still breathing. Every memory not yet silenced.",
+              "emotion": "Grim determination, fierce resolve",
+              "direction": "Her jaw is set, shoulders squared. She walks to the helm, her hands gripping the controls with a new, terrifying purpose."
             }
           ]
         }
@@ -334,8 +484,8 @@
       "voice": "en-GB-RyanNeural"
     }
   ],
-  "totalDuration": 1100,
+  "totalDuration": 825,
   "universeId": "memory-shards-saga",
   "language": "en",
-  "generatedAt": "2026-06-27T13:04:25.557Z"
+  "generatedAt": "2026-06-29T06:28:58.068Z"
 }

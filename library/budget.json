@@ -1,9 +1,31 @@
 {
-  "date": "2026-06-28",
-  "total": 0,
+  "date": "2026-06-29",
+  "total": 3,
   "limit": 20,
   "library": 0,
-  "agents": 0,
+  "agents": 3,
   "exhausted": false,
-  "log": []
+  "log": [
+    {
+      "time": "06:26:56",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 1,
+      "left": 19
+    },
+    {
+      "time": "06:27:46",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 2,
+      "left": 18
+    },
+    {
+      "time": "06:28:34",
+      "caller": "screenplay-agent",
+      "success": true,
+      "total": 3,
+      "left": 17
+    }
+  ]
 }
