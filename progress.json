@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-29T10:35:32.803Z",
-  "current": null,
+  "updatedAt": "2026-06-29T12:04:11.616Z",
+  "current": {
+    "type": "episode",
+    "episode": 12,
+    "id": null,
+    "startedAt": "2026-06-29T12:00:20.363Z",
+    "updatedAt": "2026-06-29T12:04:11.616Z",
+    "failReason": null
+  },
   "series": {
     "nextEpisode": 12,
     "totalEpisodes": 12,
@@ -323,6 +330,35 @@
         },
         "startedAt": "2026-06-27T13:02:59.871Z",
         "completedAt": "2026-06-29T10:35:32.803Z",
+        "failReason": null
+      },
+      "12": {
+        "status": "in_progress",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-06-29T12:02:26.978Z",
+            "title": "The Unraveling Thread",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-06-29T12:03:37.676Z",
+            "title": "The Unraveling Thread",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-06-29T12:04:11.616Z",
+            "title": "The Unraveling Thread",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-06-29T12:00:20.363Z",
+        "completedAt": null,
         "failReason": null
       }
     }
