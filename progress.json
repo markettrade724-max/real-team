@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-06-28T09:57:42.350Z",
+  "updatedAt": "2026-06-29T09:23:38.542Z",
   "current": {
     "type": "episode",
     "episode": 11,
     "id": null,
     "startedAt": "2026-06-27T13:02:59.871Z",
-    "updatedAt": "2026-06-28T09:57:42.350Z",
-    "failReason": "inventor-no-quota"
+    "updatedAt": "2026-06-29T09:23:38.542Z",
+    "failReason": null
   },
   "series": {
     "nextEpisode": 11,
@@ -304,24 +304,33 @@
         "failReason": null
       },
       "11": {
-        "status": "failed",
+        "status": "in_progress",
         "completedSteps": [
-          "backbone"
-        ],
-        "pendingSteps": [
+          "backbone",
           "scenes",
           "dialogue"
         ],
+        "pendingSteps": [],
         "data": {
           "backbone": {
             "savedAt": "2026-06-27T13:04:25.558Z",
+            "title": "Shattered Truth",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-06-29T09:22:54.270Z",
+            "title": "Shattered Truth",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-06-29T09:23:38.542Z",
             "title": "Shattered Truth",
             "summary": null
           }
         },
         "startedAt": "2026-06-27T13:02:59.871Z",
         "completedAt": null,
-        "failReason": "inventor-no-quota"
+        "failReason": null
       }
     }
   },
