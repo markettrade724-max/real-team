@@ -1,26 +1,32 @@
 {
-  "essence": "A journey through the ashes of dead stars to reclaim the self, before the Silence devours every story.",
-  "feeling": "A mysterious longing mixed with deep grief for something lost, alongside an irresistible curiosity and a faint breath of hope.",
-  "palette": "Deep cosmic blue dissolving into spectral purple and the black of the void, broken by fractured golden and silver flashes from shimmering memory shards, with faint earthy hints of a forgotten green world.",
-  "sound": "Whispers echoing through a vast cosmic emptiness, the chime of scattered memory shards, the faint mournful moan of dying stars, and the crushing, terrifying silence of the void.",
-  "motion": "Slow and contemplative, like the drift of cosmic dust and memory shards; tense and explosive in moments of conflict; fluid and ethereal in Lyra's movement; and a quiet, suffocating creep for the Silence itself.",
+  "essence": "A high-stakes survival universe. Every episode opens mid-crisis — a disaster, a chase, a collapsing structure, a hostile environment — forcing characters into immediate physical danger with no time to hesitate.",
+  "feeling": "Urgent, adrenaline-driven, relentless forward motion. Tension comes from physical risk and a ticking clock, not slow introspection.",
+  "motion": "Fast pacing — short scenes, quick decisions, physical action. Characters act while they speak, not after.",
   "rules": [
-    "Memories are physical entities with weight and shape — they can be touched and exchanged.",
-    "The Void remembers, even when individuals forget; it is the repository of every story never told.",
-    "Identity is not fixed; it is a fabric woven from gathered and understood fragments of memory."
+    "Open every episode within the first lines on an active, concrete physical threat — no slow setup.",
+    "Every scene contains one physical obstacle and one decision the character must make under pressure.",
+    "Stakes escalate scene to scene — never plateau, never resolve too easily.",
+    "End each episode on a cliffhanger tied to unresolved physical danger.",
+    "Dialogue is short and reactive — fragments under pressure, not monologues.",
+    "Backbone step: define the immediate physical threat and stakes in the very first beat.",
+    "Scenes step: one obstacle plus one decision per scene; mood must use the approved enum only.",
+    "Dialogue step: short, urgent lines — no exposition dumps."
   ],
   "forbidden": [
-    "Overt comedic elements or sarcastic humor that undercut the seriousness of the existential conflict.",
-    "Clear-cut lines of good and evil without philosophical depth — the conflict here is existential, not simplistically moral."
+    "Long contemplative internal monologue with no external action.",
+    "Resolving danger off-screen or too conveniently.",
+    "Slow, descriptive pacing in the first 10 seconds of narration."
   ],
-  "forArtAgent": "Make every memory shard look ancient and precious, glowing with an inner light against a cosmic backdrop, emphasizing beauty in decay and fragmentation.",
-  "forLevelAgent": "Design levels as vast, non-linear archives of cosmic history, encouraging exploration and the discovery of hidden emotional narratives.",
-  "forStoryAgent": "Ensure every encounter and every gathered memory directly contributes to Lyra's understanding of herself and of existence's higher purpose.",
-  "forGodotAgent": "Make interaction with memory shards feel tangible and impactful, conveying the weight of the forgotten past.",
-  "forMarketingAgent": "Memory",
-  "gameId": "memory-shards-saga",
-  "generatedAt": "2026-05-22T23:08:45.165Z",
-  "language": "en",
-  "translatedAt": "2026-06-23T00:00:00.000Z",
-  "translationNote": "Translated from original Arabic soul document to resolve language-drift bug — see _soul.js v1.1 and screenplay-agent v2.2."
+  "protagonist": {
+    "name": "Mara Voss",
+    "description": "A resourceful survivor running out of time and options, hardened by loss but still fighting to protect others.",
+    "arc": "From self-preservation alone to risking everything for someone else.",
+    "flaw": "Refuses to ask for help until it's almost too late."
+  },
+  "companion": {
+    "name": "Eli Cross",
+    "description": "Mara's ally with technical know-how, more cautious than her — often the voice of restraint.",
+    "arc": "From hesitation to decisive action.",
+    "flaw": "Hides how scared he really is, masking it as caution."
+  }
 }
