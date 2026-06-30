@@ -1,9 +1,9 @@
 {
-  "runId": "2026-06-30T0602",
-  "mode": "birth",
+  "runId": "2026-06-30T0824",
+  "mode": "production",
   "success": true,
-  "timestamp": "2026-06-30T06:06:48.316Z",
-  "totalDuration": "271.0s",
+  "timestamp": "2026-06-30T08:31:58.911Z",
+  "totalDuration": "457.1s",
   "budget": {
     "total": 22,
     "limit": 40,
@@ -35,49 +35,59 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 8,
-    "next": 12
+    "episodes": 9,
+    "next": 13
   },
   "progress": {
-    "nextEpisode": 12,
-    "totalEpisodes": 12,
+    "nextEpisode": 13,
+    "totalEpisodes": 13,
     "gamesDone": 1
   },
   "agents": {
-    "Idea": {
+    "voice": {
       "success": true,
-      "duration": "39.2s",
+      "duration": "17.8s",
       "error": null
     },
-    "Story": {
+    "scene": {
       "success": true,
-      "duration": "30.4s",
+      "duration": "4ms",
       "error": null
     },
-    "Soul": {
+    "visual": {
       "success": true,
-      "duration": "10.7s",
+      "duration": "26.1s",
       "error": null
     },
-    "Art": {
+    "subtitle": {
       "success": true,
-      "duration": "6.4s",
+      "duration": "18ms",
       "error": null
     },
-    "template": {
+    "music": {
       "success": true,
-      "duration": "1ms",
+      "duration": "7ms",
       "error": null
     },
-    "world": {
+    "edit": {
       "success": true,
-      "duration": "109.2s",
+      "duration": "378.4s",
+      "error": null
+    },
+    "trailer": {
+      "success": true,
+      "duration": "31.1s",
+      "error": null
+    },
+    "upload": {
+      "success": true,
+      "duration": "3.7s",
       "error": null
     }
   },
   "summary": {
-    "total": 6,
-    "passed": 6,
+    "total": 8,
+    "passed": 8,
     "failed": 0
   }
 }
