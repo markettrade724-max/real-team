@@ -1,32 +1,178 @@
-"soul": {
-  "essence": "A high-stakes survival universe. Every episode opens mid-crisis — a disaster, a chase, a collapsing structure, a hostile environment — forcing characters into immediate physical danger with no time to hesitate.",
-  "feeling": "Urgent, adrenaline-driven, relentless forward motion. Tension comes from physical risk and a ticking clock, not slow introspection.",
-  "motion": "Fast pacing — short scenes, quick decisions, physical action. Characters act while they speak, not after.",
-  "rules": [
-    "Open every episode within the first lines on an active, concrete physical threat — no slow setup.",
-    "Every scene contains one physical obstacle and one decision the character must make under pressure.",
-    "Stakes escalate scene to scene — never plateau, never resolve too easily.",
-    "End each episode on a cliffhanger tied to unresolved physical danger.",
-    "Dialogue is short and reactive — fragments under pressure, not monologues.",
-    "Backbone step: define the immediate physical threat and stakes in the very first beat.",
-    "Scenes step: one obstacle plus one decision per scene; mood must use the approved enum only.",
-    "Dialogue step: short, urgent lines — no exposition dumps."
-  ],
-  "forbidden": [
-    "Long contemplative internal monologue with no external action.",
-    "Resolving danger off-screen or too conveniently.",
-    "Slow, descriptive pacing in the first 10 seconds of narration."
-  ],
-  "protagonist": {
-    "name": "Mara Voss",
-    "description": "A resourceful survivor running out of time and options, hardened by loss but still fighting to protect others.",
-    "arc": "From self-preservation alone to risking everything for someone else.",
-    "flaw": "Refuses to ask for help until it's almost too late."
+{
+  "id": "crumble-core-escape",
+  "name": {
+    "en": "Crumble Core Escape",
+    "ar": "الهروب من اللب المنهار"
   },
-  "companion": {
-    "name": "Eli Cross",
-    "description": "Mara's ally with technical know-how, more cautious than her — often the voice of restraint.",
-    "arc": "From hesitation to decisive action.",
-    "flaw": "Hides how scared he really is, masking it as caution."
-  }
+  "born": "2026-06-30T06:06:48.310Z",
+  "soul": {
+    "essence": "A desperate, race-against-the-void fight to rekindle a universe succumbing to cosmic amnesia.",
+    "feeling": "An overwhelming, suffocating sense of urgent dread and cosmic insignificance amidst collapsing grandeur.",
+    "palette": "Deep, swirling cosmic blues and purples, shattered metallic grays and rusts of decaying megastructures, punctuated by harsh, volatile oranges and reds of imminent collapse, all pierced by the fragile, almost forgotten luminescence of dying stars and Lyra's ethereal hope.",
+    "sound": "The constant, cacophonous groan of shearing metal, distant, distorted whispers echoing through the void, the sharp, percussive impact of colossal debris, and the unnerving, ever-present hum of encroaching nothingness.",
+    "motion": "Chaotic, violent bursts of structural collapse and environmental hazards, requiring frantic, evasive player movements, all within the slow, inexorable, and ominous creep of entropic decay.",
+    "rules": [
+      "Entropy is an accelerating, irreversible force; every moment brings the universe closer to total collapse.",
+      "The universe's memory is fading; forgotten dreams are lost forever unless actively rekindled.",
+      "Hope is not a guarantee, but a choice made in the face of absolute cosmic indifference."
+    ],
+    "forbidden": [
+      "Any form of simplistic, 'happily ever after' resolution or unearned triumph.",
+      "Whimsical, lighthearted, or comedic elements that detract from the profound cosmic dread."
+    ],
+    "forArtAgent": "Render the colossal scale of ruin with a somber beauty, making decay feel both terrifying and majestically vast.",
+    "forLevelAgent": "Design levels as a relentless, crumbling gauntlet, where every path feels precarious and the environment itself is a constantly evolving threat.",
+    "forStoryAgent": "Weave a narrative centered on the profound, lonely burden of cosmic responsibility, where Lyra's internal struggle mirrors the universe's final gasp.",
+    "forGodotAgent": "Ensure the environment reacts dynamically and dangerously to the player's presence, emphasizing the fragility and volatility of the collapsing world.",
+    "forMarketingAgent": "UNRAVELING.",
+    "gameId": "crumble-core-escape",
+    "generatedAt": "2026-06-30T06:04:22.694Z"
+  },
+  "art": {
+    "gameId": "crumble-core-escape",
+    "mood": "steel",
+    "accent": "#94A3B8",
+    "accentRgb": "148,163,184",
+    "gradient": "linear-gradient(135deg,#0f1117,#1e2130)",
+    "emojis": [
+      "🏗️",
+      "💥",
+      "⏳",
+      "⚠️",
+      "🏃",
+      "⚙️",
+      "🪨",
+      "🏚️",
+      "⏱️",
+      "🌑"
+    ],
+    "generatedAt": "2026-06-30T06:04:44.137Z"
+  },
+  "worlds": [
+    {
+      "id": "world-1",
+      "dayNumber": 181,
+      "chapter": 1,
+      "chapterName": "Genesis",
+      "name": {
+        "ar": "الضريح الكوني",
+        "en": "The Astral Sepulchre"
+      },
+      "essence": "Cosmic Oblivion",
+      "physicsLaw": "Resonance Decay: The structural integrity and informational density of any given area are directly proportional to the collective memory bound to it. Forgotten places crumble faster, but anomalies in the memory-field can cause localized, chaotic accelerations of decay.",
+      "atmosphere": "Within the heart of the dying cosmos lies a titanic ossuary, where colossal, cyclopean bones of forgotten star-beings lie scattered amidst shattered constellations. Cosmic dust, shimmering with the ghosts of dead light, slowly subsumes everything, painting the vast, echoing chambers in shades of deep indigo and spectral violet. Gravity itself feels weary, pulling at decaying stone and the player's very soul as the void slowly, inevitably reclaims all. The air is thick with the metallic tang of ruin and the faint, melancholic hum of unremembered dreams.",
+      "secret": "The true nature of the 'void' isn't merely an absence or the end of all things, but a primordial, sentient entity attempting to *forget* its own painful, eternal existence. Every memory rekindled by the player is a shard of self-awareness it desperately tries to extinguish, making the act of universal salvation an agonizing torment for the very fabric of reality.",
+      "difficulty": "hard",
+      "backgroundColor": "#0A001A",
+      "fogColor": "#1F1A2B",
+      "lightColor": "#B5CEF0",
+      "enemies": [
+        {
+          "id": "enemy-1-1",
+          "name": {
+            "ar": "شظية الهمس",
+            "en": "Whisper-Fragment"
+          },
+          "concept": "Manifestations of insignificant, forgotten thoughts, barely clinging to existence. They are the dust of cosmic amnesia, attracted to any lingering 'memory' or 'cohesion'.",
+          "behavior": "Drifts aimlessly until a player is detected, then rushes forward in a chaotic, phase-shifting pattern. On hit, causes temporary disorientation and drains a small amount of the player's 'Memory Cohesion' resource. They can briefly disappear and reappear in a nearby location, making them difficult to track.",
+          "weakness": "Sustained 'Resonance' from the player's weapon momentarily stabilizes their fragmented form, making them vulnerable to critical hits. High area-of-effect attacks can disrupt their ephemeral structure.",
+          "lore": "Once fleeting thoughts, forgotten dreams, or mundane sensory data from sentient minds across the cosmos. Now, without the anchor of collective memory, they are malevolent echoes, drawn to any spark of sentience that might rekindle them, or consume it.",
+          "speed": 1.2,
+          "health": 80,
+          "damage": 10,
+          "count": 8
+        },
+        {
+          "id": "enemy-1-2",
+          "name": {
+            "ar": "ناسج النسيان",
+            "en": "Oblivion Weaver"
+          },
+          "concept": "A more coherent and dangerous entity born from the erasure of significant concepts or historical events. It actively accelerates local decay and consumes lingering memories, acting as a threshold guardian.",
+          "behavior": "Moves slowly but purposefully. It projects a pulsating aura that rapidly decays nearby environmental elements and slows the player's movement. It can launch projectiles of concentrated 'void energy' that, on impact, cause large areas of the environment to crumble violently. If not dealt with quickly, it will 'absorb' a portion of the map's memory, making that area permanently more unstable and difficult to traverse.",
+          "weakness": "Direct hits to its core (a glowing, flickering orb within its chest) interrupt its decay aura and stun it briefly. A charged 'Memory Echo Pulse' from the player's weapon can overload its absorption process, causing significant damage and potentially reversing some localized decay.",
+          "lore": "Formed from the cosmic despair of a forgotten civilization's last moments, or the void left by a concept (like 'hope' or 'truth') that vanished from collective consciousness. They are the universe's self-destructive immune system, attacking its own fading memories to hasten the inevitable.",
+          "speed": 0.6,
+          "health": 250,
+          "damage": 25,
+          "count": 3
+        }
+      ],
+      "weapon": {
+        "id": "weapon-1",
+        "name": {
+          "ar": "صولجان لومينا",
+          "en": "The Lumina Scepter"
+        },
+        "concept": "A relic crafted from a 'memory-infused Aether-Crystal', serving as a conduit for ambient cosmic memory and a desperate tool to fight the encroaching oblivion. It doesn't merely destroy; it attempts to reassert existence and coherence.",
+        "visualDesc": "A staff crafted from a single, smoothly polished shard of 'Aether-Crystal', emanating a soft, pulsating azure light. Runes of forgotten languages are faintly etched along its length, flickering in and out of visibility like dying embers. It feels cool to the touch and hums with a barely perceptible vibration, a whisper of ages past.",
+        "sound": "A low, resonant hum when held. Primary fire: a crisp, focused 'thrum' followed by a faint 'whoosh' as the beam is projected. Secondary fire (charged): a deep, reverberating 'gong' sound, followed by a ripple of ethereal energy that seems to bend space.",
+        "effect": "Primary Fire: Fires a concentrated beam of 'Cognitive Resonance'. Deals direct damage and temporarily 'stabilizes' the target, making them less erratic but more vulnerable to subsequent attacks for a brief period. Secondary Fire (Charged): Releases a 'Memory Echo Pulse'. Consumes a portion of the player's 'Memory Cohesion'. Can temporarily re-materialize fading platforms, activate dormant mechanisms, or reveal hidden pathways by infusing them with temporary memory, but only for a limited time before they decay again. Can also disrupt 'Oblivion Weaver's' absorption.",
+        "sideEffect": "Overuse of the 'Memory Echo Pulse' can attract 'Whisper-Fragments' to the player's location due to the sudden localized memory fluctuation. Prolonged primary fire can cause minor energy feedback, slightly blurring the player's vision for a moment.",
+        "mechanic": "The weapon has two modes: a primary fire for direct combat and a secondary, charged pulse for environmental interaction and strategic disruption. Effective use requires balancing direct offense with resource management ('Memory Cohesion') for critical utility in a decaying world.",
+        "damage": 30,
+        "fireRate": 1,
+        "bulletSpeed": 30,
+        "rarity": "legendary"
+      },
+      "vehicle": null,
+      "noise": {
+        "frequency": 0.03,
+        "amplitude": 1,
+        "octaves": 7,
+        "persistence": 0.6,
+        "lacunarity": 2,
+        "seed": 98765,
+        "type": "simplex",
+        "description": "Generates a vast, fractured cosmic terrain, depicting remnants of ancient, crumbling structures amidst the encroaching void. Higher octaves and persistence emphasize the chaotic, decaying nature of 'Resonance Decay'."
+      },
+      "shader": {
+        "type": "void",
+        "code": "shader_type spatial;\nrender_mode unshaded;\n\nuniform float time;\nuniform float decay_rate : hint_range(0.0, 1.0) = 0.7;\nuniform vec3 void_color = vec3(0.01, 0.0, 0.025);\nuniform vec3 memory_trace_color = vec3(0.05, 0.02, 0.1);\n\nvoid fragment() {\n  float energy_flicker = sin(time * 0.8 + UV.x * 10.0) * cos(time * 0.6 + UV.y * 10.0);\n  energy_flicker = clamp(energy_flicker * 0.2 + 0.1, 0.0, 0.2);\n  \n  float decay_noise = fract(sin(dot(UV + time * 0.1, vec2(12.9898, 78.233))) * 43758.5453);\n  decay_noise = smoothstep(0.4, 0.6, decay_noise);\n  \n  vec3 final_albedo = mix(memory_trace_color * energy_flicker, void_color, decay_rate * (1.0 - energy_flicker) + decay_noise * 0.3);\n  \n  ALBEDO = final_albedo;\n  EMISSION = final_albedo * 0.7;\n}",
+        "parameters": {
+          "decay_rate": 0.7,
+          "void_color": [
+            0.01,
+            0,
+            0.025
+          ],
+          "memory_trace_color": [
+            0.05,
+            0.02,
+            0.1
+          ]
+        },
+        "description": "A visual representation of 'Cosmic Oblivion' and 'Resonance Decay'. Deep, encroaching void punctuated by faint, flickering remnants of forgotten structures and fading cosmic dust, hinting at collapsed grandeur. Subtle chaotic distortion indicates localized decay and the slow consumption of memory."
+      },
+      "audio": {
+        "ambience": "Deep, oppressive cosmic hum, punctuated by distant, echoing structural groans and barely perceptible whispers of fading memories. A sense of immense, empty space slowly unraveling.",
+        "music_tempo": "slow",
+        "music_mood": "eerie | melancholic",
+        "instruments": [
+          "Deep Synths",
+          "Ethereal Pads",
+          "Distorted/Reverberant Strings",
+          "Low, Dissonant Brass",
+          "Metallic Percussion (like crumbling debris)",
+          "Subtle, Dissolving Choirs"
+        ],
+        "sfx": [
+          "Deep Structural Collapse (reverberant)",
+          "Crackling Energy Disintegration",
+          "Whispers of Forgotten Voices (distorted, spatialized)",
+          "Cosmic Wind (vast, unsettling)",
+          "Sharp, Fragmenting Impacts",
+          "Memory Rekindle 'Chime' (faint, resonant, hopeful but fleeting)"
+        ],
+        "description": "An overwhelming soundscape of entropic decay. Slow, droning elements convey cosmic vastness and dread, while sudden, violent SFX punctuate the quiet with structural collapse. Melancholic and eerie music underscores the desperation against fading memories, reflecting the player's frantic, evasive movements against inexorable decay."
+      },
+      "addedAt": "2026-06-30T06:06:48.309Z"
+    }
+  ],
+  "evolutions": 0,
+  "inventions": 0,
+  "revivals": 0,
+  "lastEvolved": null,
+  "lastInvented": null,
+  "lastRevived": null
 }

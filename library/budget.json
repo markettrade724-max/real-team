@@ -1,102 +1,94 @@
 {
-  "date": "2026-06-29",
-  "total": 13,
+  "date": "2026-06-30",
+  "total": 20,
   "limit": 20,
   "library": 0,
-  "agents": 13,
-  "exhausted": false,
+  "agents": 11,
+  "exhausted": true,
   "log": [
     {
-      "time": "06:26:56",
-      "caller": "screenplay-agent",
-      "success": true,
+      "time": "06:02:32",
+      "caller": "idea-agent",
+      "success": false,
       "total": 1,
-      "left": 19
+      "left": 19,
+      "errorType": "503"
     },
     {
-      "time": "06:27:46",
-      "caller": "screenplay-agent",
+      "time": "06:03:03",
+      "caller": "idea-agent",
       "success": true,
       "total": 2,
       "left": 18
     },
     {
-      "time": "06:28:34",
-      "caller": "screenplay-agent",
-      "success": true,
+      "time": "06:03:26",
+      "caller": "story-agent",
+      "success": false,
       "total": 3,
-      "left": 17
+      "left": 17,
+      "errorType": "network"
     },
     {
-      "time": "09:21:57",
-      "caller": "screenplay-agent",
-      "success": true,
+      "time": "06:03:56",
+      "caller": "story-agent",
+      "success": false,
       "total": 4,
-      "left": 16
+      "left": 16,
+      "errorType": "network"
     },
     {
-      "time": "09:22:32",
-      "caller": "screenplay-agent",
+      "time": "06:04:11",
+      "caller": "unknown",
       "success": true,
       "total": 5,
       "left": 15
     },
     {
-      "time": "09:23:09",
-      "caller": "screenplay-agent",
+      "time": "06:04:37",
+      "caller": "unknown",
       "success": true,
       "total": 6,
       "left": 14
     },
     {
-      "time": "12:00:35",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 7,
-      "left": 13
-    },
-    {
-      "time": "12:00:57",
-      "caller": "screenplay-agent",
+      "time": "06:04:59",
+      "caller": "world-birth-agent",
       "success": false,
-      "total": 8,
-      "left": 12,
+      "total": 7,
+      "left": 13,
       "errorType": "503"
     },
     {
-      "time": "12:01:29",
-      "caller": "screenplay-agent",
+      "time": "06:05:30",
+      "caller": "world-birth-agent",
       "success": true,
-      "total": 9,
-      "left": 11
+      "total": 8,
+      "left": 12
     },
     {
-      "time": "12:02:07",
-      "caller": "screenplay-agent",
+      "time": "06:05:41",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 9,
+      "left": 11,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "06:05:53",
+      "caller": "world-birth-agent",
       "success": true,
       "total": 10,
       "left": 10
     },
     {
-      "time": "12:02:41",
-      "caller": "screenplay-agent",
-      "success": true,
+      "time": "06:06:10",
+      "caller": "world-birth-agent",
+      "success": false,
       "total": 11,
-      "left": 9
-    },
-    {
-      "time": "12:03:16",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 12,
-      "left": 8
-    },
-    {
-      "time": "12:03:52",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 13,
-      "left": 7
+      "left": 9,
+      "errorType": "429_RPD"
     }
-  ]
+  ],
+  "exhaustedAt": "2026-06-30T06:06:10.927Z"
 }

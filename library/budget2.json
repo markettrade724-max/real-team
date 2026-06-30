@@ -1,9 +1,25 @@
 {
-  "date": "2026-06-29",
-  "total": 0,
+  "date": "2026-06-30",
+  "total": 2,
   "limit": 20,
   "library": 0,
-  "agents": 0,
+  "agents": 2,
   "exhausted": false,
-  "log": []
+  "log": [
+    {
+      "time": "06:06:10",
+      "caller": "world-birth-agent",
+      "success": false,
+      "total": 1,
+      "left": 19,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "06:06:26",
+      "caller": "world-birth-agent",
+      "success": true,
+      "total": 2,
+      "left": 18
+    }
+  ]
 }

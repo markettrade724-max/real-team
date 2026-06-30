@@ -1,31 +1,31 @@
 {
-  "runId": "2026-06-29T1200",
-  "mode": "screenplay",
+  "runId": "2026-06-30T0602",
+  "mode": "birth",
   "success": true,
-  "timestamp": "2026-06-29T12:04:11.623Z",
-  "totalDuration": "231.3s",
+  "timestamp": "2026-06-30T06:06:48.316Z",
+  "totalDuration": "271.0s",
   "budget": {
-    "total": 13,
+    "total": 22,
     "limit": 40,
-    "left": 27,
+    "left": 18,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 13,
+        "total": 20,
         "limit": 20,
-        "left": 7,
-        "exhausted": false,
+        "left": 0,
+        "exhausted": true,
         "library": 0,
-        "agents": 13
+        "agents": 11
       },
       {
         "key": "KEY_2",
-        "total": 0,
+        "total": 2,
         "limit": 20,
-        "left": 20,
+        "left": 18,
         "exhausted": false,
         "library": 0,
-        "agents": 0
+        "agents": 2
       }
     ]
   },
@@ -44,15 +44,40 @@
     "gamesDone": 1
   },
   "agents": {
-    "screenplay": {
+    "Idea": {
       "success": true,
-      "duration": "—",
+      "duration": "39.2s",
+      "error": null
+    },
+    "Story": {
+      "success": true,
+      "duration": "30.4s",
+      "error": null
+    },
+    "Soul": {
+      "success": true,
+      "duration": "10.7s",
+      "error": null
+    },
+    "Art": {
+      "success": true,
+      "duration": "6.4s",
+      "error": null
+    },
+    "template": {
+      "success": true,
+      "duration": "1ms",
+      "error": null
+    },
+    "world": {
+      "success": true,
+      "duration": "109.2s",
       "error": null
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 1,
+    "total": 6,
+    "passed": 6,
     "failed": 0
   }
 }

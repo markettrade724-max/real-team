@@ -1,21 +1,29 @@
 {
-  "id": "memory-shards-saga",
+  "id": "crumble-core-escape",
   "name": {
-    "en": "Memory Shards Saga",
-    "ar": "ملحمة شظايا الذاكرة"
+    "en": "Crumble Core Escape",
+    "ar": "الهروب من اللب المنهار"
   },
   "desc": {
-    "en": "Explore a shattered world where memories are physical objects. Collect, trade, and battle using fragments of forgotten pasts to restore your own lost identity.",
-    "ar": "استكشف عالمًا محطمًا حيث الذكريات أشياء مادية. اجمع، تاجر، وحارب باستخدام شظايا الماضي المنسي لاستعادة هويتك المفقودة."
+    "en": "Navigate a colossal, collapsing megastructure. Every second, new threats emerge – falling debris, environmental hazards, and desperate rivals. Race against time and decay to find a way out before the entire spire crumbles.",
+    "ar": "تنقل عبر هيكل عملاق ينهار باستمرار. في كل ثانية، تظهر تهديدات جديدة – حطام متساقط، مخاطر بيئية، ومنافسون يائسون. تسابق مع الزمن والتآكل لإيجاد مخرج قبل أن ينهار البرج بأكمله."
   },
   "type": "godot",
-  "genre": "adventure",
+  "genre": "action",
+  "tags": [
+    "survival",
+    "parkour",
+    "dystopian",
+    "sci-fi",
+    "thriller",
+    "time-pressure"
+  ],
   "category": "game",
-  "backgroundColor": "#2d2d3a",
-  "fogColor": "#4a4a5c",
-  "lightColor": "#b0c4de",
-  "physics": "gravity:5.0,memory_decay:0.1",
-  "atmosphere": "ethereal,melancholic,fragmented",
-  "generatedAt": "2026-05-22T23:08:04.329Z",
-  "generatedBy": "idea-agent-v2-learning"
+  "backgroundColor": "#1a1a2e",
+  "fogColor": "#16213e",
+  "lightColor": "#cceeff",
+  "physics": "gravity:9.8,bounce:0.3",
+  "atmosphere": "urgent,collapsing,hazardous",
+  "generatedAt": "2026-06-30T06:03:11.541Z",
+  "generatedBy": "idea-agent-v2.1"
 }
