@@ -1,31 +1,31 @@
 {
-  "runId": "2026-06-30T1032",
-  "mode": "production",
-  "success": false,
-  "timestamp": "2026-06-30T10:32:11.526Z",
-  "totalDuration": "11ms",
+  "runId": "2026-07-01T0615",
+  "mode": "screenplay",
+  "success": true,
+  "timestamp": "2026-07-01T06:19:08.197Z",
+  "totalDuration": "215.7s",
   "budget": {
-    "total": 22,
+    "total": 6,
     "limit": 40,
-    "left": 18,
+    "left": 34,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 20,
+        "total": 6,
         "limit": 20,
-        "left": 0,
-        "exhausted": true,
+        "left": 14,
+        "exhausted": false,
         "library": 0,
-        "agents": 11
+        "agents": 6
       },
       {
         "key": "KEY_2",
-        "total": 2,
+        "total": 0,
         "limit": 20,
-        "left": 18,
+        "left": 20,
         "exhausted": false,
         "library": 0,
-        "agents": 2
+        "agents": 0
       }
     ]
   },
@@ -43,10 +43,16 @@
     "totalEpisodes": 13,
     "gamesDone": 1
   },
-  "agents": {},
+  "agents": {
+    "screenplay": {
+      "success": true,
+      "duration": "—",
+      "error": null
+    }
+  },
   "summary": {
-    "total": 0,
-    "passed": 0,
+    "total": 1,
+    "passed": 1,
     "failed": 0
   }
 }

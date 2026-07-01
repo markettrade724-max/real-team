@@ -1,94 +1,52 @@
 {
-  "date": "2026-06-30",
-  "total": 20,
+  "date": "2026-07-01",
+  "total": 6,
   "limit": 20,
   "library": 0,
-  "agents": 11,
-  "exhausted": true,
+  "agents": 6,
+  "exhausted": false,
   "log": [
     {
-      "time": "06:02:32",
-      "caller": "idea-agent",
-      "success": false,
+      "time": "06:15:47",
+      "caller": "screenplay-agent",
+      "success": true,
       "total": 1,
-      "left": 19,
-      "errorType": "503"
+      "left": 19
     },
     {
-      "time": "06:03:03",
-      "caller": "idea-agent",
+      "time": "06:16:00",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 2,
       "left": 18
     },
     {
-      "time": "06:03:26",
-      "caller": "story-agent",
-      "success": false,
+      "time": "06:16:38",
+      "caller": "screenplay-agent",
+      "success": true,
       "total": 3,
-      "left": 17,
-      "errorType": "network"
+      "left": 17
     },
     {
-      "time": "06:03:56",
-      "caller": "story-agent",
-      "success": false,
+      "time": "06:17:16",
+      "caller": "screenplay-agent",
+      "success": true,
       "total": 4,
-      "left": 16,
-      "errorType": "network"
+      "left": 16
     },
     {
-      "time": "06:04:11",
-      "caller": "unknown",
+      "time": "06:18:06",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 5,
       "left": 15
     },
     {
-      "time": "06:04:37",
-      "caller": "unknown",
+      "time": "06:18:47",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 6,
       "left": 14
-    },
-    {
-      "time": "06:04:59",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 7,
-      "left": 13,
-      "errorType": "503"
-    },
-    {
-      "time": "06:05:30",
-      "caller": "world-birth-agent",
-      "success": true,
-      "total": 8,
-      "left": 12
-    },
-    {
-      "time": "06:05:41",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 9,
-      "left": 11,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "06:05:53",
-      "caller": "world-birth-agent",
-      "success": true,
-      "total": 10,
-      "left": 10
-    },
-    {
-      "time": "06:06:10",
-      "caller": "world-birth-agent",
-      "success": false,
-      "total": 11,
-      "left": 9,
-      "errorType": "429_RPD"
     }
-  ],
-  "exhaustedAt": "2026-06-30T06:06:10.927Z"
+  ]
 }
