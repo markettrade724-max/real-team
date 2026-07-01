@@ -1,9 +1,9 @@
 {
-  "runId": "2026-07-01T0844",
+  "runId": "2026-07-01T1042",
   "mode": "screenplay",
-  "success": true,
-  "timestamp": "2026-07-01T08:47:48.416Z",
-  "totalDuration": "206.6s",
+  "success": false,
+  "timestamp": "2026-07-01T10:42:19.039Z",
+  "totalDuration": "15ms",
   "budget": {
     "total": 12,
     "limit": 40,
@@ -45,14 +45,14 @@
   },
   "agents": {
     "screenplay": {
-      "success": true,
+      "success": false,
       "duration": "—",
-      "error": null
+      "error": "No screenplay produced"
     }
   },
   "summary": {
     "total": 1,
-    "passed": 1,
-    "failed": 0
+    "passed": 0,
+    "failed": 1
   }
 }
