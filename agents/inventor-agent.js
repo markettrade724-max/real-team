@@ -1,31 +1,12 @@
 /**
- * inventor-agent.js — v2.0
+ * inventor-agent.js — v2.1
  *
- * التغييرات عن v1.0:
- *  - مبدأ الاكتمال المطلق: تحقق من الحصة قبل البدء
- *  - build: maxOutputTokens 8192 → 32768
- *  - build: temperature 0.7 → 0.2
- *  - evaluate: يرى الكود كاملاً (بدل 500 حرف)
- *  - دورات متعددة: كل دورة تتحقق من الحصة قبلها
- *  - لا توازي — تسلسل كامل أو توقف
+ * Changes from v2.0:
+ *  - MAX_CYCLES_PER_DAY = 13 (was hardcoded 3 inside loop — now uses full Sunday budget ~39/40 calls)
+ *  - Comments translated from Arabic to English
  *
- * القواعد المطبقة:
- *  rule-056 : soulContext قبل كل عمل
- *  rule-087 : askGemini(prompt, temp, options, caller)
- *  rule-089 : كل الردود JSON
- *  rule-097 : لا تغيير للنموذج
- *  rule-098 : askGemini فقط
- *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
- *  rule-101 : maxOutputTokens لا maxTokens
- *  rule-102 : لا JSON.parse
- *  rule-115 : يعمل كل أحد — العبقرية أو لا شيء
- *  rule-123 : الاختراعات تُنشر على itch.io و Ko-fi
- *  rule-128 : caller logging
- *
- *  rule-150 : تسلسل كامل: explore → build → evaluate
- *  rule-151 : build maxOutputTokens = 32,768
- *  rule-152 : تحقق من الحصة قبل كل دورة
- *  rule-153 : مبدأ الاكتمال المطلق — لا أنصاف
+ * Sunday: inventor only — full 40 calls budget (gate fixed in orchestrator v10.7)
+ * rule-152 updated: MAX_CYCLES_PER_DAY = 13 (~39 calls, decided 2026-07-01)
  */
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
@@ -40,33 +21,31 @@ const __dirname   = dirname(fileURLToPath(import.meta.url));
 const RECIPES_DIR = join(__dirname, '..', 'godot-recipes');
 const MEMORY_PATH = join(__dirname, '..', 'code-memory.json');
 
-// تكلفة دورة اختراع واحدة كاملة
-const CYCLE_COST = 3; // explore + build + evaluate
+const CYCLE_COST        = 3;  // explore + build + evaluate
+const MAX_CYCLES_PER_DAY = 13; // ~39/40 calls — full Sunday budget (rule-152 updated 2026-07-01)
 
 const INVENTION_DOMAINS = [
-  { id: 'movement',  label: 'حركة وفيزياء'    },
-  { id: 'shaders',   label: 'بصريات وتأثيرات' },
-  { id: 'ai',        label: 'ذكاء الأعداء'     },
-  { id: 'audio',     label: 'صوت وموسيقى'      },
-  { id: 'ui',        label: 'واجهة وتجربة'     },
-  { id: 'world',     label: 'بناء العوالم'      },
-  { id: 'weapons',   label: 'أسلحة وقتال'      },
-  { id: 'time',      label: 'زمن وذاكرة'       },
+  { id: 'movement', label: 'Movement & Physics'   },
+  { id: 'shaders',  label: 'Visuals & Effects'    },
+  { id: 'ai',       label: 'Enemy Intelligence'   },
+  { id: 'audio',    label: 'Sound & Music'        },
+  { id: 'ui',       label: 'UI & Experience'      },
+  { id: 'world',    label: 'World Building'       },
+  { id: 'weapons',  label: 'Weapons & Combat'     },
+  { id: 'time',     label: 'Time & Memory'        },
 ];
 
 const GENIUS_CRITERIA = [
-  'الفكرة لا تشبه أي وصفة موجودة',
-  'الكود يعمل في Godot 4.6.2 بلا أخطاء',
-  'تضيف تجربة لا يستطيع اللاعب نسيانها',
-  'تتوافق مع روح الكون',
-  'لا تتجاوز 200 سطر في الوصفة الواحدة',
+  'The idea does not resemble any existing recipe',
+  'The code works in Godot 4.6.2 without errors',
+  'Creates an experience the player cannot forget',
+  'Aligns with the universe soul',
+  'Does not exceed 200 lines per recipe',
 ];
 
-// ══════════════════════════════════════════════════════════
-// الدالة الرئيسية
-// ══════════════════════════════════════════════════════════
+// ── Main ──────────────────────────────────────────────────
 export async function run(universe) {
-  logger.info('[INVENTOR] Awakening v2.0...');
+  logger.info('[INVENTOR] Awakening v2.1...');
 
   const soul     = soulContext('inventorAgent');
   const library  = readForAgent('inventor-agent', 12);
@@ -75,49 +54,44 @@ export async function run(universe) {
   const domains  = calculateHunger(existing);
 
   logger.info('[INVENTOR] State', {
-    existingRecipes: existing.length,
-    quotaLeft:       getRemainingQuota(),
-    hungriestDomain: domains[0].id,
+    existingRecipes:  existing.length,
+    quotaLeft:        getRemainingQuota(),
+    hungriestDomain:  domains[0].id,
+    maxCycles:        MAX_CYCLES_PER_DAY,
   });
 
   const results = [];
   let   cycleNumber = 1;
 
-  // ── دورات متعددة — كل دورة مستقلة كاملة ──────────────
   while (true) {
     const quota = getRemainingQuota();
 
-    // rule-153: تحقق من الحصة قبل كل دورة
+    // rule-153: check quota before each cycle
     if (quota < CYCLE_COST) {
       logger.warn(`[INVENTOR] Not enough quota for full cycle — need ${CYCLE_COST}, have ${quota} — stopping`);
       break;
     }
 
-    logger.info(`[INVENTOR] Starting cycle ${cycleNumber}`, { quotaLeft: quota });
+    // rule-152: respect MAX_CYCLES_PER_DAY
+    if (cycleNumber > MAX_CYCLES_PER_DAY) {
+      logger.info(`[INVENTOR] Max cycles reached (${MAX_CYCLES_PER_DAY}) — stopping`);
+      break;
+    }
+
+    logger.info(`[INVENTOR] Starting cycle ${cycleNumber}/${MAX_CYCLES_PER_DAY}`, { quotaLeft: quota });
 
     const result = await runCycle(soul, library, universe, domains, existing, memory, cycleNumber);
 
     if (result.invented) {
       results.push(result);
       logger.info(`[INVENTOR] Cycle ${cycleNumber} succeeded`, { name: result.name });
-
-      // أضف الوصفة الجديدة للقائمة حتى لا تتكرر في الدورة التالية
       existing.push({ name: result.name, domain: result.domain });
-
-      // أعد حساب الجوع بعد كل دورة ناجحة
       domains.splice(0, domains.length, ...calculateHunger(existing));
     } else {
       logger.warn(`[INVENTOR] Cycle ${cycleNumber} failed`, { reason: result.reason });
-      // فشل الدورة لا يوقف البرنامج — نحاول الدورة التالية إذا بقيت حصة
     }
 
     cycleNumber++;
-
-    // لا تتجاوز 3 دورات في اليوم الواحد (حفاظاً على حصة باقي الوكلاء)
-    if (cycleNumber > 3) {
-      logger.info('[INVENTOR] Max cycles reached (3) — stopping');
-      break;
-    }
   }
 
   logger.info('[INVENTOR] Done', {
@@ -133,17 +107,15 @@ export async function run(universe) {
   };
 }
 
-// ══════════════════════════════════════════════════════════
-// دورة اختراع واحدة كاملة
-// ══════════════════════════════════════════════════════════
+// ── Single invention cycle ─────────────────────────────────
 async function runCycle(soul, library, universe, domains, existing, memory, cycleNumber) {
-  // ── المرحلة 1: الاستكشاف ──────────────────────────────
+  // Phase 1/3: Explore
   logger.info(`[INVENTOR] Cycle ${cycleNumber} — Phase 1/3: Explore`);
   let idea;
   try {
     idea = await explore(soul, library, universe, domains, existing, memory);
   } catch (err) {
-    logger.error(`[INVENTOR] Explore failed`, { error: err.message });
+    logger.error('[INVENTOR] Explore failed', { error: err.message });
     return { invented: false, reason: 'explore-failed' };
   }
 
@@ -153,8 +125,7 @@ async function runCycle(soul, library, universe, domains, existing, memory, cycl
   }
   logger.info(`[INVENTOR] Idea: ${idea.label}`, { domain: idea.domain });
 
-  // ── المرحلة 2: البناء ─────────────────────────────────
-  // rule-153: تحقق من الحصة قبل المرحلة الثانية
+  // Phase 2/3: Build
   if (getRemainingQuota() < 2) {
     logger.warn('[INVENTOR] Not enough quota for build+evaluate — aborting cycle');
     return { invented: false, reason: 'quota-insufficient-after-explore' };
@@ -165,7 +136,7 @@ async function runCycle(soul, library, universe, domains, existing, memory, cycl
   try {
     invention = await build(soul, library, idea, universe);
   } catch (err) {
-    logger.error(`[INVENTOR] Build failed`, { error: err.message });
+    logger.error('[INVENTOR] Build failed', { error: err.message });
     recordFailure(idea, 'build-failed', [], memory);
     return { invented: false, reason: 'build-failed' };
   }
@@ -177,8 +148,7 @@ async function runCycle(soul, library, universe, domains, existing, memory, cycl
   }
   logger.info(`[INVENTOR] Built: ${invention.filename}`, { codeLength: invention.code.length });
 
-  // ── المرحلة 3: تقييم العبقرية ─────────────────────────
-  // rule-153: تحقق من الحصة قبل التقييم
+  // Phase 3/3: Evaluate
   if (getRemainingQuota() < 1) {
     logger.warn('[INVENTOR] Not enough quota for evaluate — aborting cycle');
     return { invented: false, reason: 'quota-insufficient-before-evaluate' };
@@ -189,7 +159,7 @@ async function runCycle(soul, library, universe, domains, existing, memory, cycl
   try {
     verdict = await evaluate(soul, library, idea, invention, existing);
   } catch (err) {
-    logger.error(`[INVENTOR] Evaluate failed`, { error: err.message });
+    logger.error('[INVENTOR] Evaluate failed', { error: err.message });
     recordFailure(idea, 'evaluate-failed', [], memory);
     return { invented: false, reason: 'evaluate-failed' };
   }
@@ -200,7 +170,7 @@ async function runCycle(soul, library, universe, domains, existing, memory, cycl
     return { invented: false, reason: 'not-genius', criteria: verdict?.failedCriteria };
   }
 
-  // ── النشر ─────────────────────────────────────────────
+  // Publish
   logger.info(`[INVENTOR] Publishing: ${idea.label}`);
   publish(idea, invention, verdict, memory);
 
@@ -216,9 +186,7 @@ async function runCycle(soul, library, universe, domains, existing, memory, cycl
   };
 }
 
-// ══════════════════════════════════════════════════════════
-// المرحلة 1 — الاستكشاف
-// ══════════════════════════════════════════════════════════
+// ── Phase 1: Explore ──────────────────────────────────────
 async function explore(soul, library, universe, domains, existing, memory) {
   const hungriestDomain = domains[0];
   const existingNames   = existing.map(r => r.name).join(', ') || 'none yet';
@@ -231,31 +199,31 @@ async function explore(soul, library, universe, domains, existing, memory) {
   return await askGemini(`${soul}
 ${library}
 
-أنت المخترع — عقل يبحث عن الجوهر الخفي في Godot 4.6.2.
+You are the Inventor — a mind searching for hidden essence in Godot 4.6.2.
 
-حالة المكتبة:
-- الوصفات الموجودة: ${existingNames}
-- المنطقة الأكثر جوعاً: ${hungriestDomain.label}
-- الأخطاء الأخيرة: ${recentFailures}
-- روح الكون: "${universe?.soul?.essence || 'unknown cosmos'}"
+Library state:
+- Existing recipes: ${existingNames}
+- Hungriest domain: ${hungriestDomain.label}
+- Recent failures: ${recentFailures}
+- Universe soul: "${universe?.soul?.essence || 'unknown cosmos'}"
 
-مهمتك: اقترح فكرة اختراع واحدة فقط في منطقة "${hungriestDomain.label}".
+Task: propose ONE invention idea in the domain "${hungriestDomain.label}".
 
-القواعد الذهبية:
-- لا تقترح ما هو موجود بالفعل
-- الفكرة تجعل اللاعب يشعر بشيء لم يشعر به من قبل
-- تستغل قدرة حقيقية في Godot 4.6.2
-- تتناغم مع روح الكون
+Golden rules:
+- Do not propose what already exists
+- The idea makes the player feel something they have never felt before
+- It exploits a real Godot 4.6.2 capability
+- It harmonizes with the universe soul
 
-أنتج JSON فقط — بدون أي نص خارج JSON:
+Return JSON only — no text outside JSON:
 {
-  "name":               "اسم الاختراع بالإنجليزية (slug)",
-  "label":              "الاسم الشاعري",
+  "name":               "invention name in English (slug)",
+  "label":              "poetic name",
   "domain":             "${hungriestDomain.id}",
-  "godotFeature":       "ميزة Godot 4.6.2 المستخدمة",
-  "poeticVision":       "وصف شاعري لما سيشعر به اللاعب",
-  "technicalApproach":  "الأسلوب التقني بإيجاز",
-  "uniqueness":         "لماذا لا يشبه أي شيء موجود"
+  "godotFeature":       "Godot 4.6.2 feature used",
+  "poeticVision":       "poetic description of what the player will feel",
+  "technicalApproach":  "technical approach briefly",
+  "uniqueness":         "why it resembles nothing existing"
 }`,
     0.95,
     { maxOutputTokens: 4096, topP: 0.98 },
@@ -263,40 +231,38 @@ ${library}
   );
 }
 
-// ══════════════════════════════════════════════════════════
-// المرحلة 2 — البناء
-// ══════════════════════════════════════════════════════════
+// ── Phase 2: Build ────────────────────────────────────────
 async function build(soul, library, idea, universe) {
   return await askGemini(`${soul}
 ${library}
 
-أنت المخترع — الآن تبني بلا تنازل.
+You are the Inventor — now you build without compromise.
 
-الاختراع: "${idea.label}"
-الرؤية: ${idea.poeticVision}
-الأسلوب التقني: ${idea.technicalApproach}
-ميزة Godot المستخدمة: ${idea.godotFeature}
-روح الكون: ${universe?.soul?.essence || ''}
+Invention: "${idea.label}"
+Vision: ${idea.poeticVision}
+Technical approach: ${idea.technicalApproach}
+Godot feature: ${idea.godotFeature}
+Universe soul: ${universe?.soul?.essence || ''}
 
-اكتب الوصفة الكاملة — لا اختصار — لا حذف.
+Write the complete recipe — no shortcutting — no omissions.
 
-القواعد الصارمة:
-- Godot 4.6.2 فقط — لا شيء من Godot 3.x
-- tabs للـ indentation — ليس spaces
-- كل دالة لها هدف واحد واضح
-- لا كود ميت أو تعليقات زائدة
-- الوصفة تعمل بمفردها (standalone)
-- أقل من 200 سطر
-- إذا shader: اكتب GLSL صحيح لـ Godot 4.6.2
+Strict rules:
+- Godot 4.6.2 only — nothing from Godot 3.x
+- Tabs for indentation — not spaces
+- Each function has one clear purpose
+- No dead code or redundant comments
+- Recipe works standalone
+- Under 200 lines
+- If shader: write correct GLSL for Godot 4.6.2
 
-أنتج JSON فقط — بدون أي نص خارج JSON:
+Return JSON only — no text outside JSON:
 {
-  "filename":     "${idea.name}.gd أو ${idea.name}.gdshader",
-  "language":     "gdscript أو glsl",
-  "code":         "الكود الكامل هنا — لا اختصار",
-  "usage":        "كيف يستخدم code-agent هذه الوصفة",
+  "filename":     "${idea.name}.gd or ${idea.name}.gdshader",
+  "language":     "gdscript or glsl",
+  "code":         "complete code here — no shortcutting",
+  "usage":        "how code-agent uses this recipe",
   "parameters":   [{ "name": "...", "type": "...", "default": "...", "description": "..." }],
-  "dependencies": ["ما تحتاجه من nodes أو ملفات أخرى"]
+  "dependencies": ["required nodes or other files"]
 }`,
     0.2,
     { maxOutputTokens: 32768, topP: 0.85 },
@@ -304,37 +270,35 @@ ${library}
   );
 }
 
-// ══════════════════════════════════════════════════════════
-// المرحلة 3 — تقييم العبقرية
-// ══════════════════════════════════════════════════════════
+// ── Phase 3: Evaluate ─────────────────────────────────────
 async function evaluate(soul, library, idea, invention, existing) {
   const existingNames = existing.slice(0, 5).map(r => r.name).join(', ');
 
   return await askGemini(`${soul}
 ${library}
 
-أنت القاضي الأعلى للعبقرية في هذا الكون.
-كن قاسياً — العبقرية نادرة.
+You are the Supreme Judge of Genius in this universe.
+Be harsh — genius is rare.
 
-الاختراع المُقدَّم:
-الاسم: ${idea.label}
-الرؤية: ${idea.poeticVision}
-الكود الكامل:
+Submitted invention:
+Name: ${idea.label}
+Vision: ${idea.poeticVision}
+Complete code:
 ${invention.code}
 
-الوصفات الموجودة: ${existingNames}
+Existing recipes: ${existingNames}
 
-قيّم بناءً على المعايير الذهبية:
+Evaluate against the golden criteria:
 ${GENIUS_CRITERIA.map((c, i) => `${i + 1}. ${c}`).join('\n')}
 
-أنتج JSON فقط — بدون أي نص خارج JSON:
+Return JSON only — no text outside JSON:
 {
   "isGenius":       true,
   "score":          0,
   "passedCriteria": ["..."],
   "failedCriteria": ["..."],
-  "impact":         "كيف سيغير هذا تجربة اللاعب",
-  "verdict":        "حكم شاعري في جملة واحدة"
+  "impact":         "how this will change the player experience",
+  "verdict":        "poetic verdict in one sentence"
 }`,
     0.3,
     { maxOutputTokens: 4096 },
@@ -342,17 +306,13 @@ ${GENIUS_CRITERIA.map((c, i) => `${i + 1}. ${c}`).join('\n')}
   );
 }
 
-// ══════════════════════════════════════════════════════════
-// النشر
-// ══════════════════════════════════════════════════════════
+// ── Publish ───────────────────────────────────────────────
 function publish(idea, invention, verdict, memory) {
   const domainDir = join(RECIPES_DIR, idea.domain);
   if (!existsSync(domainDir)) mkdirSync(domainDir, { recursive: true });
 
-  // كتابة الكود
   writeFileSync(join(domainDir, invention.filename), invention.code, 'utf8');
 
-  // كتابة الـ meta
   const meta = {
     name:         idea.name,
     label:        idea.label,
@@ -377,16 +337,14 @@ function publish(idea, invention, verdict, memory) {
   recordInvention(idea, invention, verdict, memory);
 
   logger.info('[OK] Invention published', {
-    name:    idea.name,
-    domain:  idea.domain,
-    file:    invention.filename,
-    score:   verdict.score,
+    name:   idea.name,
+    domain: idea.domain,
+    file:   invention.filename,
+    score:  verdict.score,
   });
 }
 
-// ══════════════════════════════════════════════════════════
-// دوال مساعدة
-// ══════════════════════════════════════════════════════════
+// ── Helpers ───────────────────────────────────────────────
 function loadExistingRecipes() {
   if (!existsSync(RECIPES_DIR)) { mkdirSync(RECIPES_DIR, { recursive: true }); return []; }
   const recipes = [];
