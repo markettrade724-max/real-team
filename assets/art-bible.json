@@ -1,1 +1,62 @@
-
+{
+  "version": "1.0",
+  "artStyle": "flat 2D cartoon illustration, bold black outlines, vibrant saturated colors, dynamic action poses, cosmic sci-fi aesthetic, memory shard universe visual language",
+  "characters": {
+    "lyra": {
+      "label": "Lyra — Protagonist",
+      "visualDescription": "young adult woman, athletic build, short silver-white hair with violet streaks, worn tactical jacket covered in glowing memory shard fragments, determined expression with haunted eyes, cosmic void background",
+      "seed": 481516,
+      "poses": {
+        "idle":         { "prompt": "standing alert, scanning dark cosmic ruins, hand near memory shard, ready to run" },
+        "running":      { "prompt": "sprinting through void corridor, motion lines, urgent expression, jacket trailing" },
+        "combat":       { "prompt": "fighting stance, memory shard weapon raised, intense focus, eyes glowing faintly" },
+        "talk_open":    { "prompt": "mouth open mid-shout, urgent desperate expression, pointing at something off-screen" },
+        "talk_closed":  { "prompt": "mouth closed, tense listening expression, eyes wide, breath held" },
+        "injured":      { "prompt": "staggering, hand on wound, grimacing but still moving forward, determined" }
+      }
+    },
+    "kael": {
+      "label": "Kael — Echo Companion",
+      "visualDescription": "translucent glowing silhouette, barely visible humanoid form made of fading memory light, no solid features, emanates from memory shards, electric blue-white glow",
+      "seed": 162342,
+      "poses": {
+        "present": { "prompt": "faint glowing echo silhouette floating near protagonist, ethereal, barely there" },
+        "fading":  { "prompt": "barely visible translucent form, dispersing into light fragments, disappearing" }
+      }
+    }
+  },
+  "locations": {
+    "cosmic_ruins": {
+      "label": "Cosmic Memory Ruins",
+      "visualDescription": "vast dark void with floating crystalline memory shards, crumbling stellar architecture, purple and gold dramatic light",
+      "seed": 271828,
+      "prompt": "cosmic ruins, floating memory crystal shards, deep void space, purple nebula, broken stellar structures, dramatic lighting, flat 2D illustration style"
+    },
+    "silence_zone": {
+      "label": "Territory of the Silence",
+      "visualDescription": "absolute darkness with tendrils of void energy, crushing weight of emptiness, rare faint memory sparks being extinguished",
+      "seed": 314159,
+      "prompt": "oppressive void darkness, tendrils of silence energy, memory sparks dying out, deep cosmic black with cold blue accents, flat 2D illustration"
+    },
+    "memory_archive": {
+      "label": "Memory Archive",
+      "visualDescription": "vast library of crystallized memories suspended in space, amber and gold light, labyrinthine corridors of floating memory fragments",
+      "seed": 161803,
+      "prompt": "cosmic memory archive, crystallized memory orbs, amber gold light, vast stellar library, floating knowledge fragments, flat 2D illustration"
+    }
+  },
+  "enemies": {
+    "echo_shard": {
+      "label": "Echo Shard",
+      "visualDescription": "small crystalline entity, fragile glowing blue-white form, sharp fractured edges, pulsing with stolen memory light",
+      "seed": 577215,
+      "prompt": "small crystal enemy entity, blue white glowing, sharp fractured form, cosmic void background, flat 2D cartoon style"
+    },
+    "loom_of_oblivion": {
+      "label": "Loom of Oblivion",
+      "visualDescription": "large dark weaving entity, tendrils of void threads, absorbing nearby light, cold dark purple-black with void energy",
+      "seed": 923846,
+      "prompt": "large void entity, dark purple black, tendrils of oblivion threads, absorbing light, cosmic horror scale, flat 2D illustration"
+    }
+  }
+}
