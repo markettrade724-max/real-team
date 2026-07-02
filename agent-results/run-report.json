@@ -1,22 +1,22 @@
 {
-  "runId": "2026-07-01T1042",
-  "mode": "screenplay",
+  "runId": "2026-07-02T0547",
+  "mode": "game-phase1",
   "success": false,
-  "timestamp": "2026-07-01T10:42:19.039Z",
-  "totalDuration": "15ms",
+  "timestamp": "2026-07-02T05:47:11.824Z",
+  "totalDuration": "29ms",
   "budget": {
-    "total": 12,
+    "total": 0,
     "limit": 40,
-    "left": 28,
+    "left": 40,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 12,
+        "total": 0,
         "limit": 20,
-        "left": 8,
+        "left": 20,
         "exhausted": false,
         "library": 0,
-        "agents": 12
+        "agents": 0
       },
       {
         "key": "KEY_2",
@@ -44,10 +44,10 @@
     "gamesDone": 1
   },
   "agents": {
-    "screenplay": {
+    "code": {
       "success": false,
       "duration": "—",
-      "error": "No screenplay produced"
+      "error": "m.run is not a function"
     }
   },
   "summary": {
