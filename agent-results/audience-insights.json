@@ -1,28 +1,40 @@
 {
-  "insights": {
-    "topEmotion": null,
-    "avgRetention": null,
-    "bestPostTime": null,
-    "topPerformingEp": null,
-    "audienceGrowth": null,
-    "engagementRate": null,
-    "avgViews": 0,
-    "whatWorked": [],
-    "whatFailed": []
+  "version": "1.1",
+  "genre": "action-survival-cosmic",
+  "lastUpdated": "2026-07-01",
+  "targetAudience": {
+    "platforms": ["youtube", "tiktok", "facebook", "reddit"],
+    "ageRange": "18-34",
+    "primaryLanguage": "en",
+    "secondaryLanguage": "fr"
   },
   "recommendations": {
-    "forStoryAgent": [],
-    "forContentAgent": [
-      "مقاطع 15-30 ثانية تحقق أفضل إكمال على تيك توك",
-      "الـ hook يجب أن يكون في أول 3 ثوانٍ",
-      "أفضل يوم نشر: الخميس"
-    ],
-    "forSeriesAgent": [],
-    "forUploadAgent": {
-      "bestDay": "الخميس",
-      "bestHour": 20,
-      "timezone": "Asia/Riyadh"
-    }
+    "forStoryAgent": [
+      "Open every episode within the first 10 seconds on Lyra in active physical danger — no establishing shots, no calm preamble.",
+      "The Silence's entities must appear in every episode as real physical hunters with speed and damage — not metaphors.",
+      "Every scene: one survival obstacle + one memory shard at stake. Losing the shard has a visible cost on Lyra.",
+      "Escalate stakes scene to scene — the Silence gets closer or Lyra loses something irreplaceable.",
+      "End each episode on a cliffhanger tied to either a lost memory or the Silence revealing it knows Lyra's next destination.",
+      "Dialogue stays short and reactive — fragments under pressure. Kael's voice from the shards is Lyra's only real companion.",
+      "The Silence is not evil — it believes it is protecting the memories it devours. This paradox should surface once per episode."
+    ]
   },
-  "updatedAt": "2026-06-27T05:56:02.873Z"
+  "hookRequirements": {
+    "maxSecondsToHook": 3,
+    "openOnActiveThreat": true,
+    "avoidSlowSetup": true
+  },
+  "pacingPreferences": {
+    "sceneLength": "short",
+    "dialogueStyle": "short-reactive-fragments",
+    "escalationRequired": true,
+    "cliffhangerEnding": true
+  },
+  "contentToAvoid": [
+    "graphic gore",
+    "real disasters/events",
+    "real public figures",
+    "comedy that undercuts existential stakes"
+  ],
+  "notes": "v1.1 — structure corrected to match buildAudienceGuide() expected path: recommendations.forStoryAgent[]. Previous v1.0 had wrong schema and was silently ignored by screenplay-agent."
 }
