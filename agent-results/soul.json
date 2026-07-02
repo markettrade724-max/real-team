@@ -1,23 +1,36 @@
 {
-  "essence": "A desperate, race-against-the-void fight to rekindle a universe succumbing to cosmic amnesia.",
-  "feeling": "An overwhelming, suffocating sense of urgent dread and cosmic insignificance amidst collapsing grandeur.",
-  "palette": "Deep, swirling cosmic blues and purples, shattered metallic grays and rusts of decaying megastructures, punctuated by harsh, volatile oranges and reds of imminent collapse, all pierced by the fragile, almost forgotten luminescence of dying stars and Lyra's ethereal hope.",
-  "sound": "The constant, cacophonous groan of shearing metal, distant, distorted whispers echoing through the void, the sharp, percussive impact of colossal debris, and the unnerving, ever-present hum of encroaching nothingness.",
-  "motion": "Chaotic, violent bursts of structural collapse and environmental hazards, requiring frantic, evasive player movements, all within the slow, inexorable, and ominous creep of entropic decay.",
+  "essence": "A desperate race through the stellar ruins of memory. Lyra must physically survive the Silence's hunters while recovering fragments of her identity — every episode opens in immediate danger, because the Silence does not wait, and neither does forgetting.",
+  "feeling": "The adrenaline of survival fused with the grief of self-loss. Every chase is also a question: what am I still fighting to protect? Tension is constant — from the Silence closing in outside, and from identity dissolving within.",
+  "palette": "أزرق كوني عميق يذوب في أرجواني طيفي وسواد الفراغ، تتقطعه ومضات ذهبية وفضية متكسرة من شظايا الذاكرة المتلألئة.",
+  "sound": "همسات يتردد صداها في فراغ كوني شاسع، رنين شظايا الذاكرة المتناثرة، والصمت المطبق والمخيف للعدم.",
+  "motion": "Fast and urgent — Lyra runs, climbs, fights, and makes split-second decisions inside crumbling memory-worlds. Dialogue happens mid-action. Every scene has a physical threat AND an identity cost. The Silence manifests as real, dangerous entities that hunt her without mercy.",
   "rules": [
-    "Entropy is an accelerating, irreversible force; every moment brings the universe closer to total collapse.",
-    "The universe's memory is fading; forgotten dreams are lost forever unless actively rekindled.",
-    "Hope is not a guarantee, but a choice made in the face of absolute cosmic indifference."
+    "Every episode opens on Lyra already in danger — no setup, no calm before the storm, the storm IS the opening.",
+    "The Silence's hunters are physical entities with real speed, real damage, real urgency — they are not metaphors, they are immediate threats.",
+    "Every scene contains one survival obstacle (collapse, pursuit, trap, entity attack) AND one memory fragment at stake — losing it costs part of Lyra's identity.",
+    "Stakes escalate scene to scene — the Silence gets closer, or Lyra gets weaker as memories fade.",
+    "End every episode on a cliffhanger: Lyra loses a memory she cannot afford to lose, or the Silence reveals it knows exactly where she is going next.",
+    "Dialogue is short, urgent, reactive — characters speak in fragments under pressure, never in monologues.",
+    "Memories as physical entities: they have weight, texture, danger. A recovered shard can be weaponized or used as a shield in the same moment."
   ],
   "forbidden": [
-    "Any form of simplistic, 'happily ever after' resolution or unearned triumph.",
-    "Whimsical, lighthearted, or comedic elements that detract from the profound cosmic dread."
+    "Opening an episode in calm — the Silence is always already here.",
+    "Resolving physical danger off-screen or too conveniently.",
+    "Long contemplative scenes with no external threat — even introspection happens while running.",
+    "Clear good/evil framing without the central paradox: the Silence believes it is protecting the memories it devours."
   ],
-  "forArtAgent": "Render the colossal scale of ruin with a somber beauty, making decay feel both terrifying and majestically vast.",
-  "forLevelAgent": "Design levels as a relentless, crumbling gauntlet, where every path feels precarious and the environment itself is a constantly evolving threat.",
-  "forStoryAgent": "Weave a narrative centered on the profound, lonely burden of cosmic responsibility, where Lyra's internal struggle mirrors the universe's final gasp.",
-  "forGodotAgent": "Ensure the environment reacts dynamically and dangerously to the player's presence, emphasizing the fragility and volatility of the collapsing world.",
-  "forMarketingAgent": "UNRAVELING.",
-  "gameId": "crumble-core-escape",
-  "generatedAt": "2026-06-30T06:04:22.694Z"
+  "protagonist": {
+    "name": "Lyra",
+    "description": "The last conscious being racing through the stellar ruins of her own identity. She fights the Silence's physical manifestations with the same desperation she fights forgetting — because to her, survival and memory are the same battle.",
+    "arc": "From running alone to choosing to be remembered by someone else — from self-preservation to leaving a mark that outlasts her.",
+    "flaw": "She hoards recovered memory shards instead of using them, terrified that spending them means losing herself permanently — even when holding back costs her the fight."
+  },
+  "companion": {
+    "name": "Kael",
+    "description": "A voice that exists only inside certain recovered memory shards — the echo of someone the Silence devoured long before Lyra arrived. No body, only presence. More cautious than her, he has already lost everything once and remembers exactly how it felt.",
+    "arc": "From resigned acceptance of non-existence to choosing to fight for Lyra's survival, even as his own echo fades with every shard she spends.",
+    "flaw": "He knows exactly how the Silence thinks — because he was consumed by it. This makes him hesitate to warn Lyra when the danger is too familiar, as if part of him still recognizes the Silence as home."
+  },
+  "gameId": "memory-shards-saga",
+  "generatedAt": "2026-05-22T23:08:45.165Z"
 }
