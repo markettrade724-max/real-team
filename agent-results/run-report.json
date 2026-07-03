@@ -1,9 +1,9 @@
 {
-  "runId": "2026-07-02T1011",
-  "mode": "game-phase1",
-  "success": false,
-  "timestamp": "2026-07-02T10:11:08.435Z",
-  "totalDuration": "26ms",
+  "runId": "2026-07-03T0541",
+  "mode": "art-library",
+  "success": true,
+  "timestamp": "2026-07-03T05:41:32.654Z",
+  "totalDuration": "11ms",
   "budget": {
     "total": 0,
     "limit": 40,
@@ -44,15 +44,15 @@
     "gamesDone": 1
   },
   "agents": {
-    "code": {
-      "success": false,
-      "duration": "—",
-      "error": "m.run is not a function"
+    "artLibrary": {
+      "success": true,
+      "duration": "0ms",
+      "error": null
     }
   },
   "summary": {
     "total": 1,
-    "passed": 0,
-    "failed": 1
+    "passed": 1,
+    "failed": 0
   }
 }
