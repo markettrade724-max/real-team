@@ -205,11 +205,11 @@ nav{
   font-size:3.4rem;font-weight:700;color:rgba(255,255,255,.18);letter-spacing:-.04em;
 }
 .ep-play-btn{
-  position:relative;z-index:2;width:58px;height:58px;border-radius:50%;
+  width:58px;height:58px;border-radius:50%;
   background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
   display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#0a0a0a;
   transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .3s;
-  position:absolute;
+  position:absolute;z-index:2;
 }
 .ep-thumb:hover .ep-play-btn{transform:scale(1.12);background:var(--acc);}
 .ep-num{
@@ -243,19 +243,26 @@ nav{
   display:inline-flex;align-items:center;gap:6px;
 }
 .ep-btn-trailer:hover{background:rgba(255,255,255,.09);color:var(--txt);}
-.ep-soon{color:var(--mut);font-size:.82rem;font-family:'JetBrains Mono',monospace;}
+.ep-soon{color:var(--mut);font-size:.82rem;font-family:'JetBrains Mono',monospace;
+  display:flex;align-items:center;}
 
-.ep-share{display:flex;gap:8px;margin-top:12px;padding-top:14px;border-top:1px solid var(--b);}
+.ep-share{
+  display:flex;align-items:center;gap:8px;
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--b);
+}
+.share-label{
+  font-size:.62rem;color:var(--mut);font-family:'JetBrains Mono',monospace;
+  letter-spacing:.08em;text-transform:uppercase;margin-right:4px;flex-shrink:0;
+}
+[dir=rtl] .share-label{margin-right:0;margin-left:4px;}
 .share-btn{
-  width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
   background:rgba(255,255,255,.04);border:1px solid var(--b);color:var(--mut2);
-  font-size:.92rem;cursor:pointer;text-decoration:none;transition:.2s;flex-shrink:0;
+  font-size:.78rem;cursor:pointer;text-decoration:none;transition:.2s;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;font-weight:700;
 }
 .share-btn:hover{background:rgba(255,255,255,.09);border-color:var(--b2);color:var(--txt);transform:translateY(-2px);}
 .share-btn.copied{background:var(--acc3);color:#0a0a0a;border-color:var(--acc3);}
-.share-label{font-size:.66rem;color:var(--mut);font-family:'JetBrains Mono',monospace;
-  display:flex;align-items:center;margin-right:4px;letter-spacing:.04em;}
-[dir=rtl] .share-label{margin-right:0;margin-left:4px;}
 
 /* ── MODAL ───────────────────────────────────────── */
 .modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(2,2,6,.94);
@@ -344,9 +351,9 @@ nav{
 }
 .step:hover{border-color:var(--b2);transform:translateY(-4px);}
 .step-n{font-family:'Space Grotesk',sans-serif;font-size:3rem;font-weight:700;
-  color:rgba(255,255,255,.05);position:absolute;top:10px;right:18px;line-height:1;}
+  color:rgba(255,255,255,.05);position:absolute;top:10px;line-height:1;}
 [dir=ltr] .step-n{right:18px;}
-[dir=rtl] .step-n{right:auto;left:18px;}
+[dir=rtl] .step-n{left:18px;}
 .step-i{font-size:1.9rem;margin-bottom:14px;}
 .step h3{font-family:'Space Grotesk',sans-serif;font-size:1.02rem;font-weight:700;margin-bottom:8px;}
 .step p{color:var(--mut);font-size:.83rem;line-height:1.65;}
@@ -430,8 +437,8 @@ window.getGameUrl=function(slug){
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <div class="sec-lbl">Series</div>
-        <h2 class="sec-h" id="seriesH">The Series</h2>
+        <div class="sec-lbl" id="seriesLbl">Series</div>
+        <h2 class="sec-h" id="seriesH">Memory Shards Saga</h2>
       </div>
     </div>
     <div class="series-grid" id="seriesGrid"></div>
@@ -453,7 +460,7 @@ window.getGameUrl=function(slug){
 
 <section class="sec z" id="how">
   <div class="wrap">
-    <div class="sec-lbl">How it works</div>
+    <div class="sec-lbl" id="howLbl">How it works</div>
     <h2 class="sec-h" id="howH">How It Works</h2>
     <div class="steps">
       <div class="step reveal"><div class="step-n">01</div><div class="step-i">🎮</div><h3 id="s1h">Play for Free</h3><p id="s1p">All our games are 100% free, no subscription</p></div>
@@ -480,64 +487,64 @@ window.getGameUrl=function(slug){
 
 <script>
 const T={
-  ar:{pill:"ألعاب · مسلسلات · تطبيقات · مجاني",h1a:"العب. شاهد.",h1b:"اكتشف كوناً جديداً.",hp:"ألعاب وتطبيقات ومسلسلات مولودة من الذكاء الاصطناعي — كون رقمي يتطور كل أسبوع.",cta1:"🎮 تصفح الكتالوج",cta2:"☕ ادعم الفريق",catLbl:"الكتالوج",catH:"الكتالوج الكامل",howLbl:"كيف يعمل",howH:"كيف يعمل؟",s1h:"العب مجاناً",s1p:"كل ألعابنا مجانية 100% بدون اشتراك",s2h:"شاهد المسلسل",s2p:"حلقة جديدة كل أسبوع — مولودة من الذكاء الاصطناعي",s3h:"ادعم الفريق",s3p:"Ko-fi أو PayPal — آمن وسريع وبدون حساب",s4h:"استمتع للأبد",s4p:"مشترياتك تُحفظ على جهازك — لا انتهاء صلاحية",play:"العب الآن",watch:"شاهد الآن",trailer:"التريلر",soon:"قريباً",iapCount:"{{n}} مشتريات داخلية",free:"مجاني",ft:"© 2026 realteam — صُنع بواسطة وكلاء ذكاء اصطناعي، كل يوم",cats:{all:"الكل",game:"ألعاب",series:"مسلسلات",film:"أفلام",app:"تطبيقات"},seriesBadge:"مسلسل — {{n}} حلقة جاهزة",seriesLbl:"المسلسل",seriesH:"ملحمة شظايا الذاكرة",ep:"الحلقة",min:"دقيقة",empty:"لا توجد عناصر في هذا التصنيف بعد",ftKofi:"Ko-fi",ftCat:"الكتالوج",ftSeries:"المسلسل"},
-  en:{pill:"Games · Series · Apps · Free",h1a:"Play. Watch.",h1b:"Discover a new universe.",hp:"Free independent games, AI-born series and apps — a digital universe that evolves every week.",cta1:"🎮 Browse Catalog",cta2:"☕ Support Us",catLbl:"Catalog",catH:"Full Catalog",howLbl:"How it works",howH:"How It Works",s1h:"Play for Free",s1p:"All our games are 100% free",s2h:"Watch the Series",s2p:"New episode every week — born from AI",s3h:"Support Us",s3p:"Ko-fi or PayPal — safe and fast",s4h:"Enjoy Forever",s4p:"Your purchases are saved on your device",play:"Play Now",watch:"Watch Now",trailer:"Trailer",soon:"Coming Soon",iapCount:"{{n}} in-app purchases",free:"Free",ft:"© 2026 realteam — built by AI agents, every day",cats:{all:"All",game:"Games",series:"Series",film:"Films",app:"Apps"},seriesBadge:"Series — {{n}} episode(s) ready",seriesLbl:"Series",seriesH:"Memory Shards Saga",ep:"Episode",min:"min",empty:"Nothing in this category yet",ftKofi:"Ko-fi",ftCat:"Catalog",ftSeries:"Series"},
-  fr:{pill:"Jeux · Séries · Apps · Gratuit",h1a:"Joue. Regarde.",h1b:"Découvre un nouvel univers.",hp:"Jeux, séries et apps indépendants gratuits, nés de l'IA — un univers numérique qui évolue chaque semaine.",cta1:"🎮 Voir le catalogue",cta2:"☕ Soutenir",catLbl:"Catalogue",catH:"Catalogue complet",howLbl:"Comment ça marche",howH:"Comment ça marche ?",s1h:"Jouez gratuitement",s1p:"Tous nos jeux sont 100% gratuits",s2h:"Regardez la série",s2p:"Nouvel épisode chaque semaine",s3h:"Soutenez-nous",s3p:"Ko-fi ou PayPal",s4h:"Profitez pour toujours",s4p:"Vos achats sont sauvegardés",play:"Jouer",watch:"Regarder",trailer:"Bande-annonce",soon:"Bientôt",iapCount:"{{n}} achats intégrés",free:"Gratuit",ft:"© 2026 realteam — créé par des agents IA, chaque jour",cats:{all:"Tout",game:"Jeux",series:"Séries",film:"Films",app:"Apps"},seriesBadge:"Série — {{n}} épisode(s) prêt(s)",seriesLbl:"Série",seriesH:"Saga des Fragments de Mémoire",ep:"Épisode",min:"min",empty:"Rien dans cette catégorie pour l'instant",ftKofi:"Ko-fi",ftCat:"Catalogue",ftSeries:"Série"},
-  es:{pill:"Juegos · Series · Apps · Gratis",h1a:"Juega. Mira.",h1b:"Descubre un nuevo universo.",hp:"Juegos, series y apps independientes gratuitos, nacidos de la IA.",cta1:"🎮 Ver catálogo",cta2:"☕ Apoyar",catLbl:"Catálogo",catH:"Catálogo completo",howLbl:"Cómo funciona",howH:"¿Cómo funciona?",s1h:"Juega gratis",s1p:"Todos nuestros juegos son 100% gratuitos",s2h:"Mira la serie",s2p:"Nuevo episodio cada semana",s3h:"Apóyanos",s3p:"Ko-fi o PayPal",s4h:"Disfruta para siempre",s4p:"Tus compras se guardan",play:"Jugar",watch:"Ver",trailer:"Tráiler",soon:"Próximamente",iapCount:"{{n}} compras integradas",free:"Gratis",ft:"© 2026 realteam — creado por agentes de IA, cada día",cats:{all:"Todo",game:"Juegos",series:"Series",film:"Películas",app:"Apps"},seriesBadge:"Serie — {{n}} episodio(s) listo(s)",seriesLbl:"Serie",seriesH:"Saga de Fragmentos de Memoria",ep:"Episodio",min:"min",empty:"Nada en esta categoría todavía",ftKofi:"Ko-fi",ftCat:"Catálogo",ftSeries:"Serie"},
-  de:{pill:"Spiele · Serien · Apps · Gratis",h1a:"Spiel. Schau.",h1b:"Entdecke ein neues Universum.",hp:"Kostenlose unabhängige Spiele, Serien und Apps, geboren aus KI.",cta1:"🎮 Katalog ansehen",cta2:"☕ Unterstützen",catLbl:"Katalog",catH:"Vollständiger Katalog",howLbl:"So funktioniert's",howH:"Wie funktioniert es?",s1h:"Kostenlos spielen",s1p:"Alle Spiele sind 100% kostenlos",s2h:"Serie ansehen",s2p:"Neue Folge jede Woche",s3h:"Unterstütze uns",s3p:"Ko-fi oder PayPal",s4h:"Für immer genießen",s4p:"Deine Käufe werden gespeichert",play:"Spielen",watch:"Ansehen",trailer:"Trailer",soon:"Demnächst",iapCount:"{{n}} In-App-Käufe",free:"Kostenlos",ft:"© 2026 realteam — erstellt von KI-Agenten, jeden Tag",cats:{all:"Alle",game:"Spiele",series:"Serien",film:"Filme",app:"Apps"},seriesBadge:"Serie — {{n}} Folge(n) bereit",seriesLbl:"Serie",seriesH:"Gedächtnisscherben-Saga",ep:"Folge",min:"Min",empty:"Noch nichts in dieser Kategorie",ftKofi:"Ko-fi",ftCat:"Katalog",ftSeries:"Serie"},
-  zh:{pill:"游戏 · 剧集 · 应用 · 免费",h1a:"玩。看。",h1b:"探索新宇宙。",hp:"免费独立游戏、剧集和应用，由AI创造。",cta1:"🎮 浏览目录",cta2:"☕ 支持我们",catLbl:"目录",catH:"完整目录",howLbl:"如何运作",howH:"如何运作？",s1h:"免费玩",s1p:"所有游戏100%免费",s2h:"看剧集",s2p:"每周一集新剧",s3h:"支持我们",s3p:"Ko-fi或PayPal",s4h:"永久享用",s4p:"你的购买保存在设备上",play:"开始玩",watch:"立即观看",trailer:"预告片",soon:"即将推出",iapCount:"{{n}}个内购",free:"免费",ft:"© 2026 realteam — 由AI代理每天构建",cats:{all:"全部",game:"游戏",series:"剧集",film:"电影",app:"应用"},seriesBadge:"剧集 — {{n}}集已就绪",seriesLbl:"剧集",seriesH:"记忆碎片传说",ep:"第",min:"分钟",empty:"该分类暂无内容",ftKofi:"Ko-fi",ftCat:"目录",ftSeries:"剧集"}
+  ar:{pill:"ألعاب · مسلسلات · تطبيقات · مجاني",h1a:"العب. شاهد.",h1b:"اكتشف كوناً جديداً.",hp:"ألعاب وتطبيقات ومسلسلات مولودة من الذكاء الاصطناعي — كون رقمي يتطور كل أسبوع.",cta1:"🎮 تصفح الكتالوج",cta2:"☕ ادعم الفريق",catLbl:"الكتالوج",catH:"الكتالوج الكامل",howLbl:"كيف يعمل",howH:"كيف يعمل؟",s1h:"العب مجاناً",s1p:"كل ألعابنا مجانية 100% بدون اشتراك",s2h:"شاهد المسلسل",s2p:"حلقة جديدة كل أسبوع — مولودة من الذكاء الاصطناعي",s3h:"ادعم الفريق",s3p:"Ko-fi أو PayPal — آمن وسريع وبدون حساب",s4h:"استمتع للأبد",s4p:"مشترياتك تُحفظ على جهازك — لا انتهاء صلاحية",play:"العب الآن",watch:"شاهد الآن",trailer:"التريلر",soon:"قريباً",share:"شارك",iapCount:"{{n}} مشتريات داخلية",free:"مجاني",ft:"© 2026 realteam — صُنع بواسطة وكلاء ذكاء اصطناعي، كل يوم",cats:{all:"الكل",game:"ألعاب",series:"مسلسلات",film:"أفلام",app:"تطبيقات"},seriesBadge:"مسلسل — {{n}} حلقة جاهزة",seriesLbl:"المسلسل",seriesH:"ملحمة شظايا الذاكرة",ep:"الحلقة",min:"دقيقة",empty:"لا توجد عناصر في هذا التصنيف بعد",ftKofi:"Ko-fi",ftCat:"الكتالوج",ftSeries:"المسلسل",copyLink:"نسخ الرابط",copied:"تم النسخ"},
+  en:{pill:"Games · Series · Apps · Free",h1a:"Play. Watch.",h1b:"Discover a new universe.",hp:"Free independent games, AI-born series and apps — a digital universe that evolves every week.",cta1:"🎮 Browse Catalog",cta2:"☕ Support Us",catLbl:"Catalog",catH:"Full Catalog",howLbl:"How it works",howH:"How It Works",s1h:"Play for Free",s1p:"All our games are 100% free",s2h:"Watch the Series",s2p:"New episode every week — born from AI",s3h:"Support Us",s3p:"Ko-fi or PayPal — safe and fast",s4h:"Enjoy Forever",s4p:"Your purchases are saved on your device",play:"Play Now",watch:"Watch Now",trailer:"Trailer",soon:"Coming Soon",share:"Share",iapCount:"{{n}} in-app purchases",free:"Free",ft:"© 2026 realteam — built by AI agents, every day",cats:{all:"All",game:"Games",series:"Series",film:"Films",app:"Apps"},seriesBadge:"Series — {{n}} episode(s) ready",seriesLbl:"Series",seriesH:"Memory Shards Saga",ep:"Episode",min:"min",empty:"Nothing in this category yet",ftKofi:"Ko-fi",ftCat:"Catalog",ftSeries:"Series",copyLink:"Copy link",copied:"Copied!"},
+  fr:{pill:"Jeux · Séries · Apps · Gratuit",h1a:"Joue. Regarde.",h1b:"Découvre un nouvel univers.",hp:"Jeux, séries et apps indépendants gratuits, nés de l'IA — un univers numérique qui évolue chaque semaine.",cta1:"🎮 Voir le catalogue",cta2:"☕ Soutenir",catLbl:"Catalogue",catH:"Catalogue complet",howLbl:"Comment ça marche",howH:"Comment ça marche ?",s1h:"Jouez gratuitement",s1p:"Tous nos jeux sont 100% gratuits",s2h:"Regardez la série",s2p:"Nouvel épisode chaque semaine",s3h:"Soutenez-nous",s3p:"Ko-fi ou PayPal",s4h:"Profitez pour toujours",s4p:"Vos achats sont sauvegardés",play:"Jouer",watch:"Regarder",trailer:"Bande-annonce",soon:"Bientôt",share:"Partager",iapCount:"{{n}} achats intégrés",free:"Gratuit",ft:"© 2026 realteam — créé par des agents IA, chaque jour",cats:{all:"Tout",game:"Jeux",series:"Séries",film:"Films",app:"Apps"},seriesBadge:"Série — {{n}} épisode(s) prêt(s)",seriesLbl:"Série",seriesH:"Saga des Fragments de Mémoire",ep:"Épisode",min:"min",empty:"Rien dans cette catégorie pour l'instant",ftKofi:"Ko-fi",ftCat:"Catalogue",ftSeries:"Série",copyLink:"Copier le lien",copied:"Copié !"},
+  es:{pill:"Juegos · Series · Apps · Gratis",h1a:"Juega. Mira.",h1b:"Descubre un nuevo universo.",hp:"Juegos, series y apps independientes gratuitos, nacidos de la IA.",cta1:"🎮 Ver catálogo",cta2:"☕ Apoyar",catLbl:"Catálogo",catH:"Catálogo completo",howLbl:"Cómo funciona",howH:"¿Cómo funciona?",s1h:"Juega gratis",s1p:"Todos nuestros juegos son 100% gratuitos",s2h:"Mira la serie",s2p:"Nuevo episodio cada semana",s3h:"Apóyanos",s3p:"Ko-fi o PayPal",s4h:"Disfruta para siempre",s4p:"Tus compras se guardan",play:"Jugar",watch:"Ver",trailer:"Tráiler",soon:"Próximamente",share:"Compartir",iapCount:"{{n}} compras integradas",free:"Gratis",ft:"© 2026 realteam — creado por agentes de IA, cada día",cats:{all:"Todo",game:"Juegos",series:"Series",film:"Películas",app:"Apps"},seriesBadge:"Serie — {{n}} episodio(s) listo(s)",seriesLbl:"Serie",seriesH:"Saga de Fragmentos de Memoria",ep:"Episodio",min:"min",empty:"Nada en esta categoría todavía",ftKofi:"Ko-fi",ftCat:"Catálogo",ftSeries:"Serie",copyLink:"Copiar enlace",copied:"¡Copiado!"},
+  de:{pill:"Spiele · Serien · Apps · Gratis",h1a:"Spiel. Schau.",h1b:"Entdecke ein neues Universum.",hp:"Kostenlose unabhängige Spiele, Serien und Apps, geboren aus KI.",cta1:"🎮 Katalog ansehen",cta2:"☕ Unterstützen",catLbl:"Katalog",catH:"Vollständiger Katalog",howLbl:"So funktioniert's",howH:"Wie funktioniert es?",s1h:"Kostenlos spielen",s1p:"Alle Spiele sind 100% kostenlos",s2h:"Serie ansehen",s2p:"Neue Folge jede Woche",s3h:"Unterstütze uns",s3p:"Ko-fi oder PayPal",s4h:"Für immer genießen",s4p:"Deine Käufe werden gespeichert",play:"Spielen",watch:"Ansehen",trailer:"Trailer",soon:"Demnächst",share:"Teilen",iapCount:"{{n}} In-App-Käufe",free:"Kostenlos",ft:"© 2026 realteam — erstellt von KI-Agenten, jeden Tag",cats:{all:"Alle",game:"Spiele",series:"Serien",film:"Filme",app:"Apps"},seriesBadge:"Serie — {{n}} Folge(n) bereit",seriesLbl:"Serie",seriesH:"Gedächtnisscherben-Saga",ep:"Folge",min:"Min",empty:"Noch nichts in dieser Kategorie",ftKofi:"Ko-fi",ftCat:"Katalog",ftSeries:"Serie",copyLink:"Link kopieren",copied:"Kopiert!"},
+  zh:{pill:"游戏 · 剧集 · 应用 · 免费",h1a:"玩。看。",h1b:"探索新宇宙。",hp:"免费独立游戏、剧集和应用，由AI创造。",cta1:"🎮 浏览目录",cta2:"☕ 支持我们",catLbl:"目录",catH:"完整目录",howLbl:"如何运作",howH:"如何运作？",s1h:"免费玩",s1p:"所有游戏100%免费",s2h:"看剧集",s2p:"每周一集新剧",s3h:"支持我们",s3p:"Ko-fi或PayPal",s4h:"永久享用",s4p:"你的购买保存在设备上",play:"开始玩",watch:"立即观看",trailer:"预告片",soon:"即将推出",share:"分享",iapCount:"{{n}}个内购",free:"免费",ft:"© 2026 realteam — 由AI代理每天构建",cats:{all:"全部",game:"游戏",series:"剧集",film:"电影",app:"应用"},seriesBadge:"剧集 — {{n}}集已就绪",seriesLbl:"剧集",seriesH:"记忆碎片传说",ep:"第",min:"分钟",empty:"该分类暂无内容",ftKofi:"Ko-fi",ftCat:"目录",ftSeries:"剧集",copyLink:"复制链接",copied:"已复制！"}
 };
 
 const EP_GRADIENTS = ['--grad1','--grad2','--grad3','--grad4'];
 
-let lang = localStorage.getItem('rt_lang') || 'en';
-let products = [], seriesData = null, activeFilter = 'all';
+let lang    = localStorage.getItem('rt_lang') || 'en';
+let products= [], seriesData = null, activeFilter = 'all';
 
+/* ── XSS guard (rule-230) ─────────────────────────── */
 function esc(str){
   if (str == null) return '';
-  return String(str).replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
+  return String(str).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])
+  );
 }
 
-async function loadProducts() {
+/* ── Data loaders ─────────────────────────────────── */
+async function loadProducts(){
   try { const r = await fetch('/products.json'); products = await r.json(); }
   catch { products = []; }
 }
-
-async function loadSeries() {
+async function loadSeries(){
   try {
     const r = await fetch('/series.json');
     if (!r.ok) return;
     seriesData = await r.json();
   } catch {}
 }
-
-async function init() {
+async function init(){
   await Promise.all([loadProducts(), loadSeries()]);
   applyLang();
 }
 
-function applyLang() {
+/* ── Language application ────────────────────────── */
+function applyLang(){
   const t   = T[lang] || T.en;
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
   document.documentElement.lang = lang;
   document.documentElement.dir  = dir;
 
-  document.getElementById('pill').innerHTML =
-    `<span class="lp-dot"></span>${esc(t.pill)}`;
-  document.getElementById('h1').innerHTML =
-    `${esc(t.h1a)}<br><span class="gr">${esc(t.h1b)}</span>`;
-  document.getElementById('hp').textContent     = t.hp;
-  document.getElementById('cta1').innerHTML     = t.cta1;
-  document.getElementById('cta2').innerHTML     = t.cta2;
-  document.getElementById('catLbl').textContent = t.catLbl;
-  document.getElementById('catH').textContent   = t.catH;
-  document.getElementById('howH').textContent   = t.howH;
-  document.getElementById('ft').textContent     = t.ft;
-  document.getElementById('ftKofi').textContent   = t.ftKofi;
-  document.getElementById('ftCat').textContent    = t.ftCat;
-  document.getElementById('ftSeries').textContent = t.ftSeries;
+  document.getElementById('pill').innerHTML      = `<span class="lp-dot"></span>${esc(t.pill)}`;
+  document.getElementById('h1').innerHTML        = `${esc(t.h1a)}<br><span class="gr">${esc(t.h1b)}</span>`;
+  document.getElementById('hp').textContent      = t.hp;
+  document.getElementById('cta1').innerHTML      = t.cta1;
+  document.getElementById('cta2').innerHTML      = t.cta2;
+  document.getElementById('catLbl').textContent  = t.catLbl;
+  document.getElementById('catH').textContent    = t.catH;
+  document.getElementById('howLbl').textContent  = t.howLbl;
+  document.getElementById('howH').textContent    = t.howH;
+  document.getElementById('ft').textContent      = t.ft;
+  document.getElementById('ftKofi').textContent  = t.ftKofi;
+  document.getElementById('ftCat').textContent   = t.ftCat;
+  document.getElementById('ftSeries').textContent= t.ftSeries;
 
   ['1','2','3','4'].forEach(n => {
     document.getElementById('s'+n+'h').textContent = t['s'+n+'h'];
@@ -547,45 +554,44 @@ function applyLang() {
   renderSeries(t);
   renderFilters(t);
   renderGrid(t);
-
-  if (window.SocialBar) {
-    SocialBar.init({
-      title: 'realteam — Free games, series & apps',
-      url:   'https://real-team.vercel.app',
-      lang:  lang,
-    });
-  }
 }
 
-function renderSeries(t) {
+/* ── Series renderer ─────────────────────────────── */
+function renderSeries(t){
   const sec   = document.getElementById('seriesSec');
   const grid  = document.getElementById('seriesGrid');
   const badge = document.getElementById('seriesBadge');
   const text  = document.getElementById('seriesText');
 
   const eps = seriesData?.episodes || [];
-  if (!eps.length) { sec.style.display = 'none'; badge.classList.remove('show'); return; }
+  if (!eps.length){ sec.style.display='none'; badge.classList.remove('show'); return; }
 
   text.textContent = (t.seriesBadge || 'Series — {{n}} episode(s)').replace('{{n}}', eps.length);
   badge.classList.add('show');
 
-  const seriesLbl = sec.querySelector('.sec-lbl');
-  if (seriesLbl) seriesLbl.textContent = t.seriesLbl;
-  const seriesH = document.getElementById('seriesH');
-  if (seriesH) seriesH.textContent = seriesData.title || t.seriesH || 'Series';
+  /* FIX v2.1 — use t.seriesH (translated) NOT seriesData.title
+     seriesData.title was set by old orchestrator with Arabic-first
+     (universe.name?.ar || universe.name?.en) → always Arabic.
+     t.seriesH contains the correct translated series name for each language. */
+  document.getElementById('seriesLbl').textContent = t.seriesLbl || 'Series';
+  document.getElementById('seriesH').textContent   = t.seriesH   || 'Series';
+
+  const pageUrl = window.location.origin + window.location.pathname;
 
   grid.innerHTML = [...eps].reverse().map((ep, i) => {
-    const dur     = ep.duration ? Math.round(ep.duration / 60) : null;
-    const durStr  = dur ? `${dur} ${t.min}` : '';
-    const gradVar = EP_GRADIENTS[i % EP_GRADIENTS.length];
-    const safeTitle = esc(ep.title);
-    const safeTheme  = esc(ep.theme);
-    const safeVideo  = esc(ep.videoUrl || '');
-    const safeTrailer = esc(ep.trailerUrl || '');
+    const dur      = ep.duration ? Math.round(ep.duration / 60) : null;
+    const durStr   = dur ? `${dur} ${t.min}` : '';
+    const gradVar  = EP_GRADIENTS[i % EP_GRADIENTS.length];
+    const safeTitle  = esc(ep.title  || '');
+    const safeTheme  = esc(ep.theme  || ep.logline || '');
+    const safeVideo  = esc(ep.videoUrl   || '');
+    const safeTrailer= esc(ep.trailerUrl || '');
+    const shareUrl   = esc(ep.videoUrl || (pageUrl + '#seriesSec'));
 
     return `
     <div class="ep-card reveal">
-      <div class="ep-thumb" style="--ep-grad:var(${gradVar})" onclick="openModal('${safeVideo}')">
+      <div class="ep-thumb" style="--ep-grad:var(${gradVar})"
+           onclick="${safeVideo ? `openModal('${safeVideo}')` : ''}">
         <span class="ep-num mono">${esc(t.ep)} ${ep.number}</span>
         ${durStr ? `<span class="ep-dur mono">${durStr}</span>` : ''}
         <span class="ep-thumb-glyph">${String(ep.number).padStart(2,'0')}</span>
@@ -604,6 +610,15 @@ function renderSeries(t) {
             : ''
           }
         </div>
+        <div class="ep-share">
+          <span class="share-label">${esc(t.share)}</span>
+          <button class="share-btn" title="Facebook"
+            onclick="shareEp('fb','${shareUrl}','${safeTitle}')">fb</button>
+          <button class="share-btn" title="Reddit"
+            onclick="shareEp('rd','${shareUrl}','${safeTitle}')">r/</button>
+          <button class="share-btn" title="${esc(t.copyLink)}" id="copy-ep-${ep.number}"
+            onclick="shareEp('cp','${shareUrl}','${safeTitle}',${ep.number})">⎘</button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -612,7 +627,32 @@ function renderSeries(t) {
   observe();
 }
 
-function openModal(url) {
+/* ── Share helpers ───────────────────────────────── */
+function shareEp(platform, url, title, epNum){
+  if (platform === 'fb'){
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      '_blank'
+    );
+  } else if (platform === 'rd'){
+    window.open(
+      `https://www.reddit.com/r/u_one_kale1147/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&type=link`,
+      '_blank'
+    );
+  } else if (platform === 'cp'){
+    const t   = T[lang] || T.en;
+    const btn = document.getElementById('copy-ep-' + epNum);
+    navigator.clipboard.writeText(url).then(() => {
+      if (btn){ btn.textContent = '✓'; btn.classList.add('copied'); }
+      setTimeout(() => {
+        if (btn){ btn.textContent = '⎘'; btn.classList.remove('copied'); }
+      }, 2000);
+    }).catch(() => { /* clipboard API not available */ });
+  }
+}
+
+/* ── Video modal ─────────────────────────────────── */
+function openModal(url){
   if (!url) return;
   const modal = document.getElementById('videoModal');
   const video = document.getElementById('modalVideo');
@@ -620,55 +660,67 @@ function openModal(url) {
   modal.classList.add('open');
   video.play().catch(() => {});
 }
-
-function closeModal(e) {
+function closeModal(e){
   if (e && e.target !== document.getElementById('videoModal') &&
       !e.target.classList.contains('modal-close')) return;
   const modal = document.getElementById('videoModal');
   const video = document.getElementById('modalVideo');
-  video.pause();
-  video.src = '';
+  video.pause(); video.src = '';
   modal.classList.remove('open');
 }
-
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal({ target: document.getElementById('videoModal') });
+  if (e.key === 'Escape') closeModal({target:document.getElementById('videoModal')});
 });
 
-function renderFilters(t) {
+/* ── Filters ─────────────────────────────────────── */
+function renderFilters(t){
   const cats = ['all','game','series','film','app'];
   document.getElementById('filters').innerHTML = cats.map(c =>
-    `<button class="filter-btn${activeFilter===c?' active':''}" onclick="setFilter('${c}')">${esc(t.cats[c]||c)}</button>`
+    `<button class="filter-btn${activeFilter===c?' active':''}"
+      onclick="setFilter('${c}')">${esc(t.cats[c]||c)}</button>`
   ).join('');
 }
+function setFilter(f){ activeFilter = f; applyLang(); }
 
-function setFilter(f) { activeFilter = f; applyLang(); }
-
-function renderGrid(t) {
-  const filtered = products.filter(p => activeFilter === 'all' || p.category === activeFilter);
+/* ── Catalog grid ────────────────────────────────── */
+function renderGrid(t){
+  const filtered = products.filter(p => activeFilter==='all' || p.category===activeFilter);
   const g = document.getElementById('grid');
 
-  if (!filtered.length) {
-    g.innerHTML = `<div class="empty-state"><div class="empty-state-icon">◇</div><div>${esc(t.empty)}</div></div>`;
+  if (!filtered.length){
+    g.innerHTML = `<div class="empty-state"><div class="empty-state-icon">◇</div>
+      <div>${esc(t.empty)}</div></div>`;
     return;
   }
 
   g.innerHTML = filtered.map((p, i) => {
-    const name = p.name?.[lang] || p.name?.en || '';
-    const desc = p.desc ? (p.desc[lang] || p.desc.en || '') : '';
-    const av   = p.status === 'available';
+    /* FIX v2.1 — handle both {en:'…',ar:'…'} object and plain string */
+    const name = typeof p.name === 'object'
+      ? (p.name[lang] || p.name.en || '')
+      : (p.name || '');
+    const desc = typeof p.desc === 'object'
+      ? (p.desc[lang] || p.desc.en || '')
+      : (p.desc || '');
+
+    const av    = p.status === 'available';
     const isNew = p.generatedAt && (Date.now() - new Date(p.generatedAt)) / 864e5 < 7;
     const iapCount = p.iap?.length || 0;
-    const gradVar = EP_GRADIENTS[i % EP_GRADIENTS.length];
-    const slug = esc(p.slug);
+
+    /* FIX v2.1 — gradient: p.gradient is already a full CSS value
+       Old code wrapped it again: linear-gradient(${p.gradient}) → invalid double-wrap */
+    const bg = p.gradient || `var(--grad${(i % 4) + 1})`;
+
+    /* FIX v2.1 — emojis is an array in products.json, not a single emoji field */
+    const emoji = p.emojis?.[0] || p.emoji || '🎮';
+    const slug  = esc(p.slug || p.id);
 
     return `
     <div class="card reveal" ${av ? `onclick="location.href=getGameUrl('${slug}')"` : ''}
       style="${av ? '' : 'opacity:.55;cursor:default'}">
       <div class="card-img">
-        <div class="card-img-bg" style="background:${p.gradient ? `linear-gradient(${p.gradient})` : `var(${gradVar})`}"></div>
+        <div class="card-img-bg" style="background:${esc(bg)}"></div>
         ${isNew ? `<span class="new-tag mono">NEW</span>` : ''}
-        <span class="card-emoji">${esc(p.emoji || '🎮')}</span>
+        <span class="card-emoji">${esc(emoji)}</span>
       </div>
       <div class="card-body">
         <div class="card-tags">
@@ -679,9 +731,14 @@ function renderGrid(t) {
         <div class="card-title">${esc(name)}</div>
         <div class="card-desc">${esc(desc)}</div>
         <div class="card-footer">
-          <div class="card-iap"><strong>${esc(t.free)}</strong>${iapCount>0 ? ' · '+esc(t.iapCount.replace('{{n}}',iapCount)) : ''}</div>
+          <div class="card-iap">
+            <strong>${esc(t.free)}</strong>
+            ${iapCount > 0 ? ' · ' + esc(t.iapCount.replace('{{n}}', iapCount)) : ''}
+          </div>
           ${av
-            ? `<a href="javascript:void(0)" onclick="event.stopPropagation();location.href=getGameUrl('${slug}')" class="btn-play">${esc(p.category==='series'||p.category==='film' ? t.watch : t.play)} →</a>`
+            ? `<a href="javascript:void(0)"
+                onclick="event.stopPropagation();location.href=getGameUrl('${slug}')"
+                class="btn-play">${esc(p.category==='series'||p.category==='film' ? t.watch : t.play)} →</a>`
             : `<span class="btn-soon">${esc(t.soon)}</span>`
           }
         </div>
@@ -692,13 +749,17 @@ function renderGrid(t) {
   observe();
 }
 
-function observe() {
+/* ── Scroll reveal ───────────────────────────────── */
+function observe(){
   const ob = new IntersectionObserver(es => {
-    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); ob.unobserve(e.target); } });
-  }, { threshold: .12 });
+    es.forEach(e => {
+      if (e.isIntersecting){ e.target.classList.add('vis'); ob.unobserve(e.target); }
+    });
+  }, { threshold:.12 });
   document.querySelectorAll('.reveal:not(.vis)').forEach(el => ob.observe(el));
 }
 
+/* ── Language selector ───────────────────────────── */
 document.getElementById('langSel').value = lang;
 document.getElementById('langSel').addEventListener('change', e => {
   lang = e.target.value;
