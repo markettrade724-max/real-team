@@ -56,9 +56,9 @@ export async function generateDrawnImage(prompt, seed, cacheKey, opts = {}) {
   const fullPrompt = `${prompt}, ${baseStyle}, no text, no watermark`;
 
   const url =
-    `https://gen.pollinations.ai/image/${encodeURIComponent(fullPrompt)}` +
-    `?width=${opts.width || 1920}&height=${opts.height || 1080}` +
-    `&seed=${seed || 42}&model=flux&nologo=true`;
+    `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}` +
+  `?width=${opts.width || 1920}&height=${opts.height || 1080}` +
+  `&seed=${seed || 42}&model=flux`;
 
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(30000) });
