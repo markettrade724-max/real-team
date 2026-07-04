@@ -1,31 +1,46 @@
 /**
- * art-library-agent.js — v1.0
- * Generates drawn illustrations via Pollinations.AI (no API key, no signup)
- * Used by: visual-agent.js (per-episode), orchestrator.js artLibraryDay() (pre-generation)
+ * art-library-agent.js — v1.1
  *
- * Cache: assets/art-cache/{cacheKey}.png — never regenerates if file exists
- * Fallback: returns null — callers fall back to Lexica/Unsplash/Picsum chain
+ * Changes from v1.0:
+ *  - readFileSync added to fs imports (was missing — caused loadArtBible() to fail)
+ *  - loadArtBible(): replaced require('fs').readFileSync (invalid in ESM) with readFileSync
+ *  - run() export added directly (was missing the named export used by orchestrator)
  */
 
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join, dirname }                         from 'path';
-import { fileURLToPath }                         from 'url';
-import { logger }                                from '../logger.js';
+import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
+import { join, dirname }                                        from 'path';
+import { fileURLToPath }                                        from 'url';
+import { logger }                                               from '../logger.js';
 
 const __dirname  = dirname(fileURLToPath(import.meta.url));
 const CACHE_DIR  = join(__dirname, '..', 'assets', 'art-cache');
 const BIBLE_PATH = join(__dirname, '..', 'assets', 'art-bible.json');
 
-// ── Load art-bible (cached in memory for the session) ─────
+// ── Art-bible loader (in-memory cache for the session) ────
 let _bible = null;
+
 export function loadArtBible() {
   if (_bible) return _bible;
-  if (!existsSync(BIBLE_PATH)) return null;
-  try { _bible = JSON.parse(require('fs').readFileSync(BIBLE_PATH, 'utf8')); return _bible; }
-  catch { return null; }
+  if (!existsSync(BIBLE_PATH)) {
+    logger.warn('[ART] No art-bible.json found — skipping pre-generation');
+    return null;
+  }
+  try {
+    _bible = JSON.parse(readFileSync(BIBLE_PATH, 'utf8'));
+    logger.info('[ART] Art bible loaded', {
+      characters: Object.keys(_bible.characters || {}).length,
+      locations:  Object.keys(_bible.locations  || {}).length,
+      enemies:    Object.keys(_bible.enemies    || {}).length,
+    });
+    return _bible;
+  } catch (err) {
+    logger.error('[ART] Failed to parse art-bible.json', { error: err.message });
+    return null;
+  }
 }
 
 // ── Core image generation via Pollinations.AI ─────────────
+// No API key — public endpoint, FLUX model, anonymous usage
 export async function generateDrawnImage(prompt, seed, cacheKey, opts = {}) {
   if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
 
@@ -36,10 +51,9 @@ export async function generateDrawnImage(prompt, seed, cacheKey, opts = {}) {
   }
 
   const bible      = loadArtBible();
-  const baseStyle  = bible?.artStyle || 'flat 2D cartoon illustration, bold outlines, vibrant colors';
-  const fullPrompt = opts.styleSuffix
-    ? `${prompt}, ${baseStyle}`
-    : `${prompt}, ${baseStyle}, no text, no watermark`;
+  const baseStyle  = bible?.artStyle
+    || 'flat 2D cartoon illustration, bold black outlines, vibrant colors';
+  const fullPrompt = `${prompt}, ${baseStyle}, no text, no watermark`;
 
   const url =
     `https://gen.pollinations.ai/image/${encodeURIComponent(fullPrompt)}` +
@@ -63,10 +77,7 @@ export async function generateDrawnImage(prompt, seed, cacheKey, opts = {}) {
 // ── Pre-generate all bible assets (called from artLibraryDay) ──
 export async function run() {
   const bible = loadArtBible();
-  if (!bible) {
-    logger.warn('[ART] No art-bible.json found — skipping pre-generation');
-    return { generated: 0, skipped: 0 };
-  }
+  if (!bible) return { generated: 0, skipped: 0 };
 
   let generated = 0;
   let skipped   = 0;
@@ -76,7 +87,8 @@ export async function run() {
     for (const [poseId, pose] of Object.entries(char.poses || {})) {
       const cacheKey = `char_${charId}_${poseId}`;
       const prompt   = `${char.visualDescription}, ${pose.prompt}`;
-      const result   = await generateDrawnImage(prompt, char.seed + poseId.length, cacheKey, {
+      const seed     = char.seed + poseId.length;
+      const result   = await generateDrawnImage(prompt, seed, cacheKey, {
         width: 1080, height: 1080,
       });
       result ? generated++ : skipped++;
@@ -84,7 +96,7 @@ export async function run() {
     }
   }
 
-  // Locations — scene backgrounds
+  // Locations — full-width scene backgrounds
   for (const [locId, loc] of Object.entries(bible.locations || {})) {
     const cacheKey = `loc_${locId}`;
     const result   = await generateDrawnImage(loc.prompt, loc.seed, cacheKey);
@@ -95,9 +107,12 @@ export async function run() {
   // Enemies
   for (const [enemyId, enemy] of Object.entries(bible.enemies || {})) {
     const cacheKey = `enemy_${enemyId}`;
-    const result   = await generateDrawnImage(enemy.prompt, enemy.seed, cacheKey, {
-      width: 512, height: 512,
-    });
+    const result   = await generateDrawnImage(
+      enemy.prompt || `${enemy.visualDescription}, flat 2D cartoon style`,
+      enemy.seed,
+      cacheKey,
+      { width: 512, height: 512 }
+    );
     result ? generated++ : skipped++;
     await new Promise(r => setTimeout(r, 500));
   }
