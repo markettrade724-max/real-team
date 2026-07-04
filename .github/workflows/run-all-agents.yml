@@ -13,13 +13,15 @@ on:
         type: choice
         options:
           - auto
-          - birth
-          - screenplay
+          - art-library        
+          - screenplay-production
+          - game-fix
+          - inventor
+          - library
           - production
           - game-phase1
           - game-phase2
-          - inventor
-          - library
+          - birth
           - sync
 
 jobs:
