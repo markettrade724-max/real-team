@@ -128,6 +128,10 @@ export async function run(visualScenes, episodeNumber, universe = {}) {
 async function tryDrawn(scene, artBible, outputPath) {
   try {
     // Try to match a character from the bible for seed consistency
+    const url =
+      `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}` +
+      `?width=${opts.width || 1920}&height=${opts.height || 1080}` +
+      `&seed=${seed || 42}&model=flux`;
     const charId = scene.characters?.[0]?.toLowerCase();
     const char   = charId && artBible.characters?.[charId];
     const locId  = Object.keys(artBible.locations || {}).find(k =>
