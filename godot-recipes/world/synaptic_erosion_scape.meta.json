@@ -1,0 +1,64 @@
+{
+  "name": "synaptic_erosion_scape",
+  "label": "The Dissolving Path",
+  "domain": "world",
+  "godotFeature": "ArrayMesh & PhysicsServer3D",
+  "poeticVision": "Feel the very ground underfoot dissolve into the void, a physical manifestation of Lyra's fading memories. Every step is a gamble, every chase a race against the world's own disintegration. The player experiences the profound terror of losing not just their mind, but the tangible reality around them, forcing them into a desperate, constant re-evaluation of pathways and escape routes as the environment literally crumbles.",
+  "usage": "Attach this script to a Node3D in your scene. Assign the `mesh_instance_path` to a MeshInstance3D node that has an ArrayMesh (e.g., a PlaneMesh converted to ArrayMesh or a procedurally generated one). Optionally, assign a `debris_scene` (a PackedScene containing a RigidBody3D with a MeshInstance3D for visual representation) and a `navigation_region_path` (a NavigationRegion3D node in your scene). Call `set_erosion_center(Vector3)` to define the point from which erosion originates (e.g., Lyra's current position or the Silence's hunter's position). Call `set_memory_integrity(float)` to influence the erosion speed (a lower value accelerates erosion). Use `re_solidify_path(Vector3, float)` to temporarily restore a section of the path, providing a brief reprieve from the dissolving environment.",
+  "parameters": [
+    {
+      "name": "erosion_speed",
+      "type": "float",
+      "default": "0.5",
+      "description": "Rate at which terrain vertices move downwards per second, simulating dissolution."
+    },
+    {
+      "name": "erosion_radius",
+      "type": "float",
+      "default": "10.0",
+      "description": "The radial distance around the `_erosion_center` within which the terrain is actively affected by erosion."
+    },
+    {
+      "name": "memory_integrity_factor",
+      "type": "float",
+      "default": "1.0",
+      "description": "A multiplier (0.0-1.0) for the erosion speed. A lower factor represents lower memory integrity, leading to faster terrain dissolution."
+    },
+    {
+      "name": "re_solidify_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "The duration in seconds for which a path remains temporarily re-solidified after `re_solidify_path` is called."
+    },
+    {
+      "name": "mesh_instance_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "The NodePath to the MeshInstance3D node that holds the ArrayMesh representing the dynamic terrain."
+    },
+    {
+      "name": "debris_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A PackedScene that will be instantiated as falling debris when parts of the terrain erode. This scene should ideally contain a RigidBody3D with a MeshInstance3D."
+    },
+    {
+      "name": "navigation_region_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "The NodePath to a NavigationRegion3D node whose navigation mesh will be updated in real-time to reflect the dissolving terrain."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D",
+    "ArrayMesh",
+    "RigidBody3D (for debris_scene)",
+    "NavigationRegion3D",
+    "NavigationServer3D",
+    "NavigationMeshSourceGeometryData3D"
+  ],
+  "verdict": "The ground beneath Lyra's feet becomes the ultimate battleground, a crumbling testament to her fading self, where every desperate step is a fight against the void of forgotten identity.",
+  "impact": "This invention transforms the abstract terror of memory loss into a visceral, ever-present physical threat. Players will experience constant, high-stakes navigation challenges, forcing split-second decisions as the very ground beneath them crumbles. The ability to temporarily re-solidify paths introduces a critical layer of resource management and strategic choice, making every recovered memory fragment a potential lifeline against the void. It ensures the environment is not merely a backdrop but an active, hostile antagonist, directly embodying Lyra's internal struggle and the relentless pressure of the Silence.",
+  "score": 100,
+  "inventedAt": "2026-07-04T13:09:12.911Z"
+}

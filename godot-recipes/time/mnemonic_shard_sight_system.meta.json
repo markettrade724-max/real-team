@@ -1,0 +1,50 @@
+{
+  "name": "mnemonic_shard_sight_system",
+  "label": "The Mnemonic Shard-Sight",
+  "domain": "time",
+  "godotFeature": "Viewports (for rendering 'past' states), Shaders (for temporal distortion/blending), PhysicsServer (for ghost collision/interaction)",
+  "poeticVision": "The frantic thrill of glimpsing a fractured past, seeing the 'ghost' of a path that once was, or anticipating a hunter's move by observing their forgotten echo. It's the desperate power of 'what was' momentarily manifesting to carve a path through 'what is,' a fleeting moment of clarity amidst the chaos of self-loss.",
+  "usage": "1.  Create a new `CanvasLayer` node in your scene (e.g., as a child of the main `Node2D` or `Node3D`).\n2.  Attach `mnemonic_shard_sight_system.gd` to this `CanvasLayer`.\n3.  Add a `TextureRect` as a child of the `CanvasLayer`. Name it `OverlayRect`.\n4.  Set the `TextureRect`'s `Layout` to `Full Rect` (or `Anchors Preset -> Full Rect`).\n5.  Create a new `ShaderMaterial` resource for the `TextureRect`'s `Material` property.\n6.  Load `mnemonic_shard_sight_shader.gdshader` (provided below) into the `Shader` property of the `ShaderMaterial`.\n7.  Adjust `history_frames`, `activation_cost_per_second`, `max_memory_resource`, `ghost_color`, `blend_factor` in the Inspector for the `MnemonicShardSightSystem` node.\n8.  To activate the effect, call `MnemonicShardSightSystem.activate_shard_sight()` from your player or game manager script.\n9.  To deactivate, call `MnemonicShardSightSystem.deactivate_shard_sight()`.\n10. To add memory resources (e.g., from picking up a memory shard), call `MnemonicShardSightSystem.add_memory_resource(amount)`.",
+  "parameters": [
+    {
+      "name": "history_frames",
+      "type": "int",
+      "default": "30",
+      "description": "Number of frames to buffer for the 'past' view. Higher values mean looking further back but consume more memory."
+    },
+    {
+      "name": "activation_cost_per_second",
+      "type": "float",
+      "default": "10.0",
+      "description": "Memory resource consumed per second while Shard-Sight is active."
+    },
+    {
+      "name": "max_memory_resource",
+      "type": "float",
+      "default": "100.0",
+      "description": "Maximum memory resource Lyra can have for Shard-Sight."
+    },
+    {
+      "name": "ghost_color",
+      "type": "Color",
+      "default": "Color(0.2, 0.8, 1.0, 0.5)",
+      "description": "Base color and transparency of the ghost overlay."
+    },
+    {
+      "name": "blend_factor",
+      "type": "float",
+      "default": "0.5",
+      "description": "How strongly the ghost effect is blended with the current screen (0.0 = no ghost, 1.0 = full ghost)."
+    }
+  ],
+  "dependencies": [
+    "CanvasLayer",
+    "TextureRect",
+    "ShaderMaterial",
+    "mnemonic_shard_sight_shader.gdshader"
+  ],
+  "verdict": "A brilliant manifestation of Lyra's desperate fight, transforming the abstract grief of self-loss into a visceral, tactical power that carves a path through the echoes of time.",
+  "impact": "This mechanic will fundamentally change how players perceive and interact with the game world. It introduces a tactical layer where 'memory' is a tangible, consumable resource that grants a powerful, yet fleeting, advantage. Players will constantly weigh the cost of clarity against the immediate danger, fostering a deep connection to Lyra's struggle against self-loss. It transforms the abstract concept of memory into a dynamic, urgent survival tool, making every glimpse into the past a high-stakes decision.",
+  "score": 5,
+  "inventedAt": "2026-07-04T13:15:54.989Z"
+}

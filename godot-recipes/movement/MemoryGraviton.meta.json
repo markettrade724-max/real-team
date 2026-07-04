@@ -1,0 +1,71 @@
+{
+  "name": "MemoryGraviton",
+  "label": "جاذبية الذاكرة",
+  "domain": "movement",
+  "godotFeature": "Dynamic manipulation of CharacterBody3D properties (gravity_scale, mass, linear_damp, friction) via PhysicsServer3D and physics_material_override.",
+  "poeticVision": "The very force of gravity, your own inherent weight and resistance to motion, becomes a reflection of your fading or returning memories. When your mind is fractured and memories slip, the world feels less real; your body becomes dangerously light, jumps become floaty and uncontrolled, momentum carries you too far, and even a gust of wind can send you spiraling. Recover a potent memory shard, and you feel a stabilizing 'thud' as you land, a physical grounding that offers resistance against the Silence's brutal pushes, allowing for more precise movements, but perhaps a heavier burden to accelerate. Every step, every jump, every fall physically echoes the state of your dissolving self.",
+  "usage": "Attach this script to your player's CharacterBody3D node. The 'memory_integrity' variable will dynamically adjust the character's gravity_scale, and the friction and linear_damp properties of its physics_material_override. Lower memory_integrity results in a lighter, floatier character with less gravity, friction, and dampening, making jumps longer and movement less precise. Higher memory_integrity grounds the character, providing more control and resistance. To fully leverage 'linear_damp' for the character's own movement decay (e.g., when not moving), your player controller script should read `_physics_material.linear_damp` and apply it manually to the character's velocity. For the 'mass' effect (resistance to external pushes), any external force-applying entities (like Silence hunters) should query this script's 'memory_integrity' and scale their applied forces accordingly.",
+  "parameters": [
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "The current state of Lyra's memory, ranging from 'min_memory_integrity' (most fractured) to 'max_memory_integrity' (most intact). This value directly influences physics properties."
+    },
+    {
+      "name": "min_memory_integrity",
+      "type": "float",
+      "default": "0.0",
+      "description": "The minimum possible value for 'memory_integrity', representing a completely fractured state. Corresponds to minimum gravity, friction, and dampening."
+    },
+    {
+      "name": "max_memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "The maximum possible value for 'memory_integrity', representing a fully intact state. Corresponds to maximum gravity, friction, and dampening."
+    },
+    {
+      "name": "min_gravity_scale",
+      "type": "float",
+      "default": "0.2",
+      "description": "The gravity_scale applied to the CharacterBody3D when 'memory_integrity' is at its minimum. Makes the character feel very light and floaty."
+    },
+    {
+      "name": "max_gravity_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "The gravity_scale applied to the CharacterBody3D when 'memory_integrity' is at its maximum. Provides standard gravity, making the character feel grounded."
+    },
+    {
+      "name": "min_friction",
+      "type": "float",
+      "default": "0.1",
+      "description": "The friction value applied to the CharacterBody3D's physics_material_override when 'memory_integrity' is at its minimum. Reduces ground grip and makes movement slippery."
+    },
+    {
+      "name": "max_friction",
+      "type": "float",
+      "default": "1.0",
+      "description": "The friction value applied to the CharacterBody3D's physics_material_override when 'memory_integrity' is at its maximum. Increases ground grip for precise movement."
+    },
+    {
+      "name": "min_linear_damp",
+      "type": "float",
+      "default": "0.1",
+      "description": "The linear_damp value applied to the CharacterBody3D's physics_material_override when 'memory_integrity' is at its minimum. Reduces resistance to motion and external forces."
+    },
+    {
+      "name": "max_linear_damp",
+      "type": "float",
+      "default": "1.0",
+      "description": "The linear_damp value applied to the CharacterBody3D's physics_material_override when 'memory_integrity' is at its maximum. Increases resistance to motion and external forces."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D"
+  ],
+  "verdict": "A profound and elegant fusion of narrative and mechanics, this invention makes the very fabric of reality bend to Lyra's dissolving self, transforming every step into a desperate echo of her fight to remember.",
+  "impact": "This mechanic transforms Lyra's internal struggle with memory loss into a visceral, moment-to-moment physical challenge. Players will viscerally feel the fragility of Lyra's identity as her movements become floaty and uncontrolled when memories fade, making every jump precarious and every enemy push a potential death sentence. Conversely, recovering a memory shard will provide an immediate, satisfying sense of grounding and control, directly empowering Lyra to navigate the treacherous memory-worlds and resist the Silence's relentless pursuit, making the act of remembering a literal anchor in chaos.",
+  "score": 0,
+  "inventedAt": "2026-07-04T13:02:54.779Z"
+}

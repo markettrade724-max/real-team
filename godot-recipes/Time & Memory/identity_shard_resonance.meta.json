@@ -1,0 +1,35 @@
+{
+  "name": "identity_shard_resonance",
+  "label": "Echoes of the Self",
+  "domain": "Time & Memory",
+  "godotFeature": "Godot's Resource system for managing shard properties, ShaderMaterial for visual feedback of a shard's decay/charge, Signals for triggering abilities, Tween for visual/audio feedback on use.",
+  "poeticVision": "The agonizing choice: wield a fragment of who you once were as a weapon, a shield, or a burst of speed, knowing each use erodes that memory, trading a sliver of your identity for another precious second of survival. Feel the crushing weight of self-sacrifice as you choose to forget a piece of yourself to escape the Silence.",
+  "usage": "This `MemoryShard` resource defines the core logic for memory fragments. To integrate it into your game:\n\n1.  **Create the Shader:** Save the following GLSL code as `memory_shard_dissolve.gdshader` in your project:\n\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back;\n\n    uniform sampler2D texture_albedo : source_color;\n    uniform sampler2D texture_noise : hint_default_black; // A noise texture for varied dissolve\n    uniform float dissolve_amount : hint_range(0.0, 1.0) = 0.0; // 0.0 = fully visible, 1.0 = fully dissolved\n    uniform vec4 dissolve_edge_color : source_color = vec4(1.0, 0.5, 0.0, 1.0);\n    uniform float dissolve_edge_width : hint_range(0.0, 0.1) = 0.02;\n\n    void fragment() {\n    \tvec4 albedo_tex = texture(texture_albedo, UV);\n    \tvec4 noise_tex = texture(texture_noise, UV);\n\n    \tfloat dissolve_threshold = dissolve_amount;\n    \tfloat noise_value = noise_tex.r; // Use red channel of noise\n\n    \t// Apply dissolve effect\n    \tif (noise_value < dissolve_threshold) {\n    \t\tdiscard;\n    \t}\n\n    \t// Add glowing edge effect during dissolve\n    \tfloat edge_start = dissolve_threshold;\n    \tfloat edge_end = dissolve_threshold + dissolve_edge_width;\n\n    \tif (noise_value >= edge_start && noise_value < edge_end) {\n    \t\tALBEDO = dissolve_edge_color.rgb;\n    \t\tALPHA = dissolve_edge_color.a;\n    \t} else {\n    \t\tALBEDO = albedo_tex.rgb;\n    \t\tALPHA = albedo_tex.a;\n    \t}\n    }\n    \n\n2.  **Create a Visual Node:** In your scene, create a `MeshInstance3D` (for 3D shards) or `Sprite2D` (for 2D shards) to represent a memory fragment. Let's call this `MemoryShardVisual`.\n\n3.  **Apply Shader Material:**\n    *   Create a new `ShaderMaterial` for `MemoryShardVisual`.\n    *   Assign `memory_shard_dissolve.gdshader` to its `Shader` property.\n    *   Assign a base `texture_albedo` (e.g., a glowing crystal texture) and a `texture_noise` (e.g., a Perlin noise texture) to the shader uniforms.\n\n4.  **Attach a Controller Script:** Create a new GDScript (e.g., `MemoryShardController.gd`) and attach it to your `MemoryShardVisual` node. This script will manage the `MemoryShard` resource and its visual effects.\n\n    gdscript\n    # filename: MemoryShardController.gd\n    extends MeshInstance3D # Or Sprite2D for 2D\n\n    @export var memory_shard_resource: MemoryShard # Assign your MemoryShard resource here\n\n    var current_material: ShaderMaterial\n\n    func _ready():\n    \tif memory_shard_resource:\n    \t\tmemory_shard_resource.shard_used.connect(_on_shard_used)\n    \t\tmemory_shard_resource.shard_lost.connect(_on_shard_lost)\n    \t\t\n    \t# Get the ShaderMaterial instance\n    \tif material_override is ShaderMaterial:\n    \t\tcurrent_material = material_override\n    \telif get_active_material(0) is ShaderMaterial:\n    \t\tcurrent_material = get_active_material(0) as ShaderMaterial\n    \telse:\n    \t\tprinterr(\"MemoryShardVisual requires a ShaderMaterial.\")\n    \t\tset_process(false)\n\n    func use_shard():\n    \tif memory_shard_resource and not memory_shard_resource.is_lost():\n    \t\tmemory_shard_resource.use()\n\n    func _on_shard_used(shard_type: String, current_integrity_ratio: float):\n    \t# Example: Trigger a subtle visual pulse or sound effect on use\n    \tprint(\"Shard '\" + shard_type + \"' used. Integrity: \" + str(current_integrity_ratio))\n    \t# You could tween a temporary color change or scale here\n\n    func _on_shard_lost(shard_type: String):\n    \tprint(\"Shard '\" + shard_type + \"' lost forever!\")\n    \t# Animate the dissolution effect\n    \tif current_material:\n    \t\tvar tween = create_tween()\n    \t\ttween.tween_property(current_material, \"shader_parameter/dissolve_amount\", 1.0, 1.5).set_ease(Tween.EASE_IN)\n    \t\ttween.tween_callback(Callable(self, \"queue_free\")) # Remove the node after dissolution\n    \telse:\n    \t\tqueue_free() # Just remove if no material to dissolve\n    \n\n5.  **Instantiate and Use:** In your game logic (e.g., Player script), you would have a reference to `MemoryShardController` and call its `use_shard()` method when the player activates a memory fragment.",
+  "parameters": [
+    {
+      "name": "shard_type",
+      "type": "MemoryShard.ShardType",
+      "default": "MemoryShard.ShardType.AGILITY",
+      "description": "The type of memory this shard represents, influencing its associated ability (e.g., AGILITY for speed, RESOLVE for defense)."
+    },
+    {
+      "name": "max_integrity",
+      "type": "int",
+      "default": "3",
+      "description": "The maximum number of times this memory shard can be used before it is permanently lost."
+    },
+    {
+      "name": "decay_per_use",
+      "type": "int",
+      "default": "1",
+      "description": "The amount of integrity lost each time the shard is used. Typically 1."
+    }
+  ],
+  "dependencies": [
+    "memory_shard_dissolve.gdshader"
+  ],
+  "verdict": "A brilliant, agonizing mechanic that transmutes the very essence of self into a fleeting tool for survival, forcing players to confront the crushing cost of existence.",
+  "impact": "This mechanic will force players into agonizing, identity-defining choices, directly embodying the game's core themes of self-loss and desperate survival. Every use of a memory shard becomes a poignant moment of self-sacrifice, creating a deep emotional connection to Lyra's struggle. It transforms resource management into a philosophical dilemma, making each tactical decision resonate with existential weight. The constant erosion of self for survival is a powerful, unforgettable experience.",
+  "score": 95,
+  "inventedAt": "2026-07-04T13:12:23.136Z"
+}

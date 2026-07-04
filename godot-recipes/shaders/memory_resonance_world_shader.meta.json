@@ -1,0 +1,72 @@
+{
+  "name": "memory_resonance_world_shader",
+  "label": "The Echoes of What Was",
+  "domain": "shaders",
+  "godotFeature": "ShaderMaterial with custom `vertex()` and `fragment()` functions, `ARRAY_TEXTURES`, `ViewportTexture`, and `uniforms` for dynamic data passing.",
+  "poeticVision": "As Lyra clutches a recovered memory fragment, the crumbling ruins around her don't just stand still. They *breathe*. Ghostly architectural details shimmer into existence on a derelict wall, a faded mural briefly glows with forgotten colors, or the very ground ripples, revealing the ghost of a path long lost. The player feels a profound, almost tragic connection to the environment, as if touching the living ghost of a past that could still exist, if only Lyra could remember it all. It's a fleeting glimpse of beauty and truth amidst decay, a desperate reminder of what the Silence is devouring, making the environment an extension of Lyra's internal struggle.",
+  "usage": "1. Create a new ShaderMaterial resource in Godot.\n2. Load this 'memory_resonance_world_shader.gdshader' file into the ShaderMaterial.\n3. Assign the ShaderMaterial to the 'material_override' or a specific surface material of a MeshInstance3D node (e.g., a wall, floor, or prop).\n4. Assign 'albedo_ruined', 'albedo_pristine', 'normal_ruined', and 'normal_pristine' textures in the ShaderMaterial's inspector.\n5. From a GDScript (e.g., attached to Lyra, a memory fragment, or a scene manager), update the shader's uniforms dynamically:\n   var mesh_instance = get_node(\"Path/To/Your/MeshInstance3D\")\n   var shader_material = mesh_instance.get_active_material(0) # Or get_surface_override_material(0)\n\n   # When Lyra activates a memory fragment:\n   # Set the unique 'memory signature' color for the glow\n   shader_material.set_shader_parameter(\"memory_glow_color\", Color(0.2, 0.7, 1.0, 1.0)) # Example color\n   # Animate the reveal factor over time (e.g., using a Tween)\n   var tween = get_tree().create_tween()\n   tween.tween_property(shader_material, \"shader_parameter/memory_reveal_factor\", 1.0, 0.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)\n   # Update time_elapsed in _process or _physics_process for animation\n   shader_material.set_shader_parameter(\"time_elapsed\", Time.get_ticks_msec() / 1000.0)\n\n   # When the memory effect fades or fragment is put away:\n   # Animate memory_reveal_factor back to 0.0\n   tween.tween_property(shader_material, \"shader_parameter/memory_reveal_factor\", 0.0, 0.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)\n",
+  "parameters": [
+    {
+      "name": "albedo_ruined",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Base albedo texture for the ruined state of the environment."
+    },
+    {
+      "name": "albedo_pristine",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Albedo texture for the pristine, remembered state of the environment."
+    },
+    {
+      "name": "normal_ruined",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Normal map for the ruined state."
+    },
+    {
+      "name": "normal_pristine",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Normal map for the pristine, remembered state."
+    },
+    {
+      "name": "memory_reveal_factor",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the blend between the ruined (0.0) and pristine (1.0) states. Should be animated by game logic."
+    },
+    {
+      "name": "memory_glow_color",
+      "type": "vec4",
+      "default": "vec4(0.5, 0.8, 1.0, 1.0)",
+      "description": "The color of the spectral glow that appears during the memory reveal. Can be set per memory fragment."
+    },
+    {
+      "name": "displacement_strength",
+      "type": "float",
+      "default": "0.05",
+      "description": "Intensity of the vertex displacement effect that makes the ground/structures ripple."
+    },
+    {
+      "name": "glow_intensity",
+      "type": "float",
+      "default": "2.0",
+      "description": "Overall intensity multiplier for the spectral glow effect."
+    },
+    {
+      "name": "time_elapsed",
+      "type": "float",
+      "default": "0.0",
+      "description": "A time uniform (e.g., `Time.get_ticks_msec() / 1000.0`) to animate the displacement and glow patterns."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (or any node using a ShaderMaterial)",
+    "Texture2D resources (for albedo and normal maps)"
+  ],
+  "verdict": "A breathtaking glimpse into the soul's fractured past, making the very world weep with forgotten beauty as Lyra fights to remember.",
+  "impact": "This invention profoundly deepens the player's emotional connection to Lyra's journey and the world. It transforms the environment from a static backdrop into a living, breathing reflection of Lyra's internal state, making the act of memory recovery feel vital and visually rewarding. It reinforces the tragedy of loss and the desperate beauty of what Lyra is fighting to protect, turning every recovered fragment into a moment of poignant revelation amidst the chaos.",
+  "score": 92,
+  "inventedAt": "2026-07-04T13:03:54.153Z"
+}

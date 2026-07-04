@@ -1,0 +1,108 @@
+{
+  "name": "synaptic_shredder",
+  "label": "The Echo of Self",
+  "domain": "weapons",
+  "godotFeature": "GPUParticles3D, PhysicsServer3D, Custom Shaders",
+  "poeticVision": "The player wields a weapon that doesn't just kill, but *unravels* enemies into their constituent memories. This creates a desperate scramble on the battlefield: collect the vital, gleaming fragments that bolster Lyra's fading identity, but avoid the dark, corrupted echoes that wound her very soul. Every kill becomes a dangerous harvest, forcing split-second decisions between survival and self-preservation. It's the thrill of reclaiming identity, tinged with the terror of touching oblivion.",
+  "usage": "1.  **Create a Spawner Node**: Add a `Node3D` to your scene (e.g., named `MemoryFragmentSpawner`). Attach this `synaptic_shredder.gd` script to it.\n2.  **Configure Spawner Properties**: In the Inspector, set the `fragment_mesh` (e.g., a `SphereMesh` or `CubeMesh`), colors, lifetime, speed, and fragment counts. Adjust `vital_fragment_ratio` to control the balance between vital and corrupted memories.\n3.  **Create a Visual Particle Effect**: Create a `GPUParticles3D` scene (e.g., `res://unravel_particles.tscn`). Configure it for a short, explosive burst (set `one_shot = true`, `autostart = false`, `lifetime` to a small value like 0.5-1.0, and connect its `finished` signal to `queue_free`). Assign this `PackedScene` to the `unravel_particles_scene` property on your spawner node.\n4.  **Trigger Spawning**: When an enemy is defeated, call the `spawn_memory_fragments(enemy_global_position)` method on your spawner instance. For example, if your enemy script has a reference to the spawner: `spawner_node.spawn_memory_fragments(global_transform.origin)`.\n5.  **Player Setup**: Ensure your player character has an `Area3D` or `CharacterBody3D` with its `collision_layer` set to `2` (or whatever layer corresponds to the `collision_mask` of the fragments). The player script should also have a method `is_player()` (or similar check) that returns `true` for the fragment spawner to identify it. Connect to the `identity_gained` and `identity_lost` signals from the spawner to update Lyra's identity/health.\n6.  **Collision Layers**: Verify that `Project Settings -> Physics -> 3D -> Layer Names` are configured appropriately (e.g., Layer 1: \"Fragments\", Layer 2: \"Player\").",
+  "parameters": [
+    {
+      "name": "fragment_mesh",
+      "type": "Mesh",
+      "default": "null",
+      "description": "The mesh used to render individual memory fragments."
+    },
+    {
+      "name": "vital_color",
+      "type": "Color",
+      "default": "Color.LIME_GREEN",
+      "description": "The color for vital (collectible) memory fragments."
+    },
+    {
+      "name": "corrupted_color",
+      "type": "Color",
+      "default": "Color.DARK_RED",
+      "description": "The color for corrupted (damaging) memory fragments."
+    },
+    {
+      "name": "fragment_scale",
+      "type": "float",
+      "default": "0.1",
+      "description": "The uniform scale of the spawned memory fragments."
+    },
+    {
+      "name": "fragment_lifetime",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration (in seconds) before a fragment despawns."
+    },
+    {
+      "name": "fragment_speed_min",
+      "type": "float",
+      "default": "1.0",
+      "description": "Minimum initial speed for fragments."
+    },
+    {
+      "name": "fragment_speed_max",
+      "type": "float",
+      "default": "3.0",
+      "description": "Maximum initial speed for fragments."
+    },
+    {
+      "name": "fragment_angular_speed_min",
+      "type": "float",
+      "default": "1.0",
+      "description": "Minimum initial angular speed for fragments."
+    },
+    {
+      "name": "fragment_angular_speed_max",
+      "type": "float",
+      "default": "5.0",
+      "description": "Maximum initial angular speed for fragments."
+    },
+    {
+      "name": "vital_fragment_ratio",
+      "type": "float",
+      "default": "0.7",
+      "description": "The probability (0.0 to 1.0) that a spawned fragment will be vital."
+    },
+    {
+      "name": "fragment_count_min",
+      "type": "int",
+      "default": "5",
+      "description": "Minimum number of fragments to spawn upon enemy defeat."
+    },
+    {
+      "name": "fragment_count_max",
+      "type": "int",
+      "default": "15",
+      "description": "Maximum number of fragments to spawn upon enemy defeat."
+    },
+    {
+      "name": "identity_gain_amount",
+      "type": "float",
+      "default": "10.0",
+      "description": "The amount of identity gained when Lyra collects a vital fragment."
+    },
+    {
+      "name": "identity_loss_amount",
+      "type": "float",
+      "default": "5.0",
+      "description": "The amount of identity lost when Lyra touches a corrupted fragment."
+    },
+    {
+      "name": "unravel_particles_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A `PackedScene` containing a `GPUParticles3D` node for the initial visual burst effect when fragments are spawned. This scene should be configured to be `one_shot` and `queue_free` itself after emitting."
+    }
+  ],
+  "dependencies": [
+    "A `GPUParticles3D` `PackedScene` resource for the `unravel_particles_scene` property.",
+    "A player character node that is an `Area3D` or `CharacterBody3D` (or similar physics body) with its `collision_mask` set to detect collision layer 1, and a method `is_player()` (or similar) for identification."
+  ],
+  "verdict": "A brilliant fusion of combat and existential dread, where every victory is a perilous dance with oblivion, forcing Lyra to harvest her very self from the wreckage of memory.",
+  "impact": "This invention transforms every enemy encounter from a simple combat challenge into a high-stakes, post-kill scramble for self-preservation. Players will no longer just defeat foes; they will engage in a desperate harvest of their own identity, forcing split-second decisions that directly impact Lyra's fading self. This creates a unique layer of tension and urgency, deepening the player's connection to the core themes of memory, loss, and survival, making combat a constant, visceral negotiation with oblivion.",
+  "score": 100,
+  "inventedAt": "2026-07-04T13:11:26.848Z"
+}

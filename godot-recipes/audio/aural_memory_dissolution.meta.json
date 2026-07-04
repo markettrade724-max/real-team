@@ -1,0 +1,51 @@
+{
+  "name": "aural_memory_dissolution",
+  "label": "The Echo of Forgetting",
+  "domain": "audio",
+  "godotFeature": "AudioBuses, AudioEffects, GDScript",
+  "poeticVision": "The world's sounds become a fractured mosaic, reflecting Lyra's internal disarray. Every lost memory isn't just a narrative beat; it's a physical silence, a gaping hole in the soundscape, or a jarring distortion that makes the hunters' approach even more terrifyingly ambiguous. You'll feel the growing emptiness of Lyra's mind in the very air you breathe, struggling to discern threats through a world that sounds increasingly alien and incomplete.",
+  "usage": "Attach this script to a Node in your scene (e.g., a GameManager or AudioController). Ensure the AudioBuses specified in 'bus_names_to_affect' (e.g., 'Environment', 'Hunters', 'Dialogue') exist in Project Settings -> Audio -> Buses. Each of these buses must also have an 'AudioEffectLowPassFilter' and an 'AudioEffectDistortion' added to them in the Project Settings. To dynamically change Lyra's memory state and thus the audio effects, call the 'set_memory_state(new_value: float)' method on this script's instance, where 'new_value' is between 0.0 (complete memory loss) and 1.0 (full memory).",
+  "parameters": [
+    {
+      "name": "memory_state",
+      "type": "float",
+      "default": "1.0",
+      "description": "The current memory level of Lyra, ranging from 1.0 (full memory) to 0.0 (complete loss). This value directly controls the intensity of audio degradation."
+    },
+    {
+      "name": "bus_names_to_affect",
+      "type": "Array[String]",
+      "default": "[\"Environment\", \"Hunters\", \"Dialogue\"]",
+      "description": "A list of AudioBus names that will have their volume and effects (LowPassFilter, Distortion) adjusted based on Lyra's memory state. These buses must exist in Project Settings and contain the specified effects."
+    },
+    {
+      "name": "max_volume_reduction_db",
+      "type": "float",
+      "default": "15.0",
+      "description": "The maximum volume reduction (in dB) applied to the affected audio buses when Lyra's memory is completely lost (memory_state = 0.0)."
+    },
+    {
+      "name": "min_lowpass_cutoff_hz",
+      "type": "float",
+      "default": "500.0",
+      "description": "The lowest cutoff frequency (in Hz) for the LowPassFilter effect on affected buses when Lyra's memory is completely lost. A lower value results in a more muffled sound."
+    },
+    {
+      "name": "max_distortion_drive",
+      "type": "float",
+      "default": "0.8",
+      "description": "The highest 'drive' value for the Distortion effect on affected buses when Lyra's memory is completely lost. A higher value increases the intensity of the distortion."
+    },
+    {
+      "name": "max_distortion_pre_gain_db",
+      "type": "float",
+      "default": "10.0",
+      "description": "The highest 'pre_gain' value (in dB) for the Distortion effect on affected buses when Lyra's memory is completely lost. This amplifies the signal before distortion, making the effect more pronounced."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A masterstroke of sensory design, this invention weaves the agony of self-loss into the very fabric of sound, making Lyra's internal decay an inescapable, terrifying auditory reality.",
+  "impact": "This invention transforms the abstract concept of memory loss into a visceral, auditory experience. Players will not just observe Lyra's mental degradation; they will viscerally feel it as the soundscape becomes increasingly fractured, distorted, and silent. This directly enhances the core themes of self-loss and constant tension, making the approach of hunters terrifyingly ambiguous and every survival challenge more profound. It ensures that the 'grief of self-loss' is a pervasive, unsettling presence, deepening player immersion and emotional connection to Lyra's struggle.",
+  "score": 5,
+  "inventedAt": "2026-07-04T13:05:41.781Z"
+}

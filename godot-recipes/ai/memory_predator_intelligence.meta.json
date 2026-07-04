@@ -1,0 +1,51 @@
+{
+  "name": "memory_predator_intelligence",
+  "label": "The Echo Weaver",
+  "domain": "ai",
+  "godotFeature": "GDScript for complex behavior logic, custom data structures, NavigationServer3D, and Godot's Signal system for player observation.",
+  "poeticVision": "The chilling realization that the hunters aren't just chasing your body, but understand the very tapestry of your lost self. They anticipate your grief, weaponize your attachments, and weave your forgotten joys into traps. It's not just a chase; it's a profound, invasive violation of your soul, making you question every choice you make to protect what remains.",
+  "usage": "Attach this 'memory_predator_intelligence.gd' script to a central game manager node (e.g., an Autoload singleton). Lyra's character script or a dedicated memory interaction manager should emit the 'memory_fragment_interacted' and 'memory_fragment_lost' signals, connecting them to this system's respective '_on_memory_fragment_interacted' and '_on_memory_fragment_lost' methods. Individual Silence Hunter AI scripts will then call this system's 'generate_hunter_tactics(hunter_id, current_context)' function to receive a dynamic tactical plan. Hunters interpret this plan to execute specific pursuit behaviors (e.g., using NavigationServer3D), trigger environmental traps, spawn illusions, or focus attacks on memory fragments related to Lyra's attachments or lost memories.",
+  "parameters": [
+    {
+      "name": "fragment_id",
+      "type": "String",
+      "default": "null",
+      "description": "A unique identifier for a specific memory fragment Lyra interacts with or loses."
+    },
+    {
+      "name": "interaction_type",
+      "type": "String",
+      "default": "null",
+      "description": "Describes Lyra's interaction with a memory fragment (e.g., 'recover', 'prioritize', 'ignore')."
+    },
+    {
+      "name": "memory_type",
+      "type": "String",
+      "default": "null",
+      "description": "The thematic category of a memory fragment (e.g., 'joy', 'grief', 'skill', 'family')."
+    },
+    {
+      "name": "hunter_id",
+      "type": "String",
+      "default": "null",
+      "description": "A unique identifier for the specific Silence hunter requesting tactics."
+    },
+    {
+      "name": "current_context",
+      "type": "Dictionary",
+      "default": "{}",
+      "description": "A dictionary containing current environmental and game state information (e.g., {'danger_level': 0.8, 'memory_density': 0.6, 'location_type': 'crumbling_bridge'})."
+    }
+  ],
+  "dependencies": [
+    "Node (base class)",
+    "Lyra's character script (to emit interaction signals)",
+    "Individual Silence Hunter AI scripts (to query tactics and execute them)",
+    "Memory Fragment nodes (to define fragment_id and memory_type)",
+    "NavigationServer3D (for hunter pathfinding, implied by 'pursuit_strategy' but not directly implemented here)"
+  ],
+  "verdict": "A chillingly brilliant mechanism that weaves the player's deepest vulnerabilities into the very fabric of their pursuit, making every chase a profound violation of the soul.",
+  "impact": "This will transform the player's perception of the hunters from mere physical threats into insidious psychological tormentors, forcing them to confront the emotional weight of their choices and lost identity in every encounter. The game becomes a deeply personal struggle against an enemy that understands and weaponizes the player's grief and attachments, creating an unforgettable, emotionally resonant challenge.",
+  "score": 98,
+  "inventedAt": "2026-07-04T13:04:50.363Z"
+}

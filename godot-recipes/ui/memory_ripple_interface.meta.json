@@ -1,0 +1,51 @@
+{
+  "name": "memory_ripple_interface",
+  "label": "شاشات الذاكرة الموجية",
+  "domain": "ui",
+  "godotFeature": "CanvasGroup, CanvasItem shaders, Tween, SubViewport",
+  "poeticVision": "Imagine your health bar, your objective marker, your memory shards — not as static displays, but as entities caught in Lyra's internal struggle. When she recovers a vital memory, the entire HUD subtly ripples, coalescing momentarily around the new fragment, a brief moment of psychic clarity. When the Silence strikes, her UI doesn't just display damage; it visibly fractures, elements scattering like shattered glass before desperately attempting to reform, reflecting the pain of self-loss. It's a constant, subtle reminder that her perception, her very interface with reality, is as fragile and fragmented as her identity, making the player feel the constant threat of dissolution.",
+  "usage": "1. Create a new `Control` node in your scene (e.g., `MemoryInterface`).\n2. Attach `memory_ripple_interface.gd` to this `Control` node.\n3. In the Inspector, set the `Ripple Shader Path` property to the path of `memory_ripple_interface.gdshader`.\n4. All your actual HUD elements (health bar, memory shard display, objective marker, etc.) should be placed as children of the `HUD_Elements_Container` node, which is automatically created inside the `SubViewport`.\n5. To trigger a memory ripple effect, call `MemoryInterface.trigger_memory_ripple(memory_position_normalized)` from your game logic. `memory_position_normalized` is a `Vector2` (0.0-1.0) representing the screen position where the memory appeared.\n6. To trigger a damage fracture effect, call `MemoryInterface.trigger_damage_fracture()` from your game logic when Lyra takes damage.",
+  "parameters": [
+    {
+      "name": "ripple_shader_path",
+      "type": "String",
+      "default": "",
+      "description": "Path to the GLSL shader file (`memory_ripple_interface.gdshader`) that applies the ripple/distortion effect."
+    },
+    {
+      "name": "ripple_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "Total duration of the memory ripple animation in seconds."
+    },
+    {
+      "name": "ripple_max_strength",
+      "type": "float",
+      "default": "0.05",
+      "description": "Maximum distortion strength of the ripple effect."
+    },
+    {
+      "name": "fracture_duration",
+      "type": "float",
+      "default": "0.3",
+      "description": "Total duration of the damage fracture (HUD shake) animation in seconds."
+    },
+    {
+      "name": "fracture_shake_amount",
+      "type": "float",
+      "default": "10.0",
+      "description": "Maximum pixel offset for the HUD shake effect during damage."
+    }
+  ],
+  "dependencies": [
+    "SubViewportContainer",
+    "SubViewport",
+    "TextureRect",
+    "Control (for HUD_Elements_Container)",
+    "memory_ripple_interface.gdshader"
+  ],
+  "verdict": "The interface becomes Lyra's fractured mind, a living canvas of her desperate fight against the encroaching void, making every visual cue a whisper of her fading self.",
+  "impact": "This invention transforms the passive user interface into an active, visceral extension of Lyra's internal struggle. By visually manifesting the fragility of her identity through ripples of recovered memory and fractures of sustained damage, it deepens player immersion and empathy, making the constant threat of self-loss a palpable, ever-present reality on screen. It elevates the HUD from a mere display to a dynamic narrative element, reinforcing the game's core themes of survival and the desperate fight against forgetting, ensuring every glance at the UI is a reminder of Lyra's precarious state.",
+  "score": 98,
+  "inventedAt": "2026-07-04T13:07:49.386Z"
+}
