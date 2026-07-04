@@ -586,7 +586,7 @@ function renderSeries(t){
     const safeTheme  = esc(ep.theme  || ep.logline || '');
     const safeVideo  = esc(ep.videoUrl   || '');
     const safeTrailer= esc(ep.trailerUrl || '');
-    const shareUrl   = esc(ep.videoUrl || (pageUrl + '#seriesSec'));
+    const shareUrl   = esc(window.location.origin + '/api/ep?n=' + ep.number);
 
     return `
     <div class="ep-card reveal">
