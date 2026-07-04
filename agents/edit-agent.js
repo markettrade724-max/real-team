@@ -1,11 +1,24 @@
 /**
- * edit-agent.js — v2.3
+ * edit-agent.js — v2.4
+ *
+ * Changes from v2.3:
+ *  - extractThumbnail(): extracts one frame at t=4s (1280×720 JPEG)
+ *    for OG social share preview (api/ep.js reads thumbnailUrl from series.json)
+ *  - result object now includes thumbnailPath
+ *  - temp files renamed: temp_raw.mp4 → temp_mixed.mp4 → output (clean chain)
+ *
+ * Changes from v2.3:
+ *  - burnSubtitles(): real subtitle burn-in via ffmpeg subtitles filter
+ *    Requires: assets/fonts/Roboto-Regular.ttf (Apache 2.0, Google Fonts)
+ *    Fallback: if font missing or no .srt → copies without burn-in, no crash
  *
  * Changes from v2.2:
- *  - burnSubtitles() — real subtitle burn-in via ffmpeg subtitles filter (rule-184 finally implemented)
- *  - run() now routes: concat → mix music → burn subtitles → final output
- *  - Requires: assets/fonts/Roboto-Regular.ttf in repo (Apache 2.0, get from Google Fonts)
- *  - Fallback: if no .srt file or font missing, copies without burn-in (no crash)
+ *  - buildSegment: correct handling of audio.length === 0 / 1 / N
+ *
+ * Rules applied:
+ *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
+ *  rule-126 : Node.js pure — fluent-ffmpeg
+ *  rule-184 : subtitle burn-in in edit-agent (implemented in v2.3, maintained)
  */
 
 import { writeFileSync, existsSync, mkdirSync, copyFileSync } from 'fs';
@@ -22,8 +35,16 @@ const MUSIC_LIB    = join(__dirname, '..', 'assets', 'music');
 const FALLBACK_IMG = join(__dirname, '..', 'assets', 'fallback.png');
 const FONTS_DIR    = join(__dirname, '..', 'assets', 'fonts');
 
-// ── Main ──────────────────────────────────────────────────
-export async function run(screenplay, visualManifest, audioManifest, subtitles = null, music = null) {
+// ══════════════════════════════════════════════════════════
+// Main
+// ══════════════════════════════════════════════════════════
+export async function run(
+  screenplay,
+  visualManifest,
+  audioManifest,
+  subtitles = null,
+  music     = null
+) {
   logger.info('[EDIT] Assembling video', { episode: screenplay.episode });
 
   const epDir  = join(__dirname, '..', 'episodes', `ep${screenplay.episode}`);
@@ -35,7 +56,7 @@ export async function run(screenplay, visualManifest, audioManifest, subtitles =
   const outputPath = join(outDir, `episode-${screenplay.episode}.mp4`);
   const timeline   = buildTimeline(screenplay, visualManifest, audioManifest);
 
-  // 1 — Build scene segments
+  // ── 1. Build scene segments ─────────────────────────────
   const segPaths = [];
   for (const scene of timeline.scenes) {
     const segPath = join(segDir, `${scene.id}.mp4`);
@@ -46,96 +67,98 @@ export async function run(screenplay, visualManifest, audioManifest, subtitles =
     }
   }
 
-  if (segPaths.length === 0) throw new Error('No segments built — cannot assemble episode');
+  if (segPaths.length === 0) {
+    throw new Error('No segments built — cannot assemble episode');
+  }
 
-  // 2 — Concatenate segments
+  // ── 2. Concatenate segments ──────────────────────────────
   const concatPath = join(epDir, 'concat.txt');
   writeFileSync(
     concatPath,
     segPaths.map(p => `file '${p.replace(/\\/g, '/')}'`).join('\n'),
     'utf8'
   );
-  const tempPath  = join(outDir, 'temp_raw.mp4');
-  await concatSegments(concatPath, tempPath);
 
-  // 3 — Mix background music
-  const bgMusic  = resolveMusicPath(music);
-  const mixedPath = join(outDir, 'temp_mixed.mp4');
+  const tempRawPath = join(outDir, 'temp_raw.mp4');
+  await concatSegments(concatPath, tempRawPath);
+  logger.info('[EDIT] Segments concatenated');
+
+  // ── 3. Mix background music ──────────────────────────────
+  const bgMusic    = resolveMusicPath(music);
+  const tempMixed  = join(outDir, 'temp_mixed.mp4');
 
   if (bgMusic && existsSync(bgMusic)) {
-    await mixWithMusic(tempPath, bgMusic, mixedPath, 0.15);
+    await mixWithMusic(tempRawPath, bgMusic, tempMixed, 0.15);
     logger.info('[EDIT] Background music mixed');
   } else {
-    copyFileSync(tempPath, mixedPath);
+    copyFileSync(tempRawPath, tempMixed);
     logger.info('[EDIT] No background music — using direct audio');
   }
 
-  // 4 — Burn subtitles (rule-184 — real implementation)
-  const srtPath = subtitles?.enSRT && existsSync(subtitles.enSRT) ? subtitles.enSRT : null;
-  const fontPath = join(FONTS_DIR, 'Roboto-Regular.ttf');
+  // ── 4. Burn subtitles ────────────────────────────────────
+  // rule-184 — requires assets/fonts/Roboto-Regular.ttf (Apache 2.0)
+  const srtPath      = subtitles?.enSRT && existsSync(subtitles.enSRT)
+    ? subtitles.enSRT : null;
+  const fontPath     = join(FONTS_DIR, 'Roboto-Regular.ttf');
   const fontAvailable = existsSync(fontPath);
 
   if (srtPath && fontAvailable) {
-    await burnSubtitles(mixedPath, srtPath, outputPath);
+    await burnSubtitles(tempMixed, srtPath, outputPath);
     logger.info('[EDIT] Subtitles burned in', { srt: srtPath });
   } else {
-    copyFileSync(mixedPath, outputPath);
-    if (!srtPath) logger.info('[EDIT] No subtitles — output without burn-in');
-    else logger.warn('[EDIT] Font missing — output without burn-in. Add assets/fonts/Roboto-Regular.ttf');
+    copyFileSync(tempMixed, outputPath);
+    if (!srtPath) {
+      logger.info('[EDIT] No subtitles available — output without burn-in');
+    } else {
+      logger.warn('[EDIT] Font missing — output without burn-in. ' +
+        'Add assets/fonts/Roboto-Regular.ttf (Apache 2.0, Google Fonts)');
+    }
   }
 
+  // ── 5. Extract thumbnail for OG share preview ────────────
+  // api/ep.js uses thumbnailUrl from series.json for social card image
+  const thumbPath = join(outDir, 'thumbnail.jpg');
+  let   thumbnailPath = null;
+  try {
+    await extractThumbnail(outputPath, thumbPath);
+    thumbnailPath = thumbPath;
+    logger.info('[EDIT] Thumbnail extracted', { path: thumbPath });
+  } catch (err) {
+    logger.warn('[EDIT] Thumbnail extraction skipped', { error: err.message });
+  }
+
+  // ── Result ───────────────────────────────────────────────
   const result = {
-    episode:     screenplay.episode,
-    title:       screenplay.title,
+    episode:       screenplay.episode,
+    title:         screenplay.title,
     outputPath,
-    duration:    timeline.totalDuration,
-    scenes:      timeline.scenes.length,
-    subtitles:   subtitles || null,
-    generatedAt: new Date().toISOString(),
+    thumbnailPath, // null if extraction failed — upload-agent handles gracefully
+    duration:      timeline.totalDuration,
+    scenes:        timeline.scenes.length,
+    subtitles:     subtitles || null,
+    generatedAt:   new Date().toISOString(),
   };
 
   writeFileSync(
     join(epDir, 'episode-manifest.json'),
-    JSON.stringify(result, null, 2), 'utf8'
+    JSON.stringify(result, null, 2),
+    'utf8'
   );
 
   logger.info('[OK] Episode ready', {
-    episode:  screenplay.episode,
-    duration: `${Math.round(timeline.totalDuration / 60)}min`,
-    path:     outputPath,
+    episode:       screenplay.episode,
+    duration:      `${Math.round(timeline.totalDuration / 60)}min`,
+    path:          outputPath,
+    hasThumbnail:  !!thumbnailPath,
+    hasSubtitles:  !!srtPath && fontAvailable,
   });
 
   return result;
 }
 
-// ── Subtitle burn-in via ffmpeg subtitles filter ──────────
-// Requires: Roboto-Regular.ttf in assets/fonts/ (Apache 2.0 — google fonts)
-function burnSubtitles(inputPath, srtPath, outputPath) {
-  return new Promise((resolve, reject) => {
-    // Escape colons in paths for ffmpeg filter syntax (Windows C:\ issue)
-    const escapedSrt  = srtPath.replace(/\\/g, '/').replace(/:/g, '\\:');
-    const escapedFont = FONTS_DIR.replace(/\\/g, '/').replace(/:/g, '\\:');
-
-    const filter =
-      `subtitles=filename='${escapedSrt}':fontsdir='${escapedFont}':` +
-      `force_style='FontName=Roboto,FontSize=22,PrimaryColour=&HFFFFFF&,` +
-      `OutlineColour=&H000000&,BorderStyle=1,Outline=2,Shadow=0'`;
-
-    ffmpeg()
-      .input(inputPath)
-      .videoFilters(filter)
-      .outputOptions(['-c:a copy', '-c:v libx264', '-preset fast', '-crf 20'])
-      .output(outputPath)
-      .on('end', resolve)
-      .on('error', (err) => {
-        logger.error('[EDIT] Subtitle burn-in failed', { error: err.message });
-        reject(err);
-      })
-      .run();
-  });
-}
-
-// ── Resolve music path ────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Music path resolver
+// ══════════════════════════════════════════════════════════
 function resolveMusicPath(music) {
   if (music?.path && existsSync(music.path)) return music.path;
   if (music?.file && existsSync(music.file)) return music.file;
@@ -144,7 +167,9 @@ function resolveMusicPath(music) {
   return null;
 }
 
-// ── Build timeline ────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Build timeline from screenplay + manifests
+// ══════════════════════════════════════════════════════════
 function buildTimeline(screenplay, visualManifest, audioManifest) {
   const scenes        = [];
   let   totalDuration = 0;
@@ -168,7 +193,10 @@ function buildTimeline(screenplay, visualManifest, audioManifest) {
   return { scenes, totalDuration };
 }
 
-// ── Build one scene segment ───────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Build one scene segment
+// Handles audio.length === 0 / 1 / N (err-204 fix from v2.2)
+// ══════════════════════════════════════════════════════════
 function buildSegment(scene, outputPath) {
   return new Promise((resolve, reject) => {
     const img = existsSync(scene.imagePath) ? scene.imagePath : FALLBACK_IMG;
@@ -180,9 +208,14 @@ function buildSegment(scene, outputPath) {
     ].join(',');
 
     const baseOpts = [
-      '-c:v libx264', '-preset fast', '-crf 23',
-      '-c:a aac', '-b:a 128k',
-      `-t ${scene.duration}`, '-pix_fmt yuv420p', '-r 25',
+      '-c:v libx264',
+      '-preset fast',
+      '-crf 23',
+      '-c:a aac',
+      '-b:a 128k',
+      `-t ${scene.duration}`,
+      '-pix_fmt yuv420p',
+      '-r 25',
     ];
 
     let cmd = ffmpeg()
@@ -191,18 +224,25 @@ function buildSegment(scene, outputPath) {
       .videoFilters(vf);
 
     if (scene.audio.length === 0) {
+      // No audio — add synthetic silence
       cmd = cmd
         .input('anullsrc=r=44100:cl=stereo')
         .inputFormat('lavfi')
         .outputOptions([...baseOpts, '-map 0:v', '-map 1:a']);
+
     } else if (scene.audio.length === 1) {
+      // Single audio file — direct map
       cmd = cmd
         .input(scene.audio[0].file)
         .outputOptions([...baseOpts, '-map 0:v', '-map 1:a']);
+
     } else {
+      // Multiple audio files — concat audio streams
       for (const a of scene.audio) cmd = cmd.input(a.file);
+
       const inputs      = scene.audio.map((_, i) => `[${i + 1}:a]`).join('');
       const audioFilter = `${inputs}concat=n=${scene.audio.length}:v=0:a=1[aout]`;
+
       cmd = cmd
         .complexFilter(audioFilter)
         .outputOptions([...baseOpts, '-map 0:v', '-map [aout]']);
@@ -219,7 +259,9 @@ function buildSegment(scene, outputPath) {
   });
 }
 
-// ── Concatenate segments ──────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Concatenate segments
+// ══════════════════════════════════════════════════════════
 function concatSegments(concatPath, outputPath) {
   return new Promise((resolve, reject) => {
     ffmpeg()
@@ -227,13 +269,15 @@ function concatSegments(concatPath, outputPath) {
       .inputOptions(['-f concat', '-safe 0'])
       .outputOptions(['-c copy'])
       .output(outputPath)
-      .on('end', resolve)
+      .on('end',   resolve)
       .on('error', reject)
       .run();
   });
 }
 
-// ── Mix background music ──────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Mix background music
+// ══════════════════════════════════════════════════════════
 function mixWithMusic(videoPath, musicPath, outputPath, musicVolume = 0.15) {
   return new Promise((resolve, reject) => {
     ffmpeg()
@@ -244,12 +288,73 @@ function mixWithMusic(videoPath, musicPath, outputPath, musicVolume = 0.15) {
         `[0:a][bg]amix=inputs=2:duration=first[aout]`,
       ])
       .outputOptions([
-        '-map 0:v', '-map [aout]',
-        '-c:v copy', '-c:a aac', '-b:a 192k',
+        '-map 0:v',
+        '-map [aout]',
+        '-c:v copy',
+        '-c:a aac',
+        '-b:a 192k',
+      ])
+      .output(outputPath)
+      .on('end',   resolve)
+      .on('error', reject)
+      .run();
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// Burn subtitles into video (rule-184)
+// Requires: assets/fonts/Roboto-Regular.ttf
+// On Windows paths: colons in C:\ must be escaped as \: for ffmpeg filter
+// ══════════════════════════════════════════════════════════
+function burnSubtitles(inputPath, srtPath, outputPath) {
+  return new Promise((resolve, reject) => {
+    const escapedSrt  = srtPath
+      .replace(/\\/g, '/').replace(/:/g, '\\:');
+    const escapedFont = FONTS_DIR
+      .replace(/\\/g, '/').replace(/:/g, '\\:');
+
+    const filter =
+      `subtitles=filename='${escapedSrt}':fontsdir='${escapedFont}':` +
+      `force_style='FontName=Roboto,FontSize=22,` +
+      `PrimaryColour=&HFFFFFF&,OutlineColour=&H000000&,` +
+      `BorderStyle=1,Outline=2,Shadow=0'`;
+
+    ffmpeg()
+      .input(inputPath)
+      .videoFilters(filter)
+      .outputOptions([
+        '-c:a copy',
+        '-c:v libx264',
+        '-preset fast',
+        '-crf 20',
       ])
       .output(outputPath)
       .on('end', resolve)
-      .on('error', reject)
+      .on('error', (err) => {
+        logger.error('[EDIT] Subtitle burn-in failed', { error: err.message });
+        reject(err);
+      })
+      .run();
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// Extract thumbnail for OG social share preview (v2.4)
+// Frame at t=4s — past any intro fade-in
+// Output: 1280×720 JPEG for api/ep.js OG image
+// ══════════════════════════════════════════════════════════
+function extractThumbnail(videoPath, outputPath) {
+  return new Promise((resolve, reject) => {
+    ffmpeg(videoPath)
+      .seekInput(4)       // 4 seconds in — past intro fade
+      .frames(1)
+      .size('1280x720')
+      .output(outputPath)
+      .on('end', resolve)
+      .on('error', (err) => {
+        logger.warn('[EDIT] Thumbnail extraction failed', { error: err.message });
+        reject(err);
+      })
       .run();
   });
 }
