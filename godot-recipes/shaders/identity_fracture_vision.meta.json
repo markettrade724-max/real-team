@@ -1,0 +1,57 @@
+{
+  "name": "identity_fracture_vision",
+  "label": "شاشات الوعي المتكسرة",
+  "domain": "shaders",
+  "godotFeature": "ShaderMaterial with SCREEN_TEXTURE and viewport rendering",
+  "poeticVision": "The player experiences Lyra's fractured mind directly. As memories fade, the world doesn't just decay; it misbehaves, contorts, and writhes. Objects momentarily shift their form, perspectives subtly warp, and familiar colors desaturate or bleed in unsettling patterns unique to each lost memory. This isn't just a filter; it's the visceral manifestation of Lyra's internal struggle, making every memory loss a tangible, distorting blow to her perception of reality, reinforcing the terrifying feeling of losing oneself.",
+  "usage": "To apply this effect, create a 'ColorRect' node (or 'TextureRect') that covers the entire viewport. Assign a new 'ShaderMaterial' to its 'material' property. Load this '.gdshader' file into the 'Shader' property of the 'ShaderMaterial'. From GDScript, retrieve the 'ShaderMaterial' and update its uniform parameters (e.g., `material.set_shader_parameter(\"memory_integrity\", lyra_memory_state)`) to dynamically control the visual distortions based on Lyra's memory integrity and specific in-game events.",
+  "parameters": [
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "A value from 0.0 (fully lost) to 1.0 (intact) that controls the overall intensity of all distortion, desaturation, and color bleed effects. Lower values increase the visual manifestation of memory loss."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.03",
+      "description": "The base strength of the screen-space warping and 'perceptual drift' effect. Higher values result in more pronounced visual contortions."
+    },
+    {
+      "name": "desaturation_factor",
+      "type": "float",
+      "default": "0.7",
+      "description": "Determines how much color is removed from the scene as memories fade. A value of 1.0 would lead to full grayscale when memory_integrity is 0.0."
+    },
+    {
+      "name": "color_bleed_factor",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the intensity of the color channel mixing/bleeding effect, simulating a 'broken' or 'shifting' hue. Higher values create more noticeable color shifts."
+    },
+    {
+      "name": "noise_speed",
+      "type": "float",
+      "default": "1.5",
+      "description": "The speed at which the underlying noise patterns for distortion and overlays animate, contributing to the 'writhing' and dynamic feel of the fractured vision."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "60.0",
+      "description": "The granularity or size of the noise patterns used for distortion and overlays. Higher values create finer, more detailed distortions; lower values create larger, more abstract shifts."
+    },
+    {
+      "name": "specific_pattern_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "A parameter to trigger or amplify unique, transient distortion patterns (e.g., ripples, waves) that can be tied to specific memory loss events or critical narrative moments. A value of 0.0 disables this specific pattern."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A fractured lens into a fracturing mind, this shader makes the terrifying erosion of self a constant, visceral reality for the player.",
+  "impact": "This invention will profoundly deepen player immersion by making Lyra's internal struggle and the terrifying dissolution of her identity a constant, visceral visual experience. Every loss of memory will be a tangible blow to the player's perception of reality, directly reinforcing the game's core themes of self-loss and desperate survival.",
+  "score": 0,
+  "inventedAt": "2026-07-05T05:55:22.661Z"
+}

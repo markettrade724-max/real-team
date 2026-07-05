@@ -1,13 +1,13 @@
 {
-  "runId": "2026-07-04T1322",
-  "mode": "game-fix",
-  "success": false,
-  "timestamp": "2026-07-04T13:22:45.846Z",
-  "totalDuration": "13ms",
+  "runId": "2026-07-05T0553",
+  "mode": "inventor",
+  "success": true,
+  "timestamp": "2026-07-05T05:55:38.355Z",
+  "totalDuration": "134.5s",
   "budget": {
-    "total": 38,
+    "total": 40,
     "limit": 40,
-    "left": 2,
+    "left": 0,
     "keys": [
       {
         "key": "KEY_1",
@@ -16,16 +16,16 @@
         "left": 0,
         "exhausted": true,
         "library": 0,
-        "agents": 20
+        "agents": 4
       },
       {
         "key": "KEY_2",
-        "total": 18,
+        "total": 20,
         "limit": 20,
-        "left": 2,
-        "exhausted": false,
+        "left": 0,
+        "exhausted": true,
         "library": 0,
-        "agents": 18
+        "agents": 5
       }
     ]
   },
@@ -43,10 +43,16 @@
     "totalEpisodes": 13,
     "gamesDone": 1
   },
-  "agents": {},
+  "agents": {
+    "invention": {
+      "success": true,
+      "duration": "134.5s",
+      "error": null
+    }
+  },
   "summary": {
-    "total": 0,
-    "passed": 0,
+    "total": 1,
+    "passed": 1,
     "failed": 0
   }
 }

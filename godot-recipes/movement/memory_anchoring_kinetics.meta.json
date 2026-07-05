@@ -1,0 +1,81 @@
+{
+  "name": "memory_anchoring_kinetics",
+  "label": "The Shifting Anchor of Self",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D and Godot Physics (dynamic mass, gravity_scale, friction, custom _physics_process)",
+  "poeticVision": "The player will viscerally feel Lyra's identity dissolving and reconstituting through her very steps. Each recovered memory shard anchors her, making her movement deliberate, heavier, perhaps more resistant to the Silence's spectral pushes, but also slower and requiring more effort. Losing a memory makes her lighter, faster, but almost ethereal, less able to stand her ground or withstand environmental hazards, potentially even slipping through crumbling architecture. The feeling is a constant, dynamic struggle against one's own changing physics, a reflection of internal fragility and fleeting grip on reality.",
+  "usage": "Attach this script to Lyra's CharacterBody3D node. Other game systems (e.g., memory shard pickups, Silence attacks) should call `add_memory_shard()` or `lose_memory_shard()` to dynamically adjust Lyra's 'Memory Coherence'. Environmental hazards or enemy knockback systems can query `get_current_resistance_factor()` to modify their effects on Lyra, making her more or less susceptible based on her current identity state. Level designers can use the `memory_coherence` value to gate access to certain areas or trigger environmental changes.",
+  "parameters": [
+    {
+      "name": "memory_coherence",
+      "type": "float",
+      "default": "0.5",
+      "description": "Current level of Lyra's identity coherence, ranging from 0.0 (no memories) to 1.0 (full memories). Directly influences physical properties."
+    },
+    {
+      "name": "base_gravity",
+      "type": "float",
+      "default": "ProjectSettings.get_setting(\"physics/3d/default_gravity\")",
+      "description": "The base gravitational force applied to Lyra."
+    },
+    {
+      "name": "base_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The base movement speed of Lyra, modified by the speed factor."
+    },
+    {
+      "name": "min_gravity_scale",
+      "type": "float",
+      "default": "0.5",
+      "description": "The gravity scale applied when Lyra has 0% memory coherence (makes her lighter and floatier)."
+    },
+    {
+      "name": "max_gravity_scale",
+      "type": "float",
+      "default": "1.5",
+      "description": "The gravity scale applied when Lyra has 100% memory coherence (makes her heavier and more grounded)."
+    },
+    {
+      "name": "min_friction",
+      "type": "float",
+      "default": "0.1",
+      "description": "The friction value applied when Lyra has 0% memory coherence (makes her more slippery)."
+    },
+    {
+      "name": "max_friction",
+      "type": "float",
+      "default": "0.8",
+      "description": "The friction value applied when Lyra has 100% memory coherence (makes her more grippy)."
+    },
+    {
+      "name": "min_speed_factor",
+      "type": "float",
+      "default": "0.8",
+      "description": "The speed multiplier applied when Lyra has 100% memory coherence (makes her slower)."
+    },
+    {
+      "name": "max_speed_factor",
+      "type": "float",
+      "default": "1.2",
+      "description": "The speed multiplier applied when Lyra has 0% memory coherence (makes her faster)."
+    },
+    {
+      "name": "min_resistance_factor",
+      "type": "float",
+      "default": "0.2",
+      "description": "The factor determining Lyra's resistance to external forces (e.g., knockback) at 0% memory coherence (makes her easily pushed)."
+    },
+    {
+      "name": "max_resistance_factor",
+      "type": "float",
+      "default": "1.5",
+      "description": "The factor determining Lyra's resistance to external forces (e.g., knockback) at 100% memory coherence (makes her highly resistant to pushes)."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A profound fusion of narrative and mechanics, this invention anchors Lyra's dissolving self to the very physics of her desperate struggle, making every step a visceral testament to her fleeting grip on reality.",
+  "impact": "This invention fundamentally transforms Lyra's identity crisis from an abstract narrative element into a visceral, ever-present physical challenge. Players will constantly adapt to Lyra's changing kinetics, making every movement a conscious negotiation between speed and stability, fragility and resistance. This dynamic struggle against one's own changing physics will forge an unforgettable, empathetic connection to Lyra's internal battle against self-loss, ensuring that the player viscerally experiences the 'grief of self-loss' and the 'adrenaline of survival' in every step.",
+  "score": 100,
+  "inventedAt": "2026-07-05T05:54:23.140Z"
+}
