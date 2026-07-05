@@ -2,11 +2,12 @@
  * inventor-agent.js — v2.1
  *
  * Changes from v2.0:
- *  - MAX_CYCLES_PER_DAY = 13 (was hardcoded 3 inside loop — now uses full Sunday budget ~39/40 calls)
- *  - Comments translated from Arabic to English
- *
- * Sunday: inventor only — full 40 calls budget (gate fixed in orchestrator v10.7)
- * rule-152 updated: MAX_CYCLES_PER_DAY = 13 (~39 calls, decided 2026-07-01)
+ *  - All prompts (explore/build/evaluate) translated to English (rule-224)
+ *  - INVENTION_DOMAINS labels in English — eliminates Arabic drift in output
+ *  - GENIUS_CRITERIA in English
+ *  - evaluate() prompt: score shown as 0-100 range, not literal 0
+ *  - MAX_CYCLES_PER_DAY = 13 (was hardcoded 3 inside loop)
+ *  - Comments translated to English
  */
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
@@ -21,18 +22,18 @@ const __dirname   = dirname(fileURLToPath(import.meta.url));
 const RECIPES_DIR = join(__dirname, '..', 'godot-recipes');
 const MEMORY_PATH = join(__dirname, '..', 'code-memory.json');
 
-const CYCLE_COST        = 3;  // explore + build + evaluate
-const MAX_CYCLES_PER_DAY = 13; // ~39/40 calls — full Sunday budget (rule-152 updated 2026-07-01)
+const CYCLE_COST         = 3;
+const MAX_CYCLES_PER_DAY = 13;
 
 const INVENTION_DOMAINS = [
-  { id: 'movement', label: 'Movement & Physics'   },
-  { id: 'shaders',  label: 'Visuals & Effects'    },
-  { id: 'ai',       label: 'Enemy Intelligence'   },
-  { id: 'audio',    label: 'Sound & Music'        },
-  { id: 'ui',       label: 'UI & Experience'      },
-  { id: 'world',    label: 'World Building'       },
-  { id: 'weapons',  label: 'Weapons & Combat'     },
-  { id: 'time',     label: 'Time & Memory'        },
+  { id: 'movement', label: 'Movement & Physics'  },
+  { id: 'shaders',  label: 'Visuals & Effects'   },
+  { id: 'ai',       label: 'Enemy Intelligence'  },
+  { id: 'audio',    label: 'Sound & Music'       },
+  { id: 'ui',       label: 'UI & Experience'     },
+  { id: 'world',    label: 'World Building'      },
+  { id: 'weapons',  label: 'Weapons & Combat'    },
+  { id: 'time',     label: 'Time & Memory'       },
 ];
 
 const GENIUS_CRITERIA = [
@@ -66,13 +67,10 @@ export async function run(universe) {
   while (true) {
     const quota = getRemainingQuota();
 
-    // rule-153: check quota before each cycle
     if (quota < CYCLE_COST) {
       logger.warn(`[INVENTOR] Not enough quota for full cycle — need ${CYCLE_COST}, have ${quota} — stopping`);
       break;
     }
-
-    // rule-152: respect MAX_CYCLES_PER_DAY
     if (cycleNumber > MAX_CYCLES_PER_DAY) {
       logger.info(`[INVENTOR] Max cycles reached (${MAX_CYCLES_PER_DAY}) — stopping`);
       break;
@@ -107,7 +105,7 @@ export async function run(universe) {
   };
 }
 
-// ── Single invention cycle ─────────────────────────────────
+// ── Single cycle ──────────────────────────────────────────
 async function runCycle(soul, library, universe, domains, existing, memory, cycleNumber) {
   // Phase 1/3: Explore
   logger.info(`[INVENTOR] Cycle ${cycleNumber} — Phase 1/3: Explore`);
@@ -170,19 +168,18 @@ async function runCycle(soul, library, universe, domains, existing, memory, cycl
     return { invented: false, reason: 'not-genius', criteria: verdict?.failedCriteria };
   }
 
-  // Publish
   logger.info(`[INVENTOR] Publishing: ${idea.label}`);
   publish(idea, invention, verdict, memory);
 
   return {
-    invented:  true,
-    name:      idea.name,
-    label:     idea.label,
-    domain:    idea.domain,
-    filename:  invention.filename,
-    impact:    verdict.impact,
-    score:     verdict.score,
-    verdict:   verdict.verdict,
+    invented: true,
+    name:     idea.name,
+    label:    idea.label,
+    domain:   idea.domain,
+    filename: invention.filename,
+    impact:   verdict.impact,
+    score:    verdict.score,
+    verdict:  verdict.verdict,
   };
 }
 
@@ -213,17 +210,17 @@ Golden rules:
 - Do not propose what already exists
 - The idea makes the player feel something they have never felt before
 - It exploits a real Godot 4.6.2 capability
-- It harmonizes with the universe soul
+- It harmonizes with the universe soul (survival, identity loss, the Silence hunting Lyra)
 
 Return JSON only — no text outside JSON:
 {
-  "name":               "invention name in English (slug)",
-  "label":              "poetic name",
-  "domain":             "${hungriestDomain.id}",
-  "godotFeature":       "Godot 4.6.2 feature used",
-  "poeticVision":       "poetic description of what the player will feel",
-  "technicalApproach":  "technical approach briefly",
-  "uniqueness":         "why it resembles nothing existing"
+  "name":              "invention_name_in_english_slug",
+  "label":             "poetic name in English",
+  "domain":            "${hungriestDomain.id}",
+  "godotFeature":      "Godot 4.6.2 feature used",
+  "poeticVision":      "poetic description in English of what the player will feel",
+  "technicalApproach": "technical approach briefly in English",
+  "uniqueness":        "why it resembles nothing existing"
 }`,
     0.95,
     { maxOutputTokens: 4096, topP: 0.98 },
@@ -260,7 +257,7 @@ Return JSON only — no text outside JSON:
   "filename":     "${idea.name}.gd or ${idea.name}.gdshader",
   "language":     "gdscript or glsl",
   "code":         "complete code here — no shortcutting",
-  "usage":        "how code-agent uses this recipe",
+  "usage":        "how code-agent uses this recipe in English",
   "parameters":   [{ "name": "...", "type": "...", "default": "...", "description": "..." }],
   "dependencies": ["required nodes or other files"]
 }`,
@@ -278,7 +275,7 @@ async function evaluate(soul, library, idea, invention, existing) {
 ${library}
 
 You are the Supreme Judge of Genius in this universe.
-Be harsh — genius is rare.
+Be harsh — genius is rare. Score honestly between 0 and 100.
 
 Submitted invention:
 Name: ${idea.label}
@@ -291,14 +288,15 @@ Existing recipes: ${existingNames}
 Evaluate against the golden criteria:
 ${GENIUS_CRITERIA.map((c, i) => `${i + 1}. ${c}`).join('\n')}
 
-Return JSON only — no text outside JSON:
+Return JSON only — no text outside JSON.
+The score field is a number from 0 to 100 (not 0 by default — judge honestly):
 {
   "isGenius":       true,
-  "score":          0,
-  "passedCriteria": ["..."],
-  "failedCriteria": ["..."],
-  "impact":         "how this will change the player experience",
-  "verdict":        "poetic verdict in one sentence"
+  "score":          85,
+  "passedCriteria": ["criterion 1", "criterion 2"],
+  "failedCriteria": ["criterion 3"],
+  "impact":         "how this will change the player experience — in English",
+  "verdict":        "poetic verdict in one English sentence"
 }`,
     0.3,
     { maxOutputTokens: 4096 },
@@ -376,7 +374,9 @@ function calculateHunger(existing) {
 function updateLibraryIndex(meta) {
   const indexPath = join(RECIPES_DIR, 'index.json');
   let index = [];
-  if (existsSync(indexPath)) { try { index = JSON.parse(readFileSync(indexPath, 'utf8')); } catch {} }
+  if (existsSync(indexPath)) {
+    try { index = JSON.parse(readFileSync(indexPath, 'utf8')); } catch {}
+  }
   index = index.filter(r => r.name !== meta.name);
   index.unshift(meta);
   writeFileSync(indexPath, JSON.stringify(index, null, 2), 'utf8');
