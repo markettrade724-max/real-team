@@ -1,45 +1,60 @@
 /**
- * visual-agent.js — v3.0
+ * visual-agent.js — v3.1
  *
- * Changes from v2.1:
- *  - Primary source: Pollinations.AI drawn illustrations (art-library-agent)
- *    — seed consistency via art-bible.json (same character/location = same visual style)
- *  - MOOD_MAP / TIME_MAP keys updated to English enums (err-217 fix)
- *  - NEGATIVE_PROMPT replaced by per-mode variants from scene-agent
- *  - Fallback chain: drawn → Lexica → Unsplash → Picsum → fallback.png
- *  - universe parameter added to run() for visualMode detection
- *
- * Sources (priority order):
- *  1. Pollinations.AI drawn (no API key, mode=drawn)
- *  2. Lexica.art (free AI images)
- *  3. Unsplash (1000 req/month, needs key)
- *  4. Picsum (no key)
- *  5. fallback.png (local)
+ * Changes from v3.0:
+ *  - tryDrawn(): fixed 'fullPrompt is not defined' (err-229)
+ *    drawCharacter() from procedural-drawer composited on Pollinations background
+ *  - moodToPose() maps scene mood (enum from screenplay-agent v2.3) → character pose
+ *  - Location cache key derived from scene.location string matching art-bible keys
+ *  - Fallback chain unchanged: Lexica → Unsplash → Picsum → fallback.png
  */
 
 import { writeFileSync, existsSync, mkdirSync, copyFileSync, readFileSync } from 'fs';
 import { join, dirname }                                                      from 'path';
 import { fileURLToPath }                                                      from 'url';
 import { generateDrawnImage }                                                 from './art-library-agent.js';
+import { drawCharacter, moodToPose }                                          from './procedural-drawer.js';
 import { logger }                                                             from '../logger.js';
 
 const __dirname    = dirname(fileURLToPath(import.meta.url));
 const FALLBACK_IMG = join(__dirname, '..', 'assets', 'fallback.png');
-const CACHE_DIR    = join(__dirname, '..', 'assets', 'image-cache');
+const CACHE_DIR    = join(__dirname, '..', 'assets', 'art-cache');
 const BIBLE_PATH   = join(__dirname, '..', 'assets', 'art-bible.json');
 
-// ── Art-bible loader ──────────────────────────────────────
 function loadArtBible() {
   if (!existsSync(BIBLE_PATH)) return null;
   try { return JSON.parse(readFileSync(BIBLE_PATH, 'utf8')); } catch { return null; }
 }
 
-// ── Seed from string (deterministic, for consistent images) ─
 function hashToSeed(str) {
   return str.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
 }
 
-// ── Main ──────────────────────────────────────────────────
+// Match scene.location string to an art-bible location key
+function resolveLocationKey(location, bible) {
+  if (!location || !bible?.locations) return null;
+  const loc = location.toLowerCase();
+  for (const key of Object.keys(bible.locations)) {
+    const keyWords = key.replace(/_/g, ' ').split(' ');
+    if (keyWords.some(w => loc.includes(w))) return key;
+  }
+  return null;
+}
+
+// Identify primary character in scene
+function resolvePrimaryChar(scene, bible) {
+  if (!scene.characters?.length || !bible?.characters) return null;
+  const chars = Object.keys(bible.characters);
+  for (const name of scene.characters) {
+    const match = chars.find(c => name.toLowerCase().includes(c));
+    if (match) return match;
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════════════════════
+// Main
+// ══════════════════════════════════════════════════════════
 export async function run(visualScenes, episodeNumber, universe = {}) {
   const mode    = visualScenes?.scenes?.[0]?.visualMode
     || (existsSync(BIBLE_PATH) ? 'drawn' : 'photo');
@@ -75,30 +90,29 @@ export async function run(visualScenes, episodeNumber, universe = {}) {
 
     let downloaded = false;
 
-    // 1. Drawn (Pollinations) — primary for drawn mode
+    // 1. Drawn mode: Pollinations background + procedural character
     if (mode === 'drawn' && artBible) {
-      downloaded = await tryDrawn(scene, artBible, imagePath);
+      downloaded = await tryDrawn(scene, artBible, imagePath, episodeNumber);
     }
 
-    // 2. Lexica
+    // 2. Lexica fallback
     if (!downloaded) {
-      const query = buildSearchQuery(scene);
-      downloaded  = await tryLexica(query, imagePath);
+      downloaded = await tryLexica(buildSearchQuery(scene), imagePath);
     }
 
-    // 3. Unsplash
+    // 3. Unsplash fallback
     if (!downloaded && process.env.UNSPLASH_ACCESS_KEY) {
-      const query = buildSearchQuery(scene);
-      downloaded  = await tryUnsplash(query, imagePath);
+      downloaded = await tryUnsplash(buildSearchQuery(scene), imagePath);
     }
 
-    // 4. Picsum
+    // 4. Picsum fallback
     if (!downloaded) downloaded = await tryPicsum(scene, imagePath);
 
     // 5. Local fallback
-    if (!downloaded) {
-      logger.warn(`[VISUAL] Using fallback for ${scene.id}`);
-      if (existsSync(FALLBACK_IMG)) { copyFileSync(FALLBACK_IMG, imagePath); downloaded = true; }
+    if (!downloaded && existsSync(FALLBACK_IMG)) {
+      copyFileSync(FALLBACK_IMG, imagePath);
+      downloaded = true;
+      logger.warn(`[VISUAL] Using fallback.png for ${scene.id}`);
     }
 
     results.push({ ...scene, imagePath: downloaded ? imagePath : null });
@@ -116,7 +130,7 @@ export async function run(visualScenes, episodeNumber, universe = {}) {
   };
 
   writeFileSync(
-    join(__dirname, '..', 'episodes', `ep${episodeNumber}`, 'visual-manifest.json'),
+    join(__dirname, '..', 'episodes', `ep${episodeNumber}`, 'visual-manifest.json`),
     JSON.stringify(manifest, null, 2), 'utf8'
   );
 
@@ -124,44 +138,66 @@ export async function run(visualScenes, episodeNumber, universe = {}) {
   return manifest;
 }
 
-// ── Drawn via Pollinations + art-bible for consistency ────
-async function tryDrawn(scene, artBible, outputPath) {
+// ══════════════════════════════════════════════════════════
+// tryDrawn: Pollinations background + procedural character
+// ══════════════════════════════════════════════════════════
+async function tryDrawn(scene, artBible, outputPath, episodeNumber) {
   try {
-    // Try to match a character from the bible for seed consistency
-    const url =
-      `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}` +
-      `?width=${opts.width || 1920}&height=${opts.height || 1080}` +
-      `&seed=${seed || 42}&model=flux`;
-    const charId = scene.characters?.[0]?.toLowerCase();
-    const char   = charId && artBible.characters?.[charId];
-    const locId  = Object.keys(artBible.locations || {}).find(k =>
-      scene.location?.toLowerCase().includes(k.replace(/_/g, ' '))
-    );
-    const loc    = locId && artBible.locations?.[locId];
+    // Step 1: Get or generate Pollinations background
+    const locKey   = resolveLocationKey(scene.location, artBible);
+    const locDef   = locKey ? artBible.locations[locKey] : null;
+    const bgSeed   = locDef?.seed ?? hashToSeed(scene.location || scene.id);
+    const bgPrompt = locDef?.prompt
+      ?? `${scene.location || 'cosmic void'}, cosmic sci-fi, deep space, dramatic lighting`;
+    const bgCacheKey = locKey ? `loc_${locKey}` : `bg_${hashToSeed(scene.location || scene.id)}`;
 
-    const seed = char?.seed ?? loc?.seed ?? hashToSeed(scene.location || scene.id);
+    let bgPath = await generateDrawnImage(bgPrompt, bgSeed, bgCacheKey);
+    // bgPath may be null if Pollinations is down — proceed without bg (pure procedural)
 
-    const prompt = [
-      char?.visualDescription,
-      loc?.prompt || `Location: ${scene.location}`,
-      scene.action ? scene.action.slice(0, 80) : '',
-      artBible.artStyle,
-    ].filter(Boolean).join(', ');
+    // Step 2: Identify character in scene
+    const charId = resolvePrimaryChar(scene, artBible);
 
-    // Use art-library-agent's cache key for cross-episode reuse
-    const cacheKey = `ep_scene_${scene.id}`;
-    const cached   = await generateDrawnImage(prompt, seed, cacheKey);
-    if (!cached) return false;
+    if (!charId) {
+      // No character in this scene — use Pollinations background only
+      if (bgPath && existsSync(bgPath)) {
+        copyFileSync(bgPath, outputPath);
+        logger.info(`[VISUAL] Background only (no character): ${scene.id}`);
+        return true;
+      }
+      return false;
+    }
 
-    copyFileSync(cached, outputPath);
-    return true;
+    // Step 3: Determine pose from scene mood
+    const pose = moodToPose(charId, scene.mood);
+
+    // Step 4: Draw character constellation on top of background
+    const seed   = artBible.characters[charId]?.seed ?? hashToSeed(charId + scene.id);
+    const drawn  = await drawCharacter(charId, pose, seed, outputPath, bgPath || null);
+
+    if (drawn) {
+      logger.info(`[VISUAL] Composited: ${charId}/${pose} on ${locKey || 'procedural bg'}`, {
+        scene: scene.id,
+      });
+      return true;
+    }
+
+    // Fallback: background alone if character draw failed
+    if (bgPath && existsSync(bgPath)) {
+      copyFileSync(bgPath, outputPath);
+      return true;
+    }
+
+    return false;
+
   } catch (err) {
-    logger.warn(`[VISUAL] tryDrawn failed: ${err.message}`);
+    logger.warn(`[VISUAL] tryDrawn failed: ${scene.id}`, { error: err.message });
     return false;
   }
 }
 
-// ── Lexica.art ────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════
+// Fallback sources
+// ══════════════════════════════════════════════════════════
 async function tryLexica(query, outputPath) {
   try {
     const res  = await fetch(
@@ -174,14 +210,10 @@ async function tryLexica(query, outputPath) {
     if (!imgs.length) return false;
     const best = imgs.find(i => i.width > i.height) || imgs[0];
     if (!best?.src) return false;
-    return await downloadImage(best.src, outputPath);
-  } catch (err) {
-    logger.info(`[VISUAL] Lexica failed: ${err.message}`);
-    return false;
-  }
+    return downloadImage(best.src, outputPath);
+  } catch { return false; }
 }
 
-// ── Unsplash ──────────────────────────────────────────────
 async function tryUnsplash(query, outputPath) {
   try {
     const res = await fetch(
@@ -195,39 +227,30 @@ async function tryUnsplash(query, outputPath) {
     const data  = await res.json();
     const photo = data.results?.[0];
     if (!photo?.urls?.regular) return false;
-    return await downloadImage(photo.urls.regular, outputPath);
-  } catch (err) {
-    logger.info(`[VISUAL] Unsplash failed: ${err.message}`);
-    return false;
-  }
+    return downloadImage(photo.urls.regular, outputPath);
+  } catch { return false; }
 }
 
-// ── Picsum ────────────────────────────────────────────────
 async function tryPicsum(scene, outputPath) {
   try {
-    const seed = hashToSeed(scene.id);
-    return await downloadImage(`https://picsum.photos/seed/${seed}/1920/1080`, outputPath);
-  } catch (err) {
-    logger.info(`[VISUAL] Picsum failed: ${err.message}`);
-    return false;
-  }
+    return downloadImage(
+      `https://picsum.photos/seed/${hashToSeed(scene.id)}/1920/1080`,
+      outputPath
+    );
+  } catch { return false; }
 }
 
-// ── Generic image downloader ──────────────────────────────
 async function downloadImage(url, outputPath) {
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
     if (!res.ok) return false;
-    const buffer = Buffer.from(await res.arrayBuffer());
-    if (buffer.length < 1000) return false;
-    writeFileSync(outputPath, buffer);
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length < 1000) return false;
+    writeFileSync(outputPath, buf);
     return true;
-  } catch {
-    return false;
-  }
+  } catch { return false; }
 }
 
-// ── Build Lexica/Unsplash query from scene ────────────────
 function buildSearchQuery(scene) {
   const moodTerms = {
     tense:      'dramatic tense dark',
