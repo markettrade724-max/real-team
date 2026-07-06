@@ -1,0 +1,117 @@
+extends Node3D
+
+@export var main_menu_layer: CanvasLayer
+@export var pause_menu_layer: CanvasLayer
+@export var hud_layer: CanvasLayer # New: For displaying player health, score, etc.
+@export var game_over_layer: CanvasLayer # New: For displaying game over screen
+@export var player_scene: PackedScene # New: To instantiate the player
+
+enum GameState {
+	MAIN_MENU,
+	GAMEPLAY,
+	PAUSED,
+	GAME_OVER # New: Added Game Over state
+}
+
+var current_state: GameState = GameState.MAIN_MENU
+var _player_instance: CharacterBody3D # To hold the spawned player
+
+func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	_set_game_state(GameState.MAIN_MENU)
+
+func _input(event: InputEvent):
+	match current_state:
+	    GameState.MAIN_MENU:
+	        if (event is InputEventMouseButton and event.is_pressed()) or \
+	           (event is InputEventScreenTouch and event.is_pressed()):
+	            _set_game_state(GameState.GAMEPLAY)
+	            get_viewport().set_input_as_handled()
+	    GameState.GAMEPLAY:
+	        if event.is_action_pressed("ui_cancel"):
+	            _set_game_state(GameState.PAUSED)
+	            get_viewport().set_input_as_handled()
+	    GameState.PAUSED:
+	        if event.is_action_pressed("ui_cancel"):
+	            _set_game_state(GameState.GAMEPLAY)
+	            get_viewport().set_input_as_handled()
+	    GameState.GAME_OVER:
+	        # Example: Allow restarting from game over screen
+	        if (event is InputEventMouseButton and event.is_pressed()) or \
+	           (event is InputEventScreenTouch and event.is_pressed()) or \
+	           event.is_action_pressed("ui_accept"): # Assuming 'ui_accept' for restart
+	            get_tree().reload_current_scene() # Simple restart
+	            get_viewport().set_input_as_handled()
+
+func _set_game_state(new_state: GameState):
+	current_state = new_state
+	
+	match current_state:
+	    GameState.MAIN_MENU:
+	        get_tree().paused = false
+	        if main_menu_layer: main_menu_layer.show()
+	        if pause_menu_layer: pause_menu_layer.hide()
+	        if hud_layer: hud_layer.hide() # Hide HUD
+	        if game_over_layer: game_over_layer.hide() # Hide Game Over
+	        
+	        # Clean up player if exists when returning to main menu
+	        if is_instance_valid(_player_instance):
+	            _player_instance.queue_free()
+	            _player_instance = null
+	        
+	    GameState.GAMEPLAY:
+	        get_tree().paused = false
+	        if main_menu_layer: main_menu_layer.hide()
+	        if pause_menu_layer: pause_menu_layer.hide()
+	        if game_over_layer: game_over_layer.hide()
+	        if hud_layer: hud_layer.show() # Show HUD
+	        
+	        # Spawn player if not already present or if returning from main menu
+	        if not is_instance_valid(_player_instance) and player_scene:
+	            _player_instance = player_scene.instantiate()
+	            add_child(_player_instance) # Add player to the scene
+	            _player_instance.global_position = Vector3(0, 1, 0) # Example spawn position
+	            
+	            # Connect player signals for game over and HUD updates
+	            if _player_instance.has_signal("player_died"):
+	                _player_instance.player_died.connect(_on_player_died)
+	            if _player_instance.has_signal("player_health_changed"):
+	                _player_instance.player_health_changed.connect(_on_player_health_changed)
+	            
+	            # Initial HUD update
+	            if _player_instance.has_method("get_current_health") and _player_instance.has_method("get_max_health"):
+	                _on_player_health_changed(_player_instance.get_current_health(), _player_instance.get_max_health())
+	            else:
+	                push_warning("Player instance does not have get_current_health or get_max_health methods for initial HUD update.")
+	        elif not player_scene:
+	            push_error("Player scene not assigned in main_scene.gd! Cannot start gameplay.")
+	        
+	    GameState.PAUSED:
+	        get_tree().paused = true
+	        if main_menu_layer: main_menu_layer.hide()
+	        if pause_menu_layer: pause_menu_layer.show()
+	        if hud_layer: hud_layer.hide() # Hide HUD when paused
+	        if game_over_layer: game_over_layer.hide()
+	        
+	    GameState.GAME_OVER:
+	        get_tree().paused = false # Game over screen is not paused
+	        if main_menu_layer: main_menu_layer.hide()
+	        if pause_menu_layer: pause_menu_layer.hide()
+	        if hud_layer: hud_layer.hide()
+	        if game_over_layer: game_over_layer.show() # Show Game Over screen
+	        
+	        # Clean up player instance after death
+	        if is_instance_valid(_player_instance):
+	            _player_instance.queue_free()
+	            _player_instance = null
+
+func _on_player_died():
+	print("Game Over! Player died.")
+	_set_game_state(GameState.GAME_OVER)
+
+func _on_player_health_changed(new_health: int, max_health: int):
+	# Placeholder for updating a UI element on the hud_layer
+	print("HUD: Player Health: %d/%d" % [new_health, max_health])
+	# Example: if hud_layer has a child Label named "HealthLabel":
+	# if hud_layer and hud_layer.has_node("HealthLabel"):
+	#     hud_layer.get_node("HealthLabel").text = "HP: %d/%d" % [new_health, max_health]

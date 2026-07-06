@@ -15,6 +15,10 @@ bullet_lifetime = 5.0
 [node name="muzzle_point" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1) # Positioned 1 unit forward along the local -Z axis
 
+[node name="FireTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
 [node name="Mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_xyz")
 material_override = SubResource("StandardMaterial3D_123")

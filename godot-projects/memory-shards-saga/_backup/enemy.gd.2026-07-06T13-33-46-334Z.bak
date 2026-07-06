@@ -8,7 +8,7 @@ extends CharacterBody3D
 @export var navigation_agent_node_path: NodePath
 @export var player_node_path: NodePath
 
-var _navigation_agent: NavigationAgent3D # Removed @onready, assigned in _ready with checks
+@onready var _navigation_agent: NavigationAgent3D = get_node(navigation_agent_node_path)
 @onready var _player: CharacterBody3D = get_node(player_node_path) if has_node(player_node_path) else null
 
 var _current_health: float
@@ -23,6 +23,7 @@ func _ready() -> void:
 	_current_health = health
 	
 	# Setup collision layers and masks
+	# Layer 2 for enemies, Mask 3 (Layer 1 + Layer 2) to detect player and other enemies/world
 	set_collision_layer(2)
 	set_collision_mask(3)
 	
@@ -34,13 +35,13 @@ func _ready() -> void:
 	add_child(_attack_timer)
 	_attack_timer.timeout.connect(_on_attack_timer_timeout)
 	
-	# Ensure navigation agent is ready and valid
-	if navigation_agent_node_path and has_node(navigation_agent_node_path):
-		_navigation_agent = get_node(navigation_agent_node_path)
+	# Ensure navigation agent is ready
+	if _navigation_agent:
 		_navigation_agent.path_desired_distance = 0.5
 		_navigation_agent.target_desired_distance = 0.5
+		# _navigation_agent.velocity_forced = Vector3.ZERO # Not strictly needed as CharacterBody3D controls its own velocity
 	else:
-		push_warning("NavigationAgent3D not found or path invalid at: %s" % navigation_agent_node_path)
+		push_warning("NavigationAgent3D not found at path: %s" % navigation_agent_node_path)
 
 	if not _player:
 		push_warning("Player node not found at path: %s. Enemy will not move or attack." % player_node_path)
@@ -61,7 +62,7 @@ func _physics_process(delta: float) -> void:
 			_attack()
 	else:
 		# Move towards player
-		if _navigation_agent: # Check if navigation agent is valid before using
+		if _navigation_agent:
 			_navigation_agent.target_position = target_position
 			var next_path_position = _navigation_agent.get_next_path_position()
 			var direction = (next_path_position - global_position).normalized()
@@ -120,6 +121,8 @@ func die() -> void:
 	set_collision_mask(0)
 	
 	# Queue free after a short delay to allow death animation/effects to play.
+	# The request specifically mentioned `is_inside_tree()` check for `die()`.
+	# `queue_free()` implicitly handles this, but it's good practice to ensure the node is valid.
 	if is_inside_tree():
 		queue_free()
 

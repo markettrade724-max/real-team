@@ -10,52 +10,25 @@ var current_health: int
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-# Changed @onready vars to @export var NodePaths for flexibility
-@export var camera_pivot_path: NodePath
-@export var camera_path: NodePath
-@export var weapon_path: NodePath
-
-var camera_pivot: Node3D
-var camera: Camera3D
-var weapon: Node3D
+@onready var camera_pivot: Node3D = $CameraPivot # Assumes a Node3D named CameraPivot for vertical camera rotation
+@onready var camera: Camera3D = $CameraPivot/Camera3D # Assumes Camera3D is a child of CameraPivot
+@onready var weapon: Node3D = $Weapon # Assumes a Weapon node with a shoot() method
 
 signal player_died
-signal player_health_changed(new_health: int, max_health: int) # New signal for HUD updates
 
 func _ready() -> void:
 	add_to_group("player")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	current_health = max_health
-	emit_signal("player_health_changed", current_health, max_health) # Initial health update for HUD
-
-	# Get nodes using exported paths with robust checks
-	if camera_pivot_path:
-		camera_pivot = get_node_or_null(camera_pivot_path)
-		if not camera_pivot: push_error("CameraPivot not found at path: %s" % camera_pivot_path)
-	else:
-		push_warning("CameraPivot path not set in Player scene.")
-
-	if camera_path:
-		camera = get_node_or_null(camera_path)
-		if not camera: push_error("Camera3D not found at path: %s" % camera_path)
-	else:
-		push_warning("Camera3D path not set in Player scene.")
-
-	if weapon_path:
-		weapon = get_node_or_null(weapon_path)
-		if not weapon: push_error("Weapon node not found at path: %s" % weapon_path)
-	else:
-		push_warning("Weapon path not set in Player scene.")
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 	    # Rotate the player (yaw) for horizontal mouse movement
 	    rotate_y(-event.relative.x * mouse_sensitivity)
 	    # Rotate the camera pivot (pitch) for vertical mouse movement
-	    if camera_pivot:
-	        camera_pivot.rotate_x(-event.relative.y * mouse_sensitivity)
-	        # Clamp the camera's vertical rotation to prevent flipping
-	        camera_pivot.rotation.x = clamp(camera_pivot.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+	    camera_pivot.rotate_x(-event.relative.y * mouse_sensitivity)
+	    # Clamp the camera's vertical rotation to prevent flipping
+	    camera_pivot.rotation.x = clamp(camera_pivot.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 
 	if event.is_action_just_pressed("fire"):
 	    if weapon and weapon.has_method("shoot"):
@@ -92,7 +65,6 @@ func take_damage(amount: int) -> void:
 
 	current_health -= amount
 	print("Player took %d damage. Current health: %d" % [amount, current_health])
-	emit_signal("player_health_changed", current_health, max_health) # Update health UI
 
 	if current_health <= 0:
 	    current_health = 0
@@ -102,13 +74,9 @@ func die() -> void:
 	print("Player died!")
 	emit_signal("player_died")
 
+	# As per the rule: 'is_inside_tree() before any queue_free() after await'
+	# This example waits for a short duration (e.g., for a death animation/sound to play)
+	# before freeing the player node from the scene tree.
 	await get_tree().create_timer(0.5).timeout # Wait for 0.5 seconds
-	if is_inside_tree():
+	if is_inside_tree(): # Check if the node is still in the scene tree before freeing
 	    queue_free()
-
-# New methods to allow other scripts to query player health
-func get_current_health() -> int:
-	return current_health
-
-func get_max_health() -> int:
-	return max_health
