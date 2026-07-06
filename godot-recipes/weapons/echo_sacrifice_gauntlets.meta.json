@@ -1,0 +1,46 @@
+{
+  "name": "echo_sacrifice_gauntlets",
+  "label": "Echo Sacrifice Gauntlets",
+  "domain": "weapons",
+  "godotFeature": "Custom Shaders (GDScript/VisualShader), Particles (GPUParticles3D), Data Structures (Dictionaries/Arrays for memory fragments), AnimationPlayer.",
+  "poeticVision": "The player feels the visceral cost of power, a cold dread as a part of their very self is torn away to fuel a desperate attack. Each critical hit is a victory, but also a haunting loss, forcing a harrowing choice between immediate survival and the slow erosion of who they are. It's the ultimate adrenaline rush tempered by existential grief.",
+  "usage": "Attach this `EchoSacrificeGauntlets.gd` script to a `Node3D` child of Lyra's player character (e.g., `CharacterBody3D`).\n\n1.  **Grafting Memory**: When Lyra collects a memory fragment (represented as a `Dictionary` with `id`, `trait`, `power_level`, `is_core_memory` keys) and the player decides to graft it, call `gauntlets_node.graft_memory(memory_fragment_data)`.\n2.  **Activating Sacrifice**: When the player triggers the special attack input, call `gauntlets_node.activate_sacrifice_attack()`. This will consume the grafted memory, apply a temporary damage boost, trigger visual/audio effects, and emit the `identity_trait_lost` signal.\n3.  **Damage Calculation**: Lyra's combat system should query `gauntlets_node.get_current_melee_damage()` to get her current attack power, which will reflect any active boosts.\n4.  **Identity Management**: Connect Lyra's central identity management script (e.g., a singleton or a component on Lyra) to the `identity_trait_lost` signal (`gauntlets_node.identity_trait_lost.connect(lyra_identity_manager.remove_trait)`). This allows Lyra's identity to be updated when a memory is sacrificed.\n5.  **Visuals**: Assign a `ShaderMaterial` (e.g., `lyra_arm_sacrifice_shader.gdshader` with a `uniform bool sacrifice_effect_active`) to the `lyra_arm_material` export slot. This material should be applied to Lyra's arm mesh to visualize the sacrifice effect.",
+  "parameters": [
+    {
+      "name": "base_melee_damage",
+      "type": "float",
+      "default": "10.0",
+      "description": "The base damage Lyra deals with melee attacks before any boosts."
+    },
+    {
+      "name": "boost_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration in seconds for which the damage boost from a memory sacrifice is active."
+    },
+    {
+      "name": "sacrifice_sound",
+      "type": "AudioStream",
+      "default": "null",
+      "description": "The audio clip played when a memory fragment is sacrificed."
+    },
+    {
+      "name": "lyra_arm_material",
+      "type": "Material",
+      "default": "null",
+      "description": "The ShaderMaterial instance applied to Lyra's arm mesh. It should contain a 'sacrifice_effect_active' uniform to control visual feedback."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "Timer",
+    "AudioStreamPlayer",
+    "A ShaderMaterial (e.g., 'lyra_arm_sacrifice_shader.gdshader') with a 'uniform bool sacrifice_effect_active' parameter, applied to Lyra's arm mesh.",
+    "Lyra's player script or identity manager to handle the 'identity_trait_lost' signal.",
+    "Memory fragments represented as Dictionaries with keys: 'id' (String), 'trait' (String), 'power_level' (float), 'is_core_memory' (bool)."
+  ],
+  "verdict": "A brilliant fusion of visceral combat and existential dread, where every desperate blow against oblivion carves a deeper wound into the self.",
+  "impact": "This mechanic will force players into agonizing decisions, making every combat encounter a moral dilemma. It deepens the emotional connection to Lyra's struggle, transforming abstract identity loss into a tangible, player-driven sacrifice. The temporary power surge provides immediate gratification, but the lingering dread of a lost memory ensures the cost is never truly forgotten, creating a unique blend of adrenaline and existential grief that perfectly embodies the game's core themes.",
+  "score": 92,
+  "inventedAt": "2026-07-06T14:43:53.386Z"
+}

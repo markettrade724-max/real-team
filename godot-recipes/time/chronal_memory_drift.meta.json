@@ -1,0 +1,50 @@
+{
+  "name": "chronal_memory_drift",
+  "label": "Chronal Echoes of Erosion",
+  "domain": "time",
+  "godotFeature": "ShaderMaterial, Area3D, _process/_physics_process delta manipulation, AnimationPlayer speed_scale",
+  "poeticVision": "The player will feel the chilling weight of every memory decision. Activating a forgotten moment might buy precious seconds against the Silence's relentless pursuit, but at the terrible cost of the memory itself dissolving faster around them, accelerating the very 'forgetting' they fight. A desperate strategic gamble where time is a volatile currency, paid with shreds of Lyra's own identity.",
+  "usage": "This script (`chronal_memory_fragment.gd`) should be attached to an `Area3D` node in your scene. This `Area3D` represents a memory fragment that Lyra can interact with.\n\n**Setup Steps:**\n1.  **Create `TemporalErosionManager` Autoload:**\n    *   Create a new GDScript file named `temporal_erosion_manager.gd` with the following content:\n        gdscript\n        # temporal_erosion_manager.gd\n        extends Node\n\n        signal erosion_factor_changed(new_factor: float)\n\n        var global_erosion_factor: float = 0.0:\n        \tset(value):\n        \t\tglobal_erosion_factor = clampf(value, 0.0, 1.0) # Clamp between 0 and 1\n        \t\terosion_factor_changed.emit(global_erosion_factor)\n\n        func increase_erosion(amount: float) -> void:\n        \tglobal_erosion_factor += amount\n        \tprint(\"Global Erosion Factor: \", global_erosion_factor)\n        \n    *   Go to `Project -> Project Settings -> Autoload` tab.\n    *   Add `temporal_erosion_manager.gd`, name it `TemporalErosionManager`, and enable it.\n    *   Other systems (e.g., a global shader on `WorldEnvironment` or `AnimationPlayer`s controlling environmental decay) should connect to `TemporalErosionManager.erosion_factor_changed` to react to the global erosion.\n\n2.  **Implement `DistortableEntity` Interface:**\n    *   Lyra (player) and Silence hunters (enemies) must implement a `DistortableEntity` interface or extend a base class that provides `apply_time_distortion(factor: float)` and `remove_time_distortion()` methods. These methods should modify an internal `current_time_scale` variable that their `_process` and `_physics_process` functions multiply `delta` by.\n    *   Example `distortable_entity.gd` (attach to Lyra/Hunters):\n        gdscript\n        # distortable_entity.gd\n        extends CharacterBody3D # Or any other physics body\n\n        var current_time_scale: float = 1.0\n\n        func _process(delta: float) -> void:\n        \t# Example: Apply movement based on distorted delta\n        \t# velocity.x = move_speed * delta * current_time_scale\n        \tpass\n\n        func _physics_process(delta: float) -> void:\n        \t# Example: Apply physics movement based on distorted delta\n        \t# move_and_slide()\n        \tpass\n\n        func apply_time_distortion(factor: float) -> void:\n        \tcurrent_time_scale = factor\n        \t# Optionally, apply visual feedback (e.g., shader, particle effect) to this entity\n\n        func remove_time_distortion() -> void:\n        \tcurrent_time_scale = 1.0\n        \t# Optionally, remove visual feedback from this entity\n\n        func get_current_time_scale() -> float:\n        \treturn current_time_scale\n        \n\n3.  **Create `ChronalDistortionShader`:**\n    *   Create a new `ShaderMaterial` resource (e.g., `res://materials/chronal_distortion_mat.tres`).\n    *   Assign a new `Shader` resource to it (e.g., `res://shaders/chronal_distortion_shader.gdshader`) with the following GLSL code:\n        glsl\n        shader_type spatial;\n        render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n        uniform float distortion_strength : hint_range(0.0, 1.0) = 0.1;\n        uniform float distortion_speed : hint_range(0.0, 10.0) = 5.0;\n        uniform vec4 distortion_color : source_color = vec4(0.2, 0.5, 0.8, 0.5);\n\n        void vertex() {\n            float displacement = sin(VERTEX.x * 10.0 + TIME * distortion_speed) * cos(VERTEX.y * 10.0 + TIME * distortion_speed) * distortion_strength;\n            VERTEX.xyz += NORMAL * displacement;\n        }\n\n        void fragment() {\n            ALBEDO = distortion_color.rgb;\n            ALPHA = distortion_color.a;\n            ROUGHNESS = 0.8;\n            METALLIC = 0.0;\n        }\n        \n\n4.  **Configure `ChronalMemoryFragment` Node:**\n    *   Add a `MeshInstance3D` as a child of your `Area3D` (e.g., a `SphereMesh` or `BoxMesh`) to serve as the `visual_mesh` for the distortion effect.\n    *   In the Inspector for the `Area3D` with `chronal_memory_fragment.gd` attached:\n        *   Set `distortion_factor`, `distortion_duration`, and `erosion_amount` as desired.\n        *   Drag your `visual_mesh` child node into the `Visual Mesh` slot.\n        *   Drag your `chronal_distortion_mat.tres` (the `ShaderMaterial`) into the `Distortion Shader Material` slot.\n    *   Ensure the `Area3D`'s `collision_mask` is set to detect the player (e.g., layer 1).\n    *   Ensure the player `CharacterBody3D` is in the \"player\" group.\n\n**Behavior:**\nWhen Lyra (a `body` in the \"player\" group) enters the `Area3D` of a `ChronalMemoryFragment`, the fragment activates:\n*   It notifies the `TemporalErosionManager` to increase the `global_erosion_factor`.\n*   It applies the `distortion_shader_material` to its `visual_mesh` child, creating a localized visual effect.\n*   For `distortion_duration` seconds, any `DistortableEntity` (Lyra, hunters) entering or already inside the `Area3D` will have their `current_time_scale` set to `distortion_factor`.\n*   After the duration, the visual effect is removed, affected entities return to normal time, and the memory fragment `queue_free()`s itself, signifying its consumption.",
+  "parameters": [
+    {
+      "name": "distortion_factor",
+      "type": "float",
+      "default": "0.5",
+      "description": "The time scale factor applied to entities within the distortion zone (e.g., 0.5 for slow-motion, 2.0 for fast-motion)."
+    },
+    {
+      "name": "distortion_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration in seconds for which the localized time distortion effect lasts."
+    },
+    {
+      "name": "erosion_amount",
+      "type": "float",
+      "default": "0.1",
+      "description": "The amount by which the global 'Temporal Erosion' factor is increased upon activation of this memory fragment."
+    },
+    {
+      "name": "visual_mesh",
+      "type": "MeshInstance3D",
+      "default": "null",
+      "description": "A child MeshInstance3D node used to visually represent the distortion zone. The 'distortion_shader_material' will be applied to this mesh."
+    },
+    {
+      "name": "distortion_shader_material",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "The ShaderMaterial resource to apply to the 'visual_mesh' when the fragment is active, creating the visual distortion effect."
+    }
+  ],
+  "dependencies": [
+    "TemporalErosionManager (Godot Autoload singleton)",
+    "DistortableEntity (GDScript interface/base class for Lyra/Hunters)",
+    "MeshInstance3D (child node for visual representation)",
+    "ShaderMaterial (resource using chronal_distortion_shader.gdshader)"
+  ],
+  "verdict": "A desperate bargain with time itself, this invention carves the very essence of self-loss into the urgent rhythm of survival.",
+  "impact": "This mechanic will force players into agonizing, split-second decisions: sacrifice a piece of Lyra's identity to survive an immediate threat, or risk being overwhelmed and losing even more. It transforms tactical combat into a deeply personal, emotional struggle, making every use of the ability a poignant reminder of Lyra's fading self and the desperate stakes of her journey.",
+  "score": 95,
+  "inventedAt": "2026-07-06T14:45:24.113Z"
+}

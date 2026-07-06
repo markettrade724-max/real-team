@@ -1,0 +1,53 @@
+{
+  "name": "synaptic_weave_interface",
+  "label": "The Synaptic Weave",
+  "domain": "ui",
+  "godotFeature": "Viewport texture for in-world UI rendering, InputEventMouseMotion for interactive tracing, ShaderMaterial for visual fragmentation",
+  "poeticVision": "Feel the desperate, split-second race against yourself and the Silence. You're not just activating a menu; you're reaching into the raw, glittering chaos of a memory shard, actively tracing, aligning, and weaving its fragile threads together to make it whole. The UI becomes a tactile, vulnerable extension of Lyra's mind, a direct interface with her dissolving identity, forcing you to choose between defending your body and mending your soul, knowing a single misstep or a hunter's blow could shatter the fragment forever.",
+  "usage": "This recipe provides the core logic for the 'Synaptic Weave' interactive memory reconstruction. A code-agent would use this by:\n1.  **Scene Setup**: In a 3D scene, create a `SubViewportContainer` and add a `SubViewport` as its child. Inside the `SubViewport`, add a `Control` node (e.g., `Panel`). Attach this `synaptic_weave_interface.gd` script to that `Control` node. Configure its `trace_path_data` (local coordinates within the Control node), `trace_tolerance`, `reconstruction_duration`, `progress_loss_on_hit`, and `progress_decay_rate` parameters.\n2.  **Visual Display**: In the 3D scene, add a `Sprite3D` (or `MeshInstance3D` with a QuadMesh). Set its `texture` property to the `SubViewportTexture` from the `SubViewport`. Create a new `ShaderMaterial` resource, load the `synaptic_weave_interface.gdshader` (provided separately) into it, and apply this `ShaderMaterial` to the `Sprite3D`.\n3.  **Activation**: When Lyra needs to reconstruct a memory, call `activate_weave(memory_id_string, sprite3d_node.material_override)` on the `Control` node's script instance. The `memory_id_string` identifies the memory, and `sprite3d_node.material_override` passes the `ShaderMaterial` for visual feedback.\n4.  **Damage/Threat**: If Lyra takes damage or is under threat while weaving, call `apply_weave_damage(amount)` on the `Control` node's script instance. This will reduce reconstruction progress and increase visual fragmentation.\n5.  **Outcome Handling**: Connect to the `memory_reconstructed` and `memory_shattered` signals emitted by the `Control` node's script to implement game logic for success (e.g., gain a memory shard, weaponize it) or failure (e.g., permanent memory loss, new vulnerability).",
+  "parameters": [
+    {
+      "name": "trace_path_data",
+      "type": "PackedVector2Array",
+      "default": "[Vector2(50, 50), Vector2(150, 50), Vector2(150, 150), Vector2(50, 150), Vector2(50, 50)]",
+      "description": "A series of 2D points defining the path the player must trace with the mouse to reconstruct the memory. Coordinates are local to the Control node."
+    },
+    {
+      "name": "trace_tolerance",
+      "type": "float",
+      "default": "10.0",
+      "description": "The maximum distance the mouse can be from the current target point on the trace path to be considered 'on path'."
+    },
+    {
+      "name": "reconstruction_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "The total time (in seconds) required to successfully trace the path and reconstruct the memory from 0% to 100%."
+    },
+    {
+      "name": "progress_loss_on_hit",
+      "type": "float",
+      "default": "0.1",
+      "description": "The percentage of total progress lost when 'apply_weave_damage' is called (e.g., 0.1 means 10% of total progress is lost)."
+    },
+    {
+      "name": "progress_decay_rate",
+      "type": "float",
+      "default": "0.2",
+      "description": "The rate at which reconstruction progress decays per second when the mouse is not actively tracing the path. Expressed as a fraction of total progress per second (e.g., 0.2 means 20% of total progress is lost per second)."
+    }
+  ],
+  "dependencies": [
+    "Sprite3D (or MeshInstance3D)",
+    "SubViewportContainer",
+    "SubViewport",
+    "Control (node this script is attached to)",
+    "Line2D (created by script as child of Control)",
+    "ShaderMaterial (applied to Sprite3D)",
+    "synaptic_weave_interface.gdshader"
+  ],
+  "verdict": "In the crucible of combat, the Synaptic Weave forges identity from the fragments of a dissolving mind, making every choice a desperate dance between survival and self.",
+  "impact": "This mechanic transforms passive memory collection into a high-stakes, real-time struggle. Players will constantly weigh the immediate danger of combat against the existential threat of identity loss, creating intense moments of decision-making. Every recovered memory will feel like a hard-won victory, and every lost one, a devastating blow, deepening the emotional connection to Lyra's journey. It forces a visceral connection between physical survival and mental integrity, making the act of 'mending the soul' a perilous, active challenge.",
+  "score": 95,
+  "inventedAt": "2026-07-06T14:41:38.537Z"
+}

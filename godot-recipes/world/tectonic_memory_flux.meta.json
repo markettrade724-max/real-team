@@ -1,0 +1,43 @@
+{
+  "name": "tectonic_memory_flux",
+  "label": "Tectonic Memory Flux",
+  "domain": "world",
+  "godotFeature": "CSG (Constructive Solid Geometry) at runtime",
+  "poeticVision": "Feel the ground literally dissolve beneath your feet as forgotten trauma resurfaces, or witness impossible structures materialize from the void as a lost memory is clutched. The world isn't just a backdrop; it's a direct, physical manifestation of your fracturing mind, constantly reshaping itself to challenge your very survival and sense of self. Every step is a gamble against forgetting, every restored memory a fragile new foothold.",
+  "usage": "Attach this `TectonicMemoryFlux.gd` script to a `CSGCombiner3D` node in your scene. This `CSGCombiner3D` will serve as the dynamic environment. Its children should be `CSGPrimitive3D` nodes (e.g., `CSGBox3D`, `CSGSphere3D`) that represent the environmental 'chunks' capable of appearing or disappearing.\n\nIn the Inspector for the `CSGCombiner3D` with this script:\n1.  Set the `Player Node Path` to the scene path of Lyra's `Node3D` (e.g., `../Player`).\n2.  Adjust `Flux Radius` to define the area around Lyra where the memory flux effect occurs.\n3.  Modify `Erosion Threshold` (e.g., 0.4) and `Restoration Threshold` (e.g., 0.6) to specify the memory integrity levels at which environment chunks begin to erode or restore.\n\nTo trigger the dynamic environment changes:\n*   Call `set_memory_integrity(new_value)` on the `TectonicMemoryFlux` node from Lyra's script or a central `MemoryManager` whenever Lyra's memory integrity changes (e.g., due to forgetting, taking damage, or the passage of time).\n*   Call `collect_memory_shard(strength)` on the `TectonicMemoryFlux` node when Lyra acquires a memory fragment to increase her integrity.\n\nThe `CSGCombiner3D` will automatically update its combined mesh and collision shape based on the `operation` of its children, creating the desired dynamic environment.",
+  "parameters": [
+    {
+      "name": "player_node_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "The NodePath to Lyra's main Node3D in the scene."
+    },
+    {
+      "name": "flux_radius",
+      "type": "float",
+      "default": "20.0",
+      "description": "The radius around Lyra within which environment chunks will dynamically change based on memory integrity."
+    },
+    {
+      "name": "erosion_threshold",
+      "type": "float",
+      "default": "0.4",
+      "description": "Memory integrity value below which nearby environment chunks will erode (become subtracted)."
+    },
+    {
+      "name": "restoration_threshold",
+      "type": "float",
+      "default": "0.6",
+      "description": "Memory integrity value above which nearby environment chunks will restore (become unioned)."
+    }
+  ],
+  "dependencies": [
+    "CSGCombiner3D",
+    "CSGPrimitive3D",
+    "Node3D"
+  ],
+  "verdict": "The world itself becomes a fragile echo of a fading mind, demanding every step be a desperate grasp at existence.",
+  "impact": "This mechanic fundamentally transforms the game world from a static backdrop into a dynamic, living entity that directly reflects Lyra's internal struggle. It creates constant physical challenges and opportunities, making every step a tangible representation of her fight against forgetting and her desperate search for self. The environment becomes a character, a constant reminder of the stakes, forcing urgent decisions and embodying the core themes of identity loss and survival.",
+  "score": 85,
+  "inventedAt": "2026-07-06T14:42:33.501Z"
+}

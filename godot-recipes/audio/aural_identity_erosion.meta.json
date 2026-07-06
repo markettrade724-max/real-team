@@ -1,0 +1,59 @@
+{
+  "name": "aural_identity_erosion",
+  "label": "The Mind's Echo Chamber",
+  "domain": "audio",
+  "godotFeature": "AudioBusLayout, AudioEffectReverb, AudioEffectDistortion, AudioEffectPitchShift, AudioStreamPlaybackResampled, GDScript parameter control",
+  "poeticVision": "The player experiences Lyra's dissolving identity not just visually, but through the very fabric of the world's soundscape. As Lyra's mind fractures due to memory loss, the ambient sounds, her own strained breathing, and even the footsteps of the encroaching Silence become disoriented, muffled, or subtly play backward, mirroring her internal chaos. Recovering a memory doesn't just bring back a visual; it snaps the entire auditory world into sharp, desperate focus, making survival feel visceral and immediate. This is the sound of Lyra losing and regaining her grip on reality.",
+  "usage": "Attach this 'aural_identity_erosion.gd' script to a global autoloaded Node or a persistent Node in your scene tree. \n\n1.  **Audio Bus Setup:** In Godot's Project Settings -> Audio Bus Layout, create a new audio bus (e.g., named 'IdentityBus'). Route all relevant game audio (music, ambient sounds, Lyra's sound effects, Silence's sounds) through this bus. You can do this by setting the 'Bus' property on AudioStreamPlayer nodes or by routing other buses into 'IdentityBus'.\n2.  **Script Configuration:** Set the 'Audio Bus Name' export variable in the Inspector to the name of your created bus (e.g., 'IdentityBus'). Adjust 'Reverb Max Mix', 'Distortion Max Drive', and 'Pitch Shift Max Amount' to control the maximum intensity of the effects when Lyra's identity is completely fractured (identity_cohesion = 0.0).\n3.  **Controlling Identity Cohesion:** Call the `set_identity_cohesion(value: float)` method from other scripts (e.g., Lyra's player script, game manager) to update Lyra's mental state. Use `recover_memory()` when Lyra finds a memory fragment to make the soundscape clearer, and `lose_memory()` when she takes damage or fails a memory challenge to increase distortion.\n4.  **Proximity Effects:** For localized sonic distortions (e.g., near the Silence or critical memory fragments), call `apply_proximity_distortion(proximity_factor: float)` from an `Area3D` or similar node. The `proximity_factor` (0.0 to 1.0) should represent how close Lyra is to the source of distortion, temporarily intensifying the audio effects.\n5.  **Individual Stream Variations (Optional):** For more granular control over specific sounds (like Lyra's breathing or footsteps) as mentioned in the vision, you would need to attach `AudioStreamPlaybackResampled` resources to individual `AudioStreamPlayer` nodes. These nodes would then need their own scripts to read the global `identity_cohesion` value (e.g., by accessing this script's `identity_cohesion` property) and dynamically adjust the `playback_speed` or `pitch_scale` of their `AudioStreamPlaybackResampled` resource accordingly. This script focuses on the global bus effects.",
+  "parameters": [
+    {
+      "name": "identity_cohesion",
+      "type": "float",
+      "default": "1.0",
+      "description": "Current state of Lyra's identity. 1.0 is fully coherent, 0.0 is completely fractured. Changes to this value dynamically update audio effects."
+    },
+    {
+      "name": "audio_bus_name",
+      "type": "String",
+      "default": "IdentityBus",
+      "description": "The name of the audio bus in Project Settings -> Audio Bus Layout that this script will control. All game audio intended to be affected should be routed through this bus."
+    },
+    {
+      "name": "reverb_max_mix",
+      "type": "float",
+      "default": "0.8",
+      "description": "Maximum reverb mix value applied to the audio bus when identity cohesion is 0.0 (fully fractured)."
+    },
+    {
+      "name": "reverb_max_room_size",
+      "type": "float",
+      "default": "1.0",
+      "description": "Maximum room size value applied to the reverb effect when identity cohesion is 0.0."
+    },
+    {
+      "name": "distortion_max_drive",
+      "type": "float",
+      "default": "0.8",
+      "description": "Maximum distortion drive value applied to the audio bus when identity cohesion is 0.0."
+    },
+    {
+      "name": "distortion_max_pre_gain",
+      "type": "float",
+      "default": "6.0",
+      "description": "Maximum pre-gain value for the distortion effect when identity cohesion is 0.0, intensifying the distortion."
+    },
+    {
+      "name": "pitch_shift_max_amount",
+      "type": "float",
+      "default": "0.2",
+      "description": "Maximum pitch shift amount (e.g., 0.2 means 20% shift down) applied to the audio bus when identity cohesion is 0.0. A value of 0.0 means no shift, 1.0 means double pitch, -1.0 means half pitch. This shifts towards 1.0 - amount."
+    }
+  ],
+  "dependencies": [
+    "Requires an Audio Bus named 'IdentityBus' (or custom name) in Project Settings -> Audio Bus Layout."
+  ],
+  "verdict": "A symphony of self-loss, this invention weaves the unraveling mind into the very air Lyra breathes, making every sound a desperate echo of her fading identity.",
+  "impact": "This invention deeply immerses the player into Lyra's fracturing mind, translating her internal chaos into a tangible, dynamic auditory experience. The soundscape becomes a direct mirror of her identity, intensifying the tension of survival and making the recovery or loss of memories a visceral, immediate event that reshapes the very fabric of her perceived reality.",
+  "score": 85,
+  "inventedAt": "2026-07-06T14:39:54.802Z"
+}

@@ -1,0 +1,62 @@
+{
+  "name": "identity_echo_hunter_intelligence",
+  "label": "The Echo of the Unmade Self",
+  "domain": "ai",
+  "godotFeature": "GDScript for dynamic AI states and logic, ShaderMaterial for visual adaptation, AnimationPlayer for behavioral changes",
+  "poeticVision": "The profound unease of fighting a hunter that embodies your own forgotten strengths and vulnerabilities. Every attack is a painful reminder of what's slipping away, a mirror held up to your own dissolving identity. You don't just fight a monster; you fight a distorted version of yourself, weaponized by the Silence.",
+  "usage": "Attach this script to a CharacterBody3D node representing the hunter. Ensure the hunter node has a child NavigationAgent3D (added programmatically) and a MeshInstance3D named 'Mesh' with a ShaderMaterial applied to its first surface. The ShaderMaterial should expose 'distortion_amount' (float) and 'color_shift' (vec3) uniforms. Call the 'update_lyra_profile(profile: Dictionary)' method from Lyra's identity management system whenever her memory profile changes. The 'profile' dictionary should contain keys like 'has_precision_aim' (bool), 'has_shielding' (bool), and 'lost_memory_count' (int) to trigger adaptive behaviors and visual changes. For example, a simple shader for the 'Mesh' could be:\n\nglsl\nshader_type spatial;\n\nuniform float distortion_amount : hint_range(0.0, 1.0) = 0.0;\nuniform vec3 color_shift : hint_color = vec3(0.0);\n\nvoid fragment() {\n\tvec2 uv = SCREEN_UV;\n\tuv.x += sin(uv.y * 10.0 + TIME * 5.0) * 0.01 * distortion_amount;\n\tuv.y += cos(uv.x * 10.0 + TIME * 5.0) * 0.01 * distortion_amount;\n\n\tvec4 base_color = texture(SCREEN_TEXTURE, uv);\n\tALBEDO = base_color.rgb + color_shift;\n\tALPHA = base_color.a;\n}\n",
+  "parameters": [
+    {
+      "name": "player_node_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "Path to the player's CharacterBody3D node in the scene tree."
+    },
+    {
+      "name": "movement_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Base movement speed of the hunter."
+    },
+    {
+      "name": "pursuit_range",
+      "type": "float",
+      "default": "15.0",
+      "description": "Distance at which the hunter begins pursuing the player."
+    },
+    {
+      "name": "attack_range",
+      "type": "float",
+      "default": "2.0",
+      "description": "Distance at which the hunter attempts to attack the player."
+    },
+    {
+      "name": "attack_cooldown",
+      "type": "float",
+      "default": "1.5",
+      "description": "Time in seconds between hunter attacks."
+    },
+    {
+      "name": "distortion_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Shader uniform: Controls the visual distortion effect, adapting based on Lyra's lost memories."
+    },
+    {
+      "name": "color_shift",
+      "type": "Vector3",
+      "default": "Vector3(0.0, 0.0, 0.0)",
+      "description": "Shader uniform: Controls a color shift effect, adapting based on Lyra's lost memories."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (base node)",
+    "NavigationAgent3D (added programmatically)",
+    "MeshInstance3D (child node named 'Mesh')",
+    "ShaderMaterial (applied to MeshInstance3D)"
+  ],
+  "verdict": "A haunting echo of self, weaponized by the Silence, turning every fight into a desperate, personalized struggle against the very essence of forgetting.",
+  "impact": "This mechanic transforms the abstract concept of identity loss into a tangible, immediate, and deeply personal combat encounter. Players will not just fight an enemy, but confront the consequences of their own fading self, making every encounter a poignant struggle against internal decay mirrored by external threat. It creates a profound sense of unease and a unique challenge that evolves with the player's narrative state, ensuring constant tension and a deeply integrated theme.",
+  "score": 90,
+  "inventedAt": "2026-07-06T14:38:48.683Z"
+}

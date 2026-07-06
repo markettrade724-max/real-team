@@ -1,5 +1,373 @@
 [
   {
+    "name": "kinetic_memory_flux",
+    "label": "Kinetic Memory Flux",
+    "domain": "movement",
+    "godotFeature": "RigidBody3D, CharacterBody3D, PhysicsServer3D.body_apply_impulse, PhysicsServer3D.body_apply_force, PinJoint3D",
+    "poeticVision": "You'll feel a desperate, tactile improvisation. Every retrieved memory isn't just data; it's a volatile, physical tool in your hands. Grasp a shimmering shard, feel its strange weight and momentum, and in a split second, decide to hurl it to collapse a path behind you, or use its recoil to boost yourself across a chasm. It's the urgent thrill of immediate, physical consequence from the very essence of your dissolving identity.",
+    "usage": "Attach this `kinetic_memory_flux.gd` script to Lyra's `CharacterBody3D` node. To use the mechanics:\n\n1.  **Throwing a memory fragment**: Call `throw_memory_fragment(fragment_node, direction_vector)` from Lyra's script, where `fragment_node` is a `RigidBody3D` representing a memory fragment, and `direction_vector` is the desired normalized throw direction.\n2.  **Kinetic Boost**: Call `kinetic_boost(fragment_node)` when Lyra is near or on top of a `RigidBody3D` memory fragment to propel her upwards.\n3.  **Kinetic Tether**: Call `start_kinetic_tether(fragment_node)` to attach Lyra to a nearby `RigidBody3D` memory fragment. Call `end_kinetic_tether()` to release the tether. While tethered, a continuous identity cost is applied.\n\nThe `_current_identity` value can be monitored via `get_current_identity()` to update UI or trigger game events related to Lyra's memory loss.",
+    "parameters": [
+      {
+        "name": "throw_force_magnitude",
+        "type": "float",
+        "default": "25.0",
+        "description": "The force applied when Lyra throws a memory fragment."
+      },
+      {
+        "name": "boost_velocity_magnitude",
+        "type": "float",
+        "default": "15.0",
+        "description": "The upward velocity applied to Lyra when performing a kinetic boost."
+      },
+      {
+        "name": "tether_max_distance",
+        "type": "float",
+        "default": "10.0",
+        "description": "The maximum distance allowed for the kinetic tether (PinJoint3D limit)."
+      },
+      {
+        "name": "throw_identity_cost",
+        "type": "float",
+        "default": "0.05",
+        "description": "The amount of identity Lyra loses when throwing a memory fragment."
+      },
+      {
+        "name": "boost_identity_cost",
+        "type": "float",
+        "default": "0.1",
+        "description": "The amount of identity Lyra loses when performing a kinetic boost."
+      },
+      {
+        "name": "tether_identity_cost_per_second",
+        "type": "float",
+        "default": "0.02",
+        "description": "The continuous amount of identity Lyra loses per second while tethered."
+      }
+    ],
+    "dependencies": [
+      "CharacterBody3D",
+      "RigidBody3D",
+      "PinJoint3D"
+    ],
+    "verdict": "With every desperate throw and every fleeting boost, Lyra's very essence becomes the currency of survival, a fragile dance between memory and oblivion.",
+    "impact": "This mechanic will fundamentally define the player's interaction with the world, transforming abstract memories into tangible, volatile tools for desperate survival and traversal. Every action will carry the weight of Lyra's dissolving identity, creating a constant, visceral tension between immediate physical necessity and the irreversible cost of self-loss, making every choice a profound and unforgettable gamble.",
+    "score": 95,
+    "inventedAt": "2026-07-06T14:46:20.152Z"
+  },
+  {
+    "name": "chronal_memory_drift",
+    "label": "Chronal Echoes of Erosion",
+    "domain": "time",
+    "godotFeature": "ShaderMaterial, Area3D, _process/_physics_process delta manipulation, AnimationPlayer speed_scale",
+    "poeticVision": "The player will feel the chilling weight of every memory decision. Activating a forgotten moment might buy precious seconds against the Silence's relentless pursuit, but at the terrible cost of the memory itself dissolving faster around them, accelerating the very 'forgetting' they fight. A desperate strategic gamble where time is a volatile currency, paid with shreds of Lyra's own identity.",
+    "usage": "This script (`chronal_memory_fragment.gd`) should be attached to an `Area3D` node in your scene. This `Area3D` represents a memory fragment that Lyra can interact with.\n\n**Setup Steps:**\n1.  **Create `TemporalErosionManager` Autoload:**\n    *   Create a new GDScript file named `temporal_erosion_manager.gd` with the following content:\n        gdscript\n        # temporal_erosion_manager.gd\n        extends Node\n\n        signal erosion_factor_changed(new_factor: float)\n\n        var global_erosion_factor: float = 0.0:\n        \tset(value):\n        \t\tglobal_erosion_factor = clampf(value, 0.0, 1.0) # Clamp between 0 and 1\n        \t\terosion_factor_changed.emit(global_erosion_factor)\n\n        func increase_erosion(amount: float) -> void:\n        \tglobal_erosion_factor += amount\n        \tprint(\"Global Erosion Factor: \", global_erosion_factor)\n        \n    *   Go to `Project -> Project Settings -> Autoload` tab.\n    *   Add `temporal_erosion_manager.gd`, name it `TemporalErosionManager`, and enable it.\n    *   Other systems (e.g., a global shader on `WorldEnvironment` or `AnimationPlayer`s controlling environmental decay) should connect to `TemporalErosionManager.erosion_factor_changed` to react to the global erosion.\n\n2.  **Implement `DistortableEntity` Interface:**\n    *   Lyra (player) and Silence hunters (enemies) must implement a `DistortableEntity` interface or extend a base class that provides `apply_time_distortion(factor: float)` and `remove_time_distortion()` methods. These methods should modify an internal `current_time_scale` variable that their `_process` and `_physics_process` functions multiply `delta` by.\n    *   Example `distortable_entity.gd` (attach to Lyra/Hunters):\n        gdscript\n        # distortable_entity.gd\n        extends CharacterBody3D # Or any other physics body\n\n        var current_time_scale: float = 1.0\n\n        func _process(delta: float) -> void:\n        \t# Example: Apply movement based on distorted delta\n        \t# velocity.x = move_speed * delta * current_time_scale\n        \tpass\n\n        func _physics_process(delta: float) -> void:\n        \t# Example: Apply physics movement based on distorted delta\n        \t# move_and_slide()\n        \tpass\n\n        func apply_time_distortion(factor: float) -> void:\n        \tcurrent_time_scale = factor\n        \t# Optionally, apply visual feedback (e.g., shader, particle effect) to this entity\n\n        func remove_time_distortion() -> void:\n        \tcurrent_time_scale = 1.0\n        \t# Optionally, remove visual feedback from this entity\n\n        func get_current_time_scale() -> float:\n        \treturn current_time_scale\n        \n\n3.  **Create `ChronalDistortionShader`:**\n    *   Create a new `ShaderMaterial` resource (e.g., `res://materials/chronal_distortion_mat.tres`).\n    *   Assign a new `Shader` resource to it (e.g., `res://shaders/chronal_distortion_shader.gdshader`) with the following GLSL code:\n        glsl\n        shader_type spatial;\n        render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n        uniform float distortion_strength : hint_range(0.0, 1.0) = 0.1;\n        uniform float distortion_speed : hint_range(0.0, 10.0) = 5.0;\n        uniform vec4 distortion_color : source_color = vec4(0.2, 0.5, 0.8, 0.5);\n\n        void vertex() {\n            float displacement = sin(VERTEX.x * 10.0 + TIME * distortion_speed) * cos(VERTEX.y * 10.0 + TIME * distortion_speed) * distortion_strength;\n            VERTEX.xyz += NORMAL * displacement;\n        }\n\n        void fragment() {\n            ALBEDO = distortion_color.rgb;\n            ALPHA = distortion_color.a;\n            ROUGHNESS = 0.8;\n            METALLIC = 0.0;\n        }\n        \n\n4.  **Configure `ChronalMemoryFragment` Node:**\n    *   Add a `MeshInstance3D` as a child of your `Area3D` (e.g., a `SphereMesh` or `BoxMesh`) to serve as the `visual_mesh` for the distortion effect.\n    *   In the Inspector for the `Area3D` with `chronal_memory_fragment.gd` attached:\n        *   Set `distortion_factor`, `distortion_duration`, and `erosion_amount` as desired.\n        *   Drag your `visual_mesh` child node into the `Visual Mesh` slot.\n        *   Drag your `chronal_distortion_mat.tres` (the `ShaderMaterial`) into the `Distortion Shader Material` slot.\n    *   Ensure the `Area3D`'s `collision_mask` is set to detect the player (e.g., layer 1).\n    *   Ensure the player `CharacterBody3D` is in the \"player\" group.\n\n**Behavior:**\nWhen Lyra (a `body` in the \"player\" group) enters the `Area3D` of a `ChronalMemoryFragment`, the fragment activates:\n*   It notifies the `TemporalErosionManager` to increase the `global_erosion_factor`.\n*   It applies the `distortion_shader_material` to its `visual_mesh` child, creating a localized visual effect.\n*   For `distortion_duration` seconds, any `DistortableEntity` (Lyra, hunters) entering or already inside the `Area3D` will have their `current_time_scale` set to `distortion_factor`.\n*   After the duration, the visual effect is removed, affected entities return to normal time, and the memory fragment `queue_free()`s itself, signifying its consumption.",
+    "parameters": [
+      {
+        "name": "distortion_factor",
+        "type": "float",
+        "default": "0.5",
+        "description": "The time scale factor applied to entities within the distortion zone (e.g., 0.5 for slow-motion, 2.0 for fast-motion)."
+      },
+      {
+        "name": "distortion_duration",
+        "type": "float",
+        "default": "3.0",
+        "description": "The duration in seconds for which the localized time distortion effect lasts."
+      },
+      {
+        "name": "erosion_amount",
+        "type": "float",
+        "default": "0.1",
+        "description": "The amount by which the global 'Temporal Erosion' factor is increased upon activation of this memory fragment."
+      },
+      {
+        "name": "visual_mesh",
+        "type": "MeshInstance3D",
+        "default": "null",
+        "description": "A child MeshInstance3D node used to visually represent the distortion zone. The 'distortion_shader_material' will be applied to this mesh."
+      },
+      {
+        "name": "distortion_shader_material",
+        "type": "ShaderMaterial",
+        "default": "null",
+        "description": "The ShaderMaterial resource to apply to the 'visual_mesh' when the fragment is active, creating the visual distortion effect."
+      }
+    ],
+    "dependencies": [
+      "TemporalErosionManager (Godot Autoload singleton)",
+      "DistortableEntity (GDScript interface/base class for Lyra/Hunters)",
+      "MeshInstance3D (child node for visual representation)",
+      "ShaderMaterial (resource using chronal_distortion_shader.gdshader)"
+    ],
+    "verdict": "A desperate bargain with time itself, this invention carves the very essence of self-loss into the urgent rhythm of survival.",
+    "impact": "This mechanic will force players into agonizing, split-second decisions: sacrifice a piece of Lyra's identity to survive an immediate threat, or risk being overwhelmed and losing even more. It transforms tactical combat into a deeply personal, emotional struggle, making every use of the ability a poignant reminder of Lyra's fading self and the desperate stakes of her journey.",
+    "score": 95,
+    "inventedAt": "2026-07-06T14:45:24.113Z"
+  },
+  {
+    "name": "echo_sacrifice_gauntlets",
+    "label": "Echo Sacrifice Gauntlets",
+    "domain": "weapons",
+    "godotFeature": "Custom Shaders (GDScript/VisualShader), Particles (GPUParticles3D), Data Structures (Dictionaries/Arrays for memory fragments), AnimationPlayer.",
+    "poeticVision": "The player feels the visceral cost of power, a cold dread as a part of their very self is torn away to fuel a desperate attack. Each critical hit is a victory, but also a haunting loss, forcing a harrowing choice between immediate survival and the slow erosion of who they are. It's the ultimate adrenaline rush tempered by existential grief.",
+    "usage": "Attach this `EchoSacrificeGauntlets.gd` script to a `Node3D` child of Lyra's player character (e.g., `CharacterBody3D`).\n\n1.  **Grafting Memory**: When Lyra collects a memory fragment (represented as a `Dictionary` with `id`, `trait`, `power_level`, `is_core_memory` keys) and the player decides to graft it, call `gauntlets_node.graft_memory(memory_fragment_data)`.\n2.  **Activating Sacrifice**: When the player triggers the special attack input, call `gauntlets_node.activate_sacrifice_attack()`. This will consume the grafted memory, apply a temporary damage boost, trigger visual/audio effects, and emit the `identity_trait_lost` signal.\n3.  **Damage Calculation**: Lyra's combat system should query `gauntlets_node.get_current_melee_damage()` to get her current attack power, which will reflect any active boosts.\n4.  **Identity Management**: Connect Lyra's central identity management script (e.g., a singleton or a component on Lyra) to the `identity_trait_lost` signal (`gauntlets_node.identity_trait_lost.connect(lyra_identity_manager.remove_trait)`). This allows Lyra's identity to be updated when a memory is sacrificed.\n5.  **Visuals**: Assign a `ShaderMaterial` (e.g., `lyra_arm_sacrifice_shader.gdshader` with a `uniform bool sacrifice_effect_active`) to the `lyra_arm_material` export slot. This material should be applied to Lyra's arm mesh to visualize the sacrifice effect.",
+    "parameters": [
+      {
+        "name": "base_melee_damage",
+        "type": "float",
+        "default": "10.0",
+        "description": "The base damage Lyra deals with melee attacks before any boosts."
+      },
+      {
+        "name": "boost_duration",
+        "type": "float",
+        "default": "3.0",
+        "description": "The duration in seconds for which the damage boost from a memory sacrifice is active."
+      },
+      {
+        "name": "sacrifice_sound",
+        "type": "AudioStream",
+        "default": "null",
+        "description": "The audio clip played when a memory fragment is sacrificed."
+      },
+      {
+        "name": "lyra_arm_material",
+        "type": "Material",
+        "default": "null",
+        "description": "The ShaderMaterial instance applied to Lyra's arm mesh. It should contain a 'sacrifice_effect_active' uniform to control visual feedback."
+      }
+    ],
+    "dependencies": [
+      "Node3D",
+      "Timer",
+      "AudioStreamPlayer",
+      "A ShaderMaterial (e.g., 'lyra_arm_sacrifice_shader.gdshader') with a 'uniform bool sacrifice_effect_active' parameter, applied to Lyra's arm mesh.",
+      "Lyra's player script or identity manager to handle the 'identity_trait_lost' signal.",
+      "Memory fragments represented as Dictionaries with keys: 'id' (String), 'trait' (String), 'power_level' (float), 'is_core_memory' (bool)."
+    ],
+    "verdict": "A brilliant fusion of visceral combat and existential dread, where every desperate blow against oblivion carves a deeper wound into the self.",
+    "impact": "This mechanic will force players into agonizing decisions, making every combat encounter a moral dilemma. It deepens the emotional connection to Lyra's struggle, transforming abstract identity loss into a tangible, player-driven sacrifice. The temporary power surge provides immediate gratification, but the lingering dread of a lost memory ensures the cost is never truly forgotten, creating a unique blend of adrenaline and existential grief that perfectly embodies the game's core themes.",
+    "score": 92,
+    "inventedAt": "2026-07-06T14:43:53.386Z"
+  },
+  {
+    "name": "tectonic_memory_flux",
+    "label": "Tectonic Memory Flux",
+    "domain": "world",
+    "godotFeature": "CSG (Constructive Solid Geometry) at runtime",
+    "poeticVision": "Feel the ground literally dissolve beneath your feet as forgotten trauma resurfaces, or witness impossible structures materialize from the void as a lost memory is clutched. The world isn't just a backdrop; it's a direct, physical manifestation of your fracturing mind, constantly reshaping itself to challenge your very survival and sense of self. Every step is a gamble against forgetting, every restored memory a fragile new foothold.",
+    "usage": "Attach this `TectonicMemoryFlux.gd` script to a `CSGCombiner3D` node in your scene. This `CSGCombiner3D` will serve as the dynamic environment. Its children should be `CSGPrimitive3D` nodes (e.g., `CSGBox3D`, `CSGSphere3D`) that represent the environmental 'chunks' capable of appearing or disappearing.\n\nIn the Inspector for the `CSGCombiner3D` with this script:\n1.  Set the `Player Node Path` to the scene path of Lyra's `Node3D` (e.g., `../Player`).\n2.  Adjust `Flux Radius` to define the area around Lyra where the memory flux effect occurs.\n3.  Modify `Erosion Threshold` (e.g., 0.4) and `Restoration Threshold` (e.g., 0.6) to specify the memory integrity levels at which environment chunks begin to erode or restore.\n\nTo trigger the dynamic environment changes:\n*   Call `set_memory_integrity(new_value)` on the `TectonicMemoryFlux` node from Lyra's script or a central `MemoryManager` whenever Lyra's memory integrity changes (e.g., due to forgetting, taking damage, or the passage of time).\n*   Call `collect_memory_shard(strength)` on the `TectonicMemoryFlux` node when Lyra acquires a memory fragment to increase her integrity.\n\nThe `CSGCombiner3D` will automatically update its combined mesh and collision shape based on the `operation` of its children, creating the desired dynamic environment.",
+    "parameters": [
+      {
+        "name": "player_node_path",
+        "type": "NodePath",
+        "default": "",
+        "description": "The NodePath to Lyra's main Node3D in the scene."
+      },
+      {
+        "name": "flux_radius",
+        "type": "float",
+        "default": "20.0",
+        "description": "The radius around Lyra within which environment chunks will dynamically change based on memory integrity."
+      },
+      {
+        "name": "erosion_threshold",
+        "type": "float",
+        "default": "0.4",
+        "description": "Memory integrity value below which nearby environment chunks will erode (become subtracted)."
+      },
+      {
+        "name": "restoration_threshold",
+        "type": "float",
+        "default": "0.6",
+        "description": "Memory integrity value above which nearby environment chunks will restore (become unioned)."
+      }
+    ],
+    "dependencies": [
+      "CSGCombiner3D",
+      "CSGPrimitive3D",
+      "Node3D"
+    ],
+    "verdict": "The world itself becomes a fragile echo of a fading mind, demanding every step be a desperate grasp at existence.",
+    "impact": "This mechanic fundamentally transforms the game world from a static backdrop into a dynamic, living entity that directly reflects Lyra's internal struggle. It creates constant physical challenges and opportunities, making every step a tangible representation of her fight against forgetting and her desperate search for self. The environment becomes a character, a constant reminder of the stakes, forcing urgent decisions and embodying the core themes of identity loss and survival.",
+    "score": 85,
+    "inventedAt": "2026-07-06T14:42:33.501Z"
+  },
+  {
+    "name": "synaptic_weave_interface",
+    "label": "The Synaptic Weave",
+    "domain": "ui",
+    "godotFeature": "Viewport texture for in-world UI rendering, InputEventMouseMotion for interactive tracing, ShaderMaterial for visual fragmentation",
+    "poeticVision": "Feel the desperate, split-second race against yourself and the Silence. You're not just activating a menu; you're reaching into the raw, glittering chaos of a memory shard, actively tracing, aligning, and weaving its fragile threads together to make it whole. The UI becomes a tactile, vulnerable extension of Lyra's mind, a direct interface with her dissolving identity, forcing you to choose between defending your body and mending your soul, knowing a single misstep or a hunter's blow could shatter the fragment forever.",
+    "usage": "This recipe provides the core logic for the 'Synaptic Weave' interactive memory reconstruction. A code-agent would use this by:\n1.  **Scene Setup**: In a 3D scene, create a `SubViewportContainer` and add a `SubViewport` as its child. Inside the `SubViewport`, add a `Control` node (e.g., `Panel`). Attach this `synaptic_weave_interface.gd` script to that `Control` node. Configure its `trace_path_data` (local coordinates within the Control node), `trace_tolerance`, `reconstruction_duration`, `progress_loss_on_hit`, and `progress_decay_rate` parameters.\n2.  **Visual Display**: In the 3D scene, add a `Sprite3D` (or `MeshInstance3D` with a QuadMesh). Set its `texture` property to the `SubViewportTexture` from the `SubViewport`. Create a new `ShaderMaterial` resource, load the `synaptic_weave_interface.gdshader` (provided separately) into it, and apply this `ShaderMaterial` to the `Sprite3D`.\n3.  **Activation**: When Lyra needs to reconstruct a memory, call `activate_weave(memory_id_string, sprite3d_node.material_override)` on the `Control` node's script instance. The `memory_id_string` identifies the memory, and `sprite3d_node.material_override` passes the `ShaderMaterial` for visual feedback.\n4.  **Damage/Threat**: If Lyra takes damage or is under threat while weaving, call `apply_weave_damage(amount)` on the `Control` node's script instance. This will reduce reconstruction progress and increase visual fragmentation.\n5.  **Outcome Handling**: Connect to the `memory_reconstructed` and `memory_shattered` signals emitted by the `Control` node's script to implement game logic for success (e.g., gain a memory shard, weaponize it) or failure (e.g., permanent memory loss, new vulnerability).",
+    "parameters": [
+      {
+        "name": "trace_path_data",
+        "type": "PackedVector2Array",
+        "default": "[Vector2(50, 50), Vector2(150, 50), Vector2(150, 150), Vector2(50, 150), Vector2(50, 50)]",
+        "description": "A series of 2D points defining the path the player must trace with the mouse to reconstruct the memory. Coordinates are local to the Control node."
+      },
+      {
+        "name": "trace_tolerance",
+        "type": "float",
+        "default": "10.0",
+        "description": "The maximum distance the mouse can be from the current target point on the trace path to be considered 'on path'."
+      },
+      {
+        "name": "reconstruction_duration",
+        "type": "float",
+        "default": "5.0",
+        "description": "The total time (in seconds) required to successfully trace the path and reconstruct the memory from 0% to 100%."
+      },
+      {
+        "name": "progress_loss_on_hit",
+        "type": "float",
+        "default": "0.1",
+        "description": "The percentage of total progress lost when 'apply_weave_damage' is called (e.g., 0.1 means 10% of total progress is lost)."
+      },
+      {
+        "name": "progress_decay_rate",
+        "type": "float",
+        "default": "0.2",
+        "description": "The rate at which reconstruction progress decays per second when the mouse is not actively tracing the path. Expressed as a fraction of total progress per second (e.g., 0.2 means 20% of total progress is lost per second)."
+      }
+    ],
+    "dependencies": [
+      "Sprite3D (or MeshInstance3D)",
+      "SubViewportContainer",
+      "SubViewport",
+      "Control (node this script is attached to)",
+      "Line2D (created by script as child of Control)",
+      "ShaderMaterial (applied to Sprite3D)",
+      "synaptic_weave_interface.gdshader"
+    ],
+    "verdict": "In the crucible of combat, the Synaptic Weave forges identity from the fragments of a dissolving mind, making every choice a desperate dance between survival and self.",
+    "impact": "This mechanic transforms passive memory collection into a high-stakes, real-time struggle. Players will constantly weigh the immediate danger of combat against the existential threat of identity loss, creating intense moments of decision-making. Every recovered memory will feel like a hard-won victory, and every lost one, a devastating blow, deepening the emotional connection to Lyra's journey. It forces a visceral connection between physical survival and mental integrity, making the act of 'mending the soul' a perilous, active challenge.",
+    "score": 95,
+    "inventedAt": "2026-07-06T14:41:38.537Z"
+  },
+  {
+    "name": "aural_identity_erosion",
+    "label": "The Mind's Echo Chamber",
+    "domain": "audio",
+    "godotFeature": "AudioBusLayout, AudioEffectReverb, AudioEffectDistortion, AudioEffectPitchShift, AudioStreamPlaybackResampled, GDScript parameter control",
+    "poeticVision": "The player experiences Lyra's dissolving identity not just visually, but through the very fabric of the world's soundscape. As Lyra's mind fractures due to memory loss, the ambient sounds, her own strained breathing, and even the footsteps of the encroaching Silence become disoriented, muffled, or subtly play backward, mirroring her internal chaos. Recovering a memory doesn't just bring back a visual; it snaps the entire auditory world into sharp, desperate focus, making survival feel visceral and immediate. This is the sound of Lyra losing and regaining her grip on reality.",
+    "usage": "Attach this 'aural_identity_erosion.gd' script to a global autoloaded Node or a persistent Node in your scene tree. \n\n1.  **Audio Bus Setup:** In Godot's Project Settings -> Audio Bus Layout, create a new audio bus (e.g., named 'IdentityBus'). Route all relevant game audio (music, ambient sounds, Lyra's sound effects, Silence's sounds) through this bus. You can do this by setting the 'Bus' property on AudioStreamPlayer nodes or by routing other buses into 'IdentityBus'.\n2.  **Script Configuration:** Set the 'Audio Bus Name' export variable in the Inspector to the name of your created bus (e.g., 'IdentityBus'). Adjust 'Reverb Max Mix', 'Distortion Max Drive', and 'Pitch Shift Max Amount' to control the maximum intensity of the effects when Lyra's identity is completely fractured (identity_cohesion = 0.0).\n3.  **Controlling Identity Cohesion:** Call the `set_identity_cohesion(value: float)` method from other scripts (e.g., Lyra's player script, game manager) to update Lyra's mental state. Use `recover_memory()` when Lyra finds a memory fragment to make the soundscape clearer, and `lose_memory()` when she takes damage or fails a memory challenge to increase distortion.\n4.  **Proximity Effects:** For localized sonic distortions (e.g., near the Silence or critical memory fragments), call `apply_proximity_distortion(proximity_factor: float)` from an `Area3D` or similar node. The `proximity_factor` (0.0 to 1.0) should represent how close Lyra is to the source of distortion, temporarily intensifying the audio effects.\n5.  **Individual Stream Variations (Optional):** For more granular control over specific sounds (like Lyra's breathing or footsteps) as mentioned in the vision, you would need to attach `AudioStreamPlaybackResampled` resources to individual `AudioStreamPlayer` nodes. These nodes would then need their own scripts to read the global `identity_cohesion` value (e.g., by accessing this script's `identity_cohesion` property) and dynamically adjust the `playback_speed` or `pitch_scale` of their `AudioStreamPlaybackResampled` resource accordingly. This script focuses on the global bus effects.",
+    "parameters": [
+      {
+        "name": "identity_cohesion",
+        "type": "float",
+        "default": "1.0",
+        "description": "Current state of Lyra's identity. 1.0 is fully coherent, 0.0 is completely fractured. Changes to this value dynamically update audio effects."
+      },
+      {
+        "name": "audio_bus_name",
+        "type": "String",
+        "default": "IdentityBus",
+        "description": "The name of the audio bus in Project Settings -> Audio Bus Layout that this script will control. All game audio intended to be affected should be routed through this bus."
+      },
+      {
+        "name": "reverb_max_mix",
+        "type": "float",
+        "default": "0.8",
+        "description": "Maximum reverb mix value applied to the audio bus when identity cohesion is 0.0 (fully fractured)."
+      },
+      {
+        "name": "reverb_max_room_size",
+        "type": "float",
+        "default": "1.0",
+        "description": "Maximum room size value applied to the reverb effect when identity cohesion is 0.0."
+      },
+      {
+        "name": "distortion_max_drive",
+        "type": "float",
+        "default": "0.8",
+        "description": "Maximum distortion drive value applied to the audio bus when identity cohesion is 0.0."
+      },
+      {
+        "name": "distortion_max_pre_gain",
+        "type": "float",
+        "default": "6.0",
+        "description": "Maximum pre-gain value for the distortion effect when identity cohesion is 0.0, intensifying the distortion."
+      },
+      {
+        "name": "pitch_shift_max_amount",
+        "type": "float",
+        "default": "0.2",
+        "description": "Maximum pitch shift amount (e.g., 0.2 means 20% shift down) applied to the audio bus when identity cohesion is 0.0. A value of 0.0 means no shift, 1.0 means double pitch, -1.0 means half pitch. This shifts towards 1.0 - amount."
+      }
+    ],
+    "dependencies": [
+      "Requires an Audio Bus named 'IdentityBus' (or custom name) in Project Settings -> Audio Bus Layout."
+    ],
+    "verdict": "A symphony of self-loss, this invention weaves the unraveling mind into the very air Lyra breathes, making every sound a desperate echo of her fading identity.",
+    "impact": "This invention deeply immerses the player into Lyra's fracturing mind, translating her internal chaos into a tangible, dynamic auditory experience. The soundscape becomes a direct mirror of her identity, intensifying the tension of survival and making the recovery or loss of memories a visceral, immediate event that reshapes the very fabric of her perceived reality.",
+    "score": 85,
+    "inventedAt": "2026-07-06T14:39:54.802Z"
+  },
+  {
+    "name": "identity_echo_hunter_intelligence",
+    "label": "The Echo of the Unmade Self",
+    "domain": "ai",
+    "godotFeature": "GDScript for dynamic AI states and logic, ShaderMaterial for visual adaptation, AnimationPlayer for behavioral changes",
+    "poeticVision": "The profound unease of fighting a hunter that embodies your own forgotten strengths and vulnerabilities. Every attack is a painful reminder of what's slipping away, a mirror held up to your own dissolving identity. You don't just fight a monster; you fight a distorted version of yourself, weaponized by the Silence.",
+    "usage": "Attach this script to a CharacterBody3D node representing the hunter. Ensure the hunter node has a child NavigationAgent3D (added programmatically) and a MeshInstance3D named 'Mesh' with a ShaderMaterial applied to its first surface. The ShaderMaterial should expose 'distortion_amount' (float) and 'color_shift' (vec3) uniforms. Call the 'update_lyra_profile(profile: Dictionary)' method from Lyra's identity management system whenever her memory profile changes. The 'profile' dictionary should contain keys like 'has_precision_aim' (bool), 'has_shielding' (bool), and 'lost_memory_count' (int) to trigger adaptive behaviors and visual changes. For example, a simple shader for the 'Mesh' could be:\n\nglsl\nshader_type spatial;\n\nuniform float distortion_amount : hint_range(0.0, 1.0) = 0.0;\nuniform vec3 color_shift : hint_color = vec3(0.0);\n\nvoid fragment() {\n\tvec2 uv = SCREEN_UV;\n\tuv.x += sin(uv.y * 10.0 + TIME * 5.0) * 0.01 * distortion_amount;\n\tuv.y += cos(uv.x * 10.0 + TIME * 5.0) * 0.01 * distortion_amount;\n\n\tvec4 base_color = texture(SCREEN_TEXTURE, uv);\n\tALBEDO = base_color.rgb + color_shift;\n\tALPHA = base_color.a;\n}\n",
+    "parameters": [
+      {
+        "name": "player_node_path",
+        "type": "NodePath",
+        "default": null,
+        "description": "Path to the player's CharacterBody3D node in the scene tree."
+      },
+      {
+        "name": "movement_speed",
+        "type": "float",
+        "default": "5.0",
+        "description": "Base movement speed of the hunter."
+      },
+      {
+        "name": "pursuit_range",
+        "type": "float",
+        "default": "15.0",
+        "description": "Distance at which the hunter begins pursuing the player."
+      },
+      {
+        "name": "attack_range",
+        "type": "float",
+        "default": "2.0",
+        "description": "Distance at which the hunter attempts to attack the player."
+      },
+      {
+        "name": "attack_cooldown",
+        "type": "float",
+        "default": "1.5",
+        "description": "Time in seconds between hunter attacks."
+      },
+      {
+        "name": "distortion_amount",
+        "type": "float",
+        "default": "0.0",
+        "description": "Shader uniform: Controls the visual distortion effect, adapting based on Lyra's lost memories."
+      },
+      {
+        "name": "color_shift",
+        "type": "Vector3",
+        "default": "Vector3(0.0, 0.0, 0.0)",
+        "description": "Shader uniform: Controls a color shift effect, adapting based on Lyra's lost memories."
+      }
+    ],
+    "dependencies": [
+      "CharacterBody3D (base node)",
+      "NavigationAgent3D (added programmatically)",
+      "MeshInstance3D (child node named 'Mesh')",
+      "ShaderMaterial (applied to MeshInstance3D)"
+    ],
+    "verdict": "A haunting echo of self, weaponized by the Silence, turning every fight into a desperate, personalized struggle against the very essence of forgetting.",
+    "impact": "This mechanic transforms the abstract concept of identity loss into a tangible, immediate, and deeply personal combat encounter. Players will not just fight an enemy, but confront the consequences of their own fading self, making every encounter a poignant struggle against internal decay mirrored by external threat. It creates a profound sense of unease and a unique challenge that evolves with the player's narrative state, ensuring constant tension and a deeply integrated theme.",
+    "score": 90,
+    "inventedAt": "2026-07-06T14:38:48.683Z"
+  },
+  {
     "name": "identity_fracture_vision",
     "label": "شاشات الوعي المتكسرة",
     "domain": "shaders",

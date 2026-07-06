@@ -1,0 +1,55 @@
+{
+  "name": "kinetic_memory_flux",
+  "label": "Kinetic Memory Flux",
+  "domain": "movement",
+  "godotFeature": "RigidBody3D, CharacterBody3D, PhysicsServer3D.body_apply_impulse, PhysicsServer3D.body_apply_force, PinJoint3D",
+  "poeticVision": "You'll feel a desperate, tactile improvisation. Every retrieved memory isn't just data; it's a volatile, physical tool in your hands. Grasp a shimmering shard, feel its strange weight and momentum, and in a split second, decide to hurl it to collapse a path behind you, or use its recoil to boost yourself across a chasm. It's the urgent thrill of immediate, physical consequence from the very essence of your dissolving identity.",
+  "usage": "Attach this `kinetic_memory_flux.gd` script to Lyra's `CharacterBody3D` node. To use the mechanics:\n\n1.  **Throwing a memory fragment**: Call `throw_memory_fragment(fragment_node, direction_vector)` from Lyra's script, where `fragment_node` is a `RigidBody3D` representing a memory fragment, and `direction_vector` is the desired normalized throw direction.\n2.  **Kinetic Boost**: Call `kinetic_boost(fragment_node)` when Lyra is near or on top of a `RigidBody3D` memory fragment to propel her upwards.\n3.  **Kinetic Tether**: Call `start_kinetic_tether(fragment_node)` to attach Lyra to a nearby `RigidBody3D` memory fragment. Call `end_kinetic_tether()` to release the tether. While tethered, a continuous identity cost is applied.\n\nThe `_current_identity` value can be monitored via `get_current_identity()` to update UI or trigger game events related to Lyra's memory loss.",
+  "parameters": [
+    {
+      "name": "throw_force_magnitude",
+      "type": "float",
+      "default": "25.0",
+      "description": "The force applied when Lyra throws a memory fragment."
+    },
+    {
+      "name": "boost_velocity_magnitude",
+      "type": "float",
+      "default": "15.0",
+      "description": "The upward velocity applied to Lyra when performing a kinetic boost."
+    },
+    {
+      "name": "tether_max_distance",
+      "type": "float",
+      "default": "10.0",
+      "description": "The maximum distance allowed for the kinetic tether (PinJoint3D limit)."
+    },
+    {
+      "name": "throw_identity_cost",
+      "type": "float",
+      "default": "0.05",
+      "description": "The amount of identity Lyra loses when throwing a memory fragment."
+    },
+    {
+      "name": "boost_identity_cost",
+      "type": "float",
+      "default": "0.1",
+      "description": "The amount of identity Lyra loses when performing a kinetic boost."
+    },
+    {
+      "name": "tether_identity_cost_per_second",
+      "type": "float",
+      "default": "0.02",
+      "description": "The continuous amount of identity Lyra loses per second while tethered."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "RigidBody3D",
+    "PinJoint3D"
+  ],
+  "verdict": "With every desperate throw and every fleeting boost, Lyra's very essence becomes the currency of survival, a fragile dance between memory and oblivion.",
+  "impact": "This mechanic will fundamentally define the player's interaction with the world, transforming abstract memories into tangible, volatile tools for desperate survival and traversal. Every action will carry the weight of Lyra's dissolving identity, creating a constant, visceral tension between immediate physical necessity and the irreversible cost of self-loss, making every choice a profound and unforgettable gamble.",
+  "score": 95,
+  "inventedAt": "2026-07-06T14:46:20.152Z"
+}
