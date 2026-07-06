@@ -1,22 +1,22 @@
 {
-  "runId": "2026-07-06T1347",
-  "mode": "art-library",
+  "runId": "2026-07-06T1411",
+  "mode": "screenplay-production",
   "success": true,
-  "timestamp": "2026-07-06T13:48:36.441Z",
-  "totalDuration": "41.8s",
+  "timestamp": "2026-07-06T14:25:03.443Z",
+  "totalDuration": "834.9s",
   "budget": {
-    "total": 10,
+    "total": 16,
     "limit": 40,
-    "left": 30,
+    "left": 24,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 10,
+        "total": 16,
         "limit": 20,
-        "left": 10,
+        "left": 4,
         "exhausted": false,
         "library": 0,
-        "agents": 10
+        "agents": 16
       },
       {
         "key": "KEY_2",
@@ -35,24 +35,64 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 11,
-    "next": 15
+    "episodes": 12,
+    "next": 16
   },
   "progress": {
-    "nextEpisode": 15,
-    "totalEpisodes": 15,
+    "nextEpisode": 16,
+    "totalEpisodes": 16,
     "gamesDone": 1
   },
   "agents": {
-    "artLibrary": {
+    "screenplay": {
       "success": true,
-      "duration": "41.8s",
+      "duration": "—",
+      "error": null
+    },
+    "voice": {
+      "success": true,
+      "duration": "28.8s",
+      "error": null
+    },
+    "scene": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "visual": {
+      "success": true,
+      "duration": "21.8s",
+      "error": null
+    },
+    "subtitle": {
+      "success": true,
+      "duration": "19ms",
+      "error": null
+    },
+    "music": {
+      "success": true,
+      "duration": "6ms",
+      "error": null
+    },
+    "edit": {
+      "success": true,
+      "duration": "518.4s",
+      "error": null
+    },
+    "trailer": {
+      "success": true,
+      "duration": "30.8s",
+      "error": null
+    },
+    "upload": {
+      "success": true,
+      "duration": "6.1s",
       "error": null
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 1,
+    "total": 9,
+    "passed": 9,
     "failed": 0
   }
 }
