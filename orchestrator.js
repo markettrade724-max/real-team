@@ -315,7 +315,22 @@ async function screenplayAndProductionDay(universe, t0, runId) {
       logger.info(`[OK] ${step} done`, { episode: episodeNumber });
     }
 
-    if (!screenplay) throw new Error('No screenplay produced');
+    if (!screenplay) {
+  const savedPath = join(RESULTS_DIR, `screenplay-ep${episodeNumber}.json`);
+  if (existsSync(savedPath)) {
+    try {
+      screenplay = JSON.parse(readFileSync(savedPath, 'utf8'));
+      logger.info('[SCREENPLAY] All steps already complete — loaded from disk', {
+        episode: episodeNumber,
+        title:   screenplay.title,
+      });
+    } catch (err) {
+      throw new Error(`No screenplay produced and disk load failed: ${err.message}`);
+    }
+  } else {
+    throw new Error(`No screenplay produced and no disk file found for ep${episodeNumber}`);
+  }
+}
 
     // Save for production (same run reads it immediately)
     writeFileSync(
