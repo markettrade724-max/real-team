@@ -1,15 +1,17 @@
 /**
- * upload-agent.js — v1.4
+ * upload-agent.js — v1.5
  *
- * التغييرات عن v1.3:
- *  - supabaseUploadFile: createReadStream بدل readFileSync — لا OOM
- *  - updateSeriesUrls() محذوفة — orchestrator يتولى تحديث series.json
- *  - run() يُرجع { videoUrl, trailerUrl } للـ orchestrator
- *  - ensureBucket() ينشئ bucket تلقائياً إن لم يكن موجوداً
+ * Changes from v1.4:
+ *  - Return value: youtube/tiktok now explicit URL string or null (not spread object)
+ *    Fixes false positive: { youtube: true, tiktok: true } even when skipped
+ *  - Logger line updated to show actual upload status clearly
+ *  - Comments translated from Arabic to English
  *
- * القواعد المطبقة:
+ * Rules applied:
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
- *  rule-126 : Node.js خالص
+ *  rule-126 : Node.js pure
+ *  rule-228 : Supabase Storage — maximum priority
+ *  rule-229 : createReadStream + duplex:'half' for video — prevents OOM
  */
 
 import { readFileSync, existsSync, statSync, createReadStream } from 'fs';
@@ -22,10 +24,10 @@ const MAX_SIZE_WARN = 500 * 1024 * 1024; // 500MB
 const BUCKET        = 'episodes';
 
 // ══════════════════════════════════════════════════════════
-// الدالة الرئيسية
+// Main
 // ══════════════════════════════════════════════════════════
 export async function run(episodeManifest, series, trailer = null) {
-  logger.info('[UPLOAD] Starting v1.4', { episode: episodeManifest.episode });
+  logger.info('[UPLOAD] Starting v1.5', { episode: episodeManifest.episode });
 
   if (!existsSync(episodeManifest.outputPath)) {
     throw new Error(`Video not found: ${episodeManifest.outputPath}`);
@@ -38,56 +40,62 @@ export async function run(episodeManifest, series, trailer = null) {
     });
   }
 
-  const results = {};
+  let videoUrl   = null;
+  let trailerUrl = null;
+  let youtubeUrl = null;
+  let tiktokUrl  = null;
 
-  // ── Supabase Storage — أولوية قصوى ────────────────────
+  // ── Supabase Storage — maximum priority (rule-228) ────────
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    results.supabase = await uploadToSupabase(episodeManifest, trailer);
+    const result = await uploadToSupabase(episodeManifest, trailer);
+    videoUrl   = result.videoUrl   || null;
+    trailerUrl = result.trailerUrl || null;
   } else {
     logger.warn('[UPLOAD] Supabase credentials missing — skipping');
-    results.supabase = { skipped: true, reason: 'no credentials' };
   }
 
-  // ── يوتيوب ────────────────────────────────────────────
+  // ── YouTube (optional — needs YOUTUBE_CLIENT_ID + YOUTUBE_REFRESH_TOKEN) ──
   if (process.env.YOUTUBE_CLIENT_ID && process.env.YOUTUBE_REFRESH_TOKEN) {
-    results.youtube = await uploadToYoutube(episodeManifest, series);
+    const result = await uploadToYoutube(episodeManifest, series);
+    youtubeUrl   = result.url || null;
+
     if (trailer?.outputPath && existsSync(trailer.outputPath)) {
-      results.youtubeShorts = await uploadToYoutube(
+      await uploadToYoutube(
         { ...episodeManifest, outputPath: trailer.outputPath, isShort: true },
         series
       );
     }
   } else {
     logger.warn('[UPLOAD] YouTube credentials missing — skipping');
-    results.youtube = { skipped: true, reason: 'no credentials' };
   }
 
-  // ── تيك توك ───────────────────────────────────────────
+  // ── TikTok (optional — needs TIKTOK_ACCESS_TOKEN) ──────────
   if (process.env.TIKTOK_ACCESS_TOKEN) {
     const trailerPath = trailer?.outputPath;
     if (trailerPath && existsSync(trailerPath)) {
-      results.tiktok = await uploadToTiktok(trailerPath, episodeManifest, series);
+      const result = await uploadToTiktok(trailerPath, episodeManifest, series);
+      tiktokUrl    = result.url || null;
     } else {
-      logger.warn('[UPLOAD] No trailer for TikTok');
-      results.tiktok = { skipped: true, reason: 'no trailer' };
+      logger.warn('[UPLOAD] No trailer for TikTok — skipping');
     }
   } else {
     logger.warn('[UPLOAD] TikTok token missing — skipping');
-    results.tiktok = { skipped: true, reason: 'no credentials' };
   }
 
-  // ── إرجاع URLs للـ orchestrator ────────────────────────
-  // orchestrator يتولى تحديث series.json — لا تعارض
-  const videoUrl   = results.supabase?.videoUrl   || null;
-  const trailerUrl = results.supabase?.trailerUrl || null;
-
+  // FIX v1.5 — explicit status, never truthy-object false positives
   logger.info('[OK] Upload done', {
-    supabase: videoUrl   || results.supabase?.skipped  || results.supabase?.error,
-    youtube:  results.youtube?.url || results.youtube?.skipped || results.youtube?.error,
-    tiktok:   results.tiktok?.url  || results.tiktok?.skipped  || results.tiktok?.error,
+    supabase: videoUrl   || 'skipped',
+    youtube:  youtubeUrl || 'skipped',
+    tiktok:   tiktokUrl  || 'skipped',
   });
 
-  return { ...results, videoUrl, trailerUrl };
+  // FIX v1.5 — return explicit values, not spread of internal result objects
+  return {
+    videoUrl,
+    trailerUrl,
+    youtube: youtubeUrl, // null if skipped — orchestrator checks truthiness correctly
+    tiktok:  tiktokUrl,  // null if skipped
+  };
 }
 
 // ══════════════════════════════════════════════════════════
@@ -96,7 +104,6 @@ export async function run(episodeManifest, series, trailer = null) {
 async function uploadToSupabase(manifest, trailer) {
   logger.info('[SUPABASE] Uploading episode + trailer...');
   try {
-    // تأكد من وجود الـ bucket — ينشئه إن لم يكن موجوداً
     await ensureBucket();
 
     const ep       = manifest.episode;
@@ -115,22 +122,29 @@ async function uploadToSupabase(manifest, trailer) {
       );
     }
 
+    // Upload thumbnail if available (edit-agent v2.4 — for OG social share)
+    if (manifest.thumbnailPath && existsSync(manifest.thumbnailPath)) {
+      const thumbUrl = await supabaseUploadFile(
+        manifest.thumbnailPath,
+        `ep${ep}/thumbnail.jpg`,
+        'image/jpeg'
+      );
+      logger.info('[SUPABASE] Thumbnail uploaded', { url: thumbUrl });
+      return { success: true, videoUrl, trailerUrl, thumbnailUrl: thumbUrl };
+    }
+
     logger.info('[OK] Supabase upload done', { videoUrl, trailerUrl });
     return { success: true, videoUrl, trailerUrl };
 
   } catch (err) {
     logger.error('[SUPABASE] Upload failed', { error: err.message });
-    return { success: false, error: err.message };
+    return { success: false, error: err.message, videoUrl: null, trailerUrl: null };
   }
 }
 
-/**
- * ينشئ bucket إن لم يكن موجوداً
- */
 async function ensureBucket() {
   const url = `${process.env.SUPABASE_URL}/storage/v1/bucket`;
 
-  // تحقق إذا موجود
   const listRes = await fetch(url, {
     headers: {
       'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
@@ -147,7 +161,6 @@ async function ensureBucket() {
     }
   }
 
-  // أنشئ الـ bucket
   const createRes = await fetch(url, {
     method:  'POST',
     headers: {
@@ -160,7 +173,6 @@ async function ensureBucket() {
 
   if (!createRes.ok) {
     const err = await createRes.text();
-    // إذا الخطأ "already exists" — تجاهله
     if (err.includes('already exists') || err.includes('duplicate')) {
       logger.info(`[SUPABASE] Bucket "${BUCKET}" already exists`);
       return;
@@ -171,10 +183,7 @@ async function ensureBucket() {
   logger.info(`[SUPABASE] Bucket "${BUCKET}" created`);
 }
 
-/**
- * يرفع ملفاً على Supabase Storage بـ createReadStream
- * لا يحمّل الملف كاملاً في الذاكرة — آمن لملفات 500MB+
- */
+// rule-229: createReadStream + duplex:'half' — prevents OOM on large files
 async function supabaseUploadFile(filePath, storagePath, contentType) {
   const size = statSync(filePath).size;
 
@@ -182,7 +191,7 @@ async function supabaseUploadFile(filePath, storagePath, contentType) {
     size: `${(size / 1024 / 1024).toFixed(0)}MB`,
   });
 
-  const stream  = createReadStream(filePath);
+  const stream    = createReadStream(filePath);
   const uploadUrl = `${process.env.SUPABASE_URL}/storage/v1/object/${BUCKET}/${storagePath}`;
 
   const res = await fetch(uploadUrl, {
@@ -194,8 +203,8 @@ async function supabaseUploadFile(filePath, storagePath, contentType) {
       'x-upsert':       'true',
     },
     body:    stream,
-    duplex:  'half', // مطلوب لـ ReadStream مع fetch
-    signal:  AbortSignal.timeout(600000), // 10 دقائق
+    duplex:  'half',
+    signal:  AbortSignal.timeout(600000), // 10 minutes
   });
 
   if (!res.ok) {
@@ -203,13 +212,14 @@ async function supabaseUploadFile(filePath, storagePath, contentType) {
     throw new Error(`Supabase upload failed (${res.status}): ${err}`);
   }
 
-  const publicUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${storagePath}`;
-  logger.info(`[OK] Supabase file ready`, { url: publicUrl });
+  const publicUrl =
+    `${process.env.SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${storagePath}`;
+  logger.info('[OK] Supabase file ready', { url: publicUrl });
   return publicUrl;
 }
 
 // ══════════════════════════════════════════════════════════
-// يوتيوب
+// YouTube
 // ══════════════════════════════════════════════════════════
 async function uploadToYoutube(manifest, series) {
   logger.info('[YOUTUBE] Uploading...', { episode: manifest.episode });
@@ -238,7 +248,7 @@ async function uploadToYoutube(manifest, series) {
     return { success: true, videoId, url };
   } catch (err) {
     logger.error('[YOUTUBE] Upload failed', { error: err.message });
-    return { success: false, error: err.message };
+    return { success: false, error: err.message, url: null };
   }
 }
 
@@ -255,7 +265,9 @@ async function refreshYoutubeToken() {
     signal: AbortSignal.timeout(15000),
   });
   const data = await res.json();
-  if (!data.access_token) throw new Error(`YouTube token refresh failed: ${JSON.stringify(data)}`);
+  if (!data.access_token) {
+    throw new Error(`YouTube token refresh failed: ${JSON.stringify(data)}`);
+  }
   logger.info('[YOUTUBE] Token refreshed');
   return data.access_token;
 }
@@ -281,7 +293,6 @@ async function initResumableUpload(token, metadata) {
 }
 
 async function uploadVideoFile(uploadUrl, videoPath, token) {
-  // YouTube يقبل ReadStream مع duplex
   const size   = statSync(videoPath).size;
   const stream = createReadStream(videoPath);
 
@@ -307,37 +318,39 @@ async function uploadVideoFile(uploadUrl, videoPath, token) {
 }
 
 // ══════════════════════════════════════════════════════════
-// تيك توك
+// TikTok
 // ══════════════════════════════════════════════════════════
 async function uploadToTiktok(videoPath, manifest, series) {
   logger.info('[TIKTOK] Uploading trailer...');
   try {
-    // TikTok يحتاج size مسبقاً — نقرأ فقط الحجم ثم نفتح stream
     const size   = statSync(videoPath).size;
-    const buffer = readFileSync(videoPath); // trailer صغير — مقبول
+    const buffer = readFileSync(videoPath); // trailer is small — readFileSync acceptable
 
-    const initRes = await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
-      method:  'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.TIKTOK_ACCESS_TOKEN}`,
-        'Content-Type':  'application/json',
-      },
-      body: JSON.stringify({
-        post_info: {
-          title:           buildTiktokTitle(manifest, series),
-          privacy_level:   'PUBLIC_TO_EVERYONE',
-          disable_duet:    false,
-          disable_comment: false,
+    const initRes = await fetch(
+      'https://open.tiktokapis.com/v2/post/publish/video/init/',
+      {
+        method:  'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.TIKTOK_ACCESS_TOKEN}`,
+          'Content-Type':  'application/json',
         },
-        source_info: {
-          source:           'FILE_UPLOAD',
-          video_size:        size,
-          chunk_size:        size,
-          total_chunk_count: 1,
-        },
-      }),
-      signal: AbortSignal.timeout(15000),
-    });
+        body: JSON.stringify({
+          post_info: {
+            title:           buildTiktokTitle(manifest, series),
+            privacy_level:   'PUBLIC_TO_EVERYONE',
+            disable_duet:    false,
+            disable_comment: false,
+          },
+          source_info: {
+            source:            'FILE_UPLOAD',
+            video_size:        size,
+            chunk_size:        size,
+            total_chunk_count: 1,
+          },
+        }),
+        signal: AbortSignal.timeout(15000),
+      }
+    );
 
     const initData = await initRes.json();
     if (!initData.data?.upload_url) {
@@ -361,12 +374,12 @@ async function uploadToTiktok(videoPath, manifest, series) {
 
   } catch (err) {
     logger.error('[TIKTOK] Upload failed', { error: err.message });
-    return { success: false, error: err.message };
+    return { success: false, error: err.message, url: null };
   }
 }
 
 // ══════════════════════════════════════════════════════════
-// بيانات وصفية
+// Metadata builders
 // ══════════════════════════════════════════════════════════
 function buildYoutubeTitle(manifest, series) {
   return `${series?.title || 'The Series'} — Episode ${manifest.episode}: ${manifest.title || ''}`.trim();
