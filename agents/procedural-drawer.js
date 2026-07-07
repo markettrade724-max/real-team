@@ -1,506 +1,462 @@
 /**
- * procedural-drawer.js — v1.0
+ * agents/procedural-drawer.js — v2.0
  *
- * Draws characters procedurally using three combined styles:
- *  1. Particle field      — atmospheric cosmic background
- *  2. Crystal shards      — irregular geometric polygons (memory fragments)
- *  3. Constellation       — skeleton points connected by lines (character body)
+ * التغييرات عن v1.0:
+ *  - استبدال @napi-rs/canvas بـ jimp خالص — لا native modules
+ *  - يعمل على GitHub Actions + Vercel + أي بيئة Node.js
+ *  - نفس الوظائف: رسم شخصيات، خلفيات، تأثيرات، حفظ PNG
  *
- * Zero API calls — deterministic via seed — fully offline
- * Output: 1920×1080 PNG composited on Pollinations background
- *
- * Requires: npm install @napi-rs/canvas
- * (pre-built binaries for windows-x64 — no native compilation needed)
+ * القواعد المطبقة:
+ *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
+ *  rule-126 : Node.js خالص — لا native modules
  */
 
-import { createCanvas, loadImage } from '@napi-rs/canvas';
-import { writeFileSync, existsSync } from 'fs';
+import Jimp        from 'jimp';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { mkdirSync, existsSync } from 'fs';
 import { logger } from '../logger.js';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 // ══════════════════════════════════════════════════════════
-// Seeded RNG — Mulberry32 — pure JS, zero deps
+// ثوابت
 // ══════════════════════════════════════════════════════════
-function createRNG(seed) {
-  let s = seed >>> 0;
+const DEFAULT_W = 1280;
+const DEFAULT_H =  720;
+
+// لوحة ألوان الكون (memory-shards-saga)
+const PALETTE = {
+  bg:       0x05050bff,
+  deep:     0x0a0a16ff,
+  purple:   0x7c3aedff,
+  blue:     0x2563ebff,
+  cyan:     0x0891b2ff,
+  gold:     0xfacc15ff,
+  pink:     0xf472b6ff,
+  white:    0xf4f5f9ff,
+  muted:    0x7c83a0ff,
+  black:    0x000000ff,
+  transparent: 0x00000000,
+};
+
+// ══════════════════════════════════════════════════════════
+// دوال مساعدة
+// ══════════════════════════════════════════════════════════
+
+/** تحويل hex color لـ RGBA components */
+function hexToRGBA(hex) {
   return {
-    next() {
-      s = (s + 0x6D2B79F5) >>> 0;
-      let t = Math.imul(s ^ (s >>> 15), 1 | s);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    },
-    range(min, max)  { return min + this.next() * (max - min); },
-    int(min, max)    { return Math.floor(this.range(min, max + 1)); },
-    pick(arr)        { return arr[this.int(0, arr.length - 1)]; },
+    r: (hex >> 24) & 0xff,
+    g: (hex >> 16) & 0xff,
+    b: (hex >>  8) & 0xff,
+    a:  hex        & 0xff,
   };
 }
 
-// ══════════════════════════════════════════════════════════
-// Character skeleton definitions
-// Points: normalized [x, y] in 0–1 space
-// Connections: pairs of point indices
-// primaryNodes: highlighted joints (larger dots + extra glow)
-// ══════════════════════════════════════════════════════════
-const CHARACTERS = {
-  lyra: {
-    color:       '#c084fc',
-    glowColor:   '#a855f7',
-    shardColors: ['#8b5cf6', '#c4b5fd', '#7c3aed', '#ede9fe', '#6d28d9'],
-    poses: {
-      idle: {
-        points: [
-          [0.50, 0.09], // 0  head
-          [0.50, 0.18], // 1  neck
-          [0.34, 0.26], // 2  shoulder_l
-          [0.66, 0.26], // 3  shoulder_r
-          [0.26, 0.42], // 4  elbow_l
-          [0.74, 0.42], // 5  elbow_r
-          [0.24, 0.55], // 6  wrist_l
-          [0.76, 0.54], // 7  wrist_r
-          [0.50, 0.40], // 8  core
-          [0.50, 0.55], // 9  hip
-          [0.41, 0.57], // 10 hip_l
-          [0.59, 0.57], // 11 hip_r
-          [0.39, 0.73], // 12 knee_l
-          [0.61, 0.73], // 13 knee_r
-          [0.37, 0.89], // 14 foot_l
-          [0.63, 0.89], // 15 foot_r
-        ],
-        connections: [
-          [0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],
-          [1,8],[8,9],[9,10],[9,11],[10,12],[11,13],[12,14],[13,15],
-        ],
-        primaryNodes: [0, 1, 8, 9],
-      },
-      running: {
-        points: [
-          [0.53, 0.09],
-          [0.53, 0.17],
-          [0.40, 0.24],
-          [0.66, 0.24],
-          [0.26, 0.34], // arm swept back
-          [0.78, 0.36], // arm forward
-          [0.20, 0.22], // hand up-back
-          [0.82, 0.50], // hand forward-down
-          [0.53, 0.37], // core leaning
-          [0.53, 0.52],
-          [0.46, 0.54],
-          [0.60, 0.54],
-          [0.36, 0.66], // stride forward
-          [0.68, 0.72], // stride back
-          [0.29, 0.52], // foot lifted
-          [0.72, 0.88], // foot behind
-        ],
-        connections: [
-          [0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],
-          [1,8],[8,9],[9,10],[9,11],[10,12],[11,13],[12,14],[13,15],
-        ],
-        primaryNodes: [0, 1, 8, 14],
-      },
-      combat: {
-        points: [
-          [0.52, 0.09],
-          [0.52, 0.17],
-          [0.36, 0.28],
-          [0.68, 0.24],
-          [0.24, 0.40],
-          [0.82, 0.30], // weapon arm raised
-          [0.20, 0.50],
-          [0.90, 0.18], // weapon tip
-          [0.50, 0.42],
-          [0.50, 0.57],
-          [0.38, 0.59],
-          [0.62, 0.59],
-          [0.33, 0.75],
-          [0.67, 0.74],
-          [0.30, 0.90],
-          [0.70, 0.89],
-        ],
-        connections: [
-          [0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],
-          [1,8],[8,9],[9,10],[9,11],[10,12],[11,13],[12,14],[13,15],
-        ],
-        primaryNodes: [0, 1, 7, 9], // weapon tip highlighted
-      },
-      talk_open: {
-        points: [
-          [0.50, 0.09],
-          [0.50, 0.17],
-          [0.33, 0.26],
-          [0.67, 0.26],
-          [0.20, 0.36], // arm gesturing
-          [0.74, 0.40],
-          [0.14, 0.28], // pointing hand
-          [0.76, 0.53],
-          [0.50, 0.40],
-          [0.50, 0.55],
-          [0.41, 0.57],
-          [0.59, 0.57],
-          [0.39, 0.73],
-          [0.61, 0.73],
-          [0.37, 0.89],
-          [0.63, 0.89],
-        ],
-        connections: [
-          [0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],
-          [1,8],[8,9],[9,10],[9,11],[10,12],[11,13],[12,14],[13,15],
-        ],
-        primaryNodes: [0, 6], // head + pointing hand
-      },
-      talk_closed: {
-        points: [
-          [0.50, 0.09],
-          [0.50, 0.17],
-          [0.35, 0.26],
-          [0.65, 0.26],
-          [0.30, 0.40],
-          [0.70, 0.40],
-          [0.32, 0.53],
-          [0.68, 0.52],
-          [0.50, 0.40],
-          [0.50, 0.55],
-          [0.41, 0.57],
-          [0.59, 0.57],
-          [0.39, 0.73],
-          [0.61, 0.73],
-          [0.37, 0.89],
-          [0.63, 0.89],
-        ],
-        connections: [
-          [0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],
-          [1,8],[8,9],[9,10],[9,11],[10,12],[11,13],[12,14],[13,15],
-        ],
-        primaryNodes: [0, 1, 9],
-      },
-      injured: {
-        points: [
-          [0.48, 0.12], // head drooping
-          [0.49, 0.20],
-          [0.36, 0.29],
-          [0.63, 0.27],
-          [0.30, 0.44], // hand pressed to wound
-          [0.70, 0.42],
-          [0.38, 0.50], // hand on side
-          [0.72, 0.55],
-          [0.49, 0.44], // slumped
-          [0.49, 0.59],
-          [0.40, 0.61],
-          [0.58, 0.61],
-          [0.37, 0.76],
-          [0.60, 0.75],
-          [0.35, 0.91],
-          [0.62, 0.90],
-        ],
-        connections: [
-          [0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],
-          [1,8],[8,9],[9,10],[9,11],[10,12],[11,13],[12,14],[13,15],
-        ],
-        primaryNodes: [0, 6, 9],
-      },
-    },
-  },
-
-  kael: {
-    color:       '#60a5fa',
-    glowColor:   '#3b82f6',
-    shardColors: ['#1d4ed8', '#60a5fa', '#93c5fd', '#bfdbfe', '#2563eb'],
-    poses: {
-      present: {
-        points: [
-          [0.50, 0.10],
-          [0.50, 0.18],
-          [0.37, 0.26],
-          [0.63, 0.26],
-          [0.30, 0.40],
-          [0.70, 0.40],
-          [0.28, 0.52],
-          [0.72, 0.52],
-          [0.50, 0.40],
-          [0.50, 0.56],
-          [0.42, 0.58],
-          [0.58, 0.58],
-          [0.40, 0.73],
-          [0.60, 0.73],
-          [0.38, 0.88],
-          [0.62, 0.88],
-        ],
-        connections: [
-          [0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],
-          [1,8],[8,9],[9,10],[9,11],[10,12],[11,13],[12,14],[13,15],
-        ],
-        primaryNodes: [0, 1, 8, 9],
-      },
-      fading: {
-        points: [
-          [0.50, 0.10],
-          [0.50, 0.18],
-          [0.38, 0.27],
-          [0.62, 0.25], // slightly asymmetric — dissolving
-          [0.31, 0.41],
-          [0.69, 0.39],
-          [0.29, 0.53],
-          [0.71, 0.51],
-          [0.50, 0.41],
-          [0.50, 0.57],
-          [0.42, 0.59],
-          [0.58, 0.59],
-          [0.40, 0.74],
-          [0.60, 0.73],
-          [0.38, 0.89],
-          [0.60, 0.88],
-        ],
-        connections: [
-          [0,1],[1,2],[1,3],[2,4],[3,5],[4,6],[5,7],
-          [1,8],[8,9],[9,10],[9,11],[10,12],[11,13],[12,14],[13,15],
-        ],
-        primaryNodes: [0, 1], // only head/neck remain bright when fading
-      },
-    },
-  },
-};
-
-// ══════════════════════════════════════════════════════════
-// Mood → pose mapping (matches screenplay-agent v2.3 enums)
-// ══════════════════════════════════════════════════════════
-const MOOD_TO_POSE = {
-  tense:      'combat',
-  urgent:     'running',
-  dread:      'talk_closed',
-  desperate:  'injured',
-  triumphant: 'talk_open',
-  calm:       'idle',
-};
-
-export function moodToPose(charId, mood) {
-  const charDef = CHARACTERS[charId];
-  if (!charDef) return null;
-  const pose = MOOD_TO_POSE[mood] || 'idle';
-  // Fallback: if pose doesn't exist for this character use first available
-  return charDef.poses[pose] ? pose : Object.keys(charDef.poses)[0];
+/** رسم مستطيل مملوء */
+function fillRect(img, x, y, w, h, color) {
+  const { r, g, b, a } = hexToRGBA(color);
+  for (let py = y; py < y + h; py++) {
+    for (let px = x; px < x + w; px++) {
+      if (px >= 0 && py >= 0 && px < img.bitmap.width && py < img.bitmap.height) {
+        img.setPixelColor(Jimp.rgbaToInt(r, g, b, a), px, py);
+      }
+    }
+  }
 }
 
-// ══════════════════════════════════════════════════════════
-// Drawing layers
-// ══════════════════════════════════════════════════════════
+/** رسم مستطيل بإطار فقط */
+function strokeRect(img, x, y, w, h, color, thickness = 1) {
+  fillRect(img, x, y, w, thickness, color);             // top
+  fillRect(img, x, y + h - thickness, w, thickness, color); // bottom
+  fillRect(img, x, y, thickness, h, color);             // left
+  fillRect(img, x + w - thickness, y, thickness, h, color); // right
+}
 
-function drawParticleField(ctx, w, h, rng, accentColor) {
-  const grad = ctx.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0,   '#05050b');
-  grad.addColorStop(0.5, '#07071a');
-  grad.addColorStop(1,   '#030308');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, w, h);
+/** رسم دائرة */
+function fillCircle(img, cx, cy, radius, color) {
+  const { r, g, b, a } = hexToRGBA(color);
+  for (let py = cy - radius; py <= cy + radius; py++) {
+    for (let px = cx - radius; px <= cx + radius; px++) {
+      const dx = px - cx, dy = py - cy;
+      if (dx * dx + dy * dy <= radius * radius) {
+        if (px >= 0 && py >= 0 && px < img.bitmap.width && py < img.bitmap.height) {
+          img.setPixelColor(Jimp.rgbaToInt(r, g, b, a), px, py);
+        }
+      }
+    }
+  }
+}
 
-  // White particles (stars)
-  const count = rng.int(200, 320);
+/** تدرج أفقي أو عمودي */
+function fillGradient(img, x, y, w, h, colorA, colorB, direction = 'vertical') {
+  const ca = hexToRGBA(colorA), cb = hexToRGBA(colorB);
+  for (let py = y; py < y + h; py++) {
+    for (let px = x; px < x + w; px++) {
+      const t = direction === 'vertical'
+        ? (py - y) / Math.max(h - 1, 1)
+        : (px - x) / Math.max(w - 1, 1);
+      const r = Math.round(ca.r + (cb.r - ca.r) * t);
+      const g = Math.round(ca.g + (cb.g - ca.g) * t);
+      const b = Math.round(ca.b + (cb.b - ca.b) * t);
+      const a = Math.round(ca.a + (cb.a - ca.a) * t);
+      if (px >= 0 && py >= 0 && px < img.bitmap.width && py < img.bitmap.height) {
+        img.setPixelColor(Jimp.rgbaToInt(r, g, b, a), px, py);
+      }
+    }
+  }
+}
+
+/** رسم خط */
+function drawLine(img, x1, y1, x2, y2, color, thickness = 1) {
+  const { r, g, b, a } = hexToRGBA(color);
+  const dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1);
+  const sx = x1 < x2 ? 1 : -1, sy = y1 < y2 ? 1 : -1;
+  let err = dx - dy, x = x1, y = y1;
+  while (true) {
+    // رسم بسمك thickness
+    for (let tx = -Math.floor(thickness / 2); tx <= Math.floor(thickness / 2); tx++) {
+      for (let ty = -Math.floor(thickness / 2); ty <= Math.floor(thickness / 2); ty++) {
+        const px = x + tx, py = y + ty;
+        if (px >= 0 && py >= 0 && px < img.bitmap.width && py < img.bitmap.height) {
+          img.setPixelColor(Jimp.rgbaToInt(r, g, b, a), px, py);
+        }
+      }
+    }
+    if (x === x2 && y === y2) break;
+    const e2 = 2 * err;
+    if (e2 > -dy) { err -= dy; x += sx; }
+    if (e2 <  dx) { err += dx; y += sy; }
+  }
+}
+
+/** إضافة نقاط متلألئة عشوائية (نجوم/شظايا) */
+function addSparkles(img, count, color, minSize = 1, maxSize = 3) {
+  const W = img.bitmap.width, H = img.bitmap.height;
   for (let i = 0; i < count; i++) {
-    const x  = rng.range(0, w);
-    const y  = rng.range(0, h);
-    const r  = rng.range(0.3, 2.0);
-    const op = rng.range(0.06, 0.50);
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${op.toFixed(2)})`;
-    ctx.fill();
-  }
-
-  // Accent-colored memory particles
-  const [ar, ag, ab] = hexToRgb(accentColor);
-  const accentCount  = rng.int(25, 45);
-  for (let i = 0; i < accentCount; i++) {
-    const x  = rng.range(0, w);
-    const y  = rng.range(0, h);
-    const r  = rng.range(0.5, 2.8);
-    const op = rng.range(0.10, 0.40);
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${ar},${ag},${ab},${op.toFixed(2)})`;
-    ctx.fill();
-  }
-
-  // Faint nebula bloom
-  const nx = rng.range(0.2, 0.8) * w;
-  const ny = rng.range(0.15, 0.65) * h;
-  const nr = rng.range(220, 420);
-  const ng = ctx.createRadialGradient(nx, ny, 0, nx, ny, nr);
-  ng.addColorStop(0, `rgba(${ar},${ag},${ab},0.05)`);
-  ng.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = ng;
-  ctx.fillRect(0, 0, w, h);
-}
-
-function drawCrystalShards(ctx, w, h, rng, shardColors, cxCenter, cyCenter) {
-  const count = rng.int(7, 12);
-  for (let s = 0; s < count; s++) {
-    const angle = rng.range(0, Math.PI * 2);
-    const dist  = rng.range(110, 360);
-    const cx    = Math.max(30, Math.min(w - 30, cxCenter + Math.cos(angle) * dist));
-    const cy    = Math.max(30, Math.min(h - 30, cyCenter + Math.sin(angle) * dist));
-    const size  = rng.range(16, 58);
-    const sides = rng.int(4, 7);
-    const color = rng.pick(shardColors);
-    const [r, g, b] = hexToRgb(color);
-    const rot   = rng.range(0, Math.PI * 2);
-    const op    = rng.range(0.22, 0.60);
-
-    // Irregular polygon
-    const pts = [];
-    for (let p = 0; p < sides; p++) {
-      const a      = rot + (p / sides) * Math.PI * 2;
-      const jitter = rng.range(0.50, 1.0);
-      pts.push([cx + Math.cos(a) * size * jitter, cy + Math.sin(a) * size * jitter]);
-    }
-
-    // Fill
-    ctx.beginPath();
-    ctx.moveTo(pts[0][0], pts[0][1]);
-    for (let p = 1; p < pts.length; p++) ctx.lineTo(pts[p][0], pts[p][1]);
-    ctx.closePath();
-    ctx.fillStyle = `rgba(${r},${g},${b},${(op * 0.35).toFixed(2)})`;
-    ctx.fill();
-
-    // Outline
-    ctx.strokeStyle = `rgba(${r},${g},${b},${op.toFixed(2)})`;
-    ctx.lineWidth   = rng.range(0.7, 1.8);
-    ctx.stroke();
-
-    // Inner refraction line
-    if (pts.length >= 4) {
-      ctx.beginPath();
-      ctx.moveTo(pts[0][0], pts[0][1]);
-      ctx.lineTo(pts[Math.floor(pts.length / 2)][0], pts[Math.floor(pts.length / 2)][1]);
-      ctx.strokeStyle = `rgba(${r},${g},${b},${(op * 0.55).toFixed(2)})`;
-      ctx.lineWidth   = 0.5;
-      ctx.stroke();
-    }
+    const x = Math.floor(Math.random() * W);
+    const y = Math.floor(Math.random() * H);
+    const s = Math.floor(Math.random() * (maxSize - minSize + 1)) + minSize;
+    const alpha = Math.floor(Math.random() * 156 + 100); // 100-255
+    const { r, g, b } = hexToRGBA(color);
+    fillCircle(img, x, y, s, Jimp.rgbaToInt(r, g, b, alpha));
   }
 }
 
-function drawConstellationCharacter(ctx, w, h, poseDef, color, glowColor, alpha) {
-  const { points, connections, primaryNodes } = poseDef;
-  const [cr, cg, cb] = hexToRgb(color);
-  const [gr, gg, gb] = hexToRgb(glowColor);
-
-  // Character zone: center 40% of width, 88% of height
-  const charW = w * 0.38;
-  const charH = h * 0.88;
-  const charX = (w - charW) / 2;
-  const charY = h * 0.06;
-
-  const sc = points.map(([nx, ny]) => [
-    charX + nx * charW,
-    charY + ny * charH,
-  ]);
-
-  // Connections
-  for (const [a, b] of connections) {
-    const [x1, y1] = sc[a];
-    const [x2, y2] = sc[b];
-
-    // Outer glow
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = `rgba(${gr},${gg},${gb},${(0.14 * alpha).toFixed(2)})`;
-    ctx.lineWidth   = 4.5;
-    ctx.stroke();
-
-    // Main line
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = `rgba(${cr},${cg},${cb},${(0.55 * alpha).toFixed(2)})`;
-    ctx.lineWidth   = 1.2;
-    ctx.stroke();
-  }
-
-  // Nodes
-  for (let i = 0; i < sc.length; i++) {
-    const [x, y]    = sc[i];
-    const isPrimary = primaryNodes?.includes(i) ?? false;
-    const r         = isPrimary ? 6.0 : 2.8;
-
-    // Radial glow
-    const grd = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
-    grd.addColorStop(0, `rgba(${gr},${gg},${gb},${(0.50 * alpha).toFixed(2)})`);
-    grd.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.beginPath();
-    ctx.arc(x, y, r * 4, 0, Math.PI * 2);
-    ctx.fillStyle = grd;
-    ctx.fill();
-
-    // Dot
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${cr},${cg},${cb},${(0.90 * alpha).toFixed(2)})`;
-    ctx.fill();
-
-    // Bright center on primary nodes
-    if (isPrimary) {
-      ctx.beginPath();
-      ctx.arc(x, y, r * 0.45, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${(0.88 * alpha).toFixed(2)})`;
-      ctx.fill();
+/** تأثير glow — دائرة متدرجة الشفافية */
+function addGlow(img, cx, cy, radius, color) {
+  const { r, g, b } = hexToRGBA(color);
+  for (let py = cy - radius; py <= cy + radius; py++) {
+    for (let px = cx - radius; px <= cx + radius; px++) {
+      const dx = px - cx, dy = py - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist <= radius) {
+        if (px >= 0 && py >= 0 && px < img.bitmap.width && py < img.bitmap.height) {
+          const alpha = Math.floor((1 - dist / radius) * 80); // شفافية تدريجية
+          const existing = Jimp.intToRGBA(img.getPixelColor(px, py));
+          const nr = Math.min(255, existing.r + Math.floor(r * alpha / 255));
+          const ng = Math.min(255, existing.g + Math.floor(g * alpha / 255));
+          const nb = Math.min(255, existing.b + Math.floor(b * alpha / 255));
+          img.setPixelColor(Jimp.rgbaToInt(nr, ng, nb, 255), px, py);
+        }
+      }
     }
   }
 }
 
 // ══════════════════════════════════════════════════════════
-// Main export: draw one character scene
-// bgImagePath = Pollinations background (optional)
+// رسامات المشاهد
 // ══════════════════════════════════════════════════════════
-export async function drawCharacter(charId, pose, seed, outputPath, bgImagePath = null) {
-  const W = 1920, H = 1080;
-  const canvas = createCanvas(W, H);
-  const ctx    = canvas.getContext('2d');
 
-  const charDef = CHARACTERS[charId];
-  if (!charDef) {
-    logger.warn(`[DRAW] Unknown character: ${charId}`);
-    return null;
-  }
+/** خلفية كونية — الفضاء + شظايا الذاكرة */
+function drawCosmicBackground(img, mood = 'default') {
+  const W = img.bitmap.width, H = img.bitmap.height;
 
-  const poseKey = charDef.poses[pose] ? pose : Object.keys(charDef.poses)[0];
-  const poseDef = charDef.poses[poseKey];
-  const rng     = createRNG(seed + poseKey.length);
+  // تدرج أساسي حسب المزاج
+  const moodGrads = {
+    fear:        [0x05000fff, 0x1a0a2eff],
+    tense:       [0x0a0005ff, 0x2d0a1eff],
+    melancholy:  [0x030812ff, 0x0a1428ff],
+    wonder:      [0x050514ff, 0x0d0d2fff],
+    hope:        [0x050810ff, 0x0a1520ff],
+    default:     [0x05050bff, 0x0d0d1fff],
+  };
+  const [gradA, gradB] = moodGrads[mood] || moodGrads.default;
+  fillGradient(img, 0, 0, W, H, gradA, gradB, 'vertical');
 
-  // Layer 1: Background
-  if (bgImagePath && existsSync(bgImagePath)) {
-    const bg = await loadImage(bgImagePath);
-    ctx.drawImage(bg, 0, 0, W, H);
-    // Darken so constellation is readable
-    ctx.fillStyle = 'rgba(0,0,0,0.40)';
-    ctx.fillRect(0, 0, W, H);
+  // nebula glow في الزوايا
+  addGlow(img, Math.floor(W * 0.2), Math.floor(H * 0.2), 200, PALETTE.purple);
+  addGlow(img, Math.floor(W * 0.8), Math.floor(H * 0.3), 160, PALETTE.blue);
+  addGlow(img, Math.floor(W * 0.5), Math.floor(H * 0.8), 140, PALETTE.cyan);
+
+  // نجوم
+  addSparkles(img, 180, PALETTE.white, 1, 2);
+  // شظايا ذاكرة متلألئة
+  addSparkles(img, 30, PALETTE.gold, 1, 3);
+  addSparkles(img, 20, PALETTE.cyan, 1, 2);
+}
+
+/** رسم شخصية مجردة (silhouette + energy lines) */
+function drawCharacter(img, spec) {
+  const {
+    x = 400, y = 200, height = 320,
+    color = PALETTE.white, glowColor = PALETTE.purple,
+    pose = 'standing', // standing | reaching | collapsed
+  } = spec;
+
+  const headR  = Math.floor(height * 0.12);
+  const bodyH  = Math.floor(height * 0.35);
+  const bodyW  = Math.floor(height * 0.18);
+  const legH   = Math.floor(height * 0.28);
+  const armL   = Math.floor(height * 0.28);
+
+  // glow خلف الشخصية
+  addGlow(img, x, y + Math.floor(height * 0.4), Math.floor(height * 0.55), glowColor);
+
+  // رأس
+  const headY = y + headR;
+  fillCircle(img, x, headY, headR, color);
+
+  // جسم
+  const bodyY = headY + headR + 4;
+  fillRect(img, x - Math.floor(bodyW / 2), bodyY, bodyW, bodyH, color);
+
+  // أرجل
+  const legY = bodyY + bodyH;
+  if (pose === 'collapsed') {
+    // ساقان متراكبتان
+    fillRect(img, x - bodyW, legY, Math.floor(bodyW * 0.9), Math.floor(legH * 0.5), color);
+    fillRect(img, x - Math.floor(bodyW * 0.5), legY + Math.floor(legH * 0.25), Math.floor(bodyW * 0.9), Math.floor(legH * 0.5), color);
   } else {
-    drawParticleField(ctx, W, H, rng, charDef.glowColor);
+    fillRect(img, x - Math.floor(bodyW * 0.6), legY, Math.floor(bodyW * 0.45), legH, color);
+    fillRect(img, x + Math.floor(bodyW * 0.1), legY, Math.floor(bodyW * 0.45), legH, color);
   }
 
-  // Layer 2: Crystal shards
-  drawCrystalShards(ctx, W, H, rng, charDef.shardColors, W / 2, H / 2);
+  // ذراعان
+  const armY = bodyY + Math.floor(bodyH * 0.15);
+  if (pose === 'reaching') {
+    // ذراع ممتدة للأمام
+    drawLine(img, x - Math.floor(bodyW / 2), armY, x - Math.floor(bodyW / 2) - armL, armY - Math.floor(armL * 0.5), color, 6);
+    drawLine(img, x + Math.floor(bodyW / 2), armY, x + Math.floor(bodyW / 2) + armL, armY - Math.floor(armL * 0.8), color, 6);
+  } else {
+    drawLine(img, x - Math.floor(bodyW / 2), armY, x - Math.floor(bodyW / 2) - armL, armY + Math.floor(armL * 0.6), color, 6);
+    drawLine(img, x + Math.floor(bodyW / 2), armY, x + Math.floor(bodyW / 2) + armL, armY + Math.floor(armL * 0.6), color, 6);
+  }
 
-  // Layer 3: Constellation character
-  // Kael is translucent (echo — no physical body)
-  const alpha = charId === 'kael'
-    ? (poseKey === 'fading' ? 0.38 : 0.60)
-    : 1.0;
-  drawConstellationCharacter(ctx, W, H, poseDef, charDef.color, charDef.glowColor, alpha);
+  // energy lines حول الشخصية (تأثير شظايا الذاكرة)
+  const { r, g, b } = hexToRGBA(glowColor);
+  for (let i = 0; i < 6; i++) {
+    const angle  = (i / 6) * Math.PI * 2;
+    const len    = Math.floor(height * (0.15 + Math.random() * 0.2));
+    const startX = x + Math.floor(Math.cos(angle) * headR * 1.5);
+    const startY = headY + Math.floor(Math.sin(angle) * headR * 1.5);
+    const endX   = startX + Math.floor(Math.cos(angle) * len);
+    const endY   = startY + Math.floor(Math.sin(angle) * len);
+    const alpha  = Math.floor(80 + Math.random() * 100);
+    drawLine(img, startX, startY, endX, endY, Jimp.rgbaToInt(r, g, b, alpha), 2);
+  }
+}
 
-  const buffer = canvas.toBuffer('image/png');
-  writeFileSync(outputPath, buffer);
-  logger.info(`[DRAW] Rendered: ${charId}/${poseKey}`, {
-    path:  outputPath,
-    bytes: buffer.length,
-    bg:    bgImagePath ? 'pollinations' : 'procedural',
+/** رسم شظية ذاكرة (مضلع متوهج) */
+function drawMemoryShard(img, cx, cy, size, color = PALETTE.gold) {
+  const points = 6;
+  const { r, g, b } = hexToRGBA(color);
+  addGlow(img, cx, cy, size * 2, color);
+  for (let i = 0; i < points; i++) {
+    const a1 = (i / points) * Math.PI * 2;
+    const a2 = ((i + 1) / points) * Math.PI * 2;
+    const r1 = size * (0.7 + Math.random() * 0.3);
+    const r2 = size * (0.7 + Math.random() * 0.3);
+    const x1 = cx + Math.cos(a1) * r1;
+    const y1 = cy + Math.sin(a1) * r1;
+    const x2 = cx + Math.cos(a2) * r2;
+    const y2 = cy + Math.sin(a2) * r2;
+    drawLine(img, Math.floor(x1), Math.floor(y1), Math.floor(x2), Math.floor(y2),
+      Jimp.rgbaToInt(r, g, b, 200), 2);
+    drawLine(img, Math.floor(x1), Math.floor(y1), cx, cy,
+      Jimp.rgbaToInt(r, g, b, 80), 1);
+  }
+  fillCircle(img, cx, cy, Math.floor(size * 0.3), Jimp.rgbaToInt(r, g, b, 220));
+}
+
+/** شريط معلومات في الأسفل (بدون نص — jimp لا يدعم fonts خارجية بسهولة) */
+function drawInfoBar(img, color = PALETTE.purple) {
+  const W = img.bitmap.width, H = img.bitmap.height;
+  fillGradient(img, 0, H - 80, W, 80, 0x00000000, 0x000000cc, 'vertical');
+  fillRect(img, 0, H - 4, W, 4, color);
+}
+
+/** vignette — تعتيم الحواف */
+function addVignette(img) {
+  const W = img.bitmap.width, H = img.bitmap.height;
+  const cx = W / 2, cy = H / 2;
+  const maxDist = Math.sqrt(cx * cx + cy * cy);
+  img.scan(0, 0, W, H, function(px, py, idx) {
+    const dx = px - cx, dy = py - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy) / maxDist;
+    if (dist > 0.5) {
+      const factor = Math.min(1, (dist - 0.5) / 0.5);
+      const darkness = Math.floor(factor * 180);
+      this.bitmap.data[idx]     = Math.max(0, this.bitmap.data[idx]     - darkness);
+      this.bitmap.data[idx + 1] = Math.max(0, this.bitmap.data[idx + 1] - darkness);
+      this.bitmap.data[idx + 2] = Math.max(0, this.bitmap.data[idx + 2] - darkness);
+    }
   });
+}
+
+// ══════════════════════════════════════════════════════════
+// الدالة الرئيسية
+// ══════════════════════════════════════════════════════════
+
+/**
+ * يرسم صورة مشهد كاملة بناءً على وصف المشهد
+ * @param {object} scene - { id, mood, location, characters[], shards }
+ * @param {string} outputPath - مسار حفظ الصورة
+ * @param {object} options - { width, height }
+ */
+export async function drawScene(scene, outputPath, options = {}) {
+  const W = options.width  || DEFAULT_W;
+  const H = options.height || DEFAULT_H;
+
+  logger.info('[DRAWER] Drawing scene', { id: scene.id, mood: scene.mood, W, H });
+
+  const img = new Jimp(W, H, PALETTE.bg);
+
+  // 1. خلفية كونية
+  drawCosmicBackground(img, scene.mood);
+
+  // 2. عناصر المشهد حسب الوصف
+  const mood = (scene.mood || '').toLowerCase();
+
+  // شظايا ذاكرة — عدد أكبر في مشاهد "اكتشاف"
+  const shardCount = scene.shards || (mood.includes('wonder') || mood.includes('discover') ? 5 : 2);
+  for (let i = 0; i < shardCount; i++) {
+    const sx = Math.floor(W * (0.15 + Math.random() * 0.7));
+    const sy = Math.floor(H * (0.15 + Math.random() * 0.55));
+    const ss = Math.floor(20 + Math.random() * 40);
+    const sc = [PALETTE.gold, PALETTE.cyan, PALETTE.purple][i % 3];
+    drawMemoryShard(img, sx, sy, ss, sc);
+  }
+
+  // 3. شخصيات
+  const chars = scene.characters || [];
+  const charPositions = [
+    { x: Math.floor(W * 0.35), y: Math.floor(H * 0.15), height: Math.floor(H * 0.6) },
+    { x: Math.floor(W * 0.65), y: Math.floor(H * 0.18), height: Math.floor(H * 0.52) },
+    { x: Math.floor(W * 0.5),  y: Math.floor(H * 0.2),  height: Math.floor(H * 0.55) },
+  ];
+  const charColors = [PALETTE.white, 0x818cf8ff, 0x34d6c7ff];
+  const charGlows  = [PALETTE.purple, PALETTE.blue, PALETTE.cyan];
+  const poses      = ['standing', 'reaching', 'collapsed'];
+
+  chars.slice(0, 3).forEach((char, i) => {
+    const pos = charPositions[i];
+    drawCharacter(img, {
+      ...pos,
+      color:     charColors[i] || PALETTE.white,
+      glowColor: charGlows[i]  || PALETTE.purple,
+      pose:      char.pose || poses[mood.includes('fear') || mood.includes('tense') ? 2 : i % 2],
+    });
+  });
+
+  // إذا لا شخصيات — ارسم silhouette وحيدة في المنتصف
+  if (chars.length === 0) {
+    drawCharacter(img, {
+      x: Math.floor(W * 0.5), y: Math.floor(H * 0.12),
+      height: Math.floor(H * 0.65),
+      color: PALETTE.white, glowColor: PALETTE.purple,
+      pose: mood.includes('reach') ? 'reaching' : 'standing',
+    });
+  }
+
+  // 4. شريط معلومات + vignette
+  drawInfoBar(img, mood.includes('fear') ? PALETTE.pink : PALETTE.purple);
+  addVignette(img);
+
+  // 5. حفظ
+  mkdirSync(outputPath.split('/').slice(0, -1).join('/'), { recursive: true });
+  await img.writeAsync(outputPath);
+
+  logger.info('[OK] Scene drawn', {
+    id:   scene.id,
+    path: outputPath,
+    size: `${W}×${H}`,
+  });
+
   return outputPath;
 }
 
-// ── Helpers ───────────────────────────────────────────────
-function hexToRgb(hex) {
-  const h = hex.replace('#', '');
-  return [
-    parseInt(h.slice(0, 2), 16),
-    parseInt(h.slice(2, 4), 16),
-    parseInt(h.slice(4, 6), 16),
-  ];
+/**
+ * يرسم thumbnail للمسلسل (1280×720)
+ */
+export async function drawThumbnail(episode, outputPath) {
+  logger.info('[DRAWER] Drawing thumbnail', { episode: episode.number });
+
+  const W = DEFAULT_W, H = DEFAULT_H;
+  const img = new Jimp(W, H, PALETTE.bg);
+
+  drawCosmicBackground(img, 'wonder');
+
+  // شظايا كبيرة في الخلفية
+  drawMemoryShard(img, Math.floor(W * 0.2),  Math.floor(H * 0.3), 55, PALETTE.gold);
+  drawMemoryShard(img, Math.floor(W * 0.75), Math.floor(H * 0.25), 45, PALETTE.cyan);
+  drawMemoryShard(img, Math.floor(W * 0.5),  Math.floor(H * 0.7), 35, PALETTE.purple);
+
+  // شخصية مركزية
+  drawCharacter(img, {
+    x: Math.floor(W * 0.5), y: Math.floor(H * 0.06),
+    height: Math.floor(H * 0.7),
+    color: PALETTE.white, glowColor: PALETTE.purple,
+    pose: 'reaching',
+  });
+
+  // شريط سفلي
+  fillGradient(img, 0, H - 100, W, 100, 0x00000000, 0x000000eeff, 'vertical');
+  strokeRect(img, 20, H - 70, W - 40, 50, PALETTE.purple, 1);
+
+  // نقاط تدل على رقم الحلقة
+  for (let i = 0; i < Math.min(episode.number, 12); i++) {
+    const dotX = 40 + i * 22;
+    fillCircle(img, dotX, H - 44, 6, i < episode.number - 1 ? PALETTE.muted : PALETTE.gold);
+  }
+
+  addVignette(img);
+
+  mkdirSync(outputPath.split('/').slice(0, -1).join('/'), { recursive: true });
+  await img.writeAsync(outputPath);
+
+  logger.info('[OK] Thumbnail drawn', { episode: episode.number, path: outputPath });
+  return outputPath;
+}
+
+/**
+ * يرسم صورة شخصية مستقلة (character card)
+ */
+export async function drawCharacterCard(character, outputPath) {
+  const W = 512, H = 768;
+  const img = new Jimp(W, H, PALETTE.bg);
+
+  drawCosmicBackground(img, 'melancholy');
+  addGlow(img, W / 2, H * 0.45, 200, character.glowColor || PALETTE.purple);
+
+  drawCharacter(img, {
+    x: Math.floor(W / 2), y: Math.floor(H * 0.08),
+    height: Math.floor(H * 0.65),
+    color: character.color || PALETTE.white,
+    glowColor: character.glowColor || PALETTE.purple,
+    pose: character.pose || 'standing',
+  });
+
+  // شظية واحدة مميزة
+  drawMemoryShard(img, Math.floor(W * 0.75), Math.floor(H * 0.25), 30, PALETTE.gold);
+
+  fillGradient(img, 0, H - 120, W, 120, 0x00000000, 0x000000eeff, 'vertical');
+  addVignette(img);
+
+  mkdirSync(outputPath.split('/').slice(0, -1).join('/'), { recursive: true });
+  await img.writeAsync(outputPath);
+
+  logger.info('[OK] Character card drawn', { name: character.name, path: outputPath });
+  return outputPath;
 }
