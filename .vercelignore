@@ -1,0 +1,20 @@
+# ملفات تُستبعد من Vercel deployment
+# server.js هو Express server للتطوير المحلي فقط — لا يعمل على Vercel
+server.js
+
+# ملفات الوكلاء — تعمل على GitHub Actions فقط
+orchestrator.js
+agents/
+scripts/
+library/
+episodes/
+godot-projects/
+godot-recipes/
+piper/
+
+# بيانات مؤقتة
+agent-results/
+*.backup.json
+progress.json
+series.json
+universe.json
