@@ -2,19 +2,18 @@ name: run-all-agents
 
 on:
   schedule:
-    - cron: '0 5 * * *'   # 5 صباحاً UTC — التشغيل الرئيسي
-    - cron: '0 7 * * *'   # 7 صباحاً UTC — التشغيل الثاني
+    - cron: '0 5 * * *'
+    - cron: '0 7 * * *'
   workflow_dispatch:
     inputs:
       mode:
-        description: 'وضع التشغيل'
+        description: 'Run mode'
         required: false
         default: 'auto'
         type: choice
         options:
           - auto
-          - drawn
-          - art-library        
+          - art-library
           - screenplay-production
           - game-fix
           - inventor
@@ -35,7 +34,7 @@ jobs:
 
     steps:
       # ══════════════════════════════════════════════════════
-      # 1 — إعداد البيئة
+      # 1 — Environment setup
       # ══════════════════════════════════════════════════════
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -61,6 +60,7 @@ jobs:
             "library",
             "assets/music",
             "assets/fonts",
+            "assets/art-cache",
             "episodes",
             "series",
             "scripts"
@@ -93,7 +93,6 @@ jobs:
           $piperDir = "piper"
           New-Item -ItemType Directory -Force -Path $piperDir | Out-Null
 
-          # ── Binary ──────────────────────────────────────
           if (-not (Test-Path "$piperDir/piper.exe")) {
             Write-Host "[INFO] Downloading Piper binary..."
             Invoke-WebRequest -Uri "https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip" -OutFile "piper.zip"
@@ -104,7 +103,6 @@ jobs:
             Write-Host "[OK] Piper binary cached"
           }
 
-          # ── النماذج الصوتية — 4 إنجليزية + 4 فرنسية ──────
           $voices = @(
             @{ lang="en"; name="en_US-joe-medium" },
             @{ lang="en"; name="en_US-hfc_female-medium" },
@@ -117,15 +115,12 @@ jobs:
           )
 
           foreach ($v in $voices) {
-            $name = $v.name
-            $lang = $v.lang
-            # استخراج locale وspeaker وquality من الاسم: en_US-joe-medium
-            $parts   = $name -split '-'
-            $locale  = $parts[0]                  # en_US
-            $speaker = $parts[1]                  # joe
-            $quality = $parts[2]                  # medium
-            $localeShort = $locale -split '_' | Select-Object -First 1  # en
-
+            $name  = $v.name
+            $parts = $name -split '-'
+            $locale = $parts[0]
+            $speaker = $parts[1]
+            $quality = $parts[2]
+            $localeShort = $locale -split '_' | Select-Object -First 1
             $baseUrl = "https://huggingface.co/rhasspy/piper-voices/resolve/main/$localeShort/$locale/$speaker/$quality"
             $onnxPath = "$piperDir/$name.onnx"
             $jsonPath = "$piperDir/$name.onnx.json"
@@ -143,11 +138,10 @@ jobs:
               Write-Host "[OK] $name cached"
             }
           }
-
           Write-Host "[OK] Piper TTS setup complete"
 
       # ══════════════════════════════════════════════════════
-      # 2 — فحص ما قبل التشغيل
+      # 2 — Pre-flight check
       # ══════════════════════════════════════════════════════
       - name: Pre-flight check
         shell: pwsh
@@ -156,44 +150,33 @@ jobs:
           Write-Host "[INFO] === pre-flight check ==="
           Write-Host "[INFO] Mode: $mode"
 
-          # فحص progress.json
           if (Test-Path "progress.json") {
             try {
               $pg = Get-Content "progress.json" | ConvertFrom-Json
               Write-Host "[OK] progress.json valid"
-
-              # تنبيه إذا كانت المهمة فاشلة من الأسبوع الماضي
               if ($pg.current -and $pg.current.failReason) {
                 Write-Host "[WARN] Last task failed: $($pg.current.failReason)"
-                Write-Host "[WARN] Will retry: $($pg.current.type)"
               }
-
-              # تقدم الحلقة
               $ep = $pg.series.nextEpisode
               if ($pg.series.episodes."$ep") {
                 $epState = $pg.series.episodes."$ep"
                 $done    = $epState.completedSteps -join ", "
-                $pending = ($epState.pendingSteps -join ", ")
-                Write-Host "[INFO] Episode $ep — done: [$done] pending: [$pending]"
+                Write-Host "[INFO] Episode $ep — done: [$done]"
               } else {
                 Write-Host "[INFO] Episode $ep — not started yet"
               }
-
-              # تقدم اللعبة
               if ($pg.games.current) {
                 $g = $pg.games.current
                 Write-Host "[INFO] Game $($g.id) — files done: $($g.completedFiles.Count) pending: $($g.pendingFiles.Count)"
-              } else {
-                Write-Host "[INFO] No game in progress"
               }
             } catch {
-              Write-Host "[WARN] progress.json unreadable — will reset on run"
+              Write-Host "[WARN] progress.json unreadable"
             }
           } else {
             Write-Host "[INFO] No progress.json — first run"
           }
 
-          # فحص الحصة المتبقية
+          # FIX — updated mode names to match orchestrator v10.7
           Write-Host "[INFO] === quota check ==="
           $totalLeft = 0
           foreach ($file in @("library/budget.json","library/budget2.json")) {
@@ -206,7 +189,7 @@ jobs:
                 Write-Host "[INFO] ${label}: $($b.total)/$($b.limit) used — $left left"
               } catch {
                 $totalLeft += 20
-                Write-Host "[WARN] ${label}: unreadable budget — assuming 20 left"
+                Write-Host "[WARN] ${label}: unreadable — assuming 20 left"
               }
             } else {
               $totalLeft += 20
@@ -215,11 +198,16 @@ jobs:
           }
           Write-Host "[INFO] TOTAL left today: $totalLeft/40"
 
-          # تنبيه إذا كانت الحصة غير كافية لمهمة اليوم
+          # FIX — correct mode names (orchestrator v10.7)
           $needed = @{
-            "library"      = 40; "inventor"     = 40
-            "screenplay"   = 3;  "production"   = 0
-            "game-phase1"  = 4;  "game-phase2"  = 5
+            "art-library"           = 0
+            "screenplay-production" = 3
+            "game-fix"              = 3
+            "inventor"              = 39
+            "library"               = 40
+            "production"            = 0
+            "game-phase1"           = 4
+            "game-phase2"           = 5
           }
           if ($mode -ne "auto" -and $needed.ContainsKey($mode)) {
             $req = $needed[$mode]
@@ -231,7 +219,7 @@ jobs:
           }
 
       # ══════════════════════════════════════════════════════
-      # 3 — تشغيل الـ orchestrator
+      # 3 — Run orchestrator
       # ══════════════════════════════════════════════════════
       - name: Run orchestrator
         shell: pwsh
@@ -253,7 +241,7 @@ jobs:
         run: node orchestrator.js
 
       # ══════════════════════════════════════════════════════
-      # 4 — تقرير النتائج
+      # 4 — Results report
       # ══════════════════════════════════════════════════════
       - name: Show results
         if: always()
@@ -263,7 +251,6 @@ jobs:
           Write-Host "[INFO]         RESULTS REPORT"
           Write-Host "[INFO] ══════════════════════════════════"
 
-          # تقرير التشغيل
           if (Test-Path "agent-results/run-report.json") {
             $r = Get-Content "agent-results/run-report.json" | ConvertFrom-Json
             $status = if ($r.success) { "[OK]" } else { "[FAIL]" }
@@ -271,8 +258,6 @@ jobs:
             Write-Host "$status Duration: $($r.totalDuration)"
             Write-Host "$status Passed:   $($r.summary.passed)"
             Write-Host "$status Failed:   $($r.summary.failed)"
-
-            # تفاصيل كل وكيل
             if ($r.agents) {
               Write-Host "[INFO] --- agents ---"
               $r.agents.PSObject.Properties | ForEach-Object {
@@ -285,7 +270,6 @@ jobs:
             Write-Host "[WARN] No run report found"
           }
 
-          # الحصة بعد التشغيل
           Write-Host "[INFO] --- quota after run ---"
           $totalLeft = 0
           foreach ($file in @("library/budget.json","library/budget2.json")) {
@@ -296,21 +280,16 @@ jobs:
                 $left = $b.limit - $b.total
                 $totalLeft += $left
                 Write-Host "[INFO] ${label}: $($b.total)/$($b.limit) used — $left left"
-              } catch {
-                $totalLeft += 20
-              }
+              } catch { $totalLeft += 20 }
             }
           }
           Write-Host "[INFO] TOTAL left today: $totalLeft/40"
 
-          # تقدم الحلقة والألعاب
           Write-Host "[INFO] --- progress ---"
           if (Test-Path "progress.json") {
             $pg = Get-Content "progress.json" | ConvertFrom-Json
-
-            # الحلقة
-            $ep      = $pg.series.nextEpisode
-            $epDone  = $pg.series.totalEpisodes
+            $ep     = $pg.series.nextEpisode
+            $epDone = $pg.series.totalEpisodes
             if ($pg.series.episodes."$ep") {
               $epState  = $pg.series.episodes."$ep"
               $backbone = if ($epState.completedSteps -contains "backbone")  { "done" } else { "pending" }
@@ -321,21 +300,13 @@ jobs:
               Write-Host "[INFO] Episode $ep — not started"
             }
             Write-Host "[OK] Episodes complete: $epDone"
-
-            # اللعبة
             if ($pg.games.current) {
-              $g      = $pg.games.current
-              $phase  = if ($g.completedFiles.Count -lt 5) { "phase1" } else { "phase2" }
-              Write-Host "[OK] Game $($g.id) — $phase — files: $($g.completedFiles.Count)/10"
-            } else {
-              Write-Host "[INFO] No game in progress"
+              $g = $pg.games.current
+              Write-Host "[OK] Game $($g.id) — files: $($g.completedFiles.Count)/10"
             }
             Write-Host "[OK] Games complete: $($pg.games.done.Count)"
-          } else {
-            Write-Host "[INFO] No progress.json yet"
           }
 
-          # universe
           Write-Host "[INFO] --- universe ---"
           if (Test-Path "universe.json") {
             $u = Get-Content "universe.json" | ConvertFrom-Json
@@ -344,21 +315,25 @@ jobs:
             Write-Host "[WARN] No universe yet"
           }
 
-          # المكتبة
-          Write-Host "[INFO] --- library ---"
-          if (Test-Path "agent-results/run-report.json") {
-            $r = Get-Content "agent-results/run-report.json" | ConvertFrom-Json
-            Write-Host "[OK] $($r.library.percent) ($($r.library.built)/$($r.library.total))"
+          Write-Host "[INFO] --- products ---"
+          # FIX — require() not available in ESM (type:module) — use PowerShell directly
+          if (Test-Path "products.json") {
+            try {
+              $p = Get-Content "products.json" | ConvertFrom-Json
+              Write-Host "[OK] Products: $($p.Count)"
+            } catch {
+              Write-Host "[WARN] products.json unreadable"
+            }
           }
 
-          # المنتجات
-          Write-Host "[INFO] --- products ---"
-          if (Test-Path "products.json") {
-            node -e "try{const p=JSON.parse(require('fs').readFileSync('products.json'));console.log('[OK] Products:',p.length);}catch(e){console.error('[ERROR]',e.message);}"
+          Write-Host "[INFO] --- art cache ---"
+          if (Test-Path "assets/art-cache") {
+            $imgs = (Get-ChildItem "assets/art-cache" -Filter "*.png").Count
+            Write-Host "[OK] Art cache: $imgs images"
           }
 
       # ══════════════════════════════════════════════════════
-      # 5 — نسخ الملفات العامة
+      # 5 — Copy public files
       # ══════════════════════════════════════════════════════
       - name: Copy products to public
         shell: pwsh
@@ -366,18 +341,15 @@ jobs:
           if (Test-Path "products.json") {
             Copy-Item products.json public/products.json -Force
             Write-Host "[OK] products.json copied to public/"
-          } else {
-            Write-Host "[WARN] products.json not found"
           }
           if (Test-Path "series.json") {
             Copy-Item series.json public/series.json -Force
             Write-Host "[OK] series.json copied to public/"
-          } else {
-            Write-Host "[WARN] series.json not found"
           }
 
       # ══════════════════════════════════════════════════════
-      # 6 — رفع artifact الحلقة
+      # 6 — Upload episode artifact
+      # FIX — screenplay-production replaces screenplay
       # ══════════════════════════════════════════════════════
       - name: Upload episode artifact
         uses: actions/upload-artifact@v4
@@ -385,7 +357,7 @@ jobs:
           always() && (
             github.event_name == 'schedule' ||
             (github.event_name == 'workflow_dispatch' &&
-             contains(fromJson('["screenplay","production","auto"]'),
+             contains(fromJson('["screenplay-production","production","auto"]'),
              github.event.inputs.mode))
           )
         with:
@@ -396,7 +368,7 @@ jobs:
           retention-days: 30
 
       # ══════════════════════════════════════════════════════
-      # 7 — Commit + Push مع retry — rule-158, rule-159
+      # 7 — Commit + Push with retry (rule-158, rule-159)
       # ══════════════════════════════════════════════════════
       - name: Commit and push
         shell: pwsh
@@ -420,6 +392,7 @@ jobs:
           if (Test-Path "godot-projects") { git add godot-projects/ }
           if (Test-Path "godot-recipes")  { git add godot-recipes/ }
           if (Test-Path "episodes")       { git add episodes/ }
+          # art-cache committed so procedural assets persist between runs
           if (Test-Path "assets")         { git add assets/ }
 
           $diff = git diff --staged --name-only
@@ -428,18 +401,19 @@ jobs:
             exit 0
           }
 
-          # commit message يعكس المهمة الفعلية — rule-158
+          # FIX — commit message covers all orchestrator v10.7 modes (rule-158/223)
           $msg = switch ($env:MODE) {
-            "screenplay"  { "agents: screenplay done [skip ci]" }
-            "production"  { "agents: episode produced [skip ci]" }
-            "game-phase1" { "agents: game phase1 done [skip ci]" }
-            "game-phase2" { "agents: game phase2 done [skip ci]" }
-            "inventor"    { "agents: inventor done [skip ci]" }
-            "library"     { "agents: library updated [skip ci]" }
-            "birth"       { "agents: universe born [skip ci]" }
-            "sync"        { "agents: sync done [skip ci]" }
+            "screenplay-production" { "agents: episode produced [skip ci]" }
+            "art-library"           { "agents: art assets generated [skip ci]" }
+            "game-fix"              { "agents: game fix done [skip ci]" }
+            "inventor"              { "agents: inventor done [skip ci]" }
+            "library"               { "agents: library updated [skip ci]" }
+            "production"            { "agents: production done [skip ci]" }
+            "game-phase1"           { "agents: game phase1 done [skip ci]" }
+            "game-phase2"           { "agents: game phase2 done [skip ci]" }
+            "birth"                 { "agents: universe born [skip ci]" }
+            "sync"                  { "agents: sync done [skip ci]" }
             default {
-              # auto — اقرأ المهمة الفعلية من التقرير
               $task = "auto"
               if (Test-Path "agent-results/run-report.json") {
                 try {
@@ -453,7 +427,7 @@ jobs:
 
           git commit -m $msg
 
-          # push مع retry — rule-159
+          # Push with retry (rule-159)
           $pushed = $false
           for ($i = 1; $i -le 3; $i++) {
             Write-Host "[INFO] Push attempt $i/3..."
@@ -461,7 +435,7 @@ jobs:
             git pull --rebase origin main 2>$null
             if ($LASTEXITCODE -ne 0) {
               git rebase --abort 2>$null
-              git stash pop   2>$null
+              git stash pop     2>$null
               Start-Sleep -Seconds (10 * $i)
               continue
             }
@@ -481,10 +455,12 @@ jobs:
           }
 
       # ══════════════════════════════════════════════════════
-      # 8 — QA bot مع retry
+      # 8 — QA bot
       # ══════════════════════════════════════════════════════
       - name: Wait for Vercel deploy
         shell: pwsh
+        env:
+          SITE_URL: https://real-team.vercel.app
         run: |
           Write-Host "[INFO] Waiting for Vercel deploy..."
           $ready = $false
@@ -505,8 +481,6 @@ jobs:
           if (-not $ready) {
             Write-Host "[WARN] Vercel not confirmed ready — running QA anyway"
           }
-        env:
-          SITE_URL: https://real-team.vercel.app
 
       - name: Run QA bot
         shell: pwsh
