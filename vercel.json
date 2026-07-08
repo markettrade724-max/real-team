@@ -1,24 +1,11 @@
 {
-  "functions": {
-    "api/ep.js": {
-      "includeFiles": "public/series.json"
-    }
-  },
+  "rewrites": [
+    { "source": "/api/ep", "destination": "/api/ep" }
+  ],
   "headers": [
     {
-      "source": "/api/ep",
-      "headers": [
-        { "key": "Cache-Control", "value": "s-maxage=3600, stale-while-revalidate=86400" }
-      ]
-    },
-    {
-      "source": "/public/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
-      ]
+      "source": "/api/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "s-maxage=3600" }]
     }
-  ],
-  "rewrites": [
-    { "source": "/ep/:n", "destination": "/api/ep?n=:n" }
   ]
 }
