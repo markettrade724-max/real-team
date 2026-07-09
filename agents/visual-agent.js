@@ -72,7 +72,7 @@ export async function run(visualScenes, episodeNumber, universe = {}) {
   }
 
   mkdirSync(CACHE_DIR,  { recursive: true });
-  const outDir = join(__dirname, '..', 'episodes', 'ep${episodeNumber}', 'images');
+  const outDir = join(__dirname, '..', 'episodes', `ep${episodeNumber}`, 'images');
   mkdirSync(outDir, { recursive: true });
 
   const results = [];
