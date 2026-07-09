@@ -1,11 +1,22 @@
 {
+  "buildCommand": null,
+  "outputDirectory": "public",
+  "framework": null,
+  "functions": {
+    "api/ep.js": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 10
+    }
+  },
   "rewrites": [
     { "source": "/api/ep", "destination": "/api/ep" }
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "s-maxage=3600" }]
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
     }
   ]
 }
