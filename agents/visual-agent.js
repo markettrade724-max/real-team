@@ -130,7 +130,7 @@ export async function run(visualScenes, episodeNumber, universe = {}) {
   };
 
   writeFileSync(
-    join(__dirname, '..', 'episodes', `ep${episodeNumber}`, 'visual-manifest.json`),
+    join(__dirname, '..', 'episodes', `ep${episodeNumber}`, `visual-manifest.json`),
     JSON.stringify(manifest, null, 2), 'utf8'
   );
 
