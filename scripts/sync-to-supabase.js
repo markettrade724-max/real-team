@@ -1,22 +1,28 @@
 /**
- * sync-to-supabase.js
- * يقرأ universe.json و products.json ويرفعهم إلى Supabase
- * يُشغَّل مرة واحدة للمزامنة الأولى — ثم الـ agents يكتبون مباشرة
+ * sync-to-supabase.js — v1.1
+ *
+ * Reads universe.json and products.json and uploads them to Supabase.
+ * Runs once for initial sync — agents write directly afterward.
+ *
+ * Changes from v1.0 (untracked):
+ *  - Migrated off @supabase/supabase-js (removed from package.json — err-232)
+ *    to direct REST API (PostgREST) calls via fetch, per rule-107.
+ *  - Exported run() — orchestrator's mode:sync calls m.run(), which this
+ *    file never provided. main() also auto-ran at import time via a bare
+ *    process-level call, and process.exit(1) on failure would have killed
+ *    the whole orchestrator process, not just this task.
+ *  - Fixed: syncWeapons()/syncEnemies() sent 'desc' as a column name
+ *    directly — same reserved-word issue as err-128 (rule-108). Renamed
+ *    to 'description', matching syncWorlds()/syncProducts().
+ *  - Comments translated to English (rule-224).
  */
-import { createClient }                    from '@supabase/supabase-js';
-import { readFileSync, existsSync }        from 'fs';
-import { join, dirname }                   from 'path';
-import { fileURLToPath }                   from 'url';
-import ws                                  from 'ws';
+import { readFileSync, existsSync }     from 'fs';
+import { join, dirname }                from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT      = join(__dirname, '..');
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  { realtime: { transport: ws } }
-);
+const REST_URL  = `${process.env.SUPABASE_URL}/rest/v1`;
 
 function loadJSON(path) {
   if (!existsSync(path)) return null;
@@ -24,19 +30,43 @@ function loadJSON(path) {
   catch (e) { console.error(`[ERROR] Cannot read ${path}:`, e.message); return null; }
 }
 
-// ── رفع الكون ─────────────────────────────
+// ── REST upsert helper (replaces supabase.from(table).upsert(row)) ──
+async function upsertRow(table, row) {
+  try {
+    const res = await fetch(`${REST_URL}/${table}?on_conflict=id`, {
+      method: 'POST',
+      headers: {
+        'apikey':        process.env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type':  'application/json',
+        'Prefer':        'resolution=merge-duplicates,return=minimal',
+      },
+      body:   JSON.stringify(row),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      return { error: { message: `HTTP ${res.status}: ${text.slice(0, 200)}` } };
+    }
+    return { error: null };
+  } catch (err) {
+    return { error: { message: err.message } };
+  }
+}
+
+// ── Upload universe ───────────────────────
 async function syncUniverse(universe) {
   console.log(`[INFO] Syncing universe: ${universe.id}`);
 
-  const { error } = await supabase.from('universes').upsert({
-    id:           universe.id,
-    name:         universe.name,
-    soul:         universe.soul,
-    art:          universe.art,
-    born_at:      universe.born,
-    evolutions:   universe.evolutions   || 0,
-    inventions:   universe.inventions   || 0,
-    last_evolved: universe.lastEvolved  || null,
+  const { error } = await upsertRow('universes', {
+    id:            universe.id,
+    name:          universe.name,
+    soul:          universe.soul,
+    art:           universe.art,
+    born_at:       universe.born,
+    evolutions:    universe.evolutions   || 0,
+    inventions:    universe.inventions   || 0,
+    last_evolved:  universe.lastEvolved  || null,
     last_invented: universe.lastInvented || null,
   });
 
@@ -45,14 +75,14 @@ async function syncUniverse(universe) {
   return true;
 }
 
-// ── رفع العوالم ───────────────────────────
+// ── Upload worlds ──────────────────────────
 async function syncWorlds(universe) {
   if (!universe.worlds?.length) return;
   console.log(`[INFO] Syncing ${universe.worlds.length} worlds...`);
 
   for (const world of universe.worlds) {
     const id = world.id || world.name?.en?.replace(/\s/g, '-').toLowerCase();
-    const { error } = await supabase.from('worlds').upsert({
+    const { error } = await upsertRow('worlds', {
       id,
       universe_id: universe.id,
       name:        world.name,
@@ -69,17 +99,17 @@ async function syncWorlds(universe) {
   }
 }
 
-// ── رفع الأسلحة ───────────────────────────
+// ── Upload weapons ─────────────────────────
 async function syncWeapons(universe) {
   if (!universe.weapons?.length) return;
   console.log(`[INFO] Syncing ${universe.weapons.length} weapons...`);
 
   for (const weapon of universe.weapons) {
-    const { error } = await supabase.from('weapons').upsert({
+    const { error } = await upsertRow('weapons', {
       id:          weapon.id,
       universe_id: universe.id,
       name:        weapon.name,
-      desc:        weapon.desc,
+      description: weapon.desc,
       damage:      weapon.damage    || 10,
       fire_rate:   weapon.fireRate  || 1,
       stats:       weapon.stats     || null,
@@ -89,17 +119,17 @@ async function syncWeapons(universe) {
   }
 }
 
-// ── رفع الأعداء ───────────────────────────
+// ── Upload enemies ─────────────────────────
 async function syncEnemies(universe) {
   if (!universe.enemies?.length) return;
   console.log(`[INFO] Syncing ${universe.enemies.length} enemies...`);
 
   for (const enemy of universe.enemies) {
-    const { error } = await supabase.from('enemies').upsert({
+    const { error } = await upsertRow('enemies', {
       id:          enemy.id,
       universe_id: universe.id,
       name:        enemy.name,
-      desc:        enemy.desc,
+      description: enemy.desc,
       health:      enemy.health || 100,
       speed:       enemy.speed  || 1,
       stats:       enemy.stats  || null,
@@ -109,13 +139,13 @@ async function syncEnemies(universe) {
   }
 }
 
-// ── رفع المنتجات ──────────────────────────
+// ── Upload products ────────────────────────
 async function syncProducts(products, universeId) {
   if (!products?.length) return;
   console.log(`[INFO] Syncing ${products.length} products...`);
 
   for (const p of products) {
-    const { error } = await supabase.from('products').upsert({
+    const { error } = await upsertRow('products', {
       id:            p.id,
       slug:          p.slug,
       universe_id:   universeId || null,
@@ -142,40 +172,39 @@ async function syncProducts(products, universeId) {
 }
 
 // ════════════════════════════════════════════
-// نقطة الدخول
+// Entry point — exported for orchestrator's m.run()
 // ════════════════════════════════════════════
-async function main() {
+export async function run() {
   console.log('[INFO] Starting Supabase sync...');
 
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.error('[FATAL] SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing');
-    process.exit(1);
+    throw new Error('SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing');
   }
 
-  // قراءة الملفات المحلية
   const universe = loadJSON(join(ROOT, 'universe.json'));
   const products = loadJSON(join(ROOT, 'products.json'));
 
   if (!universe) {
-    console.error('[FATAL] universe.json not found — run BIRTH MODE first');
-    process.exit(1);
+    throw new Error('universe.json not found — run BIRTH MODE first');
   }
 
-  // رفع الكون وعناصره
   const ok = await syncUniverse(universe);
-  if (!ok) { console.error('[FATAL] Universe sync failed'); process.exit(1); }
+  if (!ok) throw new Error('Universe sync failed');
 
   await syncWorlds(universe);
   await syncWeapons(universe);
   await syncEnemies(universe);
 
-  // رفع المنتجات
   if (products) await syncProducts(products, universe.id);
 
   console.log('\n[OK] Supabase sync complete');
+  return { synced: true };
 }
 
-main().catch(e => {
-  console.error('[FATAL]', e.message);
-  process.exit(1);
-});
+// Allow standalone execution: `node scripts/sync-to-supabase.js`
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  run().catch(e => {
+    console.error('[FATAL]', e.message);
+    process.exit(1);
+  });
+}
