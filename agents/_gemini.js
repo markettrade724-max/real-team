@@ -1,25 +1,47 @@
 /**
- * _gemini.js — v2.4
+ * _gemini.js — v2.5
  *
- * التغييرات عن v2.3:
- *  - exhaustKey(): يُوسّم المفتاح كمستنفد فوراً عند 429 RPD — rule-196
- *  - 429 → exhaustKey() فوراً → KEY_2 بدون delay — rule-196 / err-195
- *  - 503 → retry مرة واحدة بعد 30s على أي مفتاح متاح — rule-122
- *  - resetSessionKey(): موثّق كقرار مقصود — المفتاح يُختار ديناميكياً
+ * Changes from v2.4:
+ *  - askGemini()/_callGemini(): added options.pinnedKeyLabel — lets a caller
+ *    lock a multi-call task (screenplay, game-fix, code-agent, inventor
+ *    cycle) onto a single key for its whole duration (rule-172, enforced
+ *    for real this time — was previously only checked at the
+ *    hasEnoughQuota() gate and then silently ignored during execution,
+ *    since _callGemini() always called getActiveKey() independently per
+ *    call. That gap is err-237: a task could start on the key
+ *    selectKeyForTask() identified as affordable, but drift onto the other
+ *    key mid-task once the first one's remaining partial quota ran out —
+ *    same failure mode as err-177, never actually closed by v2.4.
+ *  - selectKeyForTask(): now returns a key LABEL (string) instead of the
+ *    full key object, so it can be threaded through options.pinnedKeyLabel
+ *    without exposing the client. CHECK OTHER CALL SITES if any destructure
+ *    the old return value's .client/.budgetPath directly.
+ *  - _callGemini(): 429 branch no longer relies on the isRetry flag to
+ *    detect "both keys exhausted" (isRetry was always false on 429
+ *    rotation, so that branch was dead code — it fell through to a generic
+ *    error via a different path instead). Now checks actual remaining
+ *    quota across all keys directly.
+ *  - AGENT_COSTS synced with the Livre d'Or's agent_costs: added
+ *    'game-fix':3 (was missing — canAfford('game-fix') would have always
+ *    returned true regardless of real quota), 'art-library'/'publish'/
+ *    'production':0, corrected 'visual' from 1 to 0 (Pollinations/procedural
+ *    pipeline, zero Gemini calls since rule-245).
  *
- * القواعد المطبقة:
- *  rule-097 : لا تغيير للنموذج — gemini-2.5-flash ثابت
- *  rule-098 : askGemini فقط — لا fetch مباشر
+ * Rules applied:
+ *  rule-097 : no model change — gemini-2.5-flash fixed
+ *  rule-098 : askGemini only — no direct fetch
  *  rule-099 : [INFO]/[OK]/[ERROR]/[WARN]
- *  rule-101 : maxOutputTokens لا maxTokens
- *  rule-122 : retry مرة واحدة فقط
- *  rule-128 : budget موحد + caller tracking
+ *  rule-101 : maxOutputTokens not maxTokens
+ *  rule-122 : retry once only
+ *  rule-128 : unified budget + caller tracking
  *  rule-143 : MAX_TOKENS_CAP = 65536
- *  rule-144 : consumeQuota قبل الاستدعاء
+ *  rule-144 : consumeQuota recorded before the actual call
  *  rule-145 : DEFAULT_TOKENS = 8192
- *  rule-168 : GEMINI_API_KEY + GEMINI_API_KEY_2 — KEY_1 أولاً → KEY_2 fallback
+ *  rule-168 : GEMINI_API_KEY + GEMINI_API_KEY_2 — KEY_1 first → KEY_2 fallback
+ *  rule-172 : one key per complete task — selectKeyForTask(needed), now
+ *             actually enforced end-to-end via pinnedKeyLabel (err-237 fix)
  *  rule-195 : DAILY_LIMIT = 20
- *  rule-196 : 429 RPD → exhaustKey() فوراً → KEY_2 بدون delay
+ *  rule-196 : 429 RPD → exhaustKey() immediately → KEY_2 without delay
  */
 
 import { GoogleGenAI } from '@google/genai';
@@ -33,12 +55,12 @@ const LIBRARY_DIR   = join(__dirname, '..', 'library');
 const BUDGET_PATH_1 = join(LIBRARY_DIR, 'budget.json');
 const BUDGET_PATH_2 = join(LIBRARY_DIR, 'budget2.json');
 
-const DAILY_LIMIT    = 20;    // مؤكد من API — quotaValue=20 — rule-195
-const MAX_TOKENS_CAP = 65536; // rule-143
-const DEFAULT_TOKENS = 8192;  // rule-145
+const DAILY_LIMIT    = 20;
+const MAX_TOKENS_CAP = 65536;
+const DEFAULT_TOKENS = 8192;
 
 // ══════════════════════════════════════════════════════════
-// المفتاحان — rule-168
+// Keys — rule-168
 // ══════════════════════════════════════════════════════════
 const KEYS = [];
 
@@ -63,7 +85,7 @@ if (KEYS.length === 0) throw new Error('[GEMINI] No API keys configured');
 logger.info(`[GEMINI] Loaded ${KEYS.length} key(s) — daily limit: ${KEYS.length * DAILY_LIMIT}`);
 
 // ══════════════════════════════════════════════════════════
-// الحصة — مستقلة لكل مفتاح
+// Budget — independent per key
 // ══════════════════════════════════════════════════════════
 function loadBudget(budgetPath) {
   const today = new Date().toISOString().slice(0, 10);
@@ -88,11 +110,10 @@ function saveBudget(budgetPath, b) {
 
 function getQuotaForKey(budgetPath) {
   const b = loadBudget(budgetPath);
-  if (b.exhausted) return 0; // مُوسَّم كمستنفد — لا نستخدمه
+  if (b.exhausted) return 0;
   return b.limit - b.total;
 }
 
-// يُسجَّل قبل الاستدعاء الفعلي — rule-144
 function consumeQuota(caller, budgetPath) {
   const b = loadBudget(budgetPath);
   if (b.exhausted || b.total >= b.limit) return false;
@@ -126,29 +147,23 @@ function markQuotaError(caller, errorType, budgetPath) {
   saveBudget(budgetPath, b);
 }
 
-/**
- * يُوسّم المفتاح كمستنفد فوراً — rule-196
- * يُستدعى عند 429 RPD بدون أي delay
- */
 function exhaustKey(key) {
-  const b     = loadBudget(key.budgetPath);
-  b.total     = b.limit; // اعتبره مستنفداً كاملاً
-  b.exhausted = true;
+  const b       = loadBudget(key.budgetPath);
+  b.total       = b.limit;
+  b.exhausted   = true;
   b.exhaustedAt = new Date().toISOString();
   saveBudget(key.budgetPath, b);
   logger.warn(`[GEMINI] ${key.label} exhausted (429 RPD) — switching to next key immediately`);
 }
 
 // ══════════════════════════════════════════════════════════
-// دوال مُصدَّرة للحصة
+// Exported budget functions
 // ══════════════════════════════════════════════════════════
 
-// المجموع الكلي للمفتاحين — rule-169
 export function getRemainingQuota() {
   return KEYS.reduce((sum, k) => sum + getQuotaForKey(k.budgetPath), 0);
 }
 
-// المفتاح النشط — الأول الذي له حصة (KEY_1 أولاً) — rule-168
 function getActiveKey() {
   for (const k of KEYS) {
     if (getQuotaForKey(k.budgetPath) > 0) return k;
@@ -156,21 +171,28 @@ function getActiveKey() {
   return null;
 }
 
-// تكاليف الوكلاء — rule-153
+function getKeyByLabel(label) {
+  return KEYS.find(k => k.label === label) || null;
+}
+
 const AGENT_COSTS = {
-  'inventor'   : 3,
-  'screenplay' : 3,
-  'code-agent' : 9,
-  'library'    : 2,
-  'revival'    : 2,
-  'visual'     : 1,
-  'roadmap'    : 1,
-  'marketing'  : 1,
-  'world'      : 1,
-  'idea'       : 1,
-  'story'      : 1,
-  'soul'       : 1,
-  'art'        : 1,
+  inventor:      3,
+  screenplay:    3,
+  'code-agent':  9,
+  'game-fix':    3,
+  library:       2,
+  revival:       2,
+  visual:        0,
+  'art-library': 0,
+  publish:       0,
+  production:    0,
+  roadmap:       1,
+  marketing:     1,
+  world:         1,
+  idea:          1,
+  story:         1,
+  soul:          1,
+  art:           1,
 };
 
 export function canAfford(task) {
@@ -186,19 +208,19 @@ export function canAfford(task) {
 }
 
 /**
- * يختار مفتاحاً يملك حصة كافية للمهمة كاملة — rule-176
+ * rule-172 (enforced end-to-end since err-237): identifies a key with
+ * enough quota for a WHOLE multi-call task, upfront. Returns its label
+ * (string) — pass this as options.pinnedKeyLabel on every askGemini()
+ * call belonging to that same task, so they all land on the same key
+ * instead of drifting once getActiveKey()'s per-call pick runs dry.
  */
 export function selectKeyForTask(needed) {
   for (const k of KEYS) {
-    if (getQuotaForKey(k.budgetPath) >= needed) return k;
+    if (getQuotaForKey(k.budgetPath) >= needed) return k.label;
   }
   return null;
 }
 
-/**
- * rule-177: المفتاح يُختار ديناميكياً لكل استدعاء — لا حالة ثابتة
- * resetSessionKey() موثّق كقرار مقصود — لا يحتاج إعادة تعيين
- */
 export function resetSessionKey() {
   logger.info('[GEMINI] Session released — next task picks fresh key dynamically');
 }
@@ -229,7 +251,7 @@ export function getBudgetStatus() {
 }
 
 // ══════════════════════════════════════════════════════════
-// askGemini — الدالة الرئيسية — rule-087
+// askGemini — main entry point — rule-087
 // askGemini(prompt, temperature, options, caller)
 // ══════════════════════════════════════════════════════════
 export async function askGemini(prompt, temperature = 0.9, options = {}, caller = 'unknown') {
@@ -239,6 +261,7 @@ export async function askGemini(prompt, temperature = 0.9, options = {}, caller 
     maxOutputTokens  = DEFAULT_TOKENS,
     frequencyPenalty = undefined,
     presencePenalty  = undefined,
+    pinnedKeyLabel   = null, // NEW (err-237) — see selectKeyForTask()
   } = options;
 
   const remaining = getRemainingQuota();
@@ -252,31 +275,40 @@ export async function askGemini(prompt, temperature = 0.9, options = {}, caller 
   return _callGemini(
     prompt, temperature,
     { topP, topK, maxOutputTokens, frequencyPenalty, presencePenalty },
-    caller, false
+    caller, false, pinnedKeyLabel
   );
 }
 
 // ══════════════════════════════════════════════════════════
-// الاستدعاء الفعلي
+// Actual call
 // ══════════════════════════════════════════════════════════
-async function _callGemini(prompt, temperature, options, caller, isRetry) {
+async function _callGemini(prompt, temperature, options, caller, isRetry, pinnedKeyLabel = null) {
   const { topP, topK, maxOutputTokens, frequencyPenalty, presencePenalty } = options;
   const safeTokens = Math.min(maxOutputTokens, MAX_TOKENS_CAP);
 
-  // ── اختر المفتاح النشط ──────────────────────────────────
-  const activeKey = getActiveKey();
+  // ── Select key: pinned for this task (rule-172) or dynamic per-call ──
+  let activeKey = pinnedKeyLabel ? getKeyByLabel(pinnedKeyLabel) : null;
+
+  if (pinnedKeyLabel && (!activeKey || getQuotaForKey(activeKey.budgetPath) <= 0)) {
+    logger.warn(`[QUOTA] Pinned key ${pinnedKeyLabel} exhausted mid-task — caller: ${caller} — falling back to dynamic selection`);
+    activeKey      = getActiveKey();
+    pinnedKeyLabel = null; // pin dropped — this task is now mixing by necessity
+  } else if (!pinnedKeyLabel) {
+    activeKey = getActiveKey();
+  }
+
   if (!activeKey) {
     logger.warn(`[QUOTA] All keys exhausted mid-run — caller: ${caller}`);
     throw new Error('DailyQuotaExhausted');
   }
 
-  // ── سجّل قبل الاستدعاء — rule-144 ───────────────────────
+  // ── Record before the actual call — rule-144 ────────────
   if (!consumeQuota(caller, activeKey.budgetPath)) {
     logger.warn(`[QUOTA] ${activeKey.label} exhausted — caller: ${caller}`);
     throw new Error('DailyQuotaExhausted');
   }
 
-  logger.info(`[GEMINI] ${activeKey.label} — ${caller} — tokens: ${safeTokens}`);
+  logger.info(`[GEMINI] ${activeKey.label}${pinnedKeyLabel ? ' (pinned)' : ''} — ${caller} — tokens: ${safeTokens}`);
 
   const config = {
     temperature,
@@ -288,7 +320,6 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
   if (frequencyPenalty !== undefined) config.frequencyPenalty = frequencyPenalty;
   if (presencePenalty  !== undefined) config.presencePenalty  = presencePenalty;
 
-  // ── استدعاء API ─────────────────────────────────────────
   let response;
   try {
     response = await activeKey.client.models.generateContent({
@@ -303,28 +334,27 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
     markQuotaError(caller, is429 ? '429_RPD' : is503 ? '503' : 'network', activeKey.budgetPath);
 
     if (is429) {
-      // rule-196: exhaustKey فوراً → KEY_2 بدون delay
       exhaustKey(activeKey);
-      if (!isRetry) {
+      // FIX (err-237): check actual remaining quota instead of the isRetry
+      // flag (always false here in v2.4, making "both exhausted" dead code).
+      const stillHasQuota = KEYS.some(k => getQuotaForKey(k.budgetPath) > 0);
+      if (stillHasQuota) {
         logger.warn(`[429] ${activeKey.label} RPD exhausted — switching to next key immediately`);
-        return _callGemini(prompt, temperature, options, caller, false); // isRetry=false للمفتاح الجديد
+        return _callGemini(prompt, temperature, options, caller, isRetry, null); // pin dropped — must rotate
       }
-      // كلا المفتاحين مستنفدان
       throw new Error('DailyQuotaExhausted: both keys hit 429 RPD');
     }
 
     if (!isRetry) {
-      // rule-122: retry مرة واحدة فقط — 30s للـ 503
       logger.warn(`[RETRY] ${is503 ? '503' : 'network'} — ${caller} — waiting 30s`);
       await new Promise(r => setTimeout(r, 30000));
-      return _callGemini(prompt, temperature, options, caller, true);
+      return _callGemini(prompt, temperature, options, caller, true, pinnedKeyLabel); // keep pin
     }
 
     logger.error(`[ERROR] Gemini failed permanently — ${caller}`, { error: err.message });
     throw new Error('Gemini API failed: ' + err.message);
   }
 
-  // ── استخراج النص ────────────────────────────────────────
   let text = '';
   try {
     if (typeof response.text === 'function')    text = response.text();
@@ -334,18 +364,16 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
     text = response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
   }
 
-  // ── ردّ فارغ ────────────────────────────────────────────
   if (!text || text.trim().length < 2) {
     markQuotaError(caller, 'empty', activeKey.budgetPath);
     if (!isRetry) {
       logger.warn(`[RETRY] Empty response — ${caller} — waiting 30s`);
       await new Promise(r => setTimeout(r, 30000));
-      return _callGemini(prompt, temperature, options, caller, true);
+      return _callGemini(prompt, temperature, options, caller, true, pinnedKeyLabel);
     }
     throw new Error(`Empty response from Gemini — ${caller}`);
   }
 
-  // ── تحليل JSON ──────────────────────────────────────────
   const parsed = parseJSON(text);
 
   if (parsed) {
@@ -356,7 +384,6 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
     return parsed;
   }
 
-  // ── JSON مقطوع — رفع الـ tokens ─────────────────────────
   markQuotaError(caller, 'json_truncated', activeKey.budgetPath);
   if (!isRetry) {
     const newTokens = Math.min(safeTokens * 2, MAX_TOKENS_CAP);
@@ -364,7 +391,7 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
     return _callGemini(
       prompt, temperature,
       { ...options, maxOutputTokens: newTokens },
-      caller, true
+      caller, true, pinnedKeyLabel
     );
   }
 
@@ -372,9 +399,6 @@ async function _callGemini(prompt, temperature, options, caller, isRetry) {
   throw new Error('Invalid JSON from Gemini: ' + text.slice(0, 100));
 }
 
-// ══════════════════════════════════════════════════════════
-// تحليل JSON — صامت ومتسامح
-// ══════════════════════════════════════════════════════════
 function parseJSON(text) {
   const clean = text.replace(/```json|```/g, '').trim();
   for (const s of [clean, text]) {
