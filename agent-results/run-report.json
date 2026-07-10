@@ -1,9 +1,9 @@
 {
-  "runId": "2026-07-09T1338",
-  "mode": "sync",
-  "success": false,
-  "timestamp": "2026-07-09T13:38:46.462Z",
-  "totalDuration": "22ms",
+  "runId": "2026-07-10T0551",
+  "mode": "art-library",
+  "success": true,
+  "timestamp": "2026-07-10T05:51:22.895Z",
+  "totalDuration": "16.0s",
   "budget": {
     "total": 0,
     "limit": 40,
@@ -44,15 +44,15 @@
     "gamesDone": 1
   },
   "agents": {
-    "sync": {
-      "success": false,
-      "duration": "13ms",
-      "error": "Cannot find package '@supabase/supabase-js' imported from D:\\a\\real-team\\real-team\\scripts\\sync-to-supabase.js"
+    "artLibrary": {
+      "success": true,
+      "duration": "16.0s",
+      "error": null
     }
   },
   "summary": {
     "total": 1,
-    "passed": 0,
-    "failed": 1
+    "passed": 1,
+    "failed": 0
   }
 }
