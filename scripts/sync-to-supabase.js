@@ -202,7 +202,7 @@ export async function run() {
 }
 
 // Allow standalone execution: `node scripts/sync-to-supabase.js`
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   run().catch(e => {
     console.error('[FATAL]', e.message);
     process.exit(1);
