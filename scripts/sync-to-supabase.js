@@ -1,8 +1,21 @@
 /**
- * sync-to-supabase.js — v1.1
+ * sync-to-supabase.js — v1.2
  *
  * Reads universe.json and products.json and uploads them to Supabase.
  * Runs once for initial sync — agents write directly afterward.
+ *
+ * Changes from v1.1:
+ *  - Fixed: run() loaded 'episodes.json', a file that never existed
+ *    anywhere in the pipeline — orchestrator.js always writes episode
+ *    data to series.json (SERIES_PATH, updateSeries(), rule-109).
+ *    loadJSON() returns null silently on a missing file, so
+ *    syncEpisodes() was skipped on every single run with zero log
+ *    output — the run still ended on "[OK] Supabase sync complete",
+ *    masking the fact that episode/video sync never actually ran.
+ *  - loadJSON() now takes an optional label and logs [INFO] when a
+ *    file is intentionally absent, so a wrong/missing filename shows
+ *    up in the run log immediately instead of failing silently like
+ *    this one did.
  *
  * Changes from v1.0 (untracked):
  *  - Migrated off @supabase/supabase-js (removed from package.json — err-232)
@@ -26,8 +39,11 @@ const REST_URL    = `${process.env.SUPABASE_URL}/rest/v1`;
 const STORAGE_URL = `${process.env.SUPABASE_URL}/storage/v1`;
 const EP_BUCKET   = 'episodes';
 
-function loadJSON(path) {
-  if (!existsSync(path)) return null;
+function loadJSON(path, label = null) {
+  if (!existsSync(path)) {
+    if (label) console.log(`[INFO] ${label} not found — skipping (${path})`);
+    return null;
+  }
   try { return JSON.parse(readFileSync(path, 'utf8')); }
   catch (e) { console.error(`[ERROR] Cannot read ${path}:`, e.message); return null; }
 }
@@ -251,9 +267,9 @@ export async function run() {
     throw new Error('SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing');
   }
 
-  const universe = loadJSON(join(ROOT, 'universe.json'));
-  const products = loadJSON(join(ROOT, 'products.json'));
-  const episodes = loadJSON(join(ROOT, 'episodes.json'));
+  const universe = loadJSON(join(ROOT, 'universe.json'), 'universe.json');
+  const products = loadJSON(join(ROOT, 'products.json'), 'products.json');
+  const episodes = loadJSON(join(ROOT, 'series.json'),   'series.json'); // FIX: was 'episodes.json' (never existed)
 
   if (!universe) {
     throw new Error('universe.json not found — run BIRTH MODE first');
