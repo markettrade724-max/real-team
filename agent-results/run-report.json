@@ -1,9 +1,9 @@
 {
-  "runId": "2026-07-11T1355",
+  "runId": "2026-07-11T1427",
   "mode": "sync",
-  "success": false,
-  "timestamp": "2026-07-11T13:55:34.674Z",
-  "totalDuration": "22ms",
+  "success": true,
+  "timestamp": "2026-07-11T14:27:16.621Z",
+  "totalDuration": "16.5s",
   "budget": {
     "total": 0,
     "limit": 40,
@@ -45,14 +45,14 @@
   },
   "agents": {
     "sync": {
-      "success": false,
-      "duration": "10ms",
-      "error": "resolve is not defined"
+      "success": true,
+      "duration": "16.5s",
+      "error": null
     }
   },
   "summary": {
     "total": 1,
-    "passed": 0,
-    "failed": 1
+    "passed": 1,
+    "failed": 0
   }
 }
