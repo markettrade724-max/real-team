@@ -1,10 +1,17 @@
 /**
- * code-agent.js — v2.3
+ * code-agent.js — v2.4
  *
- * Changes from v2.2:
- *  - runGameFix() export: Thursday game-fix mode (3 calls, full cross-file wiring audit)
- *  - loadSavedTscnFiles(): load existing .tscn from disk for game-fix
- *  - backupProjectFile(): backup before overwrite (safety, same spirit as rule-154)
+ * Changes from v2.3:
+ *  - runGameFix() and run(): now pin a single Gemini key for the whole
+ *    multi-call task via selectKeyForTask(), passed as options.pinnedKeyLabel
+ *    on every askGemini() call in that task (err-237 fix, rule-249).
+ *    Previously each askGemini() call picked a key independently via
+ *    getActiveKey() inside _gemini.js, so a task could start on the key
+ *    selectKeyForTask() found affordable and silently drift onto the other
+ *    key mid-task once a partial quota ran out — same failure mode as
+ *    err-177, never actually closed by _gemini v2.4.
+ *  - generateGDScripts() and generateScenes(): added pinnedKeyLabel param,
+ *    threaded into every askGemini() options object.
  *  - Comments translated to English
  *
  * Thursday game-fix targets Memory Shards Saga (confirmed slug: memory-shards-saga)
@@ -17,7 +24,7 @@ import {
 } from 'fs';
 import { join, dirname }  from 'path';
 import { fileURLToPath }  from 'url';
-import { askGemini, getRemainingQuota } from './_gemini.js';
+import { askGemini, getRemainingQuota, selectKeyForTask } from './_gemini.js';
 import { soulContext }    from './_soul.js';
 import { readForAgent }   from './library-builder-agent.js';
 import { logger }         from '../logger.js';
@@ -248,7 +255,7 @@ function addToProducts(idea, art, levels, template) {
 }
 
 // ── Phase 1: GDScript generation ──────────────────────────
-async function generateGDScripts(idea, story, levels, soul, library, targetFiles = null, worldEnemies = [], worldWeapon = null) {
+async function generateGDScripts(idea, story, levels, soul, library, targetFiles = null, worldEnemies = [], worldWeapon = null, pinnedKeyLabel = null) {
   logger.info('[CODE] Phase 1 — GDScript files');
 
   const heroName    = story?.mainCharacter?.name || 'Hero';
@@ -285,7 +292,7 @@ Rules:
 
 Return JSON only:
 { "main_scene.gd": "<complete GDScript code>" }`,
-        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
+        0.2, { maxOutputTokens: 8192, topP: 0.85, pinnedKeyLabel }, 'code-agent');
       files['main_scene.gd'] = r?.['main_scene.gd'];
     } catch (err) { logger.error('[ERROR] main_scene.gd failed', { error: err.message }); }
   }
@@ -309,7 +316,7 @@ Rules:
 
 Return JSON only:
 { "player.gd": "<complete GDScript code>" }`,
-        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
+        0.2, { maxOutputTokens: 8192, topP: 0.85, pinnedKeyLabel }, 'code-agent');
       files['player.gd'] = r?.['player.gd'];
     } catch (err) { logger.error('[ERROR] player.gd failed', { error: err.message }); }
   }
@@ -332,7 +339,7 @@ Rules:
 
 Return JSON only:
 { "enemy.gd": "<complete GDScript code>" }`,
-        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
+        0.2, { maxOutputTokens: 8192, topP: 0.85, pinnedKeyLabel }, 'code-agent');
       files['enemy.gd'] = r?.['enemy.gd'];
     } catch (err) { logger.error('[ERROR] enemy.gd failed', { error: err.message }); }
   }
@@ -367,7 +374,7 @@ Return JSON only:
   "weapon.gd": "<complete GDScript code>",
   "bullet.gd": "<complete GDScript code>"
 }`,
-        0.2, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent');
+        0.2, { maxOutputTokens: 8192, topP: 0.85, pinnedKeyLabel }, 'code-agent');
       files['weapon.gd'] = r?.['weapon.gd'];
       files['bullet.gd'] = r?.['bullet.gd'];
     } catch (err) { logger.error('[ERROR] weapon+bullet failed', { error: err.message }); }
@@ -377,7 +384,7 @@ Return JSON only:
 }
 
 // ── Phase 2: Scene generation ─────────────────────────────
-async function generateScenes(idea, gdFiles, soul, targetFiles = null) {
+async function generateScenes(idea, gdFiles, soul, targetFiles = null, pinnedKeyLabel = null) {
   logger.info('[CODE] Phase 2 — .tscn scene files');
 
   const scenes = {};
@@ -466,7 +473,7 @@ ${spec.prompt}
 
 Return JSON only:
 { "${spec.name}": "<complete .tscn content>" }`,
-        0.2, { maxOutputTokens: 16384, topP: 0.85 }, 'code-agent');
+        0.2, { maxOutputTokens: 16384, topP: 0.85, pinnedKeyLabel }, 'code-agent');
 
       const content = r?.[spec.name];
       if (!content || typeof content !== 'string' || content.trim().length < 10) {
@@ -488,9 +495,13 @@ export async function runGameFix(idea, taskConfig = {}) {
   const slug = idea.id || idea.slug;
   logger.info('[CODE-FIX] Game-fix cycle started', { slug });
 
-  const available = getRemainingQuota();
-  if (available < 3) {
-    throw new Error(`InsufficientQuota: game-fix needs 3 calls, have ${available}`);
+  // FIX (err-237): pin one key for all 3 calls in this task (rule-249) —
+  // getRemainingQuota() < 3 only checked the combined total across both
+  // keys, so a task could pass the gate on a total no single key could
+  // actually cover, then drift keys mid-task via getActiveKey().
+  const pinnedKeyLabel = selectKeyForTask(3);
+  if (!pinnedKeyLabel) {
+    throw new Error(`InsufficientQuota: game-fix needs 3 calls on one key, have ${getRemainingQuota()} total across keys`);
   }
 
   const soul      = soulContext('code-agent');
@@ -525,7 +536,7 @@ Return JSON only. For files needing a fix, return COMPLETE corrected content. Om
   "issues": ["<short description per problem>"],
   "fixedFiles": { "<file.gd>": "<complete corrected code>" }
 }`,
-    0.3, { maxOutputTokens: 16384, topP: 0.85 }, 'code-agent-fix');
+    0.3, { maxOutputTokens: 16384, topP: 0.85, pinnedKeyLabel }, 'code-agent-fix');
 
   for (const [name, code] of Object.entries(step1?.fixedFiles || {})) {
     backupProjectFile(slug, name);
@@ -560,7 +571,7 @@ Return JSON only, complete corrected content for files needing fixes:
   "issues": ["..."],
   "fixedFiles": { "<file.tscn>": "<complete corrected content>" }
 }`,
-    0.3, { maxOutputTokens: 16384, topP: 0.85 }, 'code-agent-fix');
+    0.3, { maxOutputTokens: 16384, topP: 0.85, pinnedKeyLabel }, 'code-agent-fix');
 
   for (const [name, content] of Object.entries(step2?.fixedFiles || {})) {
     backupProjectFile(slug, name);
@@ -587,7 +598,7 @@ Add directly into main_scene.gd:
 
 Return JSON only:
 { "main_scene.gd": "<complete corrected code>" }`,
-    0.3, { maxOutputTokens: 8192, topP: 0.85 }, 'code-agent-fix');
+    0.3, { maxOutputTokens: 8192, topP: 0.85, pinnedKeyLabel }, 'code-agent-fix');
 
   if (step3?.['main_scene.gd']) {
     backupProjectFile(slug, 'main_scene.gd');
@@ -609,7 +620,7 @@ export async function run(idea, story, levels, art, template, taskConfig = {}) {
     budget         = 9,
   } = taskConfig;
 
-  logger.info('[CODE] Code Agent v2.3 started', {
+  logger.info('[CODE] Code Agent v2.4 started', {
     id: idea.id, budget,
     pendingFiles:   pendingFiles?.length ?? 'all',
     completedFiles: completedFiles.length,
@@ -621,10 +632,13 @@ export async function run(idea, story, levels, art, template, taskConfig = {}) {
     return { slug: idea.id, files: [], engine: 'phaser', isComplete: true };
   }
 
-  const available = getRemainingQuota();
-  const needed    = pendingFiles?.every(f => f.endsWith('.tscn')) ? 5 : 4;
-  if (available < needed) {
-    throw new Error(`InsufficientQuota: need ${needed} calls, have ${available}`);
+  // FIX (err-237): pin one key for the whole task (rule-249) — see
+  // runGameFix() above for why getRemainingQuota() alone isn't enough.
+  const onlyTscn       = pendingFiles?.every(f => f.endsWith('.tscn'));
+  const needed         = onlyTscn ? 5 : 4;
+  const pinnedKeyLabel = selectKeyForTask(needed);
+  if (!pinnedKeyLabel) {
+    throw new Error(`InsufficientQuota: need ${needed} calls on one key, have ${getRemainingQuota()} total across keys`);
   }
 
   if (!template) {
@@ -643,7 +657,6 @@ export async function run(idea, story, levels, art, template, taskConfig = {}) {
   const worldWeapon  = firstWorld?.weapon  || null;
 
   const outputFiles = [];
-  const onlyTscn    = pendingFiles?.every(f => f.endsWith('.tscn'));
 
   // Write static files
   if (!onlyTscn) {
@@ -660,7 +673,7 @@ export async function run(idea, story, levels, art, template, taskConfig = {}) {
   if (!onlyTscn) {
     const gdTarget = pendingFiles?.filter(f => f.endsWith('.gd')) ?? null;
     gdFiles = await generateGDScripts(
-      idea, story, levels, soul, library, gdTarget, worldEnemies, worldWeapon
+      idea, story, levels, soul, library, gdTarget, worldEnemies, worldWeapon, pinnedKeyLabel
     );
     for (const [name, code] of Object.entries(gdFiles)) {
       if (!code) continue;
@@ -678,7 +691,7 @@ export async function run(idea, story, levels, art, template, taskConfig = {}) {
       logger.info('[CODE] Loaded saved GD from disk', { count: Object.keys(gdFiles).length });
     }
     const tscnTarget = pendingFiles?.filter(f => f.endsWith('.tscn')) ?? null;
-    const sceneFiles = await generateScenes(idea, gdFiles, soul, tscnTarget);
+    const sceneFiles = await generateScenes(idea, gdFiles, soul, tscnTarget, pinnedKeyLabel);
     for (const [name, content] of Object.entries(sceneFiles)) {
       const fixed = fixLoadSteps(content);
       writeProjectFile(slug, name, fixed);
@@ -707,7 +720,7 @@ export async function run(idea, story, levels, art, template, taskConfig = {}) {
     ...(!tscnDone ? GAME_TSCN_FILES.filter(f => !allDone.includes(f)) : []),
   ];
 
-  logger.info('[OK] Code Agent v2.3 finished', {
+  logger.info('[OK] Code Agent v2.4 finished', {
     slug, isComplete,
     outputFiles:      outputFiles.length,
     pendingRemaining: pendingRemaining.length,
