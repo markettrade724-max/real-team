@@ -17,12 +17,14 @@
  *  - Comments translated to English (rule-224).
  */
 import { readFileSync, existsSync }     from 'fs';
-import { join, dirname }                from 'path';
+import { join, dirname, basename }      from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT      = join(__dirname, '..');
-const REST_URL  = `${process.env.SUPABASE_URL}/rest/v1`;
+const REST_URL    = `${process.env.SUPABASE_URL}/rest/v1`;
+const STORAGE_URL = `${process.env.SUPABASE_URL}/storage/v1`;
+const EP_BUCKET   = 'episodes';
 
 function loadJSON(path) {
   if (!existsSync(path)) return null;
@@ -57,7 +59,6 @@ async function upsertRow(table, row) {
 // ── Upload universe ───────────────────────
 async function syncUniverse(universe) {
   console.log(`[INFO] Syncing universe: ${universe.id}`);
-
   const { error } = await upsertRow('universes', {
     id:            universe.id,
     name:          universe.name,
@@ -69,7 +70,6 @@ async function syncUniverse(universe) {
     last_evolved:  universe.lastEvolved  || null,
     last_invented: universe.lastInvented || null,
   });
-
   if (error) { console.error('[ERROR] Universe sync failed:', error.message); return false; }
   console.log('[OK] Universe synced');
   return true;
@@ -79,7 +79,6 @@ async function syncUniverse(universe) {
 async function syncWorlds(universe) {
   if (!universe.worlds?.length) return;
   console.log(`[INFO] Syncing ${universe.worlds.length} worlds...`);
-
   for (const world of universe.worlds) {
     const id = world.id || world.name?.en?.replace(/\s/g, '-').toLowerCase();
     const { error } = await upsertRow('worlds', {
@@ -103,7 +102,6 @@ async function syncWorlds(universe) {
 async function syncWeapons(universe) {
   if (!universe.weapons?.length) return;
   console.log(`[INFO] Syncing ${universe.weapons.length} weapons...`);
-
   for (const weapon of universe.weapons) {
     const { error } = await upsertRow('weapons', {
       id:          weapon.id,
@@ -123,7 +121,6 @@ async function syncWeapons(universe) {
 async function syncEnemies(universe) {
   if (!universe.enemies?.length) return;
   console.log(`[INFO] Syncing ${universe.enemies.length} enemies...`);
-
   for (const enemy of universe.enemies) {
     const { error } = await upsertRow('enemies', {
       id:          enemy.id,
@@ -139,11 +136,84 @@ async function syncEnemies(universe) {
   }
 }
 
+function publicStorageUrl(storagePath) {
+  return `${process.env.SUPABASE_URL}/storage/v1/object/public/${EP_BUCKET}/${storagePath}`;
+}
+
+function episodeStoragePath(number, filename) {
+  return `ep${number}/${filename}`;
+}
+
+// ── Upload video to Supabase Storage (if local file exists) ──
+async function uploadVideo(localPath, storagePath) {
+  if (!existsSync(localPath)) return { url: null, error: null };
+  try {
+    const res = await fetch(`${STORAGE_URL}/object/${EP_BUCKET}/${storagePath}`, {
+      method:  'POST',
+      headers: {
+        'apikey':        process.env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type':  'video/mp4',
+        'x-upsert':      'true',
+      },
+      body:   readFileSync(localPath),
+      signal: AbortSignal.timeout(120000),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      return { url: null, error: { message: `Storage HTTP ${res.status}: ${text.slice(0, 200)}` } };
+    }
+    return { url: publicStorageUrl(storagePath), error: null };
+  } catch (err) {
+    return { url: null, error: { message: err.message } };
+  }
+}
+
+// ── Upload episodes ────────────────────────
+async function syncEpisodes(manifest) {
+  if (!manifest?.episodes?.length) return;
+  console.log(`[INFO] Syncing ${manifest.episodes.length} episodes...`);
+
+  for (const ep of manifest.episodes) {
+    let videoUrl   = ep.videoUrl   || null;
+    let trailerUrl = ep.trailerUrl || null;
+
+    if (ep.file) {
+      const videoStorage = episodeStoragePath(ep.number, basename(ep.file));
+      const { url, error } = await uploadVideo(ep.file, videoStorage);
+      if (error) console.error(`[ERROR] Episode ${ep.number} video upload failed:`, error.message);
+      else if (url) videoUrl = url;
+
+      const trailerFile = join(dirname(ep.file), `trailer-${ep.number}.mp4`);
+      const trailerStorage = episodeStoragePath(ep.number, `trailer-${ep.number}.mp4`);
+      const trailer = await uploadVideo(trailerFile, trailerStorage);
+      if (trailer.error) console.error(`[ERROR] Episode ${ep.number} trailer upload failed:`, trailer.error.message);
+      else if (trailer.url) trailerUrl = trailer.url;
+    }
+
+    const { error } = await upsertRow('episodes', {
+      id:           `${manifest.universeId}-ep${ep.number}`,
+      universe_id:  manifest.universeId,
+      number:       ep.number,
+      title:        ep.title,
+      logline:      ep.logline      || null,
+      theme:        ep.theme        || null,
+      cliffhanger:  ep.cliffhanger  || null,
+      duration:     ep.duration     || null,
+      video_url:    videoUrl,
+      trailer_url:  trailerUrl,
+      produced_at:  ep.producedAt   || null,
+      file_path:    ep.file         || null,
+    });
+    if (error) console.error(`[ERROR] Episode ${ep.number} failed:`, error.message);
+    else       console.log(`[OK] Episode synced: ${ep.number} — ${ep.title}`);
+  }
+}
+
 // ── Upload products ────────────────────────
 async function syncProducts(products, universeId) {
   if (!products?.length) return;
   console.log(`[INFO] Syncing ${products.length} products...`);
-
   for (const p of products) {
     const { error } = await upsertRow('products', {
       id:            p.id,
@@ -183,6 +253,7 @@ export async function run() {
 
   const universe = loadJSON(join(ROOT, 'universe.json'));
   const products = loadJSON(join(ROOT, 'products.json'));
+  const episodes = loadJSON(join(ROOT, 'episodes.json'));
 
   if (!universe) {
     throw new Error('universe.json not found — run BIRTH MODE first');
@@ -194,8 +265,8 @@ export async function run() {
   await syncWorlds(universe);
   await syncWeapons(universe);
   await syncEnemies(universe);
-
   if (products) await syncProducts(products, universe.id);
+  if (episodes) await syncEpisodes(episodes);
 
   console.log('\n[OK] Supabase sync complete');
   return { synced: true };
