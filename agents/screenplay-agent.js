@@ -1,18 +1,36 @@
 /**
- * screenplay-agent.js — v2.3
+ * screenplay-agent.js — v2.4
  *
- * Changes from v2.2:
- *  - generateScenes: "mood" field now constrained to approved enum (err-219 fix)
+ * Changes from v2.3:
+ *  - run(): pins a single Gemini key for all steps in this call via
+ *    selectKeyForTask(neededCalls), passed as options.pinnedKeyLabel on
+ *    every askGemini() call (err-237 fix, rule-249). Previously each of
+ *    the 3 steps picked a key independently inside _gemini.js, so a task
+ *    could start on the key selectKeyForTask() found affordable and drift
+ *    onto the other key mid-task — same failure mode as err-177.
+ *  - generateBackbone(), generateScenes(), generateDialogue(): added
+ *    pinnedKeyLabel param, threaded into their askGemini() calls.
+ *  - "mood" field now constrained to approved enum (err-219 fix)
  *    Values: "tense" | "urgent" | "dread" | "desperate" | "triumphant" | "calm"
  *    Aligns with new MOOD_MAP keys in scene-agent v1.2 and visual-agent v3.0
  *  - buildCharacters: removed voice field (Edge-TTS relict — voice-agent v4.0 ignores it anyway)
  *  - Comments translated from Arabic to English
+ *
+ * KNOWN ISSUE — NOT fixed in this version, see err-238:
+ *  run({fromStep}) does fromStep THROUGH COMPLETION in one call, always
+ *  ending with dialogue regardless of fromStep (by design — no gate on
+ *  step 3, unlike steps 1/2). Calling this 3x in a loop — which is what
+ *  orchestrator.js's screenplayAndProductionDay() currently does — makes
+ *  scenes regenerate up to 2x and dialogue up to 3x: 6 Gemini calls
+ *  instead of 3 on every screenplay-production day. Fix belongs in
+ *  orchestrator.js: call run() ONCE with the correct resume step, never
+ *  in a per-step loop.
  */
 
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { askGemini, canAfford, getRemainingQuota } from './_gemini.js';
+import { askGemini, canAfford, getRemainingQuota, selectKeyForTask } from './_gemini.js';
 import { soulContext }  from './_soul.js';
 import { readForAgent } from './library-builder-agent.js';
 import { logger }       from '../logger.js';
@@ -110,7 +128,7 @@ function buildCharacters(universe) {
 }
 
 // ── Step 1/3: Backbone ────────────────────────────────────
-async function generateBackbone(universe, episodeNumber, characters, prevContext, audienceGuide, soul) {
+async function generateBackbone(universe, episodeNumber, characters, prevContext, audienceGuide, soul, pinnedKeyLabel) {
   logger.info('[SCREENPLAY] Step 1/3 — Backbone');
 
   const prompt = `
@@ -153,7 +171,7 @@ Return JSON only — no text outside JSON:
 
   const result = await askGemini(
     `${soul}\n\n${prompt}`,
-    0.6, { maxOutputTokens: 4096, topP: 0.85 }, 'screenplay-agent'
+    0.6, { maxOutputTokens: 4096, topP: 0.85, pinnedKeyLabel }, 'screenplay-agent'
   );
 
   if (!result?.acts?.length || result.acts.length < 3) {
@@ -165,7 +183,7 @@ Return JSON only — no text outside JSON:
 }
 
 // ── Step 2/3: Scenes ──────────────────────────────────────
-async function generateScenes(universe, backbone, characters, soul, library) {
+async function generateScenes(universe, backbone, characters, soul, library, pinnedKeyLabel) {
   logger.info('[SCREENPLAY] Step 2/3 — Scenes');
 
   const sceneList = backbone.acts.map(act => ({
@@ -228,7 +246,7 @@ Return JSON only:
 
   const result = await askGemini(
     `${soul}\n\n${prompt}`,
-    0.5, { maxOutputTokens: 32768, topP: 0.85 }, 'screenplay-agent'
+    0.5, { maxOutputTokens: 32768, topP: 0.85, pinnedKeyLabel }, 'screenplay-agent'
   );
 
   if (!result?.acts?.length) throw new Error('Scenes invalid — missing acts');
@@ -239,7 +257,7 @@ Return JSON only:
 }
 
 // ── Step 3/3: Dialogue ────────────────────────────────────
-async function generateDialogue(scenes, characters, backbone, soul) {
+async function generateDialogue(scenes, characters, backbone, soul, pinnedKeyLabel) {
   logger.info('[SCREENPLAY] Step 3/3 — Dialogue');
 
   const sceneIds = scenes.acts
@@ -288,7 +306,7 @@ Return JSON only:
 
   const result = await askGemini(
     `${soul}\n\n${prompt}`,
-    0.7, { maxOutputTokens: 32768, topP: 0.92 }, 'screenplay-agent'
+    0.7, { maxOutputTokens: 32768, topP: 0.92, pinnedKeyLabel }, 'screenplay-agent'
   );
 
   if (!result?.dialogues || !Object.keys(result.dialogues).length) {
@@ -344,7 +362,7 @@ export async function run(universe, episodeNumber = 1, options = null) {
   const remainingSteps = STEPS.slice(startIndex);
   const neededCalls    = remainingSteps.reduce((s, step) => s + STEP_COSTS[step], 0);
 
-  logger.info('[SCREENPLAY] Starting v2.3', {
+  logger.info('[SCREENPLAY] Starting v2.4', {
     universe:   universe.id,
     episode:    episodeNumber,
     fromStep,
@@ -354,16 +372,20 @@ export async function run(universe, episodeNumber = 1, options = null) {
 
   ensureResultsDir();
 
-  if (getRemainingQuota() < neededCalls) {
-    throw new Error(`InsufficientQuota: need ${neededCalls} calls for steps [${remainingSteps.join(',')}]`);
+  // FIX (err-237): pin one key for all remainingSteps calls (rule-249) —
+  // getRemainingQuota() < neededCalls only checked the combined total
+  // across both keys, not whether one key alone could cover the task.
+  const pinnedKeyLabel = selectKeyForTask(neededCalls);
+  if (!pinnedKeyLabel) {
+    throw new Error(`InsufficientQuota: need ${neededCalls} calls on one key for steps [${remainingSteps.join(',')}], have ${getRemainingQuota()} total across keys`);
   }
 
   const soul          = soulContext('screenplay-agent');
-  const library       = readForAgent('screenplay-agent', 8);
-  const insights      = loadInsights();
-  const audienceGuide = buildAudienceGuide(insights);
-  const prevContext   = buildPreviousContext(seriesContext, episodeNumber);
-  const characters    = buildCharacters(universe);
+  const library        = readForAgent('screenplay-agent', 8);
+  const insights       = loadInsights();
+  const audienceGuide  = buildAudienceGuide(insights);
+  const prevContext    = buildPreviousContext(seriesContext, episodeNumber);
+  const characters     = buildCharacters(universe);
 
   if (audienceGuide) logger.info('[INFO] Audience insights loaded');
 
@@ -371,7 +393,7 @@ export async function run(universe, episodeNumber = 1, options = null) {
   let backbone;
   if (fromStep === 'backbone') {
     try {
-      backbone = await generateBackbone(universe, episodeNumber, characters, prevContext, audienceGuide, soul);
+      backbone = await generateBackbone(universe, episodeNumber, characters, prevContext, audienceGuide, soul, pinnedKeyLabel);
       saveStep(episodeNumber, 'backbone', backbone);
     } catch (err) {
       logger.error('[ERROR] Backbone failed', { error: err.message });
@@ -387,7 +409,7 @@ export async function run(universe, episodeNumber = 1, options = null) {
   let scenesResult;
   if (['backbone', 'scenes'].includes(fromStep)) {
     try {
-      scenesResult = await generateScenes(universe, backbone, characters, soul, library);
+      scenesResult = await generateScenes(universe, backbone, characters, soul, library, pinnedKeyLabel);
       saveStep(episodeNumber, 'scenes', scenesResult);
     } catch (err) {
       logger.error('[ERROR] Scenes failed', { error: err.message });
@@ -402,7 +424,7 @@ export async function run(universe, episodeNumber = 1, options = null) {
   // Step 3: Dialogue
   let dialogueResult;
   try {
-    dialogueResult = await generateDialogue(scenesResult, characters, backbone, soul);
+    dialogueResult = await generateDialogue(scenesResult, characters, backbone, soul, pinnedKeyLabel);
   } catch (err) {
     logger.error('[ERROR] Dialogue failed', { error: err.message });
     throw err;
@@ -417,7 +439,7 @@ export async function run(universe, episodeNumber = 1, options = null) {
   const totalLines  = screenplay.acts.flatMap(a => a.scenes)
     .reduce((s, sc) => s + (sc.dialogue?.length || 0), 0);
 
-  logger.info('[OK] Screenplay v2.3 done', {
+  logger.info('[OK] Screenplay v2.4 done', {
     episode:   episodeNumber,
     title:     screenplay.title,
     scenes:    totalScenes,
