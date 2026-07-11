@@ -1,5 +1,5 @@
 /**
- * orchestrator.js — v10.7
+ * orchestrator.js — v10.8
  *
  * Changes from v10.5:
  *  - inventorDay(): gate fixed — was hasEnoughQuota('inventor') → getRemainingQuota() >= 3 (err-213)
