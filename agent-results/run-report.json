@@ -1,9 +1,9 @@
 {
-  "runId": "2026-07-11T1353",
-  "mode": "art-library",
-  "success": true,
-  "timestamp": "2026-07-11T13:53:22.313Z",
-  "totalDuration": "16.0s",
+  "runId": "2026-07-11T1355",
+  "mode": "sync",
+  "success": false,
+  "timestamp": "2026-07-11T13:55:34.674Z",
+  "totalDuration": "22ms",
   "budget": {
     "total": 0,
     "limit": 40,
@@ -44,15 +44,15 @@
     "gamesDone": 1
   },
   "agents": {
-    "artLibrary": {
-      "success": true,
-      "duration": "16.0s",
-      "error": null
+    "sync": {
+      "success": false,
+      "duration": "10ms",
+      "error": "resolve is not defined"
     }
   },
   "summary": {
     "total": 1,
-    "passed": 1,
-    "failed": 0
+    "passed": 0,
+    "failed": 1
   }
 }
