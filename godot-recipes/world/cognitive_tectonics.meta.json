@@ -1,0 +1,62 @@
+{
+  "name": "cognitive_tectonics",
+  "label": "Cognitive Tectonics",
+  "domain": "world",
+  "godotFeature": "Procedural Mesh Generation, SDFGI (Signed Distance Field Global Illumination), Physics Server, VisualShader",
+  "poeticVision": "Feel the ground beneath you constantly betray your trust, dissolving into psychic dust as your memories fray. Every step is a gamble, every path impermanent, a desperate scramble across a world actively unmaking itself, mirroring your own disappearing self. The environment isn't just a backdrop; it's a living, eroding manifestation of Lyra's fracturing mind, forcing split-second path decisions as memory-matter crumbles beneath her feet or reforms into fleeting bridges.",
+  "usage": "This script, when attached to a Node3D, dynamically generates and updates a 3D terrain mesh based on game state, simulating a 'cognitive tectonics' effect where the environment reflects Lyra's fracturing mind. The terrain's geometry changes based on 'identity_integrity', creating crumbling paths and shifting landscapes. For visual dissolution, a ShaderMaterial with a VisualShader should be assigned to the 'mesh_material' property. The script automatically passes the 'dissolve_factor' (derived from 'identity_integrity') and 'dissolve_threshold' to the shader, allowing for visual fading and distortion effects. Ensure SDFGI is enabled in Project Settings -> Rendering -> Environment for realistic global illumination on the dynamic geometry.",
+  "parameters": [
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Represents Lyra's current mental integrity (0.0 = completely fractured, 1.0 = full identity). Lower values cause the terrain to become more chaotic, jagged, and lower, simulating memory loss and environmental decay."
+    },
+    {
+      "name": "terrain_size",
+      "type": "Vector2i",
+      "default": "Vector2i(32, 32)",
+      "description": "The dimensions (width, depth) of the generated terrain grid in cells. Minimum is 2x2."
+    },
+    {
+      "name": "cell_size",
+      "type": "float",
+      "default": "1.0",
+      "description": "The size of each grid cell in world units. Affects the density and scale of the terrain."
+    },
+    {
+      "name": "height_strength",
+      "type": "float",
+      "default": "5.0",
+      "description": "Controls the maximum vertical displacement of terrain vertices, influencing the overall ruggedness of the landscape."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "0.1",
+      "description": "Determines the frequency of the noise used for terrain generation. Higher values result in more detailed, 'noisy' terrain."
+    },
+    {
+      "name": "dissolve_threshold",
+      "type": "float",
+      "default": "0.5",
+      "description": "A threshold passed to the assigned ShaderMaterial, typically used by a VisualShader to control when parts of the mesh visually dissolve or fade out based on a noise texture or other criteria."
+    },
+    {
+      "name": "mesh_material",
+      "type": "Material",
+      "default": "null",
+      "description": "The Material applied to the generated mesh. It is highly recommended to use a ShaderMaterial with a VisualShader that utilizes 'dissolve_factor' and 'dissolve_threshold' uniforms for visual effects."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (created by script)",
+    "StaticBody3D (created by script)",
+    "CollisionShape3D (created by script)",
+    "ShaderMaterial (assigned to mesh_material, with a VisualShader that accepts 'dissolve_factor' and 'dissolve_threshold' uniforms)"
+  ],
+  "verdict": "The world itself weeps Lyra's fading memories, a treacherous dance of crumbling earth and desperate leaps across the chasm of self.",
+  "impact": "This invention transforms the environment from a passive backdrop into an active, dynamic antagonist, directly mirroring Lyra's internal struggle with identity loss. Players will experience constant, visceral tension as the very ground beneath their feet betrays them, forcing split-second decisions and urgent navigation. Every step becomes a gamble, reinforcing the theme that Lyra's self is literally crumbling, making the abstract concept of memory loss a tangible, life-threatening gameplay challenge. It will create a deeply immersive and unforgettable experience of desperate survival against a world that reflects her own fading mind.",
+  "score": 85,
+  "inventedAt": "2026-07-12T05:20:04.418Z"
+}

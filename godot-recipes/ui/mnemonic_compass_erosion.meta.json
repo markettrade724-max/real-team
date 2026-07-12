@@ -1,0 +1,36 @@
+{
+  "name": "mnemonic_compass_erosion",
+  "label": "The Fading Path Compass",
+  "domain": "ui",
+  "godotFeature": "ShaderMaterial & Tween nodes",
+  "poeticVision": "The player feels the profound urgency of clinging to purpose and direction. Every flicker or distortion of this compass is not just a UI glitch, but a visceral struggle against Lyra's own mind dissolving. It's a constant, aching reminder that even the path forward is a fragile memory, actively sought to be erased by the Silence, merging the battle for survival with the grief of self-loss directly onto their screen.",
+  "usage": "1. Create a `TextureRect` node in your UI scene (e.g., as a child of a `Control` node).\n2. Assign a compass texture (e.g., an arrow pointing upwards) to the `TextureRect`'s `Texture` property.\n3. Attach this `mnemonic_compass.gd` script to the `TextureRect` node.\n4. Adjust the `initial_identity_cohesion`, `initial_silence_proximity`, and `rotation_speed` properties in the Inspector.\n5. From other game scripts, call the public methods to dynamically control the compass:\n   - `set_identity_cohesion(value: float, duration: float = 0.5)`: Updates Lyra's identity clarity.\n   - `set_silence_proximity(value: float, duration: float = 0.5)`: Updates the intensity of distortion based on Silence proximity.\n   - `set_target_direction(direction: Vector2)`: Sets the direction the compass should point towards.\n   - `lose_memory_fragment(fragment_id: String)`: Triggers a permanent static distortion effect, simulating a lost memory.",
+  "parameters": [
+    {
+      "name": "initial_identity_cohesion",
+      "type": "float",
+      "default": "1.0",
+      "description": "Initial clarity of Lyra's identity (0.0 = completely lost, 1.0 = full clarity). Affects the compass's overall alpha."
+    },
+    {
+      "name": "initial_silence_proximity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Initial proximity to the Silence (0.0 = far, 1.0 = very close). Affects the intensity of dynamic visual distortion."
+    },
+    {
+      "name": "rotation_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Speed at which the compass rotates to smoothly point at the target direction."
+    }
+  ],
+  "dependencies": [
+    "TextureRect node (as the base node for the script)",
+    "A compass Texture resource (assigned to the TextureRect's 'Texture' property)"
+  ],
+  "verdict": "A fractured guide through a dissolving mind, this compass turns every step into a poignant battle against the relentless tide of forgetting.",
+  "impact": "The player will constantly be reminded of Lyra's deteriorating mental state and the encroaching threat of the Silence, transforming a simple navigation tool into a visceral, emotional anchor for the game's core themes of self-loss and desperate survival. Every flicker and distortion will be a direct, agonizing reflection of Lyra's internal struggle, making the player feel her grief and urgency.",
+  "score": 92,
+  "inventedAt": "2026-07-12T05:18:52.255Z"
+}

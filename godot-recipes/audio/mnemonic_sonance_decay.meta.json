@@ -1,0 +1,50 @@
+{
+  "name": "mnemonic_sonance_decay",
+  "label": "The Silence's Score: Echoes of Self-Loss",
+  "domain": "audio",
+  "godotFeature": "AudioBusLayout & AudioStreamPlayer scripting",
+  "poeticVision": "As Lyra's memories fray and vanish, the very score of the universe unravels. Melodies that once defined her past now dissipate into discordant static or chilling silence, leaving a stark, aching void in the soundscape. The player feels the direct, irreversible loss of self, not just seeing it, but actively *hearing* the vibrant tapestry of Lyra's being fray piece by piece, an auditory testament to the encroaching emptiness.",
+  "usage": "Attach this script to any Node in your scene. In Godot's Project Settings -> Audio -> Buses, create dedicated AudioBuses (e.g., 'MemoryBus_Childhood', 'MemoryBus_Bravery') for different memory fragments. Route relevant AudioStreamPlayers (e.g., background music, ambient sounds tied to a memory) to their respective memory buses. For the decay effects to work, ensure each memory bus has an 'AudioEffectLowPassFilter' and an 'AudioEffectDistortion' added to it in the AudioBusLayout. Configure the 'memory_bus_map' export variable in the Inspector to link your game's memory IDs (strings) to the names of these AudioBuses. When Lyra loses a memory, call the 'lose_memory(memory_id: String)' function from your game logic, passing the corresponding memory ID. The script will then dynamically fade the volume and apply low-pass filtering and distortion to the associated AudioBus, creating an auditory representation of memory loss.",
+  "parameters": [
+    {
+      "name": "memory_bus_map",
+      "type": "Dictionary",
+      "default": "{ \"childhood_melody\": \"MemoryBus_Childhood\", \"bravery_theme\": \"MemoryBus_Bravery\", \"love_motif\": \"MemoryBus_Love\" }",
+      "description": "A dictionary mapping unique string identifiers for memories to the names of their corresponding AudioBuses in the Project Settings."
+    },
+    {
+      "name": "decay_duration",
+      "type": "float",
+      "default": "2.0",
+      "description": "The time in seconds over which the audio effects and volume will transition to their decayed state."
+    },
+    {
+      "name": "decay_volume_target",
+      "type": "float",
+      "default": "-60.0",
+      "description": "The target volume in decibels (dB) for a bus after a memory is lost. -60.0 dB is effectively silent."
+    },
+    {
+      "name": "decay_lp_filter_freq",
+      "type": "float",
+      "default": "500.0",
+      "description": "The target cutoff frequency in Hertz (Hz) for the AudioEffectLowPassFilter. Lower values create a more muffled sound."
+    },
+    {
+      "name": "decay_distortion_mix",
+      "type": "float",
+      "default": "0.8",
+      "description": "The target mix value (0.0 to 1.0) for the AudioEffectDistortion. Higher values increase the intensity of the distortion."
+    }
+  ],
+  "dependencies": [
+    "AudioServer",
+    "AudioEffectLowPassFilter",
+    "AudioEffectDistortion",
+    "Tween"
+  ],
+  "verdict": "The universe's soul finds its echo in the silence, as Lyra's fading self becomes a symphony of sorrow, haunting the player with every lost note.",
+  "impact": "The player will experience the game's central theme of identity loss not just visually or narratively, but viscerally through their ears. The gradual degradation of familiar melodies into noise or silence will create a profound sense of emptiness and urgency, making the fight to retain memories feel more personal and desperate. It transforms abstract loss into a tangible, audible reality, deepening the emotional stakes and reinforcing the core narrative of self-preservation against an encroaching void.",
+  "score": 92,
+  "inventedAt": "2026-07-12T05:17:39.292Z"
+}

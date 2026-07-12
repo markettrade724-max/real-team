@@ -1,0 +1,50 @@
+{
+  "name": "identity_echo_mimic_hunter",
+  "label": "The Echo-Thief",
+  "domain": "ai",
+  "godotFeature": "NavigationServer3D, AnimationPlayer, ShaderMaterial, Custom GDScript",
+  "poeticVision": "Feel the chilling dread as the hunter mirrors your deepest self, twisting your forgotten strengths into its own weapons. Every step toward regaining your identity makes the chase more personal, more painful, as your past is used to hunt you in the present.",
+  "usage": "This GDScript should be attached to a CharacterBody3D node representing the Echo-Thief hunter. The hunter requires a NavigationAgent3D, an AnimationPlayer, and a MeshInstance3D as direct children. The MeshInstance3D should have a mesh assigned to it. The 'target_path' export variable should be set in the editor to the NodePath of Lyra's CharacterBody3D node. Lyra's script (or a central memory manager) would call the 'update_memory_fragments(fragments: Dictionary)' method on the Echo-Thief instance whenever Lyra gains or loses a memory fragment. The 'fragments' dictionary should contain string keys representing memory traits (e.g., 'Agility', 'Strength', 'Resilience') and any value (e.g., true) to indicate presence. The script dynamically creates and applies a ShaderMaterial to the hunter's mesh, updating its uniform parameters to visually reflect the absorbed traits, and adjusts the hunter's movement speed and attack strength accordingly.",
+  "parameters": [
+    {
+      "name": "target_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "The NodePath to Lyra's CharacterBody3D node, which the hunter will pursue."
+    },
+    {
+      "name": "movement_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The base movement speed of the hunter."
+    },
+    {
+      "name": "rotation_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The speed at which the hunter rotates to face its target."
+    },
+    {
+      "name": "attack_range",
+      "type": "float",
+      "default": "2.0",
+      "description": "The maximum distance from the target at which the hunter will initiate an attack."
+    },
+    {
+      "name": "attack_cooldown",
+      "type": "float",
+      "default": "1.0",
+      "description": "The time in seconds between consecutive attacks."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (base node)",
+    "NavigationAgent3D (child node)",
+    "AnimationPlayer (child node)",
+    "MeshInstance3D (child node with an assigned mesh)"
+  ],
+  "verdict": "A chilling reflection, this hunter twists the very essence of self-recovery into a relentless, personal torment, forcing Lyra to confront her past in every desperate stride.",
+  "impact": "This invention will fundamentally transform the player's experience of pursuit and memory recovery. Instead of a generic hunter, players will face an entity that evolves with Lyra's identity, making every recovered memory a double-edged sword. This creates a profound sense of personal dread and a constant, agonizing choice: embrace a part of yourself and empower your tormentor, or deny yourself to survive. The visual adaptation reinforces this, making the hunter a dynamic, ever-changing reflection of Lyra's internal struggle, deepening the emotional stakes of every chase.",
+  "score": 95,
+  "inventedAt": "2026-07-12T05:29:45.754Z"
+}

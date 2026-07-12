@@ -1,0 +1,51 @@
+{
+  "name": "chronal_identity_bifurcation",
+  "label": "Temporal Identity Bifurcation",
+  "domain": "time",
+  "godotFeature": "SubViewport, ViewportTexture, ShaderMaterial",
+  "poeticVision": "The player experiences the visceral dread and cerebral challenge of simultaneously existing in two slightly desynchronized realities, each a potential path forged by a memory. The fleeting moments of control and perspective-shifting create a unique feeling of temporal duality, where split-second decisions not only affect the physical present but also risk fracturing Lyra's very self. It's the desperate scramble to weaponize time and identity against an enemy that consumes both, feeling the tangible tear as identity is stretched thin across moments.",
+  "usage": "Attach this script to a Node2D in your main scene. Configure the exported properties in the inspector: assign your main player character (Lyra), a PackedScene for the echo character (a duplicate or simplified version of Lyra), a SubViewport node, a TextureRect node (typically on a CanvasLayer to cover the screen), and a ShaderMaterial resource that uses the 'bifurcation_effect.gdshader' provided below. Ensure your project's Input Map has 'activate_bifurcation' and 'switch_control' actions defined. Call 'take_damage_while_bifurcated(amount)' from other game systems when Lyra takes damage while the bifurcation is active.",
+  "parameters": [
+    {
+      "name": "lyra_node",
+      "type": "CharacterBody2D",
+      "default": "null",
+      "description": "Reference to the main player character node."
+    },
+    {
+      "name": "echo_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene resource for the echo character, which will be instantiated in the SubViewport."
+    },
+    {
+      "name": "bifurcation_viewport",
+      "type": "SubViewport",
+      "default": "null",
+      "description": "The SubViewport node used to render the echo character."
+    },
+    {
+      "name": "bifurcation_overlay",
+      "type": "TextureRect",
+      "default": "null",
+      "description": "The TextureRect node that will display the shader effect over the main screen."
+    },
+    {
+      "name": "bifurcation_shader",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "The ShaderMaterial resource that applies the visual bifurcation effect, using the 'bifurcation_effect.gdshader'."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody2D (for Lyra and Echo)",
+    "SubViewport",
+    "TextureRect",
+    "ShaderMaterial",
+    "res://bifurcation_effect.gdshader (shader file)"
+  ],
+  "verdict": "A brilliant temporal paradox woven into the fabric of self, where every step through memory's ruins is a desperate dance between two fading reflections.",
+  "impact": "This mechanic will fundamentally define the player's interaction with the game world, transforming every encounter into a multi-dimensional puzzle of temporal manipulation and self-preservation. Players will constantly weigh the immediate physical threat against the existential cost of fracturing their identity, fostering a unique blend of adrenaline-fueled action and profound cerebral challenge. It will make the act of remembering and forgetting a tangible, dangerous, and strategic gameplay element, creating an unforgettable experience of fighting for one's very self.",
+  "score": 95,
+  "inventedAt": "2026-07-12T05:25:57.510Z"
+}

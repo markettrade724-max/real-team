@@ -1,0 +1,31 @@
+{
+  "name": "anamnesis_weaponization_ai",
+  "label": "Anamnesis Reclaimer",
+  "domain": "ai",
+  "godotFeature": "Signals, Callable, State Machines",
+  "poeticVision": "Feel the chilling dread as a hunter mimics a combat move Lyra just forgot, or interacts with the environment in a way she can no longer comprehend. Every memory lost doesn't just weaken Lyra; it directly empowers the Silence, turning Lyra's own past into a brutal weapon against her, making each struggle a deeply personal act of self-betrayal.",
+  "usage": "Attach this script to a CharacterBody3D node representing a Silence hunter. Configure the 'lyra_path' export variable to the NodePath of Lyra (or a dedicated MemoryManager node) that emits a 'memory_lost(memory_type: String)' signal. Set the 'animation_player_path' to the NodePath of an AnimationPlayer child node on the hunter. When Lyra loses a memory (e.g., by emitting 'memory_lost(\"CombatManeuver\")'), the hunter will dynamically gain new abilities or modify its behavior, transitioning into an 'enhanced_hunt' state. Ensure the AnimationPlayer has animations defined for 'idle_animation', 'patrol_animation', 'hunt_animation', 'enhanced_hunt_animation', and 'dash_attack_animation' for visual feedback.",
+  "parameters": [
+    {
+      "name": "lyra_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "Path to the Lyra or MemoryManager node emitting the 'memory_lost' signal."
+    },
+    {
+      "name": "animation_player_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "Path to the AnimationPlayer node on the hunter for visual feedback."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "AnimationPlayer",
+    "Node (e.g., Lyra or a MemoryManager) emitting a 'memory_lost(memory_type: String)' signal"
+  ],
+  "verdict": "The echoes of a forgotten self become the sharpened claws of the hunter, turning every lost memory into a haunting weapon wielded against Lyra's very being.",
+  "impact": "This mechanic transforms every memory loss from a simple debuff into a profound act of self-betrayal, making the Silence's hunters terrifying reflections of Lyra's fading self, forcing players to confront their own weakening identity directly in combat. It elevates the core theme of self-loss into a tangible, escalating threat, ensuring that the internal struggle is always mirrored by external danger.",
+  "score": 95,
+  "inventedAt": "2026-07-12T05:16:45.716Z"
+}

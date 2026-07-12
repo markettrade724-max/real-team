@@ -1,0 +1,57 @@
+{
+  "name": "identity_decay_world_shader",
+  "label": "The Unraveling Veil",
+  "domain": "shaders",
+  "godotFeature": "Spatial Shaders (fragment and vertex functions, custom uniforms)",
+  "poeticVision": "The player will feel the chilling dread of their very reality unraveling around them, not as a mere visual trick, but as a direct, terrifying manifestation of Lyra's mind succumbing to the Silence. Every lost memory tears a physical hole in the environment, causing the ground, walls, and structures to fray, flicker, and dissolve into the void. This effect makes survival a desperate struggle to hold onto both Lyra's identity and the crumbling world beneath her feet, blurring the line between internal decay and external collapse.",
+  "usage": "This shader should be applied to `StandardMaterial3D` or `ShaderMaterial` resources used by environmental meshes. The `memory_erosion_factor` uniform should be dynamically updated by game logic (e.g., a script on Lyra or a game manager) based on Lyra's memory stability or proximity to Silence hunters. A value of 0.0 means no erosion, while 1.0 means full erosion, causing the mesh to desaturate, tint, crumble, and dissolve into the void.",
+  "parameters": [
+    {
+      "name": "albedo_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Base texture for the material."
+    },
+    {
+      "name": "memory_erosion_factor",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the intensity of the memory erosion effect (0.0 = no erosion, 1.0 = full erosion)."
+    },
+    {
+      "name": "void_color",
+      "type": "color",
+      "default": "(0.0, 0.0, 0.0, 1.0)",
+      "description": "Color of the void revealed as the material dissolves."
+    },
+    {
+      "name": "erosion_tint_color",
+      "type": "color",
+      "default": "(0.5, 0.0, 0.5, 1.0)",
+      "description": "Color to tint the environment towards as memories fade."
+    },
+    {
+      "name": "displacement_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "Maximum strength of vertex displacement for crumbling effect."
+    },
+    {
+      "name": "flicker_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Speed at which the dissolve and displacement noise patterns animate."
+    },
+    {
+      "name": "flicker_density",
+      "type": "float",
+      "default": "2.0",
+      "description": "Density of the noise pattern used for flickering and displacement."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "The veil of reality thins with every fading memory, turning Lyra's internal decay into a breathtaking, crumbling dance with the void.",
+  "impact": "This invention transforms Lyra's internal struggle into a visceral, ever-present external threat. Players will not merely witness memory loss; they will physically experience the world dissolving beneath their feet, forcing constant adaptation and amplifying the core themes of identity, decay, and desperate survival. It elevates the stakes of every lost memory, making the environment itself a dynamic antagonist and a constant reminder of Lyra's eroding self.",
+  "score": 88,
+  "inventedAt": "2026-07-12T05:15:50.799Z"
+}

@@ -1,0 +1,67 @@
+{
+  "name": "mnemonic_echo_bloom",
+  "label": "Mnemonic Echo Bloom",
+  "domain": "shaders",
+  "godotFeature": "Spatial and CanvasItem shaders with screen_texture and custom HDR/bloom pipeline",
+  "poeticVision": "Feel the overwhelming rush of a lost identity flooding back – a brief, blinding supernova of forgotten details, colors, and textures that momentarily saturates your senses, blurring the lines between memory and reality. It's beautiful, but almost too much to bear, a fragile and disorienting burst of self in a decaying void.",
+  "usage": "To use the Mnemonic Echo Bloom effect:\n1.  Save the provided GLSL code as `mnemonic_echo_bloom.gdshader` in your Godot project (e.g., `res://shaders/mnemonic_echo_bloom.gdshader`).\n2.  Create a new `ColorRect` node in your scene, typically as a child of your main UI or CanvasLayer, and ensure it covers the entire viewport. Set its `Anchors` to `Full Rect` and `Mouse Filter` to `Ignore`.\n3.  Create a new `ShaderMaterial` resource for the `ColorRect`'s `Material` property.\n4.  Assign the `mnemonic_echo_bloom.gdshader` file to the `Shader` property of this `ShaderMaterial`.\n5.  Attach a new GDScript to the `ColorRect` node (e.g., `mnemonic_echo_bloom_controller.gd`) to manage the animation and dynamic parameters. Here's an example controller script:\n\n    gdscript\n    extends ColorRect\n\n    @export_file(\"*.gdshader\") var shader_path: String = \"res://shaders/mnemonic_echo_bloom.gdshader\"\n    @export_group(\"Animation Settings\")\n    @export_range(0.1, 5.0, 0.1) var bloom_duration: float = 1.0\n    @export_range(0.0, 1.0, 0.01) var peak_intensity: float = 1.0\n    @export_range(0.0, 1.0, 0.01) var afterimage_duration_ratio: float = 0.2\n\n    @export_group(\"Shader Parameters\")\n    @export_range(0.0, 1.0, 0.01) var max_radius: float = 0.3\n    @export_range(0.0, 5.0, 0.1) var bloom_intensity: float = 1.5\n    @export_range(1.0, 3.0, 0.1) var saturation_amount: float = 1.5\n    @export_range(1.0, 2.0, 0.1) var contrast_amount: float = 1.2\n    @export_range(0.0, 0.05, 0.001) var distortion_strength: float = 0.01\n    @export var bloom_color: Color = Color(1.0, 0.8, 0.5, 1.0)\n\n    var _shader_material: ShaderMaterial\n    var _tween: Tween\n\n    func _ready() -> void:\n    \tset_anchors_and_offsets_preset(PRESET_FULL_RECT)\n    \tmouse_filter = Control.MOUSE_FILTER_IGNORE\n    \t_setup_shader_material()\n    \t_update_shader_parameters()\n\n    func _setup_shader_material() -> void:\n    \tif material is ShaderMaterial:\n    \t\t_shader_material = material as ShaderMaterial\n    \telse:\n    \t\t_shader_material = ShaderMaterial.new()\n    \t\tmaterial = _shader_material\n    \t\n    \tif not _shader_material.shader:\n    \t\tif ResourceLoader.exists(shader_path):\n    \t\t\t_shader_material.shader = load(shader_path)\n    \t\telse:\n    \t\t\tpush_error(\"Mnemonic Echo Bloom shader not found at: \", shader_path)\n    \t\t\tset_process(false)\n    \t\t\treturn\n\n    func _update_shader_parameters() -> void:\n    \tif not _shader_material or not _shader_material.shader:\n    \t\treturn\n    \t_shader_material.set_shader_parameter(\"max_radius\", max_radius)\n    \t_shader_material.set_shader_parameter(\"bloom_intensity\", bloom_intensity)\n    \t_shader_material.set_shader_parameter(\"saturation_amount\", saturation_amount)\n    \t_shader_material.set_shader_parameter(\"contrast_amount\", contrast_amount)\n    \t_shader_material.set_shader_parameter(\"distortion_strength\", distortion_strength)\n    \t_shader_material.set_shader_parameter(\"bloom_color\", bloom_color)\n    \t_shader_material.set_shader_parameter(\"progress\", 0.0)\n    \t_shader_material.set_shader_parameter(\"memory_pos_uv\", Vector2(0.5, 0.5))\n\n    func _set(property: StringName, value: Variant) -> bool:\n    \tvar handled = super._set(property, value)\n    \tif handled and _shader_material and _shader_material.shader:\n    \t\tif property in [\"max_radius\", \"bloom_intensity\", \"saturation_amount\", \"contrast_amount\", \"distortion_strength\", \"bloom_color\"]:\n    \t\t\t_shader_material.set_shader_parameter(property, value)\n    \treturn handled\n\n    func trigger_bloom(memory_shard_screen_position: Vector2) -> void:\n    \tif not _shader_material or not _shader_material.shader:\n    \t\tpush_error(\"Shader material or shader not properly set up.\")\n    \t\treturn\n\n    \tvar viewport_size = get_viewport_rect().size\n    \tvar memory_pos_uv = memory_shard_screen_position / viewport_size\n    \t_shader_material.set_shader_parameter(\"memory_pos_uv\", memory_pos_uv)\n\n    \tif _tween and _tween.is_running():\n    \t\t_tween.kill()\n\n    \t_tween = create_tween()\n    \t_tween.set_ease(Tween.EASE_OUT)\n    \t_tween.set_trans(Tween.TRANS_QUAD)\n\n    \t_tween.tween_property(\n    \t\t_shader_material, \"shader_parameter/progress\", peak_intensity, bloom_duration * 0.5\n    \t)\n    \t\n    \t_tween.tween_property(\n    \t\t_shader_material, \"shader_parameter/progress\", 0.0, bloom_duration * (0.5 + afterimage_duration_ratio)\n    \t).set_delay(bloom_duration * 0.1)\n\n    \t_tween.tween_callback(func(): _tween = null)\n    \n\n6.  To activate the effect from another script, get a reference to your `ColorRect` node (e.g., `get_node(\"Path/To/MnemonicEchoBloomEffect\")`) and call its `trigger_bloom(screen_position: Vector2)` method, passing the screen coordinates where the memory shard was recovered. For example: `get_node(\"CanvasLayer/MnemonicEchoBloomEffect\").trigger_bloom(Vector2(960, 540))` for the center of a 1920x1080 screen.",
+  "parameters": [
+    {
+      "name": "progress",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the overall intensity and animation progress of the bloom effect. Animated by GDScript."
+    },
+    {
+      "name": "memory_pos_uv",
+      "type": "vec2",
+      "default": "vec2(0.5, 0.5)",
+      "description": "Screen-space UV coordinates (0-1) of the memory shard's center. Set by GDScript."
+    },
+    {
+      "name": "max_radius",
+      "type": "float",
+      "default": "0.3",
+      "description": "Maximum radius of the effect from the memory shard's center."
+    },
+    {
+      "name": "bloom_intensity",
+      "type": "float",
+      "default": "1.5",
+      "description": "Intensity multiplier for the bloom color."
+    },
+    {
+      "name": "saturation_amount",
+      "type": "float",
+      "default": "1.5",
+      "description": "Saturation multiplier for affected areas."
+    },
+    {
+      "name": "contrast_amount",
+      "type": "float",
+      "default": "1.2",
+      "description": "Contrast multiplier for affected areas."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.01",
+      "description": "Strength of the screen-space distortion/ripple effect."
+    },
+    {
+      "name": "bloom_color",
+      "type": "vec4",
+      "default": "vec4(1.0, 0.8, 0.5, 1.0)",
+      "description": "Color of the bloom effect."
+    }
+  ],
+  "dependencies": [
+    "ColorRect node",
+    "ShaderMaterial resource",
+    "GDScript controller (provided in usage)"
+  ],
+  "verdict": "A blinding supernova of self, this bloom promises a beautiful, yet disorienting, glimpse into the soul's fractured past, making memory itself a weapon and a vulnerability.",
+  "impact": "This shader will visually represent the overwhelming and disorienting rush of a lost identity flooding back, transforming memory recovery from a passive event into an active, sensory-overloading experience. It can create moments of vulnerability or strategic choice during high-stakes encounters, as the player grapples with a beautiful but blinding influx of self amidst immediate danger, directly tying visual feedback to the game's core themes of self-loss and survival.",
+  "score": 85,
+  "inventedAt": "2026-07-12T05:28:14.956Z"
+}

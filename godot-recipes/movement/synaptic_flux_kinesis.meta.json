@@ -1,0 +1,65 @@
+{
+  "name": "synaptic_flux_kinesis",
+  "label": "Synaptic Flux Kinesis",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D physics, PhysicsServer, _physics_process",
+  "poeticVision": "The ground beneath your feet shifts not due to the world, but due to your own mind. Every jump is a battle against forgetting, every dash a desperate reassertion of who you once were. You are not just running from the Silence; you are running from the dissolution of your very motor functions, your ability to move, to exist. The instability in your steps is the echo of a forgotten name, the faltering leap a fragment of a lost skill.",
+  "usage": "Attach this script to a CharacterBody3D node representing Lyra. Ensure your project's Input Map (Project Settings -> Input Map) has the following actions configured:\n- \"move_left\" (e.g., A key)\n- \"move_right\" (e.g., D key)\n- \"move_forward\" (e.g., W key)\n- \"move_backward\" (e.g., S key)\n- \"jump\" (e.g., Spacebar)\n\nThe `memory_integrity` property can be modified externally by other game systems (e.g., Silence attacks, environmental hazards) using the `take_memory_damage(amount)` and `recover_memory_shard(amount, temporary_boost)` methods. For example, calling `player_node.take_memory_damage(0.1)` will reduce Lyra's memory by 10%, immediately degrading her movement. Calling `player_node.recover_memory_shard(0.05, true)` will restore 5% memory and grant a temporary movement boost.",
+  "parameters": [
+    {
+      "name": "base_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The character's base movement speed when memory integrity is full."
+    },
+    {
+      "name": "base_jump_velocity",
+      "type": "float",
+      "default": "4.5",
+      "description": "The character's base jump velocity when memory integrity is full."
+    },
+    {
+      "name": "base_gravity_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "A multiplier for the project's default 3D gravity. Affects how quickly the character falls."
+    },
+    {
+      "name": "base_friction",
+      "type": "float",
+      "default": "0.8",
+      "description": "Determines how quickly the character's horizontal velocity decays when no input is given. Lower values make movement more slippery."
+    },
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "The current state of Lyra's memory, ranging from 0.0 (fully degraded) to 1.0 (full memory). Directly impacts movement parameters."
+    },
+    {
+      "name": "integrity_degradation_factor",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the maximum impact of memory degradation. A value of 0.5 means at 0.0 memory integrity, speed, jump, and friction will be 50% of their base values, and gravity will be 25% higher."
+    },
+    {
+      "name": "memory_shard_boost_strength",
+      "type": "float",
+      "default": "0.2",
+      "description": "The flat percentage bonus applied to movement parameters (speed, jump, friction) and reduction to gravity during a temporary memory shard boost."
+    },
+    {
+      "name": "memory_shard_boost_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "The duration, in seconds, for which a temporary memory shard boost remains active."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D"
+  ],
+  "verdict": "In the dance of fading self, every faltering step becomes a desperate prayer against the encroaching void.",
+  "impact": "This mechanic transforms basic locomotion into a constant, visceral struggle against the self, making every step a desperate act of remembrance and every jump a gamble against oblivion. It forces players to internalize Lyra's fading identity, creating a unique blend of physical challenge and emotional resonance where the very act of moving becomes a narrative device, directly embodying the game's core themes of self-loss and urgent survival.",
+  "score": 85,
+  "inventedAt": "2026-07-12T05:26:56.913Z"
+}
