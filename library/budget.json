@@ -1,151 +1,60 @@
 {
-  "date": "2026-07-12",
-  "total": 20,
+  "date": "2026-07-13",
+  "total": 7,
   "limit": 20,
   "library": 0,
-  "agents": 20,
+  "agents": 7,
   "exhausted": false,
   "log": [
     {
-      "time": "05:14:05",
-      "caller": "inventor-agent",
-      "success": false,
+      "time": "05:23:40",
+      "caller": "screenplay-agent",
+      "success": true,
       "total": 1,
-      "left": 19,
-      "errorType": "503"
+      "left": 19
     },
     {
-      "time": "05:14:36",
-      "caller": "inventor-agent",
+      "time": "05:23:57",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 2,
       "left": 18
     },
     {
-      "time": "05:14:56",
-      "caller": "inventor-agent",
+      "time": "05:24:33",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 3,
       "left": 17
     },
     {
-      "time": "05:15:18",
-      "caller": "inventor-agent",
+      "time": "05:25:30",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 4,
       "left": 16
     },
     {
-      "time": "05:15:50",
-      "caller": "inventor-agent",
-      "success": true,
+      "time": "05:26:04",
+      "caller": "screenplay-agent",
+      "success": false,
       "total": 5,
-      "left": 15
+      "left": 15,
+      "errorType": "503"
     },
     {
-      "time": "05:16:03",
-      "caller": "inventor-agent",
+      "time": "05:26:35",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 6,
       "left": 14
     },
     {
-      "time": "05:16:32",
-      "caller": "inventor-agent",
+      "time": "05:27:11",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 7,
       "left": 13
-    },
-    {
-      "time": "05:16:45",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 8,
-      "left": 12
-    },
-    {
-      "time": "05:17:00",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 9,
-      "left": 11
-    },
-    {
-      "time": "05:17:30",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 10,
-      "left": 10
-    },
-    {
-      "time": "05:17:39",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 11,
-      "left": 9
-    },
-    {
-      "time": "05:17:58",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 12,
-      "left": 8
-    },
-    {
-      "time": "05:18:38",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 13,
-      "left": 7
-    },
-    {
-      "time": "05:18:52",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 14,
-      "left": 6
-    },
-    {
-      "time": "05:19:04",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 15,
-      "left": 5
-    },
-    {
-      "time": "05:19:49",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 16,
-      "left": 4
-    },
-    {
-      "time": "05:20:04",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 17,
-      "left": 3
-    },
-    {
-      "time": "05:20:20",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 18,
-      "left": 2
-    },
-    {
-      "time": "05:21:11",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 19,
-      "left": 1
-    },
-    {
-      "time": "05:21:22",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 20,
-      "left": 0
     }
   ]
 }
