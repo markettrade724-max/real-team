@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-07-12T09:02:17.195Z",
-  "current": null,
+  "updatedAt": "2026-07-13T08:25:19.958Z",
+  "current": {
+    "type": "episode",
+    "episode": 16,
+    "id": null,
+    "startedAt": "2026-07-13T08:09:55.065Z",
+    "updatedAt": "2026-07-13T08:25:19.958Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 16,
     "totalEpisodes": 16,
@@ -440,6 +447,35 @@
         "startedAt": "2026-07-06T14:11:08.576Z",
         "completedAt": "2026-07-06T14:25:03.434Z",
         "failReason": null
+      },
+      "16": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-07-13T08:11:43.147Z",
+            "title": "The Architect's Fading Blueprint",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-07-13T08:12:44.875Z",
+            "title": "The Architect's Fading Blueprint",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-07-13T08:14:07.064Z",
+            "title": "The Architect's Fading Blueprint",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-07-13T08:09:55.065Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
