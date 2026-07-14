@@ -16,6 +16,7 @@ attack_damage = 10.0
 attack_cooldown = 2.0
 health = 100.0
 navigation_agent_node_path = NodePath("NavigationAgent3D")
+player_node_path = NodePath("/root/main_scene/Player") # Corrected path
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("2_capsule")
