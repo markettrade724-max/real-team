@@ -13,9 +13,6 @@ jump_velocity = 4.5
 mouse_sensitivity = 0.002
 max_health = 100
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-camera_pivot_path = NodePath("CameraPivot")
-camera_path = NodePath("CameraPivot/Camera3D")
-weapon_path = NodePath("Weapon")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("2_efgh")

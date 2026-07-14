@@ -1,22 +1,22 @@
 {
-  "runId": "2026-07-13T1355",
-  "mode": "sync",
+  "runId": "2026-07-14T0438",
+  "mode": "game-fix",
   "success": true,
-  "timestamp": "2026-07-13T13:55:33.860Z",
-  "totalDuration": "9.2s",
+  "timestamp": "2026-07-14T04:39:35.832Z",
+  "totalDuration": "72.4s",
   "budget": {
-    "total": 14,
+    "total": 3,
     "limit": 40,
-    "left": 26,
+    "left": 37,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 14,
+        "total": 3,
         "limit": 20,
-        "left": 6,
+        "left": 17,
         "exhausted": false,
         "library": 0,
-        "agents": 14
+        "agents": 3
       },
       {
         "key": "KEY_2",
@@ -44,9 +44,9 @@
     "gamesDone": 1
   },
   "agents": {
-    "sync": {
+    "gamefix": {
       "success": true,
-      "duration": "9.2s",
+      "duration": "69.2s",
       "error": null
     }
   },

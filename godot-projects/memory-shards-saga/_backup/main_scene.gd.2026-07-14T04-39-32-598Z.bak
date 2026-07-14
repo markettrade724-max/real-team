@@ -29,29 +29,28 @@ func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	# Get references to labels. Assumes these labels are children of the respective CanvasLayers.
-	# For readability (white text, dark background), these properties should be set in the editor
-	# for the Label nodes themselves.
+	# For readability (white text, dark background), these properties should be set in the editor.
 	if hud_layer:
 		if hud_layer.has_node("ScoreLabel"):
 			_score_label = hud_layer.get_node("ScoreLabel")
 		else:
-			push_warning("HUD layer is missing a 'ScoreLabel' child. Score display will not work.")
+			push_warning("HUD layer is missing a 'ScoreLabel' child.")
 		if hud_layer.has_node("HealthLabel"):
 			_health_label = hud_layer.get_node("HealthLabel")
 		else:
-			push_warning("HUD layer is missing a 'HealthLabel' child. Health display will not work.")
+			push_warning("HUD layer is missing a 'HealthLabel' child.")
 	
 	if game_over_layer:
 		if game_over_layer.has_node("GameOverLabel"):
 			_game_over_label = game_over_layer.get_node("GameOverLabel")
 		else:
-			push_warning("Game Over layer is missing a 'GameOverLabel' child. Game Over text will not display.")
+			push_warning("Game Over layer is missing a 'GameOverLabel' child.")
 	
 	if victory_layer:
 		if victory_layer.has_node("VictoryLabel"):
 			_victory_label = victory_layer.get_node("VictoryLabel")
 		else:
-			push_warning("Victory layer is missing a 'VictoryLabel' child. Victory text will not display.")
+			push_warning("Victory layer is missing a 'VictoryLabel' child.")
 	
 	_set_game_state(GameState.MAIN_MENU)
 
@@ -129,12 +128,8 @@ func _spawn_player_if_needed():
 	    # Connect player signals for game over and HUD updates
 	    if _player_instance.has_signal("player_died"):
 	        _player_instance.player_died.connect(_on_player_died)
-	    else:
-	        push_warning("Player scene does not emit 'player_died' signal. Game over condition will not trigger.")
 	    if _player_instance.has_signal("player_health_changed"):
 	        _player_instance.player_health_changed.connect(_on_player_health_changed)
-	    else:
-	        push_warning("Player scene does not emit 'player_health_changed' signal. Health display will not update.")
 	    
 	    # Initial HUD update
 	    if _player_instance.has_method("get_current_health") and _player_instance.has_method("get_max_health"):
