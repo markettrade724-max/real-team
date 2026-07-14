@@ -30,8 +30,7 @@ func _ready():
 	
 	# Get references to labels. Assumes these labels are children of the respective CanvasLayers.
 	# For readability (white text, dark background), these properties should be set in the editor
-	# for the Label nodes themselves. Example: In the editor, select the Label node, go to Theme Overrides -> Font Colors, and set to white.
-	# For background, you might add a ColorRect behind the Label or use a custom font with a shadow.
+	# for the Label nodes themselves.
 	if hud_layer:
 		if hud_layer.has_node("ScoreLabel"):
 			_score_label = hud_layer.get_node("ScoreLabel")

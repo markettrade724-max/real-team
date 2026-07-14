@@ -7,11 +7,10 @@ extends CharacterBody3D
 @export var health: float = 100.0
 @export var score_value: int = 10 # New: Points awarded when this enemy dies
 @export var navigation_agent_node_path: NodePath
-# @export var player_node_path: NodePath # Removed, will find by group
+@export var player_node_path: NodePath
 
 var _navigation_agent: NavigationAgent3D
-# @onready var _player: CharacterBody3D = get_node(player_node_path) if has_node(player_node_path) else null # Removed
-var _player: CharacterBody3D # Will be set in _ready or _physics_process
+@onready var _player: CharacterBody3D = get_node(player_node_path) if has_node(player_node_path) else null
 
 var _current_health: float
 var _can_attack: bool = true
@@ -46,26 +45,11 @@ func _ready() -> void:
 	else:
 		push_warning("NavigationAgent3D not found or path invalid at: %s" % navigation_agent_node_path)
 
-	# Find player by group. Player must add itself to "player" group.
-	# This assumes there's only one player.
-	var players_in_scene = get_tree().get_nodes_in_group("player")
-	if players_in_scene.size() > 0:
-		_player = players_in_scene[0]
-	else:
-		push_warning("Player node not found in 'player' group. Enemy will not move or attack.")
+	if not _player:
+		push_warning("Player node not found at path: %s. Enemy will not move or attack." % player_node_path)
 
 func _physics_process(delta: float) -> void:
-	# Re-check for player in case it spawns later than enemy
-	if not is_instance_valid(_player):
-		var players_in_scene = get_tree().get_nodes_in_group("player")
-		if players_in_scene.size() > 0:
-			_player = players_in_scene[0]
-		else:
-			velocity = Vector3.ZERO
-			move_and_slide()
-			return # No player, so don't proceed with movement/attack
-
-	if _is_dead: # Moved this check after player validation
+	if _is_dead or not is_instance_valid(_player):
 		velocity = Vector3.ZERO
 		move_and_slide()
 		return
