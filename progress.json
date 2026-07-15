@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-07-13T10:31:53.431Z",
-  "current": null,
+  "updatedAt": "2026-07-15T07:21:16.580Z",
+  "current": {
+    "type": "episode",
+    "episode": 17,
+    "id": null,
+    "startedAt": "2026-07-15T07:06:17.874Z",
+    "updatedAt": "2026-07-15T07:21:16.580Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 17,
     "totalEpisodes": 17,
@@ -469,6 +476,35 @@
         "startedAt": "2026-07-13T08:09:55.065Z",
         "completedAt": "2026-07-13T10:31:53.431Z",
         "failReason": null
+      },
+      "17": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-07-15T07:07:47.478Z",
+            "title": "Fractured Reflection",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-07-15T07:08:54.439Z",
+            "title": "Fractured Reflection",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-07-15T07:09:38.042Z",
+            "title": "Fractured Reflection",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-07-15T07:06:17.874Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
