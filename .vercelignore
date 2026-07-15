@@ -1,1 +1,21 @@
-.getkeep
+
+# Files excluded from Vercel deployment
+# server.js is an Express server for local dev only — doesn't run on Vercel
+/server.js
+
+# Agent files — run on GitHub Actions only
+/orchestrator.js
+/agents/
+/scripts/
+/library/
+/episodes/
+/godot-projects/
+/godot-recipes/
+/piper/
+
+# Working/temporary data (root-level only — public/ copies must stay servable)
+/agent-results/
+*.backup.json
+/progress.json
+/series.json
+/universe.json
