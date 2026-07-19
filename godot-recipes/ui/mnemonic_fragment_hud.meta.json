@@ -1,0 +1,48 @@
+{
+  "name": "mnemonic_fragment_hud",
+  "label": "Fractured Mnemonic Interface",
+  "domain": "ui",
+  "godotFeature": "ShaderMaterial on Control nodes, Viewport textures, AnimationPlayer, CanvasItem properties (modulate, position, rotation, scale)",
+  "poeticVision": "The player feels a constant, agonizing struggle against their own mind's decay. Vital UI elements—health, objective, collected memories—don't just fade; they physically splinter, scramble, or become illegible, forcing the player to squint, piece together, or even briefly ignore crucial information as Lyra's grip on self-erodes. It’s not just a visual effect; it's a dynamic, persistent challenge to *read* the game, making the act of survival intertwined with the act of remembering.",
+  "usage": "1. Create a new Control node (e.g., a CanvasLayer or a simple Control node) in your scene tree. This will be your HUD container.\n2. Attach this `mnemonic_fragment_hud.gd` script to the newly created Control node.\n3. As children of this HUD container node, add all the UI elements you want to be affected by the mnemonic decay (e.g., ProgressBar for health, Label for objective, TextureRect for memory count icon).\n4. In the Inspector for the HUD container node, assign a `NoiseTexture` resource to the `Noise Texture Resource` property. You can create a new `FastNoiseLite` resource, configure it (e.g., set `Noise Type` to `Simplex`, `Frequency` to `0.05`), then right-click it and select `Bake Noise` to create a `NoiseTexture`.\n5. Adjust `Identity Integrity`, `Decay Rate`, `Stabilization Amount`, and `Stabilization Duration` parameters in the Inspector to fine-tune the decay and recovery behavior.\n6. To simulate Lyra recovering a memory, call the `add_memory_fragment()` method on the HUD container node from your game logic (e.g., `get_node(\"Path/To/MnemonicFragmentHUD\").add_memory_fragment()`). This will temporarily boost `identity_integrity` and stabilize the UI.",
+  "parameters": [
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Represents Lyra's current mental state, from 0.0 (completely lost) to 1.0 (perfect clarity). Directly controls the intensity of UI decay."
+    },
+    {
+      "name": "decay_rate",
+      "type": "float",
+      "default": "0.01",
+      "description": "The rate at which Lyra's identity integrity passively decays per second when not stabilized. Higher values mean faster decay."
+    },
+    {
+      "name": "stabilization_amount",
+      "type": "float",
+      "default": "0.2",
+      "description": "The amount by which 'identity_integrity' is increased when a memory fragment is recovered. A value of 0.2 means 20% of integrity is restored."
+    },
+    {
+      "name": "stabilization_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration (in seconds) for which the UI remains stable (no passive decay) after a memory fragment is recovered."
+    },
+    {
+      "name": "noise_texture_resource",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "A `NoiseTexture` resource used by the shader to generate distortion patterns and alpha gaps. Essential for the visual effect."
+    }
+  ],
+  "dependencies": [
+    "Control nodes (e.g., ProgressBar, Label, TextureRect) as children of the HUD container.",
+    "A NoiseTexture resource (e.g., generated from FastNoiseLite) for the shader's 'noise_texture' uniform."
+  ],
+  "verdict": "The mind's decay becomes a tangible foe, turning every glance at the screen into a desperate fight against oblivion.",
+  "impact": "This invention transforms the user interface from a passive information display into an active antagonist, directly embodying Lyra's struggle against memory loss. Players will experience a constant, visceral tension as they fight not only external threats but also the decay of their own cognitive abilities, making every decision under pressure and every recovered memory a moment of genuine, albeit temporary, clarity. The act of simply *reading* the game becomes a core challenge, deeply intertwining gameplay with the narrative of self-loss and desperate survival.",
+  "score": 85,
+  "inventedAt": "2026-07-19T05:11:33.770Z"
+}

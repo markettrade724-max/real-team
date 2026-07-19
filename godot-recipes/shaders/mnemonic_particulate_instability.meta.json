@@ -1,0 +1,63 @@
+{
+  "name": "mnemonic_particulate_instability",
+  "label": "Mnemonic Particulate Instability",
+  "domain": "shaders",
+  "godotFeature": "ShaderMaterial with custom vertex/fragment shaders leveraging 3D noise functions and global_position/time for dynamic material properties.",
+  "poeticVision": "Feel the very fabric of memory fraying, a constant visual reminder of Lyra's slipping grasp. When a hunter approaches, the world around her, or the memory shard in her hand, shimmers with a granular instability, threatening to dissolve into a cloud of forgetfulness. It's a tactile representation of imminent loss, a visual pulse of identity under threat, where every surface holds the ghost of its own disappearance. The player constantly sees the precariousness of their reality.",
+  "usage": "To use this shader, create a new ShaderMaterial resource in Godot. Load this .gdshader file into the 'Shader' property of the ShaderMaterial. Then, apply this ShaderMaterial to the 'material_override' or 'material' property of any MeshInstance3D node or other Spatial node that uses a mesh. You can dynamically update the 'dissolve_threshold' and 'instability_strength' uniform parameters from a GDScript to control the effect based on game state, such as Lyra's memory integrity or proximity to Silence hunters. For example, `material.set_shader_parameter(\"dissolve_threshold\", current_memory_loss_factor);`",
+  "parameters": [
+    {
+      "name": "texture_albedo",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The base albedo texture for the material. If not provided, 'albedo' color will be used."
+    },
+    {
+      "name": "albedo",
+      "type": "vec4",
+      "default": "(1.0, 1.0, 1.0, 1.0)",
+      "description": "The base color of the material. Used if no albedo texture is set, or multiplied with the texture."
+    },
+    {
+      "name": "instability_strength",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the maximum vertex displacement along the normal, creating a 'shimmering' or 'fraying' visual effect. Higher values mean more displacement."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "2.0",
+      "description": "Determines the frequency or 'granularity' of the noise pattern. Higher values result in finer, more detailed noise."
+    },
+    {
+      "name": "dissolve_threshold",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls how much of the object is dissolved. A value of 0.0 means fully solid, while 1.0 means fully dissolved. This parameter should be dynamically driven by game state (e.g., Lyra's memory integrity)."
+    },
+    {
+      "name": "dissolve_edge_width",
+      "type": "float",
+      "default": "0.02",
+      "description": "The width of the glowing edge that appears around the dissolving parts of the object."
+    },
+    {
+      "name": "dissolve_edge_color",
+      "type": "vec4",
+      "default": "(1.0, 0.5, 0.0, 1.0)",
+      "description": "The color of the glowing edge around the dissolving parts."
+    },
+    {
+      "name": "time_speed",
+      "type": "float",
+      "default": "0.5",
+      "description": "The speed at which the noise pattern evolves over time, creating a dynamic, flickering, or shimmering effect."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "The very fabric of existence shimmers with the ghost of what was, a constant, beautiful whisper of impending oblivion.",
+  "impact": "This invention will profoundly deepen the player's immersion into Lyra's struggle, transforming the environment into a dynamic, visual representation of her eroding identity and the constant, encroaching threat of the Silence. Every surface will pulse with the precariousness of reality, making the abstract concept of memory loss a tangible, unsettling presence that reinforces the game's core themes of survival and self-preservation. It will serve as a constant, visceral reminder of the stakes, enhancing both the adrenaline of the chase and the grief of self-loss.",
+  "score": 95,
+  "inventedAt": "2026-07-19T05:08:35.203Z"
+}

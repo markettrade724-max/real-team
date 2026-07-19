@@ -1,0 +1,43 @@
+{
+  "name": "mnemonic_dissolution_veil",
+  "label": "Mnemonic Dissolution Veil",
+  "domain": "ui",
+  "godotFeature": "CanvasItemMaterial, Post-process Shaders, Tween",
+  "poeticVision": "The world itself corrodes, blurring and de-saturating as the Silence's influence mounts, creating a suffocating visual static that makes Lyra's mind (and the player's perception) an unstable battlefield. Every encroaching hunter, every fading memory, intensifies this cognitive static, making the very act of seeing a struggle, reflecting Lyra's dissolving self.",
+  "usage": "To implement the Mnemonic Dissolution Veil, create a full-screen Control node (e.g., a ColorRect or a plain Control node with 'Full Rect' layout). Assign a new 'ShaderMaterial' to its 'material' property. Load this 'mnemonic_dissolution_veil.gdshader' file into the 'Shader' property of the 'ShaderMaterial'. Attach a GDScript to this Control node. This GDScript will be responsible for updating the shader's uniform parameters ('noise_intensity', 'chromatic_aberration_strength', 'desaturation_amount', 'time') based on game state (e.g., proximity to Silence hunters, Lyra's memory integrity, or identity decay). Use Godot's Tween system within the GDScript to smoothly interpolate these uniform values over time, creating a fluid and escalating visual effect that reflects Lyra's cognitive state and the encroaching danger.",
+  "parameters": [
+    {
+      "name": "noise_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the strength of the visual static/noise effect. Higher values increase distortion."
+    },
+    {
+      "name": "chromatic_aberration_strength",
+      "type": "float",
+      "default": "0.0",
+      "description": "Determines the offset of color channels, creating a 'ghosting' or 'fringe' effect. Higher values increase the separation."
+    },
+    {
+      "name": "desaturation_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the degree of desaturation. A value of 1.0 results in a grayscale image, reflecting memory loss."
+    },
+    {
+      "name": "time",
+      "type": "float",
+      "default": "0.0",
+      "description": "A time value (e.g., `Time.get_ticks_msec() / 1000.0`) passed from GDScript to animate the noise pattern, making it dynamic."
+    }
+  ],
+  "dependencies": [
+    "Control (Node)",
+    "ShaderMaterial (Resource)",
+    "Tween (Node, for smooth parameter interpolation)"
+  ],
+  "verdict": "A masterfully crafted visual metaphor, this veil of dissolution transforms the player's sight into a battlefield, perfectly mirroring the soul's unraveling.",
+  "impact": "This shader will immerse the player directly into Lyra's deteriorating mental state, making the act of perception a constant struggle. It will heighten tension during chases, amplify the feeling of self-loss, and visually reinforce the Silence's encroaching threat, transforming the game world into a dynamic, hostile representation of Lyra's internal conflict. The escalating visual distortion will serve as a constant, palpable reminder of Lyra's fading identity and the immediate danger, forcing players to adapt to an increasingly unstable visual environment.",
+  "score": 85,
+  "inventedAt": "2026-07-19T05:00:44.064Z"
+}

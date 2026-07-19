@@ -1,0 +1,36 @@
+{
+  "name": "mnemonic_architecture_generative_system",
+  "label": "Memory-Weave Architecture",
+  "domain": "world",
+  "godotFeature": "Dynamic scene instancing and procedural geometry generation (ArrayMesh/SurfaceTool) orchestrated by GDScript, with asynchronous resource loading for seamless environment reconfiguration.",
+  "poeticVision": "Imagine running across a chasm, only for a retrieved memory to crystallize into a shimmering bridge beneath your feet, connecting disparate fragments of a forgotten home. Or, watch in horror as the floor beneath you dissolves into glittering dust when a precious memory is snatched away, plunging you into an unknown abyss. The player will feel the profound, physical connection between Lyra's inner turmoil and the unstable, ever-shifting world around her. Every path, every obstacle, every crumbling wall is a direct manifestation of her identity, creating a constant, urgent negotiation with her own fractured past. The world isn't just a backdrop; it's a living canvas of self, constantly being painted and erased.",
+  "usage": "Attach this script to a Node3D in your scene (e.g., named 'WorldArchitect'). Populate the 'memory_module_scenes', 'threat_module_scenes', and 'base_module_scene' properties in the Inspector with paths to your pre-fabricated .tscn files. Call 'recover_memory(memory_id, spawn_position)' when Lyra recovers a memory. Call 'lose_memory(memory_id)' when Lyra loses a memory. Call 'update_silence_proximity(proximity_value)' to inform the system about the Silence's closeness. The system will dynamically add/remove/modify Node3D instances as children of the WorldArchitect node. Listen to 'memory_module_added' and 'memory_module_removed' signals for external logic (e.g., updating navigation meshes, visual effects, or triggering particle effects).",
+  "parameters": [
+    {
+      "name": "memory_module_scenes",
+      "type": "Dictionary",
+      "default": "{}",
+      "description": "Mapping of memory IDs (String) to PackedScene resources (PackedScene) that represent specific memory fragments or structures. Example: {\"memory_bridge_chasm\": preload(\"res://modules/bridge_chasm.tscn\")}"
+    },
+    {
+      "name": "threat_module_scenes",
+      "type": "Array[PackedScene]",
+      "default": "[]",
+      "description": "Array of PackedScene resources for modules that appear when the Silence's proximity is high, introducing immediate physical threats. Example: [preload(\"res://modules/silence_trap.tscn\"), preload(\"res://modules/crumbling_path.tscn\")]"
+    },
+    {
+      "name": "base_module_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The default PackedScene resource used to establish the initial world structure or a foundational area. Example: preload(\"res://modules/initial_platform.tscn\")"
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "PackedScene resources (.tscn files)"
+  ],
+  "verdict": "The very fabric of existence bends to the whispers of a fading mind, forging a world where identity is the ultimate architect of reality.",
+  "impact": "This invention fundamentally transforms the game world from a static backdrop into a dynamic, living manifestation of Lyra's fractured psyche. Players will experience an unprecedented physical connection to Lyra's internal struggle, where every recovered memory literally builds a path to survival and every lost memory plunges them into immediate peril, creating a constant, visceral tension between self-preservation and self-discovery.",
+  "score": 95,
+  "inventedAt": "2026-07-19T05:02:29.096Z"
+}

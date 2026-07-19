@@ -1,0 +1,54 @@
+{
+  "name": "mnemopath_hunter_ai",
+  "label": "Echo of Regret's Pursuit",
+  "domain": "ai",
+  "godotFeature": "NavigationServer3D, Area3D, GDScript (for path logging & prediction)",
+  "poeticVision": "You'll feel a chilling sense of betrayal by your own instincts. Imagine fleeing through a collapsing memory-scape, only for the Silence's hunters to materialize not from ahead, but from the very path you *just* took. They aren't following your current location; they're predicting your next move based on the *mnemopaths* — the subtle, habitual lines of movement you carve through memory. Your muscle memory becomes a liability, your most efficient routes, a trap. Every familiar jump, every corner turned from instinct, is weaponized. It forces you to constantly second-guess yourself, to break established patterns, creating a profound paranoia that your own past actions are sealing your doom.",
+  "usage": "Attach this script to a CharacterBody3D node that represents the Silence hunter. In the Godot editor, set the 'Player Node Path' export variable to the NodePath of your player character (Lyra), which should also be a CharacterBody3D. Ensure your scene contains a NavigationRegion3D node with its navigation mesh baked, as the hunter uses NavigationAgent3D for movement. The hunter will track Lyra's past movements (mnemopaths) and predict her future path. If a predicted future path intersects with a past mnemopath, the hunter will set that intersection point as its target, simulating an ambush by appearing on a path Lyra previously took or was likely to take again.",
+  "parameters": [
+    {
+      "name": "player_node_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "The NodePath to the player character (Lyra), which must be a CharacterBody3D."
+    },
+    {
+      "name": "mnemopath_history_length",
+      "type": "int",
+      "default": "60",
+      "description": "The number of past player positions to store in the mnemopath history. A higher value means the hunter remembers Lyra's path further back in time (e.g., 60 frames = 1 second at 60 physics frames/sec)."
+    },
+    {
+      "name": "prediction_time_ahead",
+      "type": "float",
+      "default": "1.0",
+      "description": "How many seconds into the future the hunter attempts to predict Lyra's movement based on her current velocity."
+    },
+    {
+      "name": "ambush_detection_radius",
+      "type": "float",
+      "default": "2.0",
+      "description": "The radius around a historical mnemopath point within which Lyra's predicted future position must fall to trigger an ambush."
+    },
+    {
+      "name": "hunter_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The movement speed of the Silence hunter when pursuing an ambush target."
+    },
+    {
+      "name": "ambush_cooldown",
+      "type": "float",
+      "default": "5.0",
+      "description": "The cooldown period in seconds after an ambush is triggered before another ambush can be initiated, preventing rapid, repetitive ambushes at the same location."
+    }
+  ],
+  "dependencies": [
+    "Player (CharacterBody3D)",
+    "NavigationRegion3D (in scene)"
+  ],
+  "verdict": "In the labyrinth of forgotten paths, your own shadow becomes the hunter, a chilling echo of instincts betrayed.",
+  "impact": "This mechanic will fundamentally alter player movement and decision-making. Players will be forced to constantly analyze their own habits, leading to a profound sense of paranoia and self-betrayal. It transforms efficient movement into a potential liability, making every familiar path a potential trap. This creates a unique psychological tension, where the player's own ingrained 'muscle memory' becomes an enemy, deepening the theme of identity loss and the constant, urgent threat of the Silence.",
+  "score": 92,
+  "inventedAt": "2026-07-19T05:09:31.333Z"
+}

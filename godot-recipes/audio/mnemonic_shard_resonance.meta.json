@@ -1,0 +1,49 @@
+{
+  "name": "mnemonic_shard_resonance",
+  "label": "Mnemonic Shard Resonance",
+  "domain": "audio",
+  "godotFeature": "AudioStreamGenerator & AudioEffect pipeline with AudioStreamPlayer3D",
+  "poeticVision": "The player will feel the precarious, fragile life of memory itself through sound. They will experience the visceral horror of identity being torn apart as the unique, harmonious resonance of a sought-after memory fragment distorts into a jarring cacophony, signaling the crushing presence of the Silence. It's the sound of the past actively dying, forcing a frantic, desperate race against sonic annihilation to save what remains of oneself.",
+  "usage": "Attach this script to a Node3D representing a memory shard. Configure the 'base_frequency' and 'base_amplitude' to define the shard's unique resonance. Set 'max_corruption_distance' and 'min_corruption_distance' to control how proximity to a Silence Hunter affects the sound. Provide the 'silence_hunter_path' to the actual Node3D instance of the hunter in your scene. The script will automatically create and manage an AudioStreamPlayer3D and a custom AudioStreamGenerator to produce the dynamic, corrupting sound. Call the 'lose_memory()' function when the memory shard is permanently lost to switch its sound to unrecoverable 'dead static'.",
+  "parameters": [
+    {
+      "name": "base_frequency",
+      "type": "float",
+      "default": "440.0",
+      "description": "Base frequency of the memory shard's unique resonance (Hz)."
+    },
+    {
+      "name": "base_amplitude",
+      "type": "float",
+      "default": "0.5",
+      "description": "Base amplitude (volume) of the memory shard's resonance (0.0 to 1.0)."
+    },
+    {
+      "name": "max_corruption_distance",
+      "type": "float",
+      "default": "50.0",
+      "description": "Distance from the Silence Hunter at which corruption begins (0.0 corruption)."
+    },
+    {
+      "name": "min_corruption_distance",
+      "type": "float",
+      "default": "5.0",
+      "description": "Distance from the Silence Hunter at which corruption is maximum (1.0 corruption)."
+    },
+    {
+      "name": "silence_hunter_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "NodePath to the Silence Hunter (a Node3D) for proximity detection and corruption calculation."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "AudioStreamPlayer3D",
+    "AudioStreamGenerator"
+  ],
+  "verdict": "A symphony of self-destruction, where the fading harmony of memory becomes the chilling soundtrack to a desperate fight for identity.",
+  "impact": "This mechanic transforms the abstract concept of memory loss into a tangible, auditory horror. Players will constantly feel the encroaching Silence not just visually, but through a deeply personal sonic assault on their very identity, forcing a desperate, adrenaline-fueled race against the dying echoes of their past. It provides immediate, visceral feedback on both external threat and internal decay, making every moment a tense struggle for self-preservation.",
+  "score": 95,
+  "inventedAt": "2026-07-19T05:10:34.414Z"
+}

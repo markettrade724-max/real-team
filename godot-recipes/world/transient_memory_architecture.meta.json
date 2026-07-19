@@ -1,0 +1,33 @@
+{
+  "name": "transient_memory_architecture",
+  "label": "Architecture of Fleeting Recollections",
+  "domain": "world",
+  "godotFeature": "GDScript for runtime ArrayMesh manipulation, PhysicsServer3D for dynamic collision, NavigationServer3D for real-time navmesh updates, ShaderMaterial for visual dissolution/coalescence",
+  "poeticVision": "Feel the world itself betraying your sense of reality. You're running through a landscape that shimmers, dissolves, and rebuilds itself based on your fragmented thoughts. Is that wall a memory of home, or a trap laid by the Silence? Can you trust the ground beneath your feet when it's just a whisper of what was? Every corner you turn, every jump you make, is a gamble against the very fabric of existence, forcing you to constantly re-evaluate 'truth' and 'safety'.",
+  "usage": "Attach this `transient_memory_architecture.gd` script to a `Node3D` in your scene. This `Node3D` will act as the manager for your dynamic memory architecture. Populate it with `MeshInstance3D` children, each representing a memory fragment. Each `MeshInstance3D` should have a `StaticBody3D` child, which in turn contains a `CollisionShape3D` child (e.g., generated from the mesh). Assign the path to your scene's `NavigationRegion3D` node to the `navigation_region_node_path` property in the Inspector. Create a new `ShaderMaterial` resource, assign the `transient_memory_architecture.gdshader` to it, and then assign this `ShaderMaterial` resource to the `dissolve_shader_material` property of the manager node. To make a memory fragment appear or disappear, call `toggle_fragment_state(mesh_instance_node, true/false)` from other game logic (e.g., Lyra's script, a trigger area). This will visually dissolve/coalesce the fragment, enable/disable its collision, and trigger a navmesh recalculation.",
+  "parameters": [
+    {
+      "name": "navigation_region_node_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "Path to the NavigationRegion3D node in the scene that manages the navigation mesh. This will be baked when memory fragments change."
+    },
+    {
+      "name": "dissolve_shader_material",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "The ShaderMaterial resource that uses the 'transient_memory_architecture.gdshader' for visual dissolve/coalescence effects. This material will be duplicated and applied to each memory fragment."
+    }
+  ],
+  "dependencies": [
+    "NavigationRegion3D (in scene)",
+    "MeshInstance3D (children of the manager Node3D)",
+    "StaticBody3D (children of MeshInstance3D)",
+    "CollisionShape3D (children of StaticBody3D)",
+    "transient_memory_architecture.gdshader (as a ShaderMaterial resource)"
+  ],
+  "verdict": "The world itself becomes a fragile echo of a fading mind, each dissolving path a desperate gamble against the encroaching void.",
+  "impact": "This invention fundamentally transforms the game world from a static environment into a dynamic, treacherous manifestation of Lyra's deteriorating mind. It forces constant adaptation, strategic movement, and makes the very ground beneath the player's feet a direct reflection of their struggle against forgetting, turning every step into a gamble for survival and identity. It directly embodies the game's core themes of self-loss and urgent survival.",
+  "score": 95,
+  "inventedAt": "2026-07-19T05:12:33.286Z"
+}

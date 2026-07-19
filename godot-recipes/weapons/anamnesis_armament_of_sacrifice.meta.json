@@ -1,0 +1,51 @@
+{
+  "name": "anamnesis_armament_of_sacrifice",
+  "label": "The Veil of Vanishing",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterial, PhysicsBody3D, AnimationPlayer, Node",
+  "poeticVision": "The player feels the crushing weight of choice: every powerful strike, every desperate block, costs a piece of who they are. Combat transforms into a series of agonizing decisions, where survival means self-erasure. The thrill of victory is always haunted by the growing void within, making each triumph a profound personal loss.",
+  "usage": "Attach this `VeilOfVanishing` node as a child to your player character. Ensure it has `AnimationPlayer` nodes named `DissolutionAnimator` and `ShieldAnimator`, and a `GPUParticles3D` node named `DissolutionParticles` as its children. When the player picks up a memory fragment (which should be a `PhysicsBody3D` with a `MeshInstance3D` child containing a `ShaderMaterial`), call `load_fragment(fragment_node)`. The player's input handler should trigger the \"attack\" and \"defend\" actions, which will call the respective combat functions. Listen to the emitted signals (`fragment_consumed`, `memory_lost_complete`, `identity_gauge_changed`, etc.) from this node to update UI, apply damage to enemies, or trigger other game logic. The `ShaderMaterial` on the memory fragments should expose `shader_parameter/dissolve_amount` (for offensive actions) and `shader_parameter/shield_opacity` (for defensive actions) for visual effects.",
+  "parameters": [
+    {
+      "name": "identity_gauge_max",
+      "type": "float",
+      "default": "100.0",
+      "description": "The maximum value for the player's Identity Gauge."
+    },
+    {
+      "name": "offensive_cost",
+      "type": "float",
+      "default": "10.0",
+      "description": "The amount of Identity Gauge consumed by an offensive action."
+    },
+    {
+      "name": "defensive_cost",
+      "type": "float",
+      "default": "5.0",
+      "description": "The amount of Identity Gauge consumed by a defensive action."
+    },
+    {
+      "name": "shield_duration",
+      "type": "float",
+      "default": "1.5",
+      "description": "The duration (in seconds) for which the defensive shield remains active."
+    },
+    {
+      "name": "shield_break_threshold",
+      "type": "float",
+      "default": "0.5",
+      "description": "The `shield_opacity` shader parameter value below which a shield is considered 'broken', resulting in complete memory loss."
+    }
+  ],
+  "dependencies": [
+    "AnimationPlayer (named 'DissolutionAnimator')",
+    "AnimationPlayer (named 'ShieldAnimator')",
+    "GPUParticles3D (named 'DissolutionParticles')",
+    "PhysicsBody3D (for memory fragments, assumed to have a script with 'get_damage_value()' and 'get_identity_type()' methods, and a MeshInstance3D child with a ShaderMaterial exposing 'shader_parameter/dissolve_amount' and 'shader_parameter/shield_opacity')",
+    "Input actions: 'attack', 'defend'"
+  ],
+  "verdict": "In the crucible of combat, Lyra's very self becomes the ultimate currency, forging a desperate dance between survival and the agonizing void of self-erasure.",
+  "impact": "This mechanic transforms combat from a simple test of skill and resource management into a profound existential struggle. Players will not just manage health and mana, but their very sense of self. Every victory will be bittersweet, forcing players to constantly weigh immediate survival against the irreversible erosion of Lyra's identity, making each encounter a deeply personal and unforgettable sacrifice.",
+  "score": 95,
+  "inventedAt": "2026-07-19T05:04:39.157Z"
+}

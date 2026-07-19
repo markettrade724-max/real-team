@@ -1,0 +1,39 @@
+{
+  "name": "mnemonic_score_fracture",
+  "label": "The Fractured Symphony of Self",
+  "domain": "audio",
+  "godotFeature": "Audio Buses, AudioStreamPlayer, AudioStreamPlaybackResampled",
+  "poeticVision": "The player feels their identity literally unraveling in sound. As Lyra loses a vital memory, a specific, recognizable melodic motif, instrumental layer, or even a rhythmic heartbeat from the background score abruptly vanishes, leaving a chilling void. The once rich and coherent soundscape of her inner world becomes increasingly fragmented, dissonant, and hollow, the silence of lost self echoing louder than any music. Each lost fragment isn't just a sound effect; it's a piece of the game's very soul, audibly torn away.",
+  "usage": "This `MemoryScoreManager` node should be added to your scene, preferably as a singleton or a child of a global manager. You will need to populate its `memory_player_map` dictionary in the Godot editor. For each entry, provide a unique string `memory_id` (e.g., \"ChildhoodLaughter\", \"FirstLove\") as the key, and a `NodePath` to an `AudioStreamPlayer` node in your scene as the value. Each `AudioStreamPlayer` should be configured with an `AudioStream` (e.g., `AudioStreamOggVorbis`, `AudioStreamWAV`) representing a specific layer of the game's soundtrack. When Lyra loses a memory, call `MemoryScoreManager.lose_memory(\"memory_id\")`. When a memory is recovered, call `MemoryScoreManager.restore_memory(\"memory_id\")`. The manager will handle the dynamic fading, pitch warping, and stopping/starting of the associated audio layer.",
+  "parameters": [
+    {
+      "name": "memory_player_map",
+      "type": "Dictionary",
+      "default": "{}",
+      "description": "A dictionary mapping unique memory IDs (string) to NodePaths of AudioStreamPlayer nodes. Each AudioStreamPlayer represents a distinct layer of the game's soundtrack."
+    },
+    {
+      "name": "fade_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "The duration in seconds for an audio layer to fade out completely when a memory is lost, or fade in when restored."
+    },
+    {
+      "name": "warp_pitch_factor",
+      "type": "float",
+      "default": "0.5",
+      "description": "The target pitch scale for an audio layer when a memory is being lost or restored. A value of 1.0 means no pitch warp. Values less than 1.0 lower the pitch, values greater than 1.0 raise it."
+    },
+    {
+      "name": "warp_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The duration in seconds for the pitch warping effect to apply when a memory is being lost or restored."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "The symphony of self, fractured and fading, becomes the haunting echo of a soul's desperate fight against the encroaching silence.",
+  "impact": "This invention transforms the abstract concept of identity loss into a visceral, ever-present auditory experience. Players will not just be told Lyra is losing herself; they will *hear* it, as the very fabric of the game's soundtrack unravels, creating a profound sense of emptiness and urgency. Each lost memory will be a tangible, audible void, deepening the emotional stakes and making the fight for self a constant, sonic struggle.",
+  "score": 95,
+  "inventedAt": "2026-07-19T04:59:53.060Z"
+}

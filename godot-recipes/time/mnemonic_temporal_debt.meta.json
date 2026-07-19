@@ -1,0 +1,63 @@
+{
+  "name": "mnemonic_temporal_debt",
+  "label": "Mnemonic Temporal Debt",
+  "domain": "time",
+  "godotFeature": "Engine.time_scale, ShaderMaterial, AudioStreamPlayer",
+  "poeticVision": "The suffocating choice: to steal precious seconds from the relentless Silence, knowing each borrowed moment gnaws at the very fabric of who you are. The dizzying rush of speed, tainted by the accelerating phantom of self-loss.",
+  "usage": "Attach this script to a Node in your scene (e.g., a 'GameManager' or 'Player' node). In the Godot editor, assign the 'post_process_layer', 'distortion_rect', and 'audio_player' properties in the Inspector. The 'post_process_layer' should be a CanvasLayer, 'distortion_rect' a TextureRect (child of the CanvasLayer, covering the viewport), and 'audio_player' an AudioStreamPlayer. The 'distortion_rect' must have a ShaderMaterial applied to it, with the 'mnemonic_temporal_debt.gdshader' loaded. Call 'activate_mnemonic_debt()' to initiate the effect and 'deactivate_mnemonic_debt()' to manually stop it (otherwise it stops when duration or memory runs out). 'add_memory_cohesion()' can be used to restore Lyra's memory resource.",
+  "parameters": [
+    {
+      "name": "debt_time_scale_factor",
+      "type": "float",
+      "default": "0.3",
+      "description": "Factor by which game time is slowed for enemies and environmental hazards when the debt is active."
+    },
+    {
+      "name": "debt_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "Maximum duration the Mnemonic Temporal Debt can be active before it is automatically deactivated."
+    },
+    {
+      "name": "memory_drain_rate",
+      "type": "float",
+      "default": "10.0",
+      "description": "Rate at which 'Memory Cohesion' is drained per second while the debt is active. This is scaled by the current Engine.time_scale."
+    },
+    {
+      "name": "max_memory_cohesion",
+      "type": "float",
+      "default": "100.0",
+      "description": "Maximum value for Lyra's 'Memory Cohesion' resource. When it reaches 0, the debt deactivates."
+    },
+    {
+      "name": "post_process_layer",
+      "type": "CanvasLayer",
+      "default": "null",
+      "description": "Reference to the CanvasLayer node used for full-screen post-processing effects. This layer should be set to render above all other UI/game elements."
+    },
+    {
+      "name": "distortion_rect",
+      "type": "TextureRect",
+      "default": "null",
+      "description": "Reference to the TextureRect node that covers the entire screen. A ShaderMaterial with 'mnemonic_temporal_debt.gdshader' must be applied to this TextureRect."
+    },
+    {
+      "name": "audio_player",
+      "type": "AudioStreamPlayer",
+      "default": "null",
+      "description": "Reference to the AudioStreamPlayer node used for auditory distortion effects. It should have an appropriate AudioStream resource assigned."
+    }
+  ],
+  "dependencies": [
+    "CanvasLayer",
+    "TextureRect",
+    "ShaderMaterial (with mnemonic_temporal_debt.gdshader loaded)",
+    "AudioStreamPlayer",
+    "AudioStream (resource for AudioStreamPlayer)"
+  ],
+  "verdict": "A desperate bargain with time itself, where every stolen second carves deeper into the soul's vanishing tapestry.",
+  "impact": "This mechanic will force players into agonizing, split-second decisions, directly embodying the game's core conflict: survival at the cost of self. Every use will be a visceral reminder of Lyra's dissolving identity, making each escape a bittersweet victory tainted by accelerating loss. It transforms a tactical advantage into a profound narrative choice.",
+  "score": 92,
+  "inventedAt": "2026-07-19T05:05:35.833Z"
+}

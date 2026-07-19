@@ -1,0 +1,59 @@
+{
+  "name": "mnemonic_inertia_shifting",
+  "label": "Memory-Weight Momentum",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D properties (mass, friction, gravity_scale) and PhysicsServer3D for direct body manipulation",
+  "poeticVision": "The player feels the very weight of Lyra's past, or the painful lightness of her fragmented self. Every jump, every slide, every collision feels different as her physical form responds to the memories she carries or loses. It's the sensation of her internal struggle manifesting as tangible, kinetic feedback—a heavy burden of forgotten truths, or the terrifying freedom of nothing left to lose.",
+  "usage": "Attach this script to Lyra's CharacterBody3D node. Adjust the 'min_mass', 'max_mass', 'min_friction', 'max_friction', 'min_gravity_scale', and 'max_gravity_scale' export variables in the Inspector to define the range of physical changes. To dynamically alter Lyra's physical state, update the 'memory_load' variable from another script (e.g., 'get_node(\"LyraCharacter\").mnemonic_inertia_shifting.memory_load = new_value'). When 'memory_load' increases (Lyra recovers memories), she becomes heavier, more stable, and resistant to external forces. When 'memory_load' decreases (Lyra loses memories), she becomes lighter, more agile, but easily knocked around. For player-controlled movement, the player controller script should read the 'memory_load' or the resulting 'mass'/'friction' from this script and dynamically adjust its own acceleration, deceleration, and jump force values to fully reflect the desired kinetic feedback.",
+  "parameters": [
+    {
+      "name": "memory_load",
+      "type": "float",
+      "default": "0.5",
+      "description": "Current identity coherence/memory load (0.0 = light/fragmented, 1.0 = heavy/whole). External scripts should update this value to change Lyra's physical properties."
+    },
+    {
+      "name": "min_mass",
+      "type": "float",
+      "default": "50.0",
+      "description": "Minimum effective mass when memory_load is 0.0. Lyra is agile and fast, but easily knocked around and has less impact force."
+    },
+    {
+      "name": "max_mass",
+      "type": "float",
+      "default": "200.0",
+      "description": "Maximum effective mass when memory_load is 1.0. Lyra is stable and resistant to external forces, but slower to move and has greater impact force."
+    },
+    {
+      "name": "min_friction",
+      "type": "float",
+      "default": "0.5",
+      "description": "Minimum friction when memory_load is 0.0. Lyra slides more easily, allowing for quicker changes in direction but less control."
+    },
+    {
+      "name": "max_friction",
+      "type": "float",
+      "default": "2.0",
+      "description": "Maximum friction when memory_load is 1.0. Lyra has more grip, leading to slower acceleration/deceleration and more controlled movement."
+    },
+    {
+      "name": "min_gravity_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "Minimum gravity scale when memory_load is 0.0. Lyra feels lighter, falls slower, and jumps higher."
+    },
+    {
+      "name": "max_gravity_scale",
+      "type": "float",
+      "default": "1.5",
+      "description": "Maximum gravity scale when memory_load is 1.0. Lyra feels heavier, falls faster, and jumps lower."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D"
+  ],
+  "verdict": "A kinetic echo of a fracturing soul, where every step is a testament to what remains, or what is tragically lost.",
+  "impact": "This mechanic would profoundly alter the player's tactile connection to Lyra's internal struggle. Every jump, slide, and collision would dynamically change based on her memory load, forcing players to constantly adapt their movement strategy. It transforms the abstract concept of identity into tangible physical feedback, making Lyra's vulnerability or resilience a direct consequence of her mental state and deepening the emotional stakes of every chase and memory recovery.",
+  "score": 85,
+  "inventedAt": "2026-07-19T05:07:29.304Z"
+}
