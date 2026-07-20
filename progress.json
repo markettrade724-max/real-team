@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-07-19T09:05:33.058Z",
-  "current": null,
+  "updatedAt": "2026-07-20T08:05:03.880Z",
+  "current": {
+    "type": "episode",
+    "episode": 18,
+    "id": null,
+    "startedAt": "2026-07-20T07:51:11.343Z",
+    "updatedAt": "2026-07-20T08:05:03.880Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 18,
     "totalEpisodes": 18,
@@ -498,6 +505,35 @@
         "startedAt": "2026-07-15T07:06:17.874Z",
         "completedAt": "2026-07-15T09:14:47.756Z",
         "failReason": null
+      },
+      "18": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-07-20T07:52:53.283Z",
+            "title": "Echoes of a Lullaby",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-07-20T07:53:56.828Z",
+            "title": "Echoes of a Lullaby",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-07-20T07:54:29.163Z",
+            "title": "Echoes of a Lullaby",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-07-20T07:51:11.343Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
