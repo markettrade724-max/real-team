@@ -10,8 +10,9 @@ func _ready():
 
 	# Set collision layer as specified (layer 4)
 	set_collision_layer_value(4, true) # This bullet is on layer 4
-	# Explicitly set collision mask to collide with enemies (assuming enemies are on layer 2)
-	set_collision_mask_value(2, true)
+	# Optionally, set collision mask to define what it collides with.
+	# For example, if enemies are on layer 1, you'd set set_collision_mask_value(1, true).
+	# By default, RigidBody3D collides with all layers.
 
 	# Set initial velocity based on direction and speed
 	linear_velocity = direction * speed
