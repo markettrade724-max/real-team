@@ -52,7 +52,8 @@ func _ready():
 		if victory_layer.has_node("VictoryLabel"):
 			_victory_label = victory_layer.get_node("VictoryLabel")
 		else:
-			push_warning("Victory layer is missing a 'VictoryLabel' child. Victory text will not display.")	
+			push_warning("Victory layer is missing a 'VictoryLabel' child. Victory text will not display.")
+	
 	_set_game_state(GameState.MAIN_MENU)
 
 func _input(event: InputEvent):
@@ -118,16 +119,14 @@ func _set_game_state(new_state: GameState):
 	        if pause_menu_layer: pause_menu_layer.show()
 	        
 	    GameState.GAME_OVER:
-	        get_tree().paused = true # Pause the game on Game Over
 	        if game_over_layer: game_over_layer.show() # Show Game Over screen
 	        _update_game_over_display()
-	        _cleanup_game_elements() # Clean up game elements for a fresh restart
+	        _cleanup_game_elements()
 	        
 	    GameState.VICTORY: # New: Victory state handling
-	        get_tree().paused = true # Pause the game on Victory
 	        if victory_layer: victory_layer.show() # Show Victory screen
 	        _update_victory_display()
-	        _cleanup_game_elements() # Clean up game elements for a fresh restart
+	        _cleanup_game_elements()
 
 func _spawn_player_if_needed():
 	# Spawn player if not already present or if returning from main menu
