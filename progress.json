@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-07-20T10:15:20.414Z",
-  "current": null,
+  "updatedAt": "2026-07-22T07:44:23.015Z",
+  "current": {
+    "type": "episode",
+    "episode": 19,
+    "id": null,
+    "startedAt": "2026-07-22T07:30:12.389Z",
+    "updatedAt": "2026-07-22T07:44:23.015Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 19,
     "totalEpisodes": 19,
@@ -527,6 +534,35 @@
         "startedAt": "2026-07-20T07:51:11.343Z",
         "completedAt": "2026-07-20T10:15:20.414Z",
         "failReason": null
+      },
+      "19": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-07-22T07:31:36.245Z",
+            "title": "The Architect's Core",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-07-22T07:32:45.923Z",
+            "title": "The Architect's Core",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-07-22T07:33:17.990Z",
+            "title": "The Architect's Core",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-07-22T07:30:12.389Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
