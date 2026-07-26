@@ -1,0 +1,41 @@
+{
+  "name": "identity_echo_overlay",
+  "label": "The Silence's Mirror",
+  "domain": "ui",
+  "godotFeature": "ViewportContainer + SubViewport and ShaderMaterial",
+  "poeticVision": "Feel the chilling dread of watching your own identity fragment and dissolve, not just within the game world, but on your very HUD. This isn't just a health bar; it's a living, decaying reflection of Lyra's mind. As memories are lost, it blurs, distorts, and occasionally, horrifyingly, shifts to show glimpses of the Silence's predatory consciousness gazing back through *your* eyes. The UI itself becomes a battleground for your soul, a constant reminder of what you're losing and who is watching.",
+  "usage": "Create a new Godot scene (e.g., 'IdentityEchoOverlay.tscn') with a 'Control' node as the root. Attach this GDScript to the root 'Control' node. As children of this 'Control' node, add a 'ViewportContainer' (named 'ViewportContainer'), inside it a 'SubViewport' (named 'SubViewport'), and also inside the 'ViewportContainer' add a 'TextureRect' (named 'DisplayRect'). The 'SubViewport' can optionally contain a 'Camera3D' and simple 3D objects if you want to render something specific to be distorted, otherwise it will render black. Assign an optional 'silence_eye_texture' in the Inspector. To control the visual state, call the public methods 'lose_memory(amount)', 'gain_memory(amount)', and 'update_silence_proximity(proximity)' from your game logic, passing float values between 0.0 and 1.0.",
+  "parameters": [
+    {
+      "name": "identity_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "Current state of Lyra's identity (1.0 = clear, 0.0 = fragmented). Affects blur, chromatic aberration, and pixelation."
+    },
+    {
+      "name": "silence_proximity",
+      "type": "float",
+      "default": "0.0",
+      "description": "How close the Silence entities are (1.0 = very close, 0.0 = far). Affects static, desaturation, tinting, and triggers Silence eye glimpses."
+    },
+    {
+      "name": "silence_eye_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "An optional texture representing a Silence entity's eye or visage, blended into the display when Silence proximity is high."
+    }
+  ],
+  "dependencies": [
+    "Control",
+    "ViewportContainer",
+    "SubViewport",
+    "TextureRect",
+    "ShaderMaterial",
+    "Shader",
+    "Texture2D"
+  ],
+  "verdict": "A chillingly brilliant integration of UI and narrative, transforming the player's very window into the world into a battleground for a dissolving soul.",
+  "impact": "This invention profoundly deepens player immersion by making Lyra's internal struggle visible and tangible. The HUD transforms from a mere data display into a dynamic, unsettling reflection of her deteriorating mind, constantly reminding the player of the stakes of identity loss and the encroaching horror of the Silence. It creates a unique, unsettling feedback loop that ties gameplay actions directly to the character's psychological state, making the abstract concept of 'forgetting' a visceral, ever-present threat.",
+  "score": 92,
+  "inventedAt": "2026-07-26T05:26:41.014Z"
+}

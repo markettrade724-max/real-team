@@ -1,0 +1,82 @@
+{
+  "name": "identity_nova_flare",
+  "label": "Identity Nova",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterial, GPUParticles3D, Area3D",
+  "poeticVision": "Feel the terrifying power of tearing a piece of your very soul away, weaponizing your core self against encroaching oblivion. Each pulse is a self-inflicted wound, a desperate gasp of 'I am' before the void closes in, leaving you hollowed but momentarily free. The visual decay of your own form reflects the immense cost, deepening the grief of self-loss.",
+  "usage": "This recipe provides the core logic for the 'Identity Nova' ability. It requires a separate shader file for visual effects.\n\n**1. Create the Shader File:**\n   Create a new file named `identity_nova_shader.gdshader` in your project (e.g., `res://shaders/identity_nova_shader.gdshader`) and paste the following GLSL code into it:\n\nglsl\nshader_type spatial;\nrender_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\nuniform sampler2D albedo_texture : source_color;\nuniform float nova_burst_amount : hint_range(0.0, 1.0) = 0.0; // Controls the immediate burst effect\nuniform float identity_degradation_level : hint_range(0.0, 1.0) = 0.0; // Controls persistent degradation\nuniform vec4 degradation_color : source_color = vec4(0.1, 0.0, 0.2, 1.0);\nuniform sampler2D degradation_mask : hint_default_white; // Optional mask for where degradation appears\nuniform float degradation_threshold : hint_range(0.0, 1.0) = 0.5; // Threshold for mask-based degradation\n\nvoid fragment() {\n\tvec4 albedo_tex_color = texture(albedo_texture, UV);\n\tALBEDO = albedo_tex_color.rgb;\n\tALPHA = albedo_tex_color.a;\n\n\t// --- Identity Degradation Effect ---\n\t// Apply desaturation and blend with degradation_color based on identity_degradation_level\n\tfloat mask_value = texture(degradation_mask, UV).r;\n\tfloat degradation_factor = smoothstep(degradation_threshold, degradation_threshold + 0.1, mask_value) * identity_degradation_level;\n\n\t// Desaturation\n\tvec3 desaturated_color = vec3(dot(ALBEDO, vec3(0.2126, 0.7152, 0.0722)));\n\tALBEDO = mix(ALBEDO, desaturated_color, degradation_factor * 0.5); // Partial desaturation\n\n\t// Blend with degradation_color\n\tALBEDO = mix(ALBEDO, degradation_color.rgb, degradation_factor * 0.8); // Blend more strongly with degradation color\n\tALPHA = mix(ALPHA, 0.2, degradation_factor * 0.5); // Make parts slightly transparent\n\n\t// --- Nova Burst Effect ---\n\t// This creates a temporary glow/dissolve effect during activation\n\tif (nova_burst_amount > 0.0) {\n\t\t// Add an emissive glow\n\t\tEMISSION = ALBEDO * nova_burst_amount * 5.0; // Stronger glow during burst\n\t}\n}\n\n\n**2. Set up Lyra's Character Model:**\n   a. Select Lyra's `MeshInstance3D` node.\n   b. In the Inspector, under `Material Override` or `Surface Material`, create a new `ShaderMaterial`.\n   c. Assign the `identity_nova_shader.gdshader` file to the `Shader` property of this new `ShaderMaterial`.\n   d. Optionally, assign an `albedo_texture` and `degradation_mask` (a grayscale texture to control where degradation appears, e.g., veins or cracks) to the shader parameters.\n\n**3. Integrate the `IdentityNovaFlare` Script:**\n   a. Add a new `Node3D` (or attach directly to Lyra's root node) and attach this `identity_nova_flare.gd` script to it.\n   b. In the Inspector for the script, set the `character_mesh_path` to the NodePath of Lyra's `MeshInstance3D` (e.g., `../LyraMesh`).\n   c. Add a `GPUParticles3D` node as a child of Lyra's character (or accessible via path). Configure its `Process Material` (e.g., `ParticleProcessMaterial`) for an outward burst effect. Set its `emitting` property to `false` initially. Set the `particles_node_path` in the script to this node's path.\n   d. Add an `Area3D` node as a child of Lyra's character (or accessible via path). This script will automatically add a `CollisionShape3D` with a `SphereShape3D` to it. Set the `area_node_path` in the script to this node's path.\n\n**4. Trigger the Ability:**\n   Call the `activate_nova()` method from your player input script (e.g., `if Input.is_action_just_pressed(\"nova_ability\"): identity_nova_flare_node.activate_nova()`).\n\n**5. Handle Debuffs (Optional):**\n   Connect to the `debuff_triggered` signal from this script to apply external debuffs or intensify `identity_fracture_vision` effects based on the `degradation_level` (0.0 to 1.0) emitted by the signal.",
+  "parameters": [
+    {
+      "name": "nova_damage",
+      "type": "float",
+      "default": "50.0",
+      "description": "Damage dealt to enemies within the nova's radius."
+    },
+    {
+      "name": "nova_radius",
+      "type": "float",
+      "default": "5.0",
+      "description": "The radius of the Area3D for detecting and damaging enemies."
+    },
+    {
+      "name": "identity_cost",
+      "type": "float",
+      "default": "0.1",
+      "description": "The amount of identity (0.0 to 1.0) consumed each time the nova is activated."
+    },
+    {
+      "name": "nova_burst_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The duration of the visual burst animation on Lyra's model."
+    },
+    {
+      "name": "nova_area_active_duration",
+      "type": "float",
+      "default": "0.2",
+      "description": "How long the Area3D remains active to detect and damage enemies."
+    },
+    {
+      "name": "min_identity_to_use",
+      "type": "float",
+      "default": "0.05",
+      "description": "The minimum identity level required to activate the nova. If below this, 'identity_depleted' signal is emitted."
+    },
+    {
+      "name": "degradation_multiplier",
+      "type": "float",
+      "default": "1.0",
+      "description": "A multiplier for how strongly identity loss affects the visual degradation on Lyra's model (shader's 'identity_degradation_level')."
+    },
+    {
+      "name": "character_mesh_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "NodePath to Lyra's MeshInstance3D node, which should have the 'identity_nova_shader.gdshader' applied."
+    },
+    {
+      "name": "particles_node_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "NodePath to the GPUParticles3D node that will emit particles during the nova burst."
+    },
+    {
+      "name": "area_node_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "NodePath to the Area3D node used for detecting and damaging enemies."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D",
+    "GPUParticles3D",
+    "Area3D",
+    "CollisionShape3D",
+    "SphereShape3D",
+    "identity_nova_shader.gdshader (separate file)"
+  ],
+  "verdict": "A brilliant invention that weaponizes the very essence of self-loss, forging desperate power from the fragments of a fading soul.",
+  "impact": "This mechanic transforms identity from an abstract narrative concept into a tangible, high-stakes resource, forcing players into agonizing choices between self-preservation and self-destruction. The visual degradation and self-inflicted cost deepen the game's core themes of loss and survival, making every activation a desperate, memorable gamble.",
+  "score": 92,
+  "inventedAt": "2026-07-26T05:20:28.122Z"
+}

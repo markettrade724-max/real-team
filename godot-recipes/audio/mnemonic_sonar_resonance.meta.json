@@ -1,0 +1,75 @@
+{
+  "name": "mnemonic_sonar_resonance",
+  "label": "The Echo of Self",
+  "domain": "audio",
+  "godotFeature": "Godot's AudioServer, AudioStreamPlayer3D, Audio Busses with dynamic parameter control (e.g., volume, pitch, filter frequencies), and script-controlled audio effects for real-time sound manipulation.",
+  "poeticVision": "The player will feel the terrifying intimacy of memory retrieval. As Lyra nears a memory fragment, a low, internal hum begins, growing in intensity and complexity — not external music, but the sound of her own subconscious mind grappling with a lost piece of self. When she touches it, a sudden, piercing *sonic flare* erupts, a raw, unfiltered snippet of a forgotten moment (a voice, a laugh, a scream, a specific environmental sound). This burst isn't just a reward; it's a *beacon*. The Silence hears it, drawn to the powerful resonance. The player experiences the harrowing truth: every step towards identity is a step closer to being caught, making 'remembering' a desperate, dangerous gamble.",
+  "usage": "Attach this script to your player character (Lyra). In Godot's Project Settings -> Audio -> Buses, create two new Audio Buses: \"HumBus\" and \"FlareBus\". On \"HumBus\", add an `AudioEffectFilterBiquad` (or similar filter effect). On \"FlareBus\", add `AudioEffectDistortion` and `AudioEffectReverb` (and optionally an `AudioEffectFilterBiquad` if desired). Create `Node3D`s in your scene to represent memory fragments. For each `Node3D` fragment, add it to the \"memory_fragments\" group and set a `metadata` entry named `memory_audio_stream` with an `AudioStream` resource (e.g., `AudioStreamWAV`) containing the specific memory snippet. Ensure your `InputMap` has an action named \"interact\" (or change the `interaction_action` export variable). The script will automatically detect nearby fragments, modulate the \"HumBus\" based on proximity, and trigger a \"sonic flare\" on the \"FlareBus\" when a fragment is activated, emitting a `hunter_alert` signal.",
+  "parameters": [
+    {
+      "name": "hum_bus_name",
+      "type": "String",
+      "default": "HumBus",
+      "description": "The name of the AudioBus used for the internal hum effect."
+    },
+    {
+      "name": "flare_bus_name",
+      "type": "String",
+      "default": "FlareBus",
+      "description": "The name of the AudioBus used for the sonic flare effect."
+    },
+    {
+      "name": "max_hum_distance",
+      "type": "float",
+      "default": "20.0",
+      "description": "The maximum distance from a memory fragment at which the internal hum is audible."
+    },
+    {
+      "name": "min_hum_cutoff",
+      "type": "float",
+      "default": "200.0",
+      "description": "The filter cutoff frequency for the hum bus at minimum hum intensity (far from fragment)."
+    },
+    {
+      "name": "max_hum_cutoff",
+      "type": "float",
+      "default": "8000.0",
+      "description": "The filter cutoff frequency for the hum bus at maximum hum intensity (close to fragment)."
+    },
+    {
+      "name": "flare_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The duration (in seconds) for which the extreme audio effects on the FlareBus are active after a memory is triggered."
+    },
+    {
+      "name": "flare_volume_boost",
+      "type": "float",
+      "default": "10.0",
+      "description": "The additional volume (in dB) applied to the FlareBus during a sonic flare."
+    },
+    {
+      "name": "hunter_alert_radius",
+      "type": "float",
+      "default": "50.0",
+      "description": "The radius around the activated memory fragment within which hunters are alerted."
+    },
+    {
+      "name": "interaction_distance",
+      "type": "float",
+      "default": "2.5",
+      "description": "The maximum distance from a memory fragment at which Lyra can activate it."
+    },
+    {
+      "name": "interaction_action",
+      "type": "String",
+      "default": "interact",
+      "description": "The name of the input action used to activate a memory fragment."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "To remember is to be found, a desperate symphony of self-reclamation echoing through the void, drawing the hunter ever closer.",
+  "impact": "This invention fundamentally transforms memory retrieval from a simple objective into a harrowing, high-stakes gamble. Players will experience a constant, internal dread as they approach fragments, knowing that every step towards self-discovery is a broadcast to their relentless hunters. The visceral audio feedback creates an intimate connection to Lyra's dissolving identity, making the act of remembering a moment of both profound relief and terrifying vulnerability, forcing players to weigh the cost of regaining who they are against the immediate threat of annihilation.",
+  "score": 95,
+  "inventedAt": "2026-07-26T05:25:39.991Z"
+}

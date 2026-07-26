@@ -1,0 +1,44 @@
+{
+  "name": "self_fracture_scape",
+  "label": "The Breaking Earth of Memory",
+  "domain": "world",
+  "godotFeature": "ShaderMaterial, PhysicsServer3D, GPUParticles3D",
+  "poeticVision": "Feel the very ground beneath you betray your steps as your memories falter. The world is not a backdrop; it is a direct, agonizing reflection of your dissolving self. Every forgotten name, every lost moment, tears another chasm into the reality you navigate, forcing you to literally outrun the crumbling wreckage of who you once were.",
+  "usage": "This `self_fracture_scape.gd` script should be attached to a central `Node3D` in your scene, acting as the `WorldStabilityManager`. It orchestrates both visual distortion and physical crumbling.\n\n**Setup Steps:**\n1.  **Create the Shader:** Create a new `ShaderMaterial` resource and assign a new `Shader` to it. Save this shader as `memory_fracture.gdshader` with the following GLSL code:\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform float identity_cohesion: hint_range(0.0, 1.0) = 1.0;\n    uniform float distortion_strength: hint_range(0.0, 1.0) = 0.5;\n    uniform float desaturation_strength: hint_range(0.0, 1.0) = 0.8;\n    uniform sampler2D texture_albedo: hint_albedo;\n    uniform vec4 albedo : source_color = vec4(1.0);\n\n    void vertex() {\n    \tfloat distortion_factor = (1.0 - identity_cohesion) * distortion_strength;\n    \tvec3 offset = NORMAL * sin(VERTEX.x * 10.0 + TIME * 2.0) * distortion_factor;\n    \tVERTEX += offset;\n    }\n\n    void fragment() {\n    \tvec4 albedo_tex = texture(texture_albedo, UV);\n    \tALBEDO = albedo.rgb * albedo_tex.rgb;\n\n    \t// Desaturation\n    \tfloat luma = dot(ALBEDO, vec3(0.2126, 0.7152, 0.0722));\n    \tALBEDO = mix(ALBEDO, vec3(luma), (1.0 - identity_cohesion) * desaturation_strength);\n\n    \t// Alpha fade/fragmentation (optional, for more extreme effects)\n    \t// ALPHA = mix(1.0, 0.0, (1.0 - identity_cohesion) * 0.5);\n    }\n    \n2.  **Apply Shader to Materials:** For any `MeshInstance3D` nodes you want to visually distort, create a new `ShaderMaterial` and assign the `memory_fracture.gdshader` to it. Drag these `ShaderMaterial` resources into the `Affected Materials` array in the `WorldStabilityManager` inspector.\n3.  **Create Crumble Zones:** Create `Node3D` nodes in your scene to act as 'crumble zones'. Each `Node3D` should contain:\n    *   One or more `RigidBody3D` children (these will be the physical pieces that fall when the zone crumbles). Ensure these `RigidBody3D`s initially have `Mode` set to `Static` or `Kinematic` and `Sleeping` enabled, so they don't fall prematurely.\n    *   Optionally, a `GPUParticles3D` node to emit dust/debris when the zone crumbles. Set its `Emitting` property to `false` initially.\n4.  **Assign Crumble Zones Root:** Create a parent `Node3D` (e.g., named `CrumbleZones`) and place all your individual crumble zone `Node3D`s as its children. Assign the `NodePath` to this parent `CrumbleZones` node to the `Crumble Zones Root` property in the `WorldStabilityManager` inspector.\n5.  **Configure Thresholds:** Adjust the `Crumble Thresholds` array in the `WorldStabilityManager` to define at which `lyra_identity_cohesion` values physical crumbling events should occur (e.g., `[0.7, 0.4, 0.1]` means a zone crumbles when cohesion drops below 0.7, then another below 0.4, etc.).\n6.  **Control Cohesion:** Update the `lyra_identity_cohesion` property from your game logic (e.g., when Lyra loses a memory fragment, decrease this value). The manager will automatically handle visual and physical responses.\n\nThis setup ensures that as `lyra_identity_cohesion` decreases, the world visually distorts and physically crumbles, reflecting Lyra's deteriorating identity.",
+  "parameters": [
+    {
+      "name": "lyra_identity_cohesion",
+      "type": "float",
+      "default": "1.0",
+      "description": "A normalized value (0.0 to 1.0) representing Lyra's current identity cohesion. 1.0 is full identity, 0.0 is complete loss. This drives both visual and physical effects."
+    },
+    {
+      "name": "crumble_thresholds",
+      "type": "Array[float]",
+      "default": "[0.7, 0.4, 0.1]",
+      "description": "An array of float values (0.0 to 1.0) that define the identity cohesion levels at which a new physical crumbling event is triggered. Values should be sorted descending."
+    },
+    {
+      "name": "affected_materials",
+      "type": "Array[ShaderMaterial]",
+      "default": "[]",
+      "description": "A list of ShaderMaterial resources that will have their 'identity_cohesion' uniform updated by this manager, applying visual distortion."
+    },
+    {
+      "name": "crumble_zones_root",
+      "type": "NodePath",
+      "default": "null",
+      "description": "The NodePath to a parent Node3D that contains all individual 'crumble zone' Node3D children. Each child Node3D should contain RigidBody3D parts and optional GPUParticles3D."
+    }
+  ],
+  "dependencies": [
+    "ShaderMaterial",
+    "RigidBody3D",
+    "GPUParticles3D",
+    "memory_fracture.gdshader (custom shader file)"
+  ],
+  "verdict": "The world itself weeps with Lyra's fading self, turning every step into a desperate dance on the precipice of oblivion.",
+  "impact": "This invention transforms the game environment from a static backdrop into a dynamic, hostile entity that directly mirrors the protagonist's internal struggle. Players will experience constant, visceral tension as the very ground beneath them betrays their steps, forcing urgent navigation and amplifying the emotional weight of Lyra's fading identity. It creates a profound, unforgettable connection between Lyra's internal state and the external world's physical reality.",
+  "score": 95,
+  "inventedAt": "2026-07-26T05:28:17.608Z"
+}

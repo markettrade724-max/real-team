@@ -1,0 +1,41 @@
+{
+  "name": "anamnesis_refraction_shader",
+  "label": "Anamnesis Refraction",
+  "domain": "shaders",
+  "godotFeature": "Screen-Space Refraction, Custom Shader (ShaderMaterial)",
+  "poeticVision": "Feel the world tear itself apart at the edges of forgotten moments. As Lyra approaches or interacts with memory fragments, the fabric of reality around them visibly shimmers and refracts, not just light, but glimpses of distorted, overlayed memories. It's like staring into shattered glass, where every shard reflects a different, unsettling echo of what once was, making the act of recovery itself a disorienting battle against the fragmented truth. The player feels the physical weight of lost history bending light and space, an ever-present reminder that nothing is truly whole.",
+  "usage": "To implement 'Anamnesis Refraction', create a new ShaderMaterial resource in Godot. Assign this .gdshader file to the 'Shader' property of the ShaderMaterial. Apply this ShaderMaterial to a MeshInstance3D (e.g., a SphereMesh or PlaneMesh) that visually represents or surrounds a memory fragment. Ensure the MeshInstance3D's 'Material Override' or 'Surface Material' is set to this ShaderMaterial. The mesh itself should be transparent or have its geometry hidden if only the refraction effect is desired. From GDScript, you can dynamically adjust the effect's intensity by getting a reference to the ShaderMaterial and using `material.set_shader_parameter(\"uniform_name\", value)` to modify uniforms like 'refraction_strength' based on Lyra's proximity to memory fragments or her identity degradation.",
+  "parameters": [
+    {
+      "name": "refraction_strength",
+      "type": "float",
+      "default": "0.05",
+      "description": "Controls the intensity of the refraction distortion. Higher values create more pronounced visual tearing."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "10.0",
+      "description": "Determines the spatial scale of the underlying noise pattern. Higher values result in finer, more detailed distortions."
+    },
+    {
+      "name": "time_speed",
+      "type": "float",
+      "default": "1.0",
+      "description": "Adjusts the speed at which the distortion pattern evolves over time, simulating dynamic memory glitches."
+    },
+    {
+      "name": "distortion_layers",
+      "type": "int",
+      "default": "3",
+      "description": "Specifies the number of distinct, blended refraction layers, contributing to the 'shattered glass' effect. More layers increase visual complexity."
+    }
+  ],
+  "dependencies": [
+    "ShaderMaterial"
+  ],
+  "verdict": "In the shattered mirror of memory, Lyra's world bends and breaks, a constant, disorienting echo of what was and what is lost.",
+  "impact": "This effect will immerse the player deeper into Lyra's fragmented reality. It transforms passive memory fragments into active, environmental challenges, forcing the player to contend with visual distortion while navigating danger. It reinforces the theme of identity loss and the physical manifestation of memory, making every encounter with a memory fragment a disorienting, high-stakes moment where the world itself seems to be fighting against Lyra's perception, directly contributing to the 'adrenaline of survival fused with the grief of self-loss' core feeling.",
+  "score": 95,
+  "inventedAt": "2026-07-26T05:23:17.611Z"
+}

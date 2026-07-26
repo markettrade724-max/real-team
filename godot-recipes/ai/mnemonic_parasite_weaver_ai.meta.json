@@ -1,0 +1,59 @@
+{
+  "name": "mnemonic_parasite_weaver_ai",
+  "label": "The Mnemonic Weavers",
+  "domain": "ai",
+  "godotFeature": "Custom PhysicsServer3D interactions, ShaderMaterial for corruption, dynamic MeshInstance3D generation",
+  "poeticVision": "The player will feel a profound sense of violation and desperation as the Silence's agents don't just hunt their body, but actively corrupt and turn their most precious memories against them. Every retrieved fragment becomes a potential weapon in the enemy's hands, making the fight for physical survival inseparable from the desperate struggle to reclaim a true self. The dread isn't just losing a memory, but watching it twisted into an instrument of your own destruction.",
+  "usage": "1.  Create a new `Shader` resource in your Godot project (e.g., `res://shaders/corruption_shader.gdshader`). Copy the `CORRUPTION_SHADER_GLSL` content into this shader file.\n2.  Create a new `ShaderMaterial` resource (e.g., `res://materials/corruption_material.tres`). Assign the `corruption_shader.gdshader` to its `Shader` property.\n3.  Create a new `CharacterBody3D` node in your scene. Attach this `mnemonic_parasite_weaver_ai.gd` script to it.\n4.  In the Inspector for the `CharacterBody3D` (Weaver), assign the `corruption_material.tres` to the `Corruption Shader Resource` export property.\n5.  For memory fragments, create `RigidBody3D` nodes. Each `RigidBody3D` should have a `MeshInstance3D` child (named 'MeshInstance3D') and a `CollisionShape3D`.\n6.  Add all `RigidBody3D` memory fragments to the 'memory_fragments' group (Node -> Groups tab).\n7.  The Weaver AI will automatically seek out and corrupt these fragments.",
+  "parameters": [
+    {
+      "name": "movement_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The speed at which the Weaver moves towards memory fragments."
+    },
+    {
+      "name": "detection_range",
+      "type": "float",
+      "default": "20.0",
+      "description": "The maximum distance at which the Weaver can detect memory fragments."
+    },
+    {
+      "name": "corruption_range",
+      "type": "float",
+      "default": "2.0",
+      "description": "The distance the Weaver needs to be from a fragment to start corrupting it."
+    },
+    {
+      "name": "corruption_time",
+      "type": "float",
+      "default": "5.0",
+      "description": "The time in seconds it takes for the Weaver to fully corrupt and absorb a memory fragment."
+    },
+    {
+      "name": "absorption_buff_duration",
+      "type": "float",
+      "default": "10.0",
+      "description": "The duration in seconds of the temporary buff the Weaver gains after absorbing a fragment."
+    },
+    {
+      "name": "corruption_shader_resource",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "A ShaderMaterial resource that will be applied to memory fragments during corruption. This material should use the provided `CORRUPTION_SHADER_GLSL`."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "RigidBody3D",
+    "MeshInstance3D",
+    "StaticBody3D",
+    "CollisionShape3D",
+    "ShaderMaterial",
+    "Shader"
+  ],
+  "verdict": "The Mnemonic Weavers weave a tapestry of terror, turning the very essence of self into the player's most formidable and heartbreaking adversary.",
+  "impact": "This invention transforms memory fragments from mere collectibles into critical, contested resources. Players will experience a profound, visceral dread as their very identity is weaponized against them, forcing them to not only survive physical threats but also to race against the corruption of their past. Every lost memory becomes a permanent, twisted obstacle, making the environment a constant, evolving testament to their failures and the Silence's insidious power. The fight for self becomes a literal battle against a landscape forged from forgotten truths.",
+  "score": 92,
+  "inventedAt": "2026-07-26T05:24:29.905Z"
+}

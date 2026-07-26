@@ -1,0 +1,41 @@
+{
+  "name": "identity_gravimetric_decay",
+  "label": "Gravimetric Identity Decay",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D.gravity_scale and custom force application in _physics_process",
+  "poeticVision": "The terrifying sensation of your own body's weight fluctuating, growing lighter and more uncontrollable with each memory lost. Every jump becomes unpredictable, every landing precarious, as the very physics of your being unravels, mirroring the erosion of your identity in the Silence's grip. You're not just fighting hunters; you're fighting the shifting, untrustworthy ground of your own existence.",
+  "usage": "Attach this script to your player's CharacterBody3D node. This script dynamically adjusts the CharacterBody3D's 'gravity_scale' property based on the 'identity_integrity' variable and any active environmental modifiers. Your main player controller script should handle movement input, modify the CharacterBody3D's 'velocity' (e.g., for jumping or horizontal movement), and call 'move_and_slide()' in its '_physics_process' function. To change Lyra's identity integrity, call 'set_identity_integrity(new_value)' from other scripts (e.g., when a memory is lost or recovered). To simulate environmental memory stability zones, call 'apply_zone_gravity_modifier(modifier_value)' when Lyra enters a zone and 'reset_zone_gravity_modifier()' when she leaves.",
+  "parameters": [
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Represents Lyra's current identity. 1.0 is full identity (normal gravity), 0.0 is complete loss (minimum gravity)."
+    },
+    {
+      "name": "normal_gravity_multiplier",
+      "type": "float",
+      "default": "1.0",
+      "description": "The multiplier applied to the project's default gravity when Lyra's identity is at 100%."
+    },
+    {
+      "name": "min_gravity_multiplier",
+      "type": "float",
+      "default": "0.1",
+      "description": "The minimum multiplier applied to the project's default gravity when Lyra's identity is at 0%."
+    },
+    {
+      "name": "gravity_lerp_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The speed at which the gravity scale smoothly interpolates to its target value after identity changes or zone modifiers are applied."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D"
+  ],
+  "verdict": "A brilliant fusion of theme and mechanics, this invention makes the very act of existing a desperate struggle against the unraveling self.",
+  "impact": "This mechanic will fundamentally alter the player's interaction with the game world, transforming every movement into a high-stakes gamble. As Lyra's identity erodes, the very ground beneath her feet becomes treacherous, forcing constant adaptation and amplifying the visceral sense of self-loss. It ensures that the internal struggle of forgetting is always mirrored by an immediate, physical challenge, making the fight for survival inseparable from the fight for self.",
+  "score": 95,
+  "inventedAt": "2026-07-26T05:22:25.437Z"
+}

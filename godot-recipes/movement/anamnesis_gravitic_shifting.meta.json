@@ -1,0 +1,78 @@
+{
+  "name": "anamnesis_gravitic_shifting",
+  "label": "Memory-Mass Recalibration",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D physics properties (mass, gravity_scale), PhysicsServer3D queries",
+  "poeticVision": "Feel the shifting weight of your own existence. As memories coalesce or dissipate, your physical self changes – a sudden heaviness making jumps arduous but impacts devastating, or an unsettling lightness that grants impossible leaps but makes you vulnerable to every gust and shove. Your very being, a battlefield of shifting gravitational identity, constantly recalibrating how you interact with a collapsing world and relentless hunters.",
+  "usage": "Attach this script to Lyra's CharacterBody3D node. The 'memory_density' will dynamically adjust Lyra's 'mass' (affecting interactions with other physics bodies and external forces) and 'gravity_scale' (affecting jump height and fall speed). Call 'collect_memory_fragment()' when Lyra recovers a memory shard to increase her density and make her heavier/more grounded. Call 'lose_memory_fragment()' when she loses a memory to decrease density, making her lighter/more agile but vulnerable. Other game systems can subscribe to the 'memory_density_changed' signal or use the getter functions ('get_current_mass()', 'get_current_gravity_scale()') to adapt Lyra's attack power, environmental interactions, or UI feedback based on her current state.",
+  "parameters": [
+    {
+      "name": "memory_density_min",
+      "type": "float",
+      "default": "0.0",
+      "description": "Minimum memory density Lyra can have (0-100%)."
+    },
+    {
+      "name": "memory_density_max",
+      "type": "float",
+      "default": "100.0",
+      "description": "Maximum memory density Lyra can have (0-100%)."
+    },
+    {
+      "name": "memory_change_amount",
+      "type": "float",
+      "default": "10.0",
+      "description": "Default amount of memory density changed per fragment when 'collect_memory_fragment' or 'lose_memory_fragment' is called without a specific amount."
+    },
+    {
+      "name": "min_mass",
+      "type": "float",
+      "default": "50.0",
+      "description": "Minimum mass Lyra can have (in kilograms). Affects how she interacts with other physics bodies and resists external forces."
+    },
+    {
+      "name": "max_mass",
+      "type": "float",
+      "default": "200.0",
+      "description": "Maximum mass Lyra can have (in kilograms). Affects how she interacts with other physics bodies and resists external forces."
+    },
+    {
+      "name": "min_gravity_scale",
+      "type": "float",
+      "default": "0.5",
+      "description": "Minimum gravity scale Lyra experiences. A lower value makes her feel lighter and jump higher."
+    },
+    {
+      "name": "max_gravity_scale",
+      "type": "float",
+      "default": "2.0",
+      "description": "Maximum gravity scale Lyra experiences. A higher value makes her feel heavier and fall faster."
+    },
+    {
+      "name": "base_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Base movement speed of Lyra. This is not directly affected by memory density in this script, but can be modified externally."
+    },
+    {
+      "name": "base_jump_velocity",
+      "type": "float",
+      "default": "4.5",
+      "description": "Base vertical velocity applied when Lyra jumps, before mass modification."
+    },
+    {
+      "name": "jump_force_mass_modifier",
+      "type": "float",
+      "default": "0.75",
+      "description": "Controls how much Lyra's current mass (derived from memory density) affects her jump force. A value of 0.0 means mass has no effect, 1.0 means jump force scales inversely with mass (e.g., max mass results in 'base_jump_velocity * (1 - 1.0)' = 0 jump force)."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D node",
+    "Input actions 'move_left', 'move_right', 'move_forward', 'move_backward', and 'jump' configured in Project Settings -> Input Map."
+  ],
+  "verdict": "A profound fusion of identity and physics, where the very weight of memory dictates the desperate dance of survival.",
+  "impact": "The player's physical capabilities will be in constant flux, directly reflecting their mental state. Every memory collected or lost will alter their movement, combat effectiveness, and environmental interaction, forcing dynamic adaptation and reinforcing the narrative of a dissolving identity. This mechanic transforms the abstract concept of memory into a tangible, ever-present challenge and opportunity, making every jump, fall, and confrontation feel uniquely weighted by Lyra's very being.",
+  "score": 90,
+  "inventedAt": "2026-07-26T05:33:16.839Z"
+}

@@ -1,0 +1,51 @@
+{
+  "name": "memory_echo_timeloop",
+  "label": "Echoes of What Was",
+  "domain": "time",
+  "godotFeature": "AnimationPlayer (reverse playback), Tween (localized object state transitions), Shader (spatial distortion), Area3D (localized effect zones)",
+  "poeticVision": "The player will feel the gut-wrenching choice between immediate survival and the erosion of their own past. Each desperate use of this power offers a temporary reprieve from danger, yet brings Lyra closer to becoming a blank slate. It's the bittersweet taste of escaping death, knowing a piece of who you are just vanished, making every successful evasion a partial loss of self.",
+  "usage": "Attach this script to an Area3D node in your 3D scene. Ensure the Area3D has a CollisionShape3D child to define its detection volume. When Lyra (or another game system) needs to activate the 'Echoes of What Was' power, call the `activate_echo_field()` method on this Area3D instance. Any CharacterBody3D, RigidBody3D, or Node3D with an AnimationPlayer that enters this Area3D's collision shape will have its state momentarily reversed (AnimationPlayer plays backwards, physics bodies have their velocity reversed/slowed). The game's central player controller or UI manager should connect to the `memory_fragment_lost` and `debuff_applied` signals to implement the actual 'cost' effects on Lyra's inventory or abilities.",
+  "parameters": [
+    {
+      "name": "echo_duration",
+      "type": "float",
+      "default": "1.5",
+      "description": "Duration of the time reversal effect in seconds."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "Strength of the visual distortion effect within the field (passed to shader)."
+    },
+    {
+      "name": "distortion_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Speed of the visual distortion effect within the field (passed to shader)."
+    },
+    {
+      "name": "echo_color",
+      "type": "Color",
+      "default": "Color(0.2, 0.5, 0.8, 0.5)",
+      "description": "Color tint and transparency of the echo field visual effect (passed to shader)."
+    },
+    {
+      "name": "memory_loss_debuff_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "Duration of the temporary debuff applied as a cost for using the power."
+    }
+  ],
+  "dependencies": [
+    "Area3D (root node for the script)",
+    "CollisionShape3D (child of Area3D, required for detection)",
+    "MeshInstance3D (child of Area3D, named 'EchoEffectMesh', automatically created if not present, for visual effect)",
+    "AnimationPlayer (optional, on affected objects for animation reversal)",
+    "CharacterBody3D or RigidBody3D (optional, on affected objects for physics reversal)"
+  ],
+  "verdict": "A desperate bargain with oblivion, where every step away from death is a step closer to forgetting who you are.",
+  "impact": "This mechanic forces players into a constant, agonizing trade-off. Every moment of relief from immediate danger is tainted by the irreversible loss of Lyra's identity, deepening the game's central theme of self-erosion. It transforms survival into a bittersweet act of self-sacrifice, making every escape a partial defeat and amplifying the core emotional conflict of the game.",
+  "score": 85,
+  "inventedAt": "2026-07-26T05:21:35.704Z"
+}

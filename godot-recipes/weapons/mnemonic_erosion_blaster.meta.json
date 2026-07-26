@@ -1,0 +1,65 @@
+{
+  "name": "mnemonic_erosion_blaster",
+  "label": "The Mnemonic Erosion Blaster",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterial & GPUParticles3D",
+  "poeticVision": "The player will experience the profound agony of self-sacrifice. Every shot fired is a desperate bargain, a tangible piece of Lyra's past, her very identity, burned away as ammunition. They will feel the chilling weight of choice: 'Do I surrender this memory of my loved ones to survive this attack, knowing a part of who I am will vanish with the recoil?' Combat becomes a harrowing act of self-consumption, each victory a bittersweet erosion of self, a constant reminder that the fight for survival is also a fight against oblivion from within.",
+  "usage": "1.  **Attach Script:** Create a new `Node3D` in your scene (e.g., named 'MnemonicErosionBlaster') and attach this `mnemonic_erosion_blaster.gd` script to it.\n2.  **Projectile Scene:** Create a `PackedScene` for your projectile (e.g., `res://projectile.tscn`). This scene should contain a `RigidBody3D` or `CharacterBody3D` with a script that has a `setup_projectile(damage: float, effect: String)` method. Optionally, add a `GPUParticles3D` child node named 'ProjectileParticles' to this scene for custom visual effects.\n3.  **Fire Point:** Add a `Node3D` child to your blaster node (e.g., named 'FirePoint') to define the projectile spawn location and direction.\n4.  **Erosion Mesh:** Add a `MeshInstance3D` child to your blaster node (e.g., named 'ErosionMesh'). Assign a simple mesh (e.g., `SphereMesh`) and a default `StandardMaterial3D` to it. This mesh will visually represent the memory shard being consumed. It will be hidden by default and only appear during the erosion animation.\n5.  **Erosion Particles:** Add a `GPUParticles3D` child to your blaster node (e.g., named 'ErosionParticles'). Configure its `Process Material` to be a `ParticleProcessMaterial`. For dynamic coloring, this `ParticleProcessMaterial` should ideally use a custom `ShaderMaterial` with a `particles` shader that has a `uniform sampler2D color_ramp;` parameter (e.g., `COLOR = texture(color_ramp, vec2(LIFETIME_NORMALIZED, 0.0));`).\n6.  **Lyra Node:** Ensure your player character (Lyra) has a script with a public method `apply_identity_debuff(debuff_type: String)` that handles the mechanical and visual effects of identity loss.\n7.  **Export Variables:** In the Inspector for your 'MnemonicErosionBlaster' node, assign the paths to the `projectile_scene`, `fire_point_path`, `erosion_mesh_path`, `erosion_particles_path`, and `lyra_node_path` using the NodePath picker or by dragging nodes.\n8.  **Add Memory Shards:** Call the `add_memory_shard(shard_data: Dictionary)` method from another script (e.g., Lyra's inventory or a memory recovery system) to load ammunition. `shard_data` should be a dictionary like `{\"type\": \"Emotional\", \"value\": 0.7, \"effect\": \"fire\", \"debuff\": \"blurred_vision\"}`. The `type` (Emotional, Skill, Sensory) influences particle colors, `value` scales damage, `effect` is passed to the projectile, and `debuff` is passed to Lyra.\n9.  **Fire Weapon:** Call the `fire()` method on the blaster node when the player triggers the weapon (e.g., on input event).\n\n**Note on Particle Shaders:** For `GPUParticles3D` to dynamically change color based on `color_ramp` via `set_shader_parameter`, their `Process Material` must be a `ShaderMaterial` using a `particles` shader that exposes a `uniform sampler2D color_ramp;` parameter. If using a default `ParticleProcessMaterial`, you would set its `color_ramp` property directly, but this recipe assumes a shader-driven approach for consistency with the prompt's focus on `ShaderMaterial` and `GPUParticles3D` for visual effects.",
+  "parameters": [
+    {
+      "name": "projectile_scene",
+      "type": "PackedScene",
+      "default": null,
+      "description": "The PackedScene for the projectile to be instantiated upon firing."
+    },
+    {
+      "name": "fire_point_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "NodePath to a Node3D that defines the origin and direction for spawned projectiles."
+    },
+    {
+      "name": "erosion_mesh_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "NodePath to a MeshInstance3D that will visually represent the memory shard being consumed, using the embedded erosion shader."
+    },
+    {
+      "name": "erosion_particles_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "NodePath to a GPUParticles3D that will emit particles during the memory erosion effect."
+    },
+    {
+      "name": "base_damage",
+      "type": "float",
+      "default": "10.0",
+      "description": "The base damage value for projectiles, which is multiplied by the consumed memory shard's 'value'."
+    },
+    {
+      "name": "lyra_node_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "NodePath to Lyra's character node, which is expected to have an 'apply_identity_debuff' method."
+    },
+    {
+      "name": "fire_cooldown",
+      "type": "float",
+      "default": "0.5",
+      "description": "The time in seconds that must pass between consecutive shots."
+    }
+  ],
+  "dependencies": [
+    "Node3D (base node for the blaster)",
+    "PackedScene (for the projectile)",
+    "Node3D (for fire_point_path)",
+    "MeshInstance3D (for erosion_mesh_path)",
+    "GPUParticles3D (for erosion_particles_path)",
+    "Lyra's character node (expected to have 'apply_identity_debuff' method)",
+    "Projectile script (expected to have 'setup_projectile' method)"
+  ],
+  "verdict": "A brilliant weapon forged from the very essence of self-loss, turning every desperate shot into a poignant, unforgettable sacrifice in the relentless fight against forgetting.",
+  "impact": "This invention fundamentally transforms combat from a simple resource management challenge into a harrowing act of self-consumption. Players will constantly grapple with the profound ethical and emotional dilemma of sacrificing their very identity—memories of loved ones, crucial skills, sensory experiences—for immediate survival. Each victory will be tinged with the bittersweet agony of self-erosion, forcing a deep, unforgettable connection to Lyra's struggle against oblivion both external and internal.",
+  "score": 95,
+  "inventedAt": "2026-07-26T05:29:33.408Z"
+}

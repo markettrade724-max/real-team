@@ -1,0 +1,55 @@
+{
+  "name": "mnemonic_mirage_scape",
+  "label": "Shifting Sands of Self",
+  "domain": "Visuals & Effects",
+  "godotFeature": "Custom World Shaders, Post-Processing Effects, Procedural Generation (via Compute Shaders or noise functions)",
+  "poeticVision": "The player feels their own perception become their enemy. As critical memories are devoured, the world around them warps, not just dissolving, but presenting deceptive mirages. A solid wall might shimmer into an illusionary path, a safe platform might flicker into a bottomless chasm, forcing Lyra to question every visual cue and experience a profound disorientation that blurs the line between internal decay and external reality. Every visual anomaly is a direct, agonizing monument to a lost piece of self.",
+  "usage": "This shader creates a localized distortion effect on 3D objects, simulating memory loss. To use it:\n1.  Create a new `ShaderMaterial` resource in your Godot project (e.g., `res://materials/memory_distortion_material.tres`).\n2.  Load this `mnemonic_mirage_scape.gdshader` file into the `Shader` property of the `ShaderMaterial`.\n3.  For any `MeshInstance3D` (or other 3D node with a mesh) whose material should be affected, set its `Material Override` property (or `Material` if it's a unique material) to a new `StandardMaterial3D`.\n4.  Within that `StandardMaterial3D`, set its `Shader Override` property to the `ShaderMaterial` created in step 1.\n5.  Ensure the `base_albedo_texture` uniform in the `ShaderMaterial` is set to the original `Albedo Texture` of the `StandardMaterial3D` (or the texture you want to distort).\n6.  From a GDScript, update the shader's uniforms to control the effect:\n    -   `lost_memory_center`: `Vector3` representing the world position where memory loss is centered.\n    -   `lost_memory_radius`: `float` defining the radius of the distortion effect around the center.\n    -   `distortion_strength`: `float` to control the intensity of vertex displacement and UV distortion.\n    -   `stabilization_factor`: `float` between 0.0 (full distortion) and 1.0 (no distortion), allowing memory shards to 'stabilize' areas.\n    -   `noise_scale`: `float` to adjust the frequency/scale of the noise pattern.\n\nExample GDScript snippet to update parameters (assuming `shader_material_instance` is a reference to your `ShaderMaterial`):\ngdscript\nfunc update_memory_distortion(center: Vector3, radius: float, strength: float, stabilization: float):\n\tif shader_material_instance:\n\t\tshader_material_instance.set_shader_parameter(\"lost_memory_center\", center)\n\t\tshader_material_instance.set_shader_parameter(\"lost_memory_radius\", radius)\n\t\tshader_material_instance.set_shader_parameter(\"distortion_strength\", strength)\n\t\tshader_material_instance.set_shader_parameter(\"stabilization_factor\", stabilization)\n",
+  "parameters": [
+    {
+      "name": "lost_memory_center",
+      "type": "vec3",
+      "default": "vec3(0.0, 0.0, 0.0)",
+      "description": "World position of the center of the memory loss effect."
+    },
+    {
+      "name": "lost_memory_radius",
+      "type": "float",
+      "default": "10.0",
+      "description": "Radius of the distortion effect around the center."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "Overall intensity of the vertex displacement and UV distortion."
+    },
+    {
+      "name": "stabilization_factor",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the effect's intensity. 0.0 for full distortion, 1.0 for stable (no distortion). Can be used to 'spend' memory shards to stabilize areas."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "0.5",
+      "description": "Scale of the 3D noise pattern used for distortion. Smaller values mean larger, smoother distortions."
+    },
+    {
+      "name": "base_albedo_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The original albedo texture of the object. This should be set to the texture that the StandardMaterial3D would normally use."
+    }
+  ],
+  "dependencies": [
+    "StandardMaterial3D",
+    "ShaderMaterial",
+    "MeshInstance3D"
+  ],
+  "verdict": "In the shifting sands of self, perception becomes a treacherous foe, each lost memory a mirage that threatens to swallow the very ground beneath Lyra's feet.",
+  "impact": "This mechanic will fundamentally alter player perception and navigation. It transforms the environment into a dynamic antagonist, forcing players to constantly question their reality and make split-second decisions based on unreliable visual cues. It will create a pervasive sense of vulnerability and urgency, directly linking Lyra's internal decay to external, tangible threats. The player will viscerally experience the 'grief of self-loss' as the world itself becomes a monument to what Lyra has forgotten, making every step a struggle against both external hunters and the internal erosion of self.",
+  "score": 95,
+  "inventedAt": "2026-07-26T05:34:40.253Z"
+}

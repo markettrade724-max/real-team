@@ -1,0 +1,43 @@
+{
+  "name": "synaptic_reality_erosion",
+  "label": "The Shifting Ground of Self",
+  "domain": "time",
+  "godotFeature": "Godot 4.6.2 Physics Engine (dynamic collision shapes, RigidBody), GDScript for real-time mesh manipulation (MeshDataTool or ArrayMesh), and custom shaders for visual decay.",
+  "poeticVision": "The player feels the crushing dread of their own self-dissolution manifesting as the very ground beneath their feet crumbling into nothingness. Every precarious jump, every collapsing path is a tangible representation of their internal struggle against forgetting, forcing split-second decisions not just against external threats but against the treacherous landscape of their own mind. It's a desperate race against the world turning against itself, reflecting Lyra's vanishing identity.",
+  "usage": "Attach this script to a StaticBody3D node that represents an erodible platform. This StaticBody3D should have a MeshInstance3D child (e.g., a CubeMesh) and a CollisionShape3D child (with a BoxShape3D). Create a new ShaderMaterial resource for the MeshInstance3D and assign the following GLSL shader code to it. Save the shader as `fading_erosion_shader.gdshader` in your project root or a suitable 'shaders' folder. The script will automatically load this shader and apply it to the MeshInstance3D's material_override. To trigger reinforcement, call the `reinforce_platform()` method from another script (e.g., when Lyra picks up a memory shard). You can manually adjust the `identity_integrity` property in the editor to preview erosion. In a full game, Lyra's global identity integrity score would likely drive this platform's `identity_integrity` property.\n\nGLSL Shader Code (fading_erosion_shader.gdshader):\nglsl\nshader_type spatial;\nrender_mode blend_mix, depth_draw_opaque, cull_back;\n\nuniform sampler2D albedo_texture : source_color;\nuniform vec4 albedo_color : source_color = vec4(1.0);\nuniform float fade_amount : hint_range(0.0, 1.0) = 0.0; // 0.0 = solid, 1.0 = fully faded\n\nvoid fragment() {\n\tvec4 base_color = texture(albedo_texture, UV) * albedo_color;\n\tALBEDO = base_color.rgb;\n\tALPHA = base_color.a * (1.0 - fade_amount);\n}\n",
+  "parameters": [
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Represents the platform's current integrity. 1.0 is fully solid, 0.0 is fully eroded. This value will decrease over time if not reinforced."
+    },
+    {
+      "name": "erosion_rate",
+      "type": "float",
+      "default": "0.05",
+      "description": "The rate at which 'identity_integrity' decreases per second when not reinforced. Higher values mean faster erosion."
+    },
+    {
+      "name": "reinforce_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration (in seconds) for which the platform remains fully solid after being reinforced by a memory shard."
+    },
+    {
+      "name": "max_erosion_shrink_factor",
+      "type": "float",
+      "default": "0.5",
+      "description": "The maximum factor by which the collision shape's extents will shrink when fully eroded (0.0 = no shrink, 1.0 = full shrink). Visual fading is always 100%."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (child node)",
+    "CollisionShape3D (child node with BoxShape3D)",
+    "fading_erosion_shader.gdshader (separate shader file)"
+  ],
+  "verdict": "The ground beneath Lyra's feet becomes a cruel mirror, reflecting the terrifying fragility of her own fading self.",
+  "impact": "This mechanic will immerse the player in Lyra's internal struggle, making the very environment a tangible representation of her dissolving identity. Every step becomes a precarious decision, forcing players to confront the immediate physical threat of a crumbling world while simultaneously feeling the existential dread of self-loss. It transforms platforming from a mere traversal challenge into a constant, urgent battle against forgetting, demanding split-second reactions and strategic resource management to literally hold the world, and Lyra's self, together.",
+  "score": 85,
+  "inventedAt": "2026-07-26T05:31:54.292Z"
+}
