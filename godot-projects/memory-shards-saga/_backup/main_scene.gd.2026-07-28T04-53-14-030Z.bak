@@ -96,9 +96,10 @@ func _set_game_state(new_state: GameState):
 	        _spawn_player_if_needed()
 	        _update_score_display() # Initial score display
 	        
-	        # Connect signals for all existing enemies in the scene that are in the "enemy" group.
-	        # IMPORTANT: For enemies spawned *during* gameplay, their 'died' signal must be connected
-	        # at the time of their instantiation (e.g., in the enemy's _ready() or when it's added to the scene).
+	        # Connect signals for all existing enemies in the scene
+	        # This assumes enemies are pre-placed or spawned before entering GAMEPLAY state.
+	        # For enemies spawned *during* gameplay, their 'died' signal must be connected
+	        # at the time of their instantiation.
 	        for enemy in get_tree().get_nodes_in_group("enemy"):
 	            if enemy.has_signal("died"):
 	                # Ensure we don't connect multiple times if _set_game_state is called repeatedly

@@ -1,18 +1,18 @@
-[gd_scene load_steps=4 format=4 uid="uid://c28gq052"]
+[gd_scene load_steps=3 format=4 uid="uid://c28gq052"]
 
 [ext_resource type="Script" path="res://main_scene.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://c0a1b2c3d4e5" path="res://player.tscn" id="2_player_scene"]
 
 [sub_resource type="Environment" id="2"]
 
 [node name="main_scene" type="Node3D"]
 script = ExtResource("1")
 process_mode = 3
+# main_menu_layer = NodePath("UI/MainMenuUI") # Removed as per script and SOUL document
 pause_menu_layer = NodePath("UI/PauseMenuUI")
 hud_layer = NodePath("UI/HUD")
 game_over_layer = NodePath("UI/GameOverUI")
 victory_layer = NodePath("UI/VictoryUI")
-player_scene = ExtResource("2_player_scene")
+player_scene = null # This should be set to res://player.tscn in the editor
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("2")
@@ -20,6 +20,8 @@ environment = SubResource("2")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+# MainMenuUI and its children removed as per script and SOUL document
 
 [node name="PauseMenuUI" type="Control" parent="UI"]
 visible = false
@@ -35,7 +37,7 @@ layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 0.5
+ancho_right = 0.5
 anchor_bottom = 0.5
 offset_left = -100.0
 offset_top = -30.0
@@ -58,32 +60,28 @@ grow_vertical = 2
 
 [node name="ScoreLabel" type="Label" parent="UI/HUD"]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 120.0
-offset_bottom = 50.0
-grow_horizontal = 1
-grow_vertical = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 0
 text = "Score: 0"
+horizontal_alignment = 2
+vertical_alignment = 1
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
 [node name="HealthLabel" type="Label" parent="UI/HUD"]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 20.0
-offset_top = 60.0
-offset_right = 120.0
-offset_bottom = 90.0
-grow_horizontal = 1
-grow_vertical = 1
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 40.0
 text = "HP: 100/100"
+horizontal_alignment = 0
+vertical_alignment = 1
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
 [node name="GameOverUI" type="Control" parent="UI"]
@@ -100,7 +98,7 @@ layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 0.5
+ancho_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
 offset_top = -50.0
@@ -127,7 +125,7 @@ layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 0.5
+ancho_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
 offset_top = -50.0
