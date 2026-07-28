@@ -139,9 +139,10 @@ func _spawn_player_if_needed():
 	# Spawn player if not already present or if returning from main menu
 	if not is_instance_valid(_player_instance) and player_scene:
 	    _player_instance = player_scene.instantiate()
+	    add_child(_player_instance) # Add player to the scene
+	    _player_instance.global_position = Vector3(0, 1, 0) # Example spawn position
 	    
-	    # Connect player signals for game over and HUD updates BEFORE adding to tree
-	    # This ensures signals emitted in player's _ready() are caught.
+	    # Connect player signals for game over and HUD updates
 	    if _player_instance.has_signal("player_died"):
 	        _player_instance.player_died.connect(_on_player_died)
 	    else:
@@ -151,16 +152,11 @@ func _spawn_player_if_needed():
 	    else:
 	        push_warning("Player scene does not emit 'player_health_changed' signal. Health display will not update.")
 	    
-	    add_child(_player_instance) # Add player to the scene
-	    _player_instance.global_position = Vector3(0, 1, 0) # Example spawn position
-	    
-	    # Initial HUD update is now handled by the player's _ready() signal emission
-	    # and the connected _on_player_health_changed function.
-	    # The manual call below is no longer needed.
-	    # if _player_instance.has_method("get_current_health") and _player_instance.has_method("get_max_health"):
-	    #     _on_player_health_changed(_player_instance.get_current_health(), _player_instance.get_max_health())
-	    # else:
-	    #     push_warning("Player instance does not have get_current_health or get_max_health methods for initial HUD update.")
+	    # Initial HUD update
+	    if _player_instance.has_method("get_current_health") and _player_instance.has_method("get_max_health"):
+	        _on_player_health_changed(_player_instance.get_current_health(), _player_instance.get_max_health())
+	    else:
+	        push_warning("Player instance does not have get_current_health or get_max_health methods for initial HUD update.")
 	elif not player_scene:
 	    push_error("Player scene not assigned in main_scene.gd! Cannot start gameplay.")
 
