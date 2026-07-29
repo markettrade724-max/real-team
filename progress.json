@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-07-27T10:47:32.896Z",
-  "current": null,
+  "updatedAt": "2026-07-29T07:52:04.135Z",
+  "current": {
+    "type": "episode",
+    "episode": 21,
+    "id": null,
+    "startedAt": "2026-07-29T07:37:26.184Z",
+    "updatedAt": "2026-07-29T07:52:04.135Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 21,
     "totalEpisodes": 21,
@@ -585,6 +592,35 @@
         "startedAt": "2026-07-27T08:21:36.869Z",
         "completedAt": "2026-07-27T10:47:32.896Z",
         "failReason": null
+      },
+      "21": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-07-29T07:38:53.409Z",
+            "title": "Shattered Reflection",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-07-29T07:40:16.168Z",
+            "title": "Shattered Reflection",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-07-29T07:40:54.664Z",
+            "title": "Shattered Reflection",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-07-29T07:37:26.184Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
