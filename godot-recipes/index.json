@@ -1,5 +1,51 @@
 [
   {
+    "name": "mnemonic_fracture_suture",
+    "label": "Mnemonic Fracture Suture",
+    "domain": "ui",
+    "godotFeature": "Control nodes, ShaderMaterial, Tween, InputEvent handling, Procedural Generation (GDScript based on 'grammars')",
+    "poeticVision": "The player will feel the desperate mental struggle to hold onto clarity. Every crucial piece of information—a fading objective, an imminent threat warning, Lyra's own disintegrating identity cohesion—will appear torn and scattered across their perception. They will have to frantically 'suture' these fragments together in real-time under pressure, fighting against the Silence's active disruption of their mind. The act of gaining information becomes an urgent, tangible fight to maintain sanity and self, forcing them to physically reconstruct their own understanding of reality.",
+    "usage": "Attach this script to a Control node in your UI (e.g., 'MnemonicSutureManager'). Create a separate PackedScene for individual fragments: this scene should have a Control node as its root (e.g., 'FragmentControl') and a Label node as a child (named 'Label') to display text. Assign this fragment scene to the 'fragment_base_scene' property in the Inspector. To initiate a new 'suture' puzzle, call 'display_information(info_id, text_content, target_rect)' from another script. 'info_id' is a unique identifier for the information, 'text_content' is the full string to be fragmented, and 'target_rect' is the Rect2 area where fragments should align. Players will drag fragments to their target positions. Connect to the 'suture_completed' and 'information_fractured' signals to respond to the puzzle's state changes. For visual distortion, apply a ShaderMaterial to the 'FragmentControl' or its 'Label' child.",
+    "parameters": [
+      {
+        "name": "fragment_base_scene",
+        "type": "PackedScene",
+        "default": "null",
+        "description": "Scene for individual fragment Control nodes. Should contain a 'Label' child named 'Label'."
+      },
+      {
+        "name": "suture_threshold",
+        "type": "float",
+        "default": "10.0",
+        "description": "Maximum pixel distance for a fragment to be considered aligned with its target position."
+      },
+      {
+        "name": "decay_time",
+        "type": "float",
+        "default": "5.0",
+        "description": "Time in seconds before sutured information fractures again, requiring re-suturing."
+      },
+      {
+        "name": "fragment_count",
+        "type": "int",
+        "default": "4",
+        "description": "The number of pieces the information will be broken into."
+      }
+    ],
+    "dependencies": [
+      "Control (base node for the script and fragments)",
+      "Label (for displaying text content within fragments)",
+      "Timer (for decay mechanism)",
+      "Tween (for smooth fragment movement)",
+      "PackedScene (for instantiating fragment templates)",
+      "Optional: ShaderMaterial (for visual distortion effects on fragments)"
+    ],
+    "verdict": "A brilliant fusion of UI and core gameplay, this invention stitches the player's mind directly into Lyra's desperate fight against the unraveling of self, making clarity a tangible, hard-won battle.",
+    "impact": "This mechanic transforms information gathering from a passive act into an active, high-stakes struggle. Players will not just read text; they will physically fight to comprehend it, feeling Lyra's mental fragility and the constant threat of losing her grasp on reality. It makes every piece of recovered memory or critical warning a hard-won victory against the encroaching Silence, deepening the emotional connection to Lyra's journey of self-reconstruction and amplifying the core themes of identity loss and urgent survival.",
+    "score": 92,
+    "inventedAt": "2026-08-02T07:28:13.687Z"
+  },
+  {
     "name": "mnemonic_fabric_dissonance",
     "label": "The Weeping Walls of Sound",
     "domain": "audio",

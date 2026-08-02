@@ -52,7 +52,18 @@
     "accent": "#8B5CF6",
     "accentRgb": "139,92,246",
     "gradient": "linear-gradient(135deg,#05000f,#0a0020)",
-    "emojis": ["🧠", "⏳", "💔", "🧩", "📜", "🗝️", "🌌", "👤", "⚔️", "🪙"],
+    "emojis": [
+      "🧠",
+      "⏳",
+      "💔",
+      "🧩",
+      "📜",
+      "🗝️",
+      "🌌",
+      "👤",
+      "⚔️",
+      "🪙"
+    ],
     "generatedAt": "2026-05-22T23:09:06.749Z"
   },
   "worlds": [
@@ -61,7 +72,10 @@
       "dayNumber": 1,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "مهد الذكرى", "en": "Cradle of Memory" },
+      "name": {
+        "ar": "مهد الذكرى",
+        "en": "Cradle of Memory"
+      },
       "essence": "The birth of stellar memories",
       "physics": "In this world, every thought or memory takes on a physical echo, warping spacetime around it and drawing in other memory shards based on the strength of the 'longing' within it. The void itself is not empty — it is a raw fabric of potential memories waiting to take shape.",
       "atmosphere": "A golden cosmic mist glows with faint light, carrying the scent of ozone mixed with a light trace of warm, ancient dust. The overall feeling is one of deep isolation fused with a quiet eagerness for discovery, as though witnessing the birth of a new cosmos from forgotten dreams. Sounds are faint, like distant whispers of stories not yet told.",
@@ -79,7 +93,10 @@
       "enemies": [
         {
           "id": "enemy-1-1",
-          "name": { "ar": "شظية الصدى", "en": "Echo Shard" },
+          "name": {
+            "ar": "شظية الصدى",
+            "en": "Echo Shard"
+          },
           "concept": "Small fragments of forgotten memories, embodied in a fragile crystalline form.",
           "behavior": "Drifts aimlessly until drawn toward a strong 'memory presence.'",
           "weakness": "High-frequency sound waves or focused light.",
@@ -91,7 +108,10 @@
         },
         {
           "id": "enemy-1-2",
-          "name": { "ar": "نول النسيان", "en": "Loom of Oblivion" },
+          "name": {
+            "ar": "نول النسيان",
+            "en": "Loom of Oblivion"
+          },
           "concept": "Larger, more cohesive entities that actively weave the Silence.",
           "behavior": "Moves slowly but deliberately, projecting fields of 'Silence.'",
           "weakness": "Disrupting its weaving process.",
@@ -104,7 +124,10 @@
       ],
       "weapon": {
         "id": "weapon-1",
-        "name": { "ar": "قيثارة الرنين الشاعرية", "en": "The Lyrical Resonance Harp" },
+        "name": {
+          "ar": "قيثارة الرنين الشاعرية",
+          "en": "The Lyrical Resonance Harp"
+        },
         "concept": "A channel for interacting with the vibrational essence of memories and echoes.",
         "visualDesc": "An elegant skeletal harp, its frame seemingly made of petrified starlight.",
         "sound": "A deep hum and echo rising to a peak of crystalline bells.",
@@ -122,7 +145,10 @@
       "dayNumber": 2,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "بذرة الوعي", "en": "Seed of Awareness" },
+      "name": {
+        "ar": "بذرة الوعي",
+        "en": "Seed of Awareness"
+      },
       "essence": "Formation",
       "physics": "Existence itself is a continuous act of remembering; whenever a memory fades, part of the surrounding reality fades with it and dissolves back into the primordial void.",
       "atmosphere": "The air is heavy with the scent of forgetting and forgotten cosmic dust, like touching ancient stardust. Colors shift slowly between deep violet, pale blue, and ethereal hues. Every flash of light reveals terrain that vanishes only to reappear elsewhere, as if the place is being continuously redrawn from the cosmos's first breaths.",
@@ -138,8 +164,13 @@
       "difficulty": "medium",
       "addedAt": "2024-05-23T11:25:24.364Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 98025, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 98025,
+        "type": "simplex",
         "description": "Default terrain for Seed of Awareness"
       },
       "shader": {
@@ -152,8 +183,14 @@
         "ambience": "gentle wind and distant echoes",
         "music_tempo": "medium",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "footsteps"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
         "description": "Default audio for Seed of Awareness"
       }
     },
@@ -162,7 +199,10 @@
       "dayNumber": 3,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "مهد الفكر", "en": "The Thought Cradle" },
+      "name": {
+        "ar": "مهد الفكر",
+        "en": "The Thought Cradle"
+      },
       "essence": "The birth of the first thoughts and shards of consciousness from the cosmic void.",
       "physics": "Time is not linear here; every thought and memory forms its own temporal bubble, which the player can move between or merge to create new paths through reality.",
       "atmosphere": "The atmosphere is made of a shimmering ethereal mist representing growing thoughts, with slowly shifting colors and air carrying the scent of ozone and a sweet trace of the void. One can feel the echo of first existence and the whisper of primordial thoughts.",
@@ -178,8 +218,13 @@
       "difficulty": "hard",
       "addedAt": "2024-05-23T12:28:30.691Z",
       "noise": {
-        "frequency": 0.02, "amplitude": 1.5, "octaves": 8, "persistence": 0.6,
-        "lacunarity": 2.2, "seed": 12345, "type": "simplex",
+        "frequency": 0.02,
+        "amplitude": 1.5,
+        "octaves": 8,
+        "persistence": 0.6,
+        "lacunarity": 2.2,
+        "seed": 12345,
+        "type": "simplex",
         "description": "Complex, organic formations resembling clusters of thought or memory crystals floating in the vast void."
       },
       "shader": {
@@ -202,8 +247,20 @@
         "ambience": "A deep, vast hum of the void, mixed with faint sounds of clustering cosmic dust and a distant echo reminiscent of forgotten whispers.",
         "music_tempo": "slow",
         "music_mood": "melancholic | mysterious | eerie",
-        "instruments": ["deep synthesizers (pads)", "ethereal strings (cello/viola)", "crystal chimes", "subtle, resonant bass", "sparse, shimmering arpeggios"],
-        "sfx": ["faint, muffled whispers", "shattering or glowing crystalline sounds", "deep resonant drones of the void", "light electronic sound flickers", "distant silent sighs"],
+        "instruments": [
+          "deep synthesizers (pads)",
+          "ethereal strings (cello/viola)",
+          "crystal chimes",
+          "subtle, resonant bass",
+          "sparse, shimmering arpeggios"
+        ],
+        "sfx": [
+          "faint, muffled whispers",
+          "shattering or glowing crystalline sounds",
+          "deep resonant drones of the void",
+          "light electronic sound flickers",
+          "distant silent sighs"
+        ],
         "description": "A slow, contemplative soundscape reflecting the vastness of the void and the depth of lost memories."
       }
     },
@@ -212,7 +269,10 @@
       "dayNumber": 4,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "بِكرُ النسيج", "en": "Primordial Weave" },
+      "name": {
+        "ar": "بِكرُ النسيج",
+        "en": "Primordial Weave"
+      },
       "essence": "Shaping",
       "physics": "Whenever a memory is sought or forgotten, it grows more material or more ethereal, altering local light gravity and refraction based on its collective emotional weight.",
       "atmosphere": "The air shimmers with newborn thoughts, carrying a light scent of ozone and ancient earth. Soft, almost imperceptible whispers rise from the ground, creating a faint hum that resonates in the bones. Visually, it is a tapestry of light and intertwined, unformed shadows, occasionally gathering into fleeting, translucent structures before dissolving back into chaos.",
@@ -228,8 +288,13 @@
       "difficulty": "medium",
       "addedAt": "2024-05-23T13:11:24.123Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 0.8, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 12345, "type": "cellular",
+        "frequency": 0.05,
+        "amplitude": 0.8,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 12345,
+        "type": "cellular",
         "description": "Primordial, intertwined terrain."
       },
       "shader": {
@@ -249,8 +314,20 @@
         "ambience": "A deep silence echoing through a vast void.",
         "music_tempo": "slow",
         "music_mood": "melancholic | mysterious | eerie",
-        "instruments": ["deep synthesizers", "ethereal pads", "gamelan-like chimes", "bowed strings (contrabass, cello)", "subtle vocalizations (wordless, breathy)"],
-        "sfx": ["whispering echoes (distant, barely perceptible)", "faint crystalline tinkles", "slow, deep resonant pulses", "subtle, low-frequency hums", "stretching/tearing fabric-like sounds"],
+        "instruments": [
+          "deep synthesizers",
+          "ethereal pads",
+          "gamelan-like chimes",
+          "bowed strings (contrabass, cello)",
+          "subtle vocalizations (wordless, breathy)"
+        ],
+        "sfx": [
+          "whispering echoes (distant, barely perceptible)",
+          "faint crystalline tinkles",
+          "slow, deep resonant pulses",
+          "subtle, low-frequency hums",
+          "stretching/tearing fabric-like sounds"
+        ],
         "description": "A vast, quiet soundscape reflecting the primordial void."
       }
     },
@@ -259,7 +336,10 @@
       "dayNumber": 5,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "صدى التكوين", "en": "Echo of Genesis" },
+      "name": {
+        "ar": "صدى التكوين",
+        "en": "Echo of Genesis"
+      },
       "essence": "The Beginning",
       "physics": "Reality continuously forms and unravels through the echo of first thoughts resonating in its void, making matter a temporary entity that only takes form through faint awareness.",
       "atmosphere": "A dim, flickering light dances along the edges of incomplete forms that gather and scatter like spectral thoughts. The scent of ozone and a cold breeze carry incomprehensible whispers.",
@@ -275,8 +355,13 @@
       "difficulty": "medium",
       "addedAt": "2024-05-23T14:30:00.000Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 17679, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 17679,
+        "type": "simplex",
         "description": "Default terrain for Echo of Genesis"
       },
       "shader": {
@@ -289,8 +374,14 @@
         "ambience": "gentle wind and distant echoes",
         "music_tempo": "medium",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "footsteps"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
         "description": "Default audio for Echo of Genesis"
       }
     },
@@ -299,7 +390,10 @@
       "dayNumber": 6,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "نواة الفكر الأول", "en": "Primordial Thought Nucleus" },
+      "name": {
+        "ar": "نواة الفكر الأول",
+        "en": "Primordial Thought Nucleus"
+      },
       "essence": "Coalescence",
       "physics": "The Quantum Echo of Intent: every emerging thought or memory flicker within this world generates a local, fleeting energy field that distorts spacetime at the microscopic level.",
       "atmosphere": "A shimmering atmosphere in constant flux, neither solid nor liquid. Colors range between iridescent, pearlescent, and light shades of green, blue, and violet.",
@@ -315,8 +409,13 @@
       "difficulty": "medium",
       "addedAt": "2026-05-23T14:53:47.141Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 48872, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 48872,
+        "type": "simplex",
         "description": "Default terrain for Primordial Thought Nucleus"
       },
       "shader": {
@@ -329,8 +428,14 @@
         "ambience": "gentle wind and distant echoes",
         "music_tempo": "medium",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "footsteps"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
         "description": "Default audio for Primordial Thought Nucleus"
       }
     },
@@ -339,7 +444,10 @@
       "dayNumber": 7,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "رحم الفراغ", "en": "Womb of the Void" },
+      "name": {
+        "ar": "رحم الفراغ",
+        "en": "Womb of the Void"
+      },
       "essence": "Genesis",
       "physics": "Latent Existence: objects only take on a stable physical form through interaction or perception.",
       "atmosphere": "A vast, sprawling space made of translucent nebulous tissue, faintly glowing in shades of deep violet and teal blue.",
@@ -355,8 +463,13 @@
       "difficulty": "medium",
       "addedAt": "2023-10-27T10:30:00.000Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 1.2, "octaves": 7, "persistence": 0.55,
-        "lacunarity": 2.2, "seed": 133742, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1.2,
+        "octaves": 7,
+        "persistence": 0.55,
+        "lacunarity": 2.2,
+        "seed": 133742,
+        "type": "simplex",
         "description": "Undulating, cavernous structures formed from coalesced cosmic dust and forgotten memory fragments."
       },
       "shader": {
@@ -377,8 +490,20 @@
         "ambience": "A vast, almost suffocating silence, punctuated by very low-frequency hums.",
         "music_tempo": "slow",
         "music_mood": "melancholic | eerie",
-        "instruments": ["deep atmospheric synthesizers", "sub-bass drones", "long-reverb cello", "glass harmonica", "distant ethereal chimes", "processed whispers"],
-        "sfx": ["deep, resonant rumbles that fade quickly", "barely audible, distorted echoes", "ethereal shimmering particles", "subtle, unsettling pressure shifts"],
+        "instruments": [
+          "deep atmospheric synthesizers",
+          "sub-bass drones",
+          "long-reverb cello",
+          "glass harmonica",
+          "distant ethereal chimes",
+          "processed whispers"
+        ],
+        "sfx": [
+          "deep, resonant rumbles that fade quickly",
+          "barely audible, distorted echoes",
+          "ethereal shimmering particles",
+          "subtle, unsettling pressure shifts"
+        ],
         "description": "An expansive, deeply melancholic soundscape."
       }
     },
@@ -387,7 +512,10 @@
       "dayNumber": 8,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "أفق العدم", "en": "Horizon of Nothingness" },
+      "name": {
+        "ar": "أفق العدم",
+        "en": "Horizon of Nothingness"
+      },
       "essence": "The Echo",
       "physics": "Existence here is nothing but a dense shadow of nothingness, and every movement or thought leaves visible ripples in that shadow.",
       "atmosphere": "A space that reflects everything, not sharply, but as a faint image that slowly follows and blends with its source.",
@@ -403,8 +531,13 @@
       "difficulty": "expert",
       "addedAt": "2026-05-24T14:55:22.488Z",
       "noise": {
-        "frequency": 0.005, "amplitude": 0.1, "octaves": 3, "persistence": 0.3,
-        "lacunarity": 2, "seed": 123456, "type": "simplex",
+        "frequency": 0.005,
+        "amplitude": 0.1,
+        "octaves": 3,
+        "persistence": 0.3,
+        "lacunarity": 2,
+        "seed": 123456,
+        "type": "simplex",
         "description": "Vast, nearly flat terrain, with extremely subtle undulations."
       },
       "shader": {
@@ -427,8 +560,21 @@
         "ambience": "A deep, quiet silence dominates the horizon.",
         "music_tempo": "slow",
         "music_mood": "melancholic | eerie | mysterious | hopeful",
-        "instruments": ["deep pads", "ambient synths", "sparse string swells", "glass harmonica", "chimes (processed and distorted)", "low brass drones"],
-        "sfx": ["the hiss and erosion of silence", "faint sonic flickers", "deep sighs from the void", "incomprehensible ethereal whispers", "very distant, low-frequency drones"],
+        "instruments": [
+          "deep pads",
+          "ambient synths",
+          "sparse string swells",
+          "glass harmonica",
+          "chimes (processed and distorted)",
+          "low brass drones"
+        ],
+        "sfx": [
+          "the hiss and erosion of silence",
+          "faint sonic flickers",
+          "deep sighs from the void",
+          "incomprehensible ethereal whispers",
+          "very distant, low-frequency drones"
+        ],
         "description": "A quiet, sprawling soundscape."
       }
     },
@@ -437,7 +583,10 @@
       "dayNumber": 9,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "نقطة التجلي", "en": "The Genesis Nexus" },
+      "name": {
+        "ar": "نقطة التجلي",
+        "en": "The Genesis Nexus"
+      },
       "essence": "Seeds of Identity",
       "physics": "Density of Manifested Memory: in this world, memories and emerging thoughts gather together to form semi-material entities.",
       "atmosphere": "A cold ethereal breeze carries the scent of ozone and the faint echo of melodies woven from newborn consciousness.",
@@ -453,8 +602,13 @@
       "difficulty": "medium",
       "addedAt": "2026-05-24T22:54:15.798Z",
       "noise": {
-        "frequency": 0.02, "amplitude": 0.8, "octaves": 5, "persistence": 0.45,
-        "lacunarity": 2.2, "seed": 1337, "type": "simplex",
+        "frequency": 0.02,
+        "amplitude": 0.8,
+        "octaves": 5,
+        "persistence": 0.45,
+        "lacunarity": 2.2,
+        "seed": 1337,
+        "type": "simplex",
         "description": "Vast, undulating plains of solidified cosmic dust."
       },
       "shader": {
@@ -474,8 +628,20 @@
         "ambience": "A vast, echoing silence permeated by the deep, low hum of the cosmic void.",
         "music_tempo": "slow",
         "music_mood": "melancholic | mysterious | eerie",
-        "instruments": ["synthesizer pads", "deep drones", "bowed glass/crystal tones", "ethereal vocal textures", "subtle chimes"],
-        "sfx": ["faint high-frequency static", "distant resonant pulses", "soft crystalline shimmers", "subtle whooshes of cosmic dust", "deep, slow 'thrums'"],
+        "instruments": [
+          "synthesizer pads",
+          "deep drones",
+          "bowed glass/crystal tones",
+          "ethereal vocal textures",
+          "subtle chimes"
+        ],
+        "sfx": [
+          "faint high-frequency static",
+          "distant resonant pulses",
+          "soft crystalline shimmers",
+          "subtle whooshes of cosmic dust",
+          "deep, slow 'thrums'"
+        ],
         "description": "The soundscape of The Genesis Nexus is dominated by an overwhelming sense of ancient, melancholic emptiness."
       }
     },
@@ -484,7 +650,10 @@
       "dayNumber": 10,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "الجنين الكوني", "en": "Cosmic Embryo" },
+      "name": {
+        "ar": "الجنين الكوني",
+        "en": "Cosmic Embryo"
+      },
       "essence": "Potentials",
       "physics": "Reality here is made of concentrated thought. Physical forms manifest temporarily from intense focus, and fade back into the unformed when attention scatters.",
       "atmosphere": "An ever-shifting landscape of translucent shapes, glowing with newborn light.",
@@ -500,8 +669,13 @@
       "difficulty": "medium",
       "addedAt": "2024-05-25T12:00:00.000Z",
       "noise": {
-        "frequency": 0.03, "amplitude": 1.2, "octaves": 5, "persistence": 0.5,
-        "lacunarity": 2, "seed": 12345, "type": "perlin",
+        "frequency": 0.03,
+        "amplitude": 1.2,
+        "octaves": 5,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 12345,
+        "type": "perlin",
         "description": "Slowly-forming organic cloud terrain drifting in the void."
       },
       "shader": {
@@ -521,8 +695,19 @@
         "ambience": "A deep, low-frequency cosmic hum.",
         "music_tempo": "slow",
         "music_mood": "melancholic",
-        "instruments": ["Deep Synths", "Ethereal Pads", "Bowed Cello", "Glockenspiel/Chimes (sparse)", "Harp (gentle arpeggios)"],
-        "sfx": ["faint crackling sounds and an ethereal glow of forming matter", "fragmented memory whispers", "light cosmic dust friction sounds", "pulsing clusters of energy"],
+        "instruments": [
+          "Deep Synths",
+          "Ethereal Pads",
+          "Bowed Cello",
+          "Glockenspiel/Chimes (sparse)",
+          "Harp (gentle arpeggios)"
+        ],
+        "sfx": [
+          "faint crackling sounds and an ethereal glow of forming matter",
+          "fragmented memory whispers",
+          "light cosmic dust friction sounds",
+          "pulsing clusters of energy"
+        ],
         "description": "A soundscape blending the vastness of the void with the silence of deep space."
       }
     },
@@ -531,7 +716,10 @@
       "dayNumber": 11,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "مرآة البصيرة", "en": "The Mirror of Insight" },
+      "name": {
+        "ar": "مرآة البصيرة",
+        "en": "The Mirror of Insight"
+      },
       "essence": "The First Echo of the Emerging Self",
       "physics": "Reality shifts with the reflections of memories: objects have no fixed mass, but are instead affected by the amount of memory reflected onto them.",
       "atmosphere": "A mirror-like atmosphere made of endless layers of reflective surfaces, each one reflecting a fragment of a memory or thought.",
@@ -547,20 +735,35 @@
       "difficulty": "hard",
       "addedAt": "2026-05-25T11:25:22.752Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 0.8, "octaves": 6, "persistence": 0.4,
-        "lacunarity": 2.5, "seed": 1337, "type": "cellular",
+        "frequency": 0.05,
+        "amplitude": 0.8,
+        "octaves": 6,
+        "persistence": 0.4,
+        "lacunarity": 2.5,
+        "seed": 1337,
+        "type": "cellular",
         "description": "Fragmented terrain resembling shattered mirror shards."
       },
       "shader": {
         "type": "void",
         "code": "shader_type spatial;\nrender_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx, hint_screen_texture;\n\nuniform vec4 albedo : source_color = vec4(0.05, 0.05, 0.07, 1.0);\nuniform sampler2D noise_texture;\nuniform float distortion_strength : hint_range(0.0, 1.0) = 0.1;\nuniform float reflection_mix : hint_range(0.0, 1.0) = 0.6;\nuniform float time_speed : hint_range(0.0, 5.0) = 0.08;\nuniform vec4 emission_color : source_color = vec4(0.1, 0.3, 0.4, 1.0);\nuniform float emission_strength : hint_range(0.0, 5.0) = 2.0;\n\nvoid fragment() {\n    vec2 base_uv = SCREEN_UV;\n    vec4 noise_sample = texture(noise_texture, base_uv * 2.0 + TIME * time_speed);\n    vec2 distorted_uv = base_uv + (noise_sample.rg * 2.0 - 1.0) * distortion_strength;\n    vec4 reflection_color = texture(SCREEN_TEXTURE, distorted_uv);\n    vec4 void_color = albedo;\n    ALBEDO = mix(void_color.rgb, reflection_color.rgb, reflection_mix);\n    EMISSION = emission_color.rgb * emission_strength * (noise_sample.r * 0.5 + 0.5);\n    ALPHA = 1.0;\n}",
         "parameters": {
-          "albedo": [0.05, 0.05, 0.07, 1],
+          "albedo": [
+            0.05,
+            0.05,
+            0.07,
+            1
+          ],
           "noise_texture": null,
           "distortion_strength": 0.1,
           "reflection_mix": 0.6,
           "time_speed": 0.08,
-          "emission_color": [0.1, 0.3, 0.4, 1],
+          "emission_color": [
+            0.1,
+            0.3,
+            0.4,
+            1
+          ],
           "emission_strength": 2
         },
         "description": "A deep, dark void effect, with light ripples and reflective distortions."
@@ -569,8 +772,21 @@
         "ambience": "A deep, low-frequency void hum.",
         "music_tempo": "slow",
         "music_mood": "melancholic | mysterious | eerie",
-        "instruments": ["synthesizers (pads, drones)", "bowed strings (cello, contrabass)", "sparse, reverberating piano", "glass chimes (distorted)", "reversed vocal whispers", "deep resonant gongs"],
-        "sfx": ["faint, distant sounds of shattering glass", "distorted whispers fading away", "cold metallic reverberations", "ethereal watery ripples", "faint pulses like heartbeats in the void"],
+        "instruments": [
+          "synthesizers (pads, drones)",
+          "bowed strings (cello, contrabass)",
+          "sparse, reverberating piano",
+          "glass chimes (distorted)",
+          "reversed vocal whispers",
+          "deep resonant gongs"
+        ],
+        "sfx": [
+          "faint, distant sounds of shattering glass",
+          "distorted whispers fading away",
+          "cold metallic reverberations",
+          "ethereal watery ripples",
+          "faint pulses like heartbeats in the void"
+        ],
         "description": "An immersive soundscape simulating a deep inner journey."
       }
     },
@@ -579,7 +795,10 @@
       "dayNumber": 12,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "نواة التجلي", "en": "The Nucleus of Manifestation" },
+      "name": {
+        "ar": "نواة التجلي",
+        "en": "The Nucleus of Manifestation"
+      },
       "essence": "Manifestation",
       "physics": "The act of remembering or forgetting, even by the smallest entities, creates ripples that appear as temporary, localized changes in the fabric of spacetime.",
       "atmosphere": "A symphony of barely audible whispers from newborn stars, with shimmering cosmic dust occasionally gathering together.",
@@ -595,8 +814,13 @@
       "difficulty": "legendary",
       "addedAt": "2024-05-25T11:35:52.778Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 6190, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 6190,
+        "type": "simplex",
         "description": "Default terrain for The Nucleus of Manifestation"
       },
       "shader": {
@@ -609,8 +833,14 @@
         "ambience": "gentle wind and distant echoes",
         "music_tempo": "medium",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "footsteps"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
         "description": "Default audio for The Nucleus of Manifestation"
       }
     },
@@ -619,7 +849,10 @@
       "dayNumber": 13,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "نول اللافكرة", "en": "The Loom of Unthought" },
+      "name": {
+        "ar": "نول اللافكرة",
+        "en": "The Loom of Unthought"
+      },
       "essence": "The Manifestation of Latency",
       "physics": "Law of the Echoing Essence: every shape in this world is made of the echoes of incomplete thoughts.",
       "atmosphere": "A world dominated by eternal twilight, where the air shimmers with the faint geometric patterns of thoughts not yet formed.",
@@ -635,8 +868,13 @@
       "difficulty": "hard",
       "addedAt": "2024-05-28T10:30:00.000Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 88582, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 88582,
+        "type": "simplex",
         "description": "Default terrain for The Loom of Unthought"
       },
       "shader": {
@@ -649,8 +887,14 @@
         "ambience": "gentle wind and distant echoes",
         "music_tempo": "medium",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "footsteps"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "footsteps"
+        ],
         "description": "Default audio for The Loom of Unthought"
       }
     },
@@ -659,7 +903,10 @@
       "dayNumber": 14,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "همسة التكوين", "en": "The Primordial Whisper" },
+      "name": {
+        "ar": "همسة التكوين",
+        "en": "The Primordial Whisper"
+      },
       "essence": "Awakening",
       "physics": "Matter in this realm is an echo of latent potential; it only truly solidifies when observed and given a 'name' or 'purpose' by a sentient mind.",
       "atmosphere": "A realm of shimmering, translucent forms that constantly shift and reform. The air itself feels like liquid potential.",
@@ -675,8 +922,13 @@
       "difficulty": "easy",
       "addedAt": "2026-06-12T10:00:00.000Z",
       "noise": {
-        "frequency": 0.05, "amplitude": 0.4, "octaves": 5, "persistence": 0.4,
-        "lacunarity": 2, "seed": 1701, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 0.4,
+        "octaves": 5,
+        "persistence": 0.4,
+        "lacunarity": 2,
+        "seed": 1701,
+        "type": "simplex",
         "description": "Smooth, undulating terrain."
       },
       "shader": {
@@ -695,8 +947,20 @@
         "ambience": "A faint cosmic hum, barely audible.",
         "music_tempo": "slow",
         "music_mood": "melancholic | eerie | mysterious | peaceful",
-        "instruments": ["low droning synth pads", "bowed strings (sparse, sustained)", "ambient piano (single, distant notes)", "ethereal vocal pads (wordless, breathy)", "sparse, metallic chimes (reverberant)"],
-        "sfx": ["soft, barely audible whispers", "faint cosmic hum (very low frequency)", "subtle, slow-moving air currents", "delicate clicks and pops", "isolated, deep resonant tones"],
+        "instruments": [
+          "low droning synth pads",
+          "bowed strings (sparse, sustained)",
+          "ambient piano (single, distant notes)",
+          "ethereal vocal pads (wordless, breathy)",
+          "sparse, metallic chimes (reverberant)"
+        ],
+        "sfx": [
+          "soft, barely audible whispers",
+          "faint cosmic hum (very low frequency)",
+          "subtle, slow-moving air currents",
+          "delicate clicks and pops",
+          "isolated, deep resonant tones"
+        ],
         "description": "A quiet, mysterious soundscape."
       }
     },
@@ -705,7 +969,10 @@
       "dayNumber": 150,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "أطلال الصمت", "en": "Ruins of Silence" },
+      "name": {
+        "ar": "أطلال الصمت",
+        "en": "Ruins of Silence"
+      },
       "essence": "The Silent Memory",
       "physicsLaw": "Every echo is a fossilized memory, growing heavier as the Silence deepens.",
       "atmosphere": "Dim corridors laced with cold stardust, where faint lights dance across walls carved with untold stories.",
@@ -718,8 +985,13 @@
       "weapon": null,
       "vehicle": null,
       "noise": {
-        "frequency": 0.03, "amplitude": 1.2, "octaves": 5, "persistence": 0.6,
-        "lacunarity": 2.2, "seed": 87654, "type": "simplex",
+        "frequency": 0.03,
+        "amplitude": 1.2,
+        "octaves": 5,
+        "persistence": 0.6,
+        "lacunarity": 2.2,
+        "seed": 87654,
+        "type": "simplex",
         "description": "Ghostly cosmic terrain formed from stardust and the remains of memories."
       },
       "shader": {
@@ -737,8 +1009,19 @@
         "ambience": "A deep void drone mixed with the echo of distant memories.",
         "music_tempo": "slow",
         "music_mood": "melancholic | eerie | mysterious",
-        "instruments": ["cello", "ambient synth pads", "sparse piano", "ethereal choir", "distant metallic chimes"],
-        "sfx": ["distant whispers", "subtle deep hums of the void", "faint, resonating chimes", "slow, creeping static"],
+        "instruments": [
+          "cello",
+          "ambient synth pads",
+          "sparse piano",
+          "ethereal choir",
+          "distant metallic chimes"
+        ],
+        "sfx": [
+          "distant whispers",
+          "subtle deep hums of the void",
+          "faint, resonating chimes",
+          "slow, creeping static"
+        ],
         "description": "A soundscape reflecting deep longing and the cosmic void."
       },
       "addedAt": "2026-05-30T15:00:13.875Z"
@@ -748,7 +1031,10 @@
       "dayNumber": 155,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "رفات الذكريات الكونية", "en": "Cosmic Memory Remains" },
+      "name": {
+        "ar": "رفات الذكريات الكونية",
+        "en": "Cosmic Memory Remains"
+      },
       "essence": "Cosmic Forgetting",
       "physicsLaw": "Physical memories shape and are etched into the void; the more that is forgotten, the heavier the Silence becomes.",
       "atmosphere": "A vast expanse of nothingness, where shards of forgotten souls shimmer like frozen cosmic dust.",
@@ -761,8 +1047,13 @@
       "weapon": null,
       "vehicle": null,
       "noise": {
-        "frequency": 0.03, "amplitude": 1.2, "octaves": 5, "persistence": 0.4,
-        "lacunarity": 2.2, "seed": 70828, "type": "simplex",
+        "frequency": 0.03,
+        "amplitude": 1.2,
+        "octaves": 5,
+        "persistence": 0.4,
+        "lacunarity": 2.2,
+        "seed": 70828,
+        "type": "simplex",
         "description": "Vast, undulating fields of cosmic dust."
       },
       "shader": {
@@ -775,8 +1066,20 @@
         "ambience": "A suffocating cosmic silence, a faint drone of stardust.",
         "music_tempo": "slow",
         "music_mood": "melancholic",
-        "instruments": ["Ethereal synths and pads", "Deep, sustained strings (cello, double bass)", "Ghostly, wordless choir", "Subtle, resonant chimes", "Low, ambient drones"],
-        "sfx": ["Faint, fragmented whispers (memories)", "Distant, deep cosmic thrums/pulses", "Subtle shimmering/dust particulate sounds", "Ethereal hums and resonances of the void", "A soft, oppressive 'pressure' of silence"],
+        "instruments": [
+          "Ethereal synths and pads",
+          "Deep, sustained strings (cello, double bass)",
+          "Ghostly, wordless choir",
+          "Subtle, resonant chimes",
+          "Low, ambient drones"
+        ],
+        "sfx": [
+          "Faint, fragmented whispers (memories)",
+          "Distant, deep cosmic thrums/pulses",
+          "Subtle shimmering/dust particulate sounds",
+          "Ethereal hums and resonances of the void",
+          "A soft, oppressive 'pressure' of silence"
+        ],
         "description": "A vast, gloomy soundscape."
       },
       "addedAt": "2026-06-04T11:20:28.023Z"
@@ -786,7 +1089,10 @@
       "dayNumber": 155,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "المضجع النجمي", "en": "The Astral Sepulchre" },
+      "name": {
+        "ar": "المضجع النجمي",
+        "en": "The Astral Sepulchre"
+      },
       "essence": "Echo of Memory",
       "physicsLaw": "The void warps time and gravity around forgotten memories.",
       "atmosphere": "An endless void where dense cosmic mist drifts, in which the faint lights of dead stars take shape as crystalline shards.",
@@ -799,8 +1105,13 @@
       "weapon": null,
       "vehicle": null,
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 77363, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 77363,
+        "type": "simplex",
         "description": "Default terrain for The Astral Sepulchre"
       },
       "shader": {
@@ -813,8 +1124,14 @@
         "ambience": "distant echoes and cosmic hum",
         "music_tempo": "slow",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "distant_rumble"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "distant_rumble"
+        ],
         "description": "Default audio for The Astral Sepulchre"
       },
       "addedAt": "2026-06-04T16:46:25.932Z"
@@ -824,7 +1141,10 @@
       "dayNumber": 156,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "متاهة السبج", "en": "The Obsidian Labyrinth" },
+      "name": {
+        "ar": "متاهة السبج",
+        "en": "The Obsidian Labyrinth"
+      },
       "essence": "The Fossilized Echo",
       "physicsLaw": "Memories, once forgotten, condense into the walls of the Obsidian Labyrinth.",
       "atmosphere": "A vast, silent labyrinth of polished obsidian, reflecting faint stars and the silent weight of forgotten memories.",
@@ -837,8 +1157,13 @@
       "weapon": null,
       "vehicle": null,
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 85110, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 85110,
+        "type": "simplex",
         "description": "Default terrain for The Obsidian Labyrinth"
       },
       "shader": {
@@ -851,8 +1176,14 @@
         "ambience": "distant echoes and cosmic hum",
         "music_tempo": "slow",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "distant_rumble"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "distant_rumble"
+        ],
         "description": "Default audio for The Obsidian Labyrinth"
       },
       "addedAt": "2026-06-05T11:05:15.063Z"
@@ -862,7 +1193,10 @@
       "dayNumber": 156,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "أروقة الصمت الأثيرية", "en": "The Ethereal Halls of Silence" },
+      "name": {
+        "ar": "أروقة الصمت الأثيرية",
+        "en": "The Ethereal Halls of Silence"
+      },
       "essence": "Cosmic Forgetting",
       "physicsLaw": "Within these halls, echoes of forgotten existence coalesce into tangible, yet fragile, crystalline structures.",
       "atmosphere": "A vast, melancholic expanse where cosmic dust coalesces into silent, monumental archives of forgotten civilizations.",
@@ -874,7 +1208,10 @@
       "enemies": [
         {
           "id": "enemy-19-1",
-          "name": { "ar": "شظية الصدى", "en": "Echo Shard" },
+          "name": {
+            "ar": "شظية الصدى",
+            "en": "Echo Shard"
+          },
           "concept": "Small fragments of forgotten memories, embodied in a fragile crystalline form.",
           "behavior": "Drifts aimlessly until drawn toward a strong 'memory presence.'",
           "weakness": "High-frequency sound waves or focused light.",
@@ -886,7 +1223,10 @@
         },
         {
           "id": "enemy-19-2",
-          "name": { "ar": "نول النسيان", "en": "Loom of Oblivion" },
+          "name": {
+            "ar": "نول النسيان",
+            "en": "Loom of Oblivion"
+          },
           "concept": "Larger, more cohesive entities that actively weave the Silence.",
           "behavior": "Moves slowly but deliberately, releasing fields of 'Silence.'",
           "weakness": "Disrupting their 'weaving' process.",
@@ -899,7 +1239,10 @@
       ],
       "weapon": {
         "id": "weapon-19",
-        "name": { "ar": "قيثارة الرنين الشاعرية", "en": "The Lyrical Resonance Harp" },
+        "name": {
+          "ar": "قيثارة الرنين الشاعرية",
+          "en": "The Lyrical Resonance Harp"
+        },
         "concept": "A channel for interacting with the vibrational essence of memories and echoes.",
         "visualDesc": "An elegant skeletal harp, its frame seemingly made of petrified starlight.",
         "sound": "A deep hum and echo rising to a peak of crystalline bells.",
@@ -913,8 +1256,13 @@
       },
       "vehicle": null,
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 43096, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 43096,
+        "type": "simplex",
         "description": "Default terrain for The Ethereal Halls of Silence"
       },
       "shader": {
@@ -927,8 +1275,14 @@
         "ambience": "distant echoes and cosmic hum",
         "music_tempo": "slow",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "distant_rumble"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "distant_rumble"
+        ],
         "description": "Default audio for The Ethereal Halls of Silence"
       },
       "addedAt": "2026-06-05T11:33:50.769Z"
@@ -938,7 +1292,10 @@
       "dayNumber": 161,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "وادي الرفات النجمي", "en": "The Valley of Astral Remnants" },
+      "name": {
+        "ar": "وادي الرفات النجمي",
+        "en": "The Valley of Astral Remnants"
+      },
       "essence": "The Crumbling Remains",
       "physicsLaw": "Physical memories condense and crystallize in space, forming structures prone to collapse.",
       "atmosphere": "A vast valley steeped in ancient silence, where faint spectral lights of pale stardust drift.",
@@ -951,8 +1308,13 @@
       "weapon": null,
       "vehicle": null,
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 86223, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 86223,
+        "type": "simplex",
         "description": "Default terrain for The Valley of Astral Remnants"
       },
       "shader": {
@@ -965,8 +1327,14 @@
         "ambience": "distant echoes and cosmic hum",
         "music_tempo": "slow",
         "music_mood": "mysterious",
-        "instruments": ["synthesizer", "ambient_pad"],
-        "sfx": ["wind", "distant_rumble"],
+        "instruments": [
+          "synthesizer",
+          "ambient_pad"
+        ],
+        "sfx": [
+          "wind",
+          "distant_rumble"
+        ],
         "description": "Default audio for The Valley of Astral Remnants"
       },
       "addedAt": "2026-06-10T06:17:10.109Z"
@@ -976,7 +1344,10 @@
       "dayNumber": 162,
       "chapter": 1,
       "chapterName": "Genesis",
-      "name": { "ar": "أطلال النور المنسي", "en": "The Ruins of Forgotten Light" },
+      "name": {
+        "ar": "أطلال النور المنسي",
+        "en": "The Ruins of Forgotten Light"
+      },
       "essence": "The Luminous Remains",
       "physicsLaw": "Embodied Memory: where the faint echo of ancient stellar events takes shape as tangible entities of light.",
       "atmosphere": "A sprawling labyrinth of ancient cosmic ruins, where the echoes of dead stars manifest as shimmering memories.",
@@ -988,7 +1359,10 @@
       "enemies": [
         {
           "id": "enemy-21-1",
-          "name": { "ar": "همسة نجم باهت", "en": "Whisper of a Fading Star" },
+          "name": {
+            "ar": "همسة نجم باهت",
+            "en": "Whisper of a Fading Star"
+          },
           "concept": "Spectral entities, remnants of ancient stellar beings or faint echoes of light-memory.",
           "behavior": "They drift slowly, emitting faint flickers of light. Upon sensing the player's presence, they release silent screams.",
           "weakness": "Scattering their light halo or overwhelming them with flashes of coherent memory.",
@@ -1000,7 +1374,10 @@
         },
         {
           "id": "enemy-21-2",
-          "name": { "ar": "حامل الحكمة المتكسرة", "en": "Bearer of Shattered Lore" },
+          "name": {
+            "ar": "حامل الحكمة المتكسرة",
+            "en": "Bearer of Shattered Lore"
+          },
           "concept": "The embodiment of a dense but fractured mass of forgotten memories.",
           "behavior": "Slow and heavy but powerful, releasing 'memory shards' that cause damage.",
           "weakness": "Disrupting its fractured memory-core by presenting it with a complete, coherent memory.",
@@ -1013,7 +1390,10 @@
       ],
       "weapon": {
         "id": "weapon-21",
-        "name": { "ar": "أنشودة الضوء", "en": "Lament of the Lumina" },
+        "name": {
+          "ar": "أنشودة الضوء",
+          "en": "Lament of the Lumina"
+        },
         "concept": "A weapon that is not merely a combat tool, but a channel for coherent memories.",
         "visualDesc": "An ethereal blade or staff that constantly shimmers with shifting colors like a nebula.",
         "sound": "A soft, resonant hum, like distant starlight.",
@@ -1027,8 +1407,13 @@
       },
       "vehicle": null,
       "noise": {
-        "frequency": 0.05, "amplitude": 1, "octaves": 4, "persistence": 0.5,
-        "lacunarity": 2, "seed": 23071, "type": "simplex",
+        "frequency": 0.05,
+        "amplitude": 1,
+        "octaves": 4,
+        "persistence": 0.5,
+        "lacunarity": 2,
+        "seed": 23071,
+        "type": "simplex",
         "description": "Vast cosmic terrain, threaded with soft hills and valleys of stardust."
       },
       "shader": {
@@ -1041,8 +1426,20 @@
         "ambience": "A deep, continuous drone of the void, threaded with distant, incomprehensible whispers.",
         "music_tempo": "slow",
         "music_mood": "melancholic | eerie | mysterious",
-        "instruments": ["ambient drones", "synth pads (low, sustained)", "distant chimes (sparse)", "low strings (ethereal)", "spectral synthesis"],
-        "sfx": ["distant echoes (non-specific)", "subtle hums and whispers", "faint crystalline shattering (memory shards)", "deep, resonant thumps (vastness)", "cosmic dust rustles (very subtle)"],
+        "instruments": [
+          "ambient drones",
+          "synth pads (low, sustained)",
+          "distant chimes (sparse)",
+          "low strings (ethereal)",
+          "spectral synthesis"
+        ],
+        "sfx": [
+          "distant echoes (non-specific)",
+          "subtle hums and whispers",
+          "faint crystalline shattering (memory shards)",
+          "deep, resonant thumps (vastness)",
+          "cosmic dust rustles (very subtle)"
+        ],
         "description": "A majestic, desolate soundscape."
       },
       "addedAt": "2026-06-11T06:43:57.949Z"
@@ -1052,9 +1449,9 @@
   "enemies": [],
   "vehicles": [],
   "evolutions": 47,
-  "inventions": 5,
+  "inventions": 6,
   "lastEvolved": "2026-06-11T06:43:57.952Z",
-  "lastInvented": "2026-07-06T14:46:20.157Z",
+  "lastInvented": "2026-08-02T07:28:13.695Z",
   "revivals": 0,
   "lastRevived": "2026-06-05T11:37:03.471Z"
 }
