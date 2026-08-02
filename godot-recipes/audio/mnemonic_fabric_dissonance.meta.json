@@ -1,0 +1,42 @@
+{
+  "name": "mnemonic_fabric_dissonance",
+  "label": "The Weeping Walls of Sound",
+  "domain": "audio",
+  "godotFeature": "AudioStreamGenerator",
+  "poeticVision": "The player experiences the world's very ambient soundscape as a fragile tapestry woven from Lyra's fragmented memories. As identity degrades or critical memories are lost, threads of this auditory fabric audibly snap, warp, and dissolve into dissonant void. The silence isn't just an absence; it's a growing, terrifying presence, the sound of self-erasure made manifest, leaving the player with an unsettling, dynamically disintegrating soundscape that continuously echoes Lyra's internal dissolution.",
+  "usage": "Attach this script to any Node in your scene. It will automatically create and manage an AudioStreamPlayer and AudioStreamGenerator to produce the dynamic soundscape. To control the soundscape's degradation, adjust the 'memory_integrity' property (from 1.0 for intact to 0.0 for completely lost). You can also call the 'lose_specific_memory(id: int)' method to target and degrade individual memory fragments, causing their corresponding sound module to become dissonant and contribute to the 'Silence noise'.",
+  "parameters": [
+    {
+      "name": "base_frequency",
+      "type": "float",
+      "default": "100.0",
+      "description": "A base frequency for initial memory modules (though individual modules define their own)."
+    },
+    {
+      "name": "base_amplitude",
+      "type": "float",
+      "default": "0.1",
+      "description": "A base amplitude for initial memory modules (though individual modules define their own)."
+    },
+    {
+      "name": "silence_noise_amplitude",
+      "type": "float",
+      "default": "0.05",
+      "description": "The amplitude of the dissonant 'Silence noise' components when memories degrade or are lost."
+    },
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "A global value (0.0 to 1.0) representing Lyra's overall memory integrity. Lower values cause the soundscape to degrade and become more dissonant."
+    }
+  ],
+  "dependencies": [
+    "AudioStreamGenerator",
+    "AudioStreamPlayer"
+  ],
+  "verdict": "The world weeps with Lyra's fading self, transforming the very air into a symphony of sorrow and the encroaching void.",
+  "impact": "The player will experience Lyra's internal struggle and the encroaching Silence not just visually or narratively, but viscerally through their ears. The world's ambient sound will become a direct, dynamic barometer of Lyra's mental state, making every lost memory a tangible, unsettling auditory void. This constant, evolving sonic tension will deepen immersion and amplify the feeling of self-loss and urgency, transforming the very act of listening into a profound reflection of Lyra's dissolving identity.",
+  "score": 95,
+  "inventedAt": "2026-08-02T05:27:51.496Z"
+}

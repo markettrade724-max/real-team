@@ -1,0 +1,105 @@
+{
+  "name": "mnemonic_void_rupture",
+  "label": "Memory Void Rupture",
+  "domain": "shaders",
+  "godotFeature": "Custom Spatial Shaders, GBuffer manipulation, SDFGI interaction",
+  "poeticVision": "Imagine running through a memory, but as a crucial fragment slips away, the very pathways and objects associated with it don't just fade—they invert their existence. Solid ground becomes a shimmering void where light bends unnaturally, and familiar architecture is replaced by an unsettling, negative space that warps your perception of depth and safety. It's not just a visual obstruction; it's the harrowing feeling of reality crumbling underfoot, making the desperate chase even more perilous as the known world becomes a treacherous, inverted reflection of its former self, a constant, physical reminder of what you've lost. You're fighting the Silence in a world actively being unmade by your own failing mind, where memory loss literally voids the terrain.",
+  "usage": "This shader is applied as a ShaderMaterial to any MeshInstance3D or CSG node that represents the game world's geometry. A GDScript agent would dynamically update the shader's uniform parameters, specifically 'void_center' to the location where a memory fragment is lost, 'void_radius' to control the size of the void, and 'void_strength' to fade the effect in or out. As 'void_radius' increases, the void expands, and as 'void_strength' approaches 1.0, the effect becomes more pronounced, causing the terrain to distort and adopt the 'void' material properties. The 'void_distortion_scale' and 'void_distortion_speed' can be adjusted to control the visual instability of the voided area. The material properties of the void (dark albedo, subtle emission, high roughness) will naturally interact with SDFGI, making the voided areas appear to absorb light and contribute to darker indirect lighting.",
+  "parameters": [
+    {
+      "name": "albedo",
+      "type": "vec4",
+      "default": "vec4(1.0)",
+      "description": "Base color of the original material."
+    },
+    {
+      "name": "texture_albedo",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Albedo texture of the original material."
+    },
+    {
+      "name": "metallic",
+      "type": "float",
+      "default": "0.0",
+      "description": "Metallic property of the original material."
+    },
+    {
+      "name": "roughness",
+      "type": "float",
+      "default": "1.0",
+      "description": "Roughness property of the original material."
+    },
+    {
+      "name": "emission",
+      "type": "vec3",
+      "default": "vec3(0.0)",
+      "description": "Emission color of the original material."
+    },
+    {
+      "name": "emission_energy",
+      "type": "float",
+      "default": "1.0",
+      "description": "Energy multiplier for the original material's emission."
+    },
+    {
+      "name": "void_center",
+      "type": "vec3",
+      "default": "vec3(0.0)",
+      "description": "World-space position of the center of the memory void."
+    },
+    {
+      "name": "void_radius",
+      "type": "float",
+      "default": "5.0",
+      "description": "Outer radius of the void effect. Beyond this, the effect fades out."
+    },
+    {
+      "name": "void_falloff",
+      "type": "float",
+      "default": "2.0",
+      "description": "The width of the transition zone from full void to original material."
+    },
+    {
+      "name": "void_strength",
+      "type": "float",
+      "default": "1.0",
+      "description": "Overall intensity of the void effect (0.0 for no effect, 1.0 for full effect)."
+    },
+    {
+      "name": "void_color",
+      "type": "vec4",
+      "default": "vec4(0.0, 0.0, 0.0, 1.0)",
+      "description": "Base color of the voided area."
+    },
+    {
+      "name": "void_emission_color",
+      "type": "vec3",
+      "default": "vec3(0.1, 0.0, 0.2)",
+      "description": "Subtle emission color for the voided area, giving an 'anti-matter' glow."
+    },
+    {
+      "name": "void_emission_energy",
+      "type": "float",
+      "default": "2.0",
+      "description": "Energy multiplier for the void's emission."
+    },
+    {
+      "name": "void_distortion_scale",
+      "type": "float",
+      "default": "0.1",
+      "description": "Magnitude of vertex distortion within the voided area, creating a shimmering effect."
+    },
+    {
+      "name": "void_distortion_speed",
+      "type": "float",
+      "default": "1.0",
+      "description": "Speed of the vertex distortion animation."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "As memory's tide recedes, the world itself unravels, a beautiful horror where the ground beneath becomes a treacherous echo of forgotten truths.",
+  "impact": "This invention transforms the abstract concept of memory loss into a terrifying, tangible environmental threat. Players will experience the dissolution of Lyra's identity not just narratively, but as a dynamic, physical alteration of the world itself. Every lost memory will directly manifest as crumbling, distorting terrain, forcing constant adaptation and heightening the sense of urgency and desperation. It makes the internal struggle an unavoidable external peril, ensuring that the player viscerally feels the cost of forgetting.",
+  "score": 90,
+  "inventedAt": "2026-08-02T05:25:41.591Z"
+}

@@ -1,0 +1,58 @@
+{
+  "name": "mnemonic_trace_emission",
+  "label": "The Echo of Forgotten Identity",
+  "domain": "audio",
+  "godotFeature": "AudioStreamGenerator, AudioStreamPlayer3D, AudioEffectPitchShift, AudioEffectReverb",
+  "poeticVision": "The player will feel a profound dread as every lost memory doesn't just vanish, but leaves behind a haunting, distorted echo—a unique auditory fingerprint that serves as a direct, tangible beacon for the relentless Silence hunters. This echo isn't just a generic sound; it's a fragmented whisper of Lyra's own past, a self-betrayal made audible, making every pursuit a race against her own fading self. The horrifying realization that her own essence, once lost, becomes the hunter's guide.",
+  "usage": "To use 'MnemonicTraceEmitter', first ensure you have an AudioStreamWAV resource representing the memory fragment. Then, convert this WAV into a PackedVector2Array of audio frames using the static 'convert_wav_to_frames' helper function. Instantiate 'MnemonicTraceEmitter' as a child of a Node3D (e.g., the scene root or a manager node), set its global position, and call 'start_echo' with the prepared audio frames and the desired 3D position. The emitter will automatically manage its lifetime, apply distortion effects, and clean up its dedicated audio bus upon completion or removal from the scene.\n\nExample:\n\n# In a manager script (e.g., 'MemoryManager.gd')\n@export var memory_fragment_wav: AudioStreamWAV # Assign your WAV file in the inspector\n\nfunc _on_memory_lost(lost_memory_position: Vector3) -> void:\n\tvar echo_frames: PackedVector2Array = MnemonicTraceEmitter.convert_wav_to_frames(memory_fragment_wav)\n\tif echo_frames.is_empty():\n\t\treturn\n\n\tvar echo_emitter = MnemonicTraceEmitter.new()\n\tget_tree().current_scene.add_child(echo_emitter) # Add to current scene\n\techo_emitter.start_echo(echo_frames, lost_memory_position)\n\n\t# Silence AI hunters would then track 'echo_emitter.global_position' to find the echo.",
+  "parameters": [
+    {
+      "name": "echo_duration",
+      "type": "float",
+      "default": "10.0",
+      "description": "The total duration in seconds for which the memory echo will persist before fading out and being removed."
+    },
+    {
+      "name": "decay_start_time",
+      "type": "float",
+      "default": "3.0",
+      "description": "The time in seconds after which the distortion effects (pitch shift, reverb) begin to intensify."
+    },
+    {
+      "name": "max_pitch_shift_factor",
+      "type": "float",
+      "default": "0.7",
+      "description": "The maximum pitch scale factor applied to the echo. A value less than 1.0 lowers the pitch, creating a deeper, more distorted sound."
+    },
+    {
+      "name": "max_reverb_mix",
+      "type": "float",
+      "default": "0.9",
+      "description": "The maximum wet mix level for the reverb effect, controlling how pronounced the ghostly echo becomes."
+    },
+    {
+      "name": "audio_bus_name",
+      "type": "String",
+      "default": "Master",
+      "description": "The name of the audio bus to which the echo's dedicated bus will send its output. Defaults to 'Master'."
+    },
+    {
+      "name": "generator_buffer_size",
+      "type": "int",
+      "default": "1024",
+      "description": "The internal buffer size (in frames) for the AudioStreamGenerator. Larger buffers can reduce audio glitches but increase latency."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "AudioStreamPlayer3D",
+    "AudioStreamGenerator",
+    "AudioEffectPitchShift",
+    "AudioEffectReverb",
+    "AudioServer"
+  ],
+  "verdict": "The haunting whisper of a lost self becomes the hunter's guide, turning every forgotten memory into a desperate, audible plea for survival.",
+  "impact": "This invention transforms memory loss from a mere abstract penalty into a terrifying, dynamic gameplay mechanic. Players will not only grieve the loss of Lyra's identity but will actively fear it, knowing that each forgotten fragment becomes a literal, audible homing beacon for the relentless Silence. It creates a constant, personal tension, forcing players to weigh the immediate threat of pursuit against the profound, irreversible cost of self-erasure.",
+  "score": 95,
+  "inventedAt": "2026-08-02T05:18:53.986Z"
+}

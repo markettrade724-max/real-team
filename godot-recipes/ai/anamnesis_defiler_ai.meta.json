@@ -1,0 +1,50 @@
+{
+  "name": "anamnesis_defiler_ai",
+  "label": "Anamnesis Defiler Intelligence",
+  "domain": "ai",
+  "godotFeature": "ShaderMaterial & NavigationServer3D",
+  "poeticVision": "Feel the visceral terror of not just losing your physical existence, but having the very tapestry of your self unravel before your eyes. The enemy doesn't just hunt you; it hunts your past, actively 'unwriting' your memories, turning your precious fragments of self into toxic echoes or blank voids. You race against a predator that devours not your flesh, but your very soul, leaving you with nothing left to remember.",
+  "usage": "This script defines the Anamnesis Defiler AI. To use it:\n1.  Create a new `CharacterBody3D` scene in Godot and attach this `anamnesis_defiler_ai.gd` script to its root node.\n2.  Add a `NavigationAgent3D` node as a child of the `CharacterBody3D`.\n3.  In the inspector for the `AnamnesisDefilerAI` node, set the `speed`, `corruption_range`, and `corruption_rate` parameters.\n4.  Assign a `noise_texture` (e.g., a Perlin noise texture) to the corresponding slot. This texture is crucial for the shader's visual effects.\n5.  Set the `player_node_path` to the NodePath of your player character (Lyra), which should also be a `CharacterBody3D`.\n6.  Ensure your game world has a `NavigationServer3D` set up with a generated navigation mesh for the AI to pathfind.\n7.  Create `MeshInstance3D` nodes to represent memory fragments. For each memory fragment `MeshInstance3D`:\n    a.  Add it to the \"memory_fragments\" group (Node -> Groups tab).\n    b.  Optionally, assign an initial `StandardMaterial3D` or `ORMMaterial3D` to its surface 0. The AI will store this as `original_material` and use its `albedo_texture` in the corruption shader.\n    c.  The AI will automatically add metadata (`is_corrupted`, `negative_effect_id`, `original_material`) to these `MeshInstance3D` nodes.\n8.  Lyra's interaction script should check the `is_corrupted` metadata on a `MeshInstance3D` when attempting to retrieve a memory fragment. If `is_corrupted` is true, it can then read `negative_effect_id` to apply a corresponding gameplay penalty.",
+  "parameters": [
+    {
+      "name": "speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Movement speed of the Anamnesis Defiler."
+    },
+    {
+      "name": "corruption_range",
+      "type": "float",
+      "default": "2.0",
+      "description": "Distance at which the defiler starts corrupting a memory fragment."
+    },
+    {
+      "name": "corruption_rate",
+      "type": "float",
+      "default": "0.5",
+      "description": "Rate at which a memory fragment's corruption_amount uniform increases per second (from 0.0 to 1.0)."
+    },
+    {
+      "name": "noise_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "A noise texture (e.g., Perlin noise) used by the shader for distortion and dissolution effects. Assign in the editor."
+    },
+    {
+      "name": "player_node_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "NodePath to the player character (Lyra), which should be a CharacterBody3D. The defiler targets Lyra when no uncorrupted memories are available."
+    }
+  ],
+  "dependencies": [
+    "NavigationAgent3D (as a child node of AnamnesisDefilerAI)",
+    "MeshInstance3D nodes (representing memory fragments, must be added to the 'memory_fragments' group)",
+    "A CharacterBody3D node for the player (Lyra) at the specified 'player_node_path'",
+    "A configured NavigationServer3D with a navigation mesh in the scene."
+  ],
+  "verdict": "A relentless hunter of the past, this entity embodies the chilling truth that some voids are not empty, but filled with the echoes of what was stolen.",
+  "impact": "This invention transforms the abstract threat of memory loss into a tangible, relentless hunter. Players will experience profound dread as they witness their identity unravel visually and feel its effects in gameplay, forcing desperate choices between survival and the preservation of self. Every encounter becomes a desperate race against oblivion.",
+  "score": 90,
+  "inventedAt": "2026-08-02T05:26:54.648Z"
+}

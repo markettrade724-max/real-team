@@ -1,0 +1,32 @@
+{
+  "name": "mnemonic_epoch_shaper",
+  "label": "Epoch Shaper Gauntlet",
+  "domain": "weapons",
+  "godotFeature": "ArrayMesh, GPUParticles3D, ShaderMaterial",
+  "poeticVision": "Feel the terrifying power of tearing directly from your past, forging a weapon of pure, crystallised remembrance. Each swing against the encroaching Silence brings not just victory, but a phantom limb ache as a piece of who you are crumbles, visible in the weapon's dissolving form. The player feels the visceral weight of sacrificing specific, cherished memories to survive, each choice a step closer to a self they no longer recognize.",
+  "usage": "Attach this `mnemonic_epoch_shaper.gd` script to a `MeshInstance3D` node in your scene. Create a new `ShaderMaterial` and assign the `epoch_shaper_shader.gdshader` (provided below) to its `Shader` property. Ensure the shader file is located at `res://epoch_shaper_shader.gdshader`. To use the gauntlet, create `MemoryFragment` instances, providing them with unique IDs and mesh data (vertices, indices, normals, UVs) that represent a part of the gauntlet's form. Call `add_memory_fragment(fragment_instance)` to integrate these memories into the gauntlet, dynamically building its mesh. During combat or when a memory is 'sacrificed', call `erode_memory(memory_id, amount)` to reduce a specific memory's integrity. When a memory's integrity reaches zero, its geometric contribution is removed from the gauntlet, and a particle effect is triggered. The shader visually highlights decaying parts with a red glow and fading alpha.",
+  "parameters": [
+    {
+      "name": "memory_id",
+      "type": "String",
+      "default": "N/A",
+      "description": "Unique identifier for the memory fragment to be eroded. Used in `erode_memory`."
+    },
+    {
+      "name": "amount",
+      "type": "float",
+      "default": "0.1",
+      "description": "The amount of integrity to subtract from a memory fragment. Used in `erode_memory`."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D",
+    "GPUParticles3D",
+    "ShaderMaterial",
+    "res://epoch_shaper_shader.gdshader"
+  ],
+  "verdict": "A brilliant fusion of combat and existential dread, this gauntlet carves a path through the Silence by sacrificing the very essence of who Lyra is, making every victory a poignant step closer to oblivion.",
+  "impact": "The player will constantly grapple with the profound dilemma of self-preservation versus self-erasure. Every combat encounter becomes a desperate negotiation with their own past, forcing them to make agonizing choices about which parts of their identity they can afford to lose. The visual degradation of their weapon will serve as a constant, harrowing reminder of their fading self, creating a unique and deeply emotional connection to the game's core themes of memory, loss, and survival.",
+  "score": 95,
+  "inventedAt": "2026-08-02T05:21:35.175Z"
+}

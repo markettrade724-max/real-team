@@ -1,0 +1,52 @@
+{
+  "name": "mnemonic_reality_fracture",
+  "label": "The Splintered Gaze",
+  "domain": "time",
+  "godotFeature": "SubViewport, ViewportTexture, World3D instancing",
+  "poeticVision": "To witness not just a moment, but all its immediate possibilities, branching off from a recovered memory. The player experiences the dizzying burden of choice as time itself splinters into brief, parallel realities, each a potential path forward or a fatal trap. Every chosen path seals off countless others, a heavy reminder of lost selves.",
+  "usage": "Attach this script to a Control node in your main scene. In the Godot editor, assign your 'Player' and 'Enemy' PackedScene resources to the 'Player Scene' and 'Enemy Scene' export variables respectively. Ensure your Player scene has a child Node called 'AnimationPlayer' with animations corresponding to the 'possible_actions' you will pass. When a critical decision point is reached in your game (e.g., after interacting with a memory shard), call the 'trigger_splintered_gaze' method on this manager node. Pass references to your main player and enemy nodes, and an array of strings representing the animation names for each possible action. The manager will pause the game, display multiple viewports showing the player performing different actions, and allow the player to click on one to make a choice. The chosen action's animation will then be triggered on the main player, and the game will unpause. For more complex divergent states, AnimationTree nodes could be used within the duplicated player/enemy scenes instead of AnimationPlayer.",
+  "parameters": [
+    {
+      "name": "player_scene",
+      "type": "PackedScene",
+      "default": null,
+      "description": "The PackedScene for the player character, which should contain an AnimationPlayer node."
+    },
+    {
+      "name": "enemy_scene",
+      "type": "PackedScene",
+      "default": null,
+      "description": "The PackedScene for the enemy character."
+    },
+    {
+      "name": "num_options",
+      "type": "int",
+      "default": 3,
+      "description": "The number of parallel reality options to display to the player."
+    },
+    {
+      "name": "option_display_size",
+      "type": "Vector2",
+      "default": "(300, 200)",
+      "description": "The size of each individual viewport display on the UI."
+    },
+    {
+      "name": "option_spacing",
+      "type": "float",
+      "default": 20,
+      "description": "The horizontal spacing between the displayed options."
+    }
+  ],
+  "dependencies": [
+    "Player.tscn",
+    "Enemy.tscn",
+    "SubViewportContainer",
+    "SubViewport",
+    "TextureRect",
+    "AnimationPlayer"
+  ],
+  "verdict": "A temporal fracture of choice, where every path taken is a memory gained and a self forever lost to the echoes of what might have been.",
+  "impact": "This mechanic will force players into agonizing, split-second decisions that visually represent the branching paths of fate, imbuing each choice with the heavy weight of lost opportunities and forgotten selves, profoundly deepening the game's themes of identity and consequence. It transforms critical moments into a visceral experience of self-fragmentation and urgent survival.",
+  "score": 88,
+  "inventedAt": "2026-08-02T05:22:37.263Z"
+}

@@ -1,0 +1,63 @@
+{
+  "name": "mnemonic_erosion_interface",
+  "label": "Amnesic Scars on the Lens",
+  "domain": "ui",
+  "godotFeature": "Custom CanvasItem Shaders, Viewports & ViewportTextures",
+  "poeticVision": "Feel the chilling reality of self-loss as critical HUD elements literally crumble, tear, or vanish, leaving gaping voids where vital information once was. Your own interface becomes a battleground, forcing you to interpret fractured data under relentless pursuit, making every decision a desperate gamble against your dissolving mind.",
+  "usage": "To use this shader:\n1.  Create a `SubViewport` node (e.g., named `MemoryVoidViewport`) in your scene.\n2.  Inside `MemoryVoidViewport`, add a `Control` node (e.g., `ColorRect` or a custom `Panel`) and apply a visual effect that represents the 'Silence-corrupted' void. This could be a simple `ColorRect` with a dark, pulsating color, or a more complex shader for the void itself.\n3.  On your target UI element (e.g., a `TextureRect` displaying a health bar, or a `Panel` for an ability icon), assign a new `ShaderMaterial` resource.\n4.  Load the `mnemonic_erosion_interface.gdshader` into this `ShaderMaterial`.\n5.  Set the `texture_albedo` uniform of the `ShaderMaterial` to the UI element's base texture (e.g., the `Texture` property of a `TextureRect`).\n6.  Set the `texture_void` uniform to `get_node(\"MemoryVoidViewport\").get_texture()` from GDScript or by dragging the `SubViewportTexture` from the `SubViewport` node in the editor.\n7.  Set the `texture_erosion_noise` uniform to a `NoiseTexture2D` resource (e.g., a `FastNoiseLite` configured for Perlin noise) for an organic erosion pattern.\n8.  In your game logic (GDScript), update the `erosion_amount` shader parameter based on Lyra's memory loss. For example:\n    `$UI/HealthBar.material.set_shader_parameter(\"erosion_amount\", lyra_memory_loss_percentage)`\n    Adjust `distortion_strength` and `distortion_speed` as needed for visual intensity and animation.",
+  "parameters": [
+    {
+      "name": "texture_albedo",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The base texture of the UI element (e.g., health bar, icon)."
+    },
+    {
+      "name": "texture_void",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The texture displayed in eroded areas, typically a ViewportTexture from a SubViewport rendering the 'Silence' effect."
+    },
+    {
+      "name": "texture_erosion_noise",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "A grayscale noise texture (e.g., NoiseTexture2D) used to define the organic pattern of erosion."
+    },
+    {
+      "name": "erosion_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the overall progress of memory erosion, from 0.0 (no erosion) to 1.0 (fully eroded)."
+    },
+    {
+      "name": "erosion_softness",
+      "type": "float",
+      "default": "0.1",
+      "description": "Determines the softness or sharpness of the transition edge between the original UI and the void."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.0",
+      "description": "The intensity of the UV distortion applied to the non-eroded parts of the UI, creating a flickering or unstable look."
+    },
+    {
+      "name": "distortion_speed",
+      "type": "float",
+      "default": "1.0",
+      "description": "The speed at which the distortion and erosion patterns animate over time."
+    }
+  ],
+  "dependencies": [
+    "SubViewport node (to render the 'Silence-corrupted' visual for texture_void)",
+    "Control node(s) inside the SubViewport (to define the visual of the void)",
+    "Control node (e.g., TextureRect, Panel) for the UI element itself",
+    "ShaderMaterial resource applied to the UI Control node",
+    "NoiseTexture2D resource (for texture_erosion_noise)"
+  ],
+  "verdict": "A brilliant fusion of visual design and core gameplay, this invention weaponizes the player's own interface to embody the chilling reality of self-loss.",
+  "impact": "This mechanic transforms the player's interface from a reliable source of information into a dynamic representation of Lyra's deteriorating mind. It forces players to adapt to constantly shifting data availability, heightening tension and making every decision a high-stakes gamble. The visual degradation directly reinforces the theme of self-loss, making the player viscerally feel Lyra's struggle to hold onto her identity as critical information literally crumbles before their eyes.",
+  "score": 88,
+  "inventedAt": "2026-08-02T05:19:40.687Z"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "mnemosyne_adaptive_intelligence",
+  "label": "The Mnemosyne Hunter",
+  "domain": "ai",
+  "godotFeature": "Behavior Trees / State Machines with GDScript for dynamic parameter adjustment, and data serialization for memory profiles.",
+  "poeticVision": "Feel the chilling dread of being hunted by an entity that doesn't just chase you, but *understands* you. Every memory you reclaim, every fragment of self you lose, teaches the Silence's hunters how to better corner you, how to exploit your deepest fears, transforming your own identity into their weapon. It's a desperate race against an enemy that gets smarter as you remember, or as you forget, turning your inner struggle into a personalized, external threat.",
+  "usage": "Attach this script to a `CharacterBody3D` node representing a Mnemosyne Hunter enemy. The hunter will dynamically adjust its pursuit and attack strategies based on Lyra's `lyra_memory_profile` dictionary. Call `set_lyra_memory_profile(profile_data)` from Lyra's script or a game manager whenever Lyra's memories change (e.g., a memory is lost or recovered). The `profile_data` dictionary should contain memory identifiers as keys and their state (e.g., `true` for active/present, `false` for lost/absent) as values. The hunter will then adapt its `_execute_current_behavior` to exploit Lyra's current psychological state.",
+  "parameters": [
+    {
+      "name": "profile_data",
+      "type": "Dictionary",
+      "default": "{}",
+      "description": "The dictionary representing Lyra's current memory state. Keys are memory identifiers (e.g., 'trust_high_places', 'fear_darkness', 'courage'), and values are booleans indicating if the memory is active/present (true) or lost/absent (false). This is passed to the `set_lyra_memory_profile` method."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "Player Node (in 'player' group)"
+  ],
+  "verdict": "A chilling mirror to Lyra's fading self, this hunter transforms internal dread into an external, adaptive terror, ensuring every chase is a desperate fight for identity itself.",
+  "impact": "This invention will fundamentally alter the player's perception of the enemy, transforming the Silence's hunters from mere obstacles into personalized, psychological threats. Players will experience a profound sense of dread as they realize their own identity, fears, and lost memories are being weaponized against them, making every encounter a deeply personal and terrifying struggle for self-preservation.",
+  "score": 85,
+  "inventedAt": "2026-08-02T05:17:38.718Z"
+}

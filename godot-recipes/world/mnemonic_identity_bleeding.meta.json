@@ -1,0 +1,29 @@
+{
+  "name": "mnemonic_identity_bleeding",
+  "label": "Bleeding Memory Scapes",
+  "domain": "world",
+  "godotFeature": "ShaderMaterial & WorldEnvironment (Volumetric Fog, Post-Processing Shaders)",
+  "poeticVision": "Imagine the very fabric of reality dissolving around you. As Lyra loses critical fragments of her identity, the 'memory-scape' itself begins to bleed. Colors drain from once vibrant scenes, unique textures flatten into a uniform, featureless grey, and distinctive landmarks blur into indistinguishable visual noise. Pathways she just traversed become ambiguous, treacherous stretches where hunters hide effortlessly. It's the world forgetting its own identity, mirroring the internal erosion of Lyra's mind, transforming familiar ground into a hostile, disorienting void that actively impedes perception and survival.",
+  "usage": "Attach this script to any Node in your scene (e.g., a global GameManager or directly to your WorldEnvironment node). In the Godot editor, assign your scene's WorldEnvironment node to the 'World Environment Node' export variable in the inspector. To control the 'Bleeding Memory Scapes' effect, programmatically update the 'memory_coherence' variable (a float between 0.0 and 1.0, where 1.0 is full clarity and 0.0 is maximum bleed/distortion). The script will automatically update the WorldEnvironment's volumetric fog and apply a screen-space post-processing shader to simulate memory loss.",
+  "parameters": [
+    {
+      "name": "world_environment_node",
+      "type": "WorldEnvironment",
+      "default": "null",
+      "description": "Reference to the WorldEnvironment node in the scene that will be affected by the memory bleed."
+    },
+    {
+      "name": "memory_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "A value from 0.0 to 1.0 representing Lyra's current memory state. 1.0 means full memory (no bleed), 0.0 means complete memory loss (maximum bleed and distortion)."
+    }
+  ],
+  "dependencies": [
+    "WorldEnvironment (node in scene)"
+  ],
+  "verdict": "A masterful fusion of narrative decay and environmental mechanics, this invention turns Lyra's internal struggle into a visibly crumbling world, making the very act of forgetting a physical and terrifying adversary.",
+  "impact": "This invention fundamentally transforms the abstract concept of memory loss into a tangible, disorienting, and hostile environmental reality. Players will not only witness Lyra's internal decay but actively experience it through a world that actively impedes their perception and survival. This will heighten the constant tension, amplify the feeling of self-loss, and make every chase and decision more urgent and impactful, creating a deeply immersive and unforgettable struggle against forgetting.",
+  "score": 95,
+  "inventedAt": "2026-08-02T05:20:36.948Z"
+}

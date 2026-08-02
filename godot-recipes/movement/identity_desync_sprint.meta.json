@@ -1,0 +1,93 @@
+{
+  "name": "identity_desync_sprint",
+  "label": "Kinetic Self-Fracture",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D movement, PhysicsServer3D collision manipulation, WorldEnvironment shader_global effects",
+  "poeticVision": "The desperate panic of your own body betraying you mid-sprint. Every rapid step through corrupted memory tears at your physical self, threatening to dissolve your form or pull you through reality itself. You fight against the very momentum of forgetting, relying on sheer will to stay 'present' in the world, knowing a single misstep means oblivion.",
+  "usage": "Attach this script to Lyra's CharacterBody3D node. This script manages the 'Kinetic Self-Fracture' mechanic by tracking desynchronization level based on velocity in corrupted zones, applying visual feedback, modifying collision behavior, and triggering identity costs. \n\nTo integrate with a player controller:\n1.  In your player controller script (which sets CharacterBody3D.velocity), call `get_desync_velocity_modifier()` and add its return value to your calculated movement vector before calling `move_and_slide()`.\n2.  Call `get_desync_stumble_velocity()` and add its return value to your movement vector. This will apply a temporary force when Lyra stumbles.\n\nTo define 'corrupted memory zones':\n1.  Create Area3D nodes in your scene where desynchronization should occur.\n2.  Connect their `body_entered` and `body_exited` signals to Lyra's CharacterBody3D.\n3.  In the connected functions, call `set_corrupted_zone_status(true)` on `body_entered` and `set_corrupted_zone_status(false)` on `body_exited`.\n\nFor visual feedback:\n1.  Create a `ShaderMaterial` for your WorldEnvironment's custom sky/background (e.g., `identity_desync_global.gdshader`). Assign this material to the `global_environment_material` export property in the inspector.\n    Example `identity_desync_global.gdshader`:\n    glsl\n    shader_type sky;\n    uniform float desync_intensity : hint_range(0.0, 1.0) = 0.0;\n    void fragment() {\n    \tvec3 base_color = vec3(0.1, 0.2, 0.3);\n    \tvec3 desync_color = vec3(0.5, 0.0, 0.5);\n    \tCOLOR = mix(base_color, desync_color, desync_intensity);\n    }\n    \n2.  Create a `ShaderMaterial` for Lyra's mesh (e.g., `identity_desync_vertex.gdshader`). Assign this material to the `lyra_mesh_material` export property.\n    Example `identity_desync_vertex.gdshader`:\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform float desync_level : hint_range(0.0, 1.0) = 0.0;\n    uniform float displacement_strength : hint_range(0.0, 1.0) = 0.1;\n    uniform float noise_scale : hint_range(0.0, 10.0) = 2.0;\n    uniform float noise_speed : hint_range(0.0, 5.0) = 1.0;\n    uniform sampler2D noise_texture : hint_default_white;\n\n    void vertex() {\n    \tif (desync_level > 0.0) {\n    \t\tvec3 world_vertex = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;\n    \t\tfloat time_offset = TIME * noise_speed;\n    \t\tvec2 uv_noise = world_vertex.xz * noise_scale + time_offset;\n    \t\tfloat noise_val = texture(noise_texture, uv_noise).r;\n    \t\tvec3 displacement_dir = NORMAL;\n    \t\tVERTEX += displacement_dir * noise_val * displacement_strength * desync_level;\n    \t}\n    }\n\n    void fragment() {\n    \tALBEDO = vec3(0.8, 0.8, 0.8);\n    \tif (desync_level > 0.5) {\n    \t\tALBEDO = mix(ALBEDO, vec3(0.5, 0.0, 0.5), desync_level - 0.5);\n    \t}\n    }\n    \n\nWhen `identity_fragment_cracked` signal is emitted, connect it to your game's memory/identity manager to apply the 'identity cost'.",
+  "parameters": [
+    {
+      "name": "max_desync_level",
+      "type": "float",
+      "default": "1.0",
+      "description": "Maximum desynchronization intensity Lyra can reach."
+    },
+    {
+      "name": "desync_gain_rate",
+      "type": "float",
+      "default": "0.5",
+      "description": "Rate at which desynchronization level increases per second when conditions are met."
+    },
+    {
+      "name": "desync_decay_rate",
+      "type": "float",
+      "default": "1.0",
+      "description": "Rate at which desynchronization level decreases per second when conditions are not met."
+    },
+    {
+      "name": "velocity_threshold",
+      "type": "float",
+      "default": "10.0",
+      "description": "Minimum velocity magnitude required for desynchronization to start increasing."
+    },
+    {
+      "name": "jitter_intensity",
+      "type": "float",
+      "default": "0.1",
+      "description": "Maximum random offset applied to Lyra's movement vectors due to desynchronization."
+    },
+    {
+      "name": "phasing_layer_to_ignore",
+      "type": "int",
+      "default": "1",
+      "description": "The collision layer (1-32) that Lyra will temporarily ignore collision with for partial phasing effects. Set this to a layer used by minor environmental elements."
+    },
+    {
+      "name": "phasing_toggle_interval",
+      "type": "float",
+      "default": "0.1",
+      "description": "The interval in seconds at which Lyra's collision mask toggles for phasing."
+    },
+    {
+      "name": "identity_cost_threshold",
+      "type": "float",
+      "default": "0.8",
+      "description": "The desynchronization level at which Lyra risks suffering an 'identity cost' and stumbling."
+    },
+    {
+      "name": "desync_stumble_force",
+      "type": "float",
+      "default": "5.0",
+      "description": "The magnitude of the force applied to Lyra when she stumbles due to critical desynchronization."
+    },
+    {
+      "name": "stumble_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The duration in seconds for which Lyra remains in a stumbling state."
+    },
+    {
+      "name": "global_environment_material",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "Reference to the ShaderMaterial used by the WorldEnvironment's custom sky or background. Used for global visual desync feedback."
+    },
+    {
+      "name": "lyra_mesh_material",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "Reference to the ShaderMaterial applied to Lyra's mesh, which should use a vertex shader for displacement effects."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (this script is attached to it)",
+    "Area3D (for defining corrupted memory zones and calling set_corrupted_zone_status)",
+    "ShaderMaterial (for global_environment_material and lyra_mesh_material)",
+    "identity_desync_global.gdshader (a custom sky/background shader for WorldEnvironment)",
+    "identity_desync_vertex.gdshader (a custom spatial shader for Lyra's mesh)"
+  ],
+  "verdict": "A brilliant fusion of physical peril and existential dread, turning every desperate stride into a battle against the self and the encroaching void.",
+  "impact": "This mechanic fundamentally transforms player movement from a simple traversal into a desperate, high-stakes gamble. Every sprint through a corrupted zone becomes a visceral struggle against the player's own body and the encroaching void of forgetting. It introduces a constant, palpable tension, forcing players to manage their 'desync' as a critical resource, making split-second decisions between speed and self-preservation. The visual feedback, jitter, phasing, and sudden stumbles create a deeply unsettling and memorable experience, directly embodying the game's core themes of self-loss and urgent survival.",
+  "score": 92,
+  "inventedAt": "2026-08-02T05:24:41.973Z"
+}
