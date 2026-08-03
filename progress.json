@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-08-02T09:09:09.194Z",
-  "current": null,
+  "updatedAt": "2026-08-03T08:34:34.867Z",
+  "current": {
+    "type": "episode",
+    "episode": 22,
+    "id": null,
+    "startedAt": "2026-08-03T08:20:16.286Z",
+    "updatedAt": "2026-08-03T08:34:34.867Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 22,
     "totalEpisodes": 22,
@@ -614,6 +621,35 @@
         "startedAt": "2026-07-29T07:37:26.184Z",
         "completedAt": "2026-07-29T09:42:13.990Z",
         "failReason": null
+      },
+      "22": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-08-03T08:21:43.476Z",
+            "title": "The Weight of a Whisper",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-08-03T08:22:47.517Z",
+            "title": "The Weight of a Whisper",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-08-03T08:23:20.413Z",
+            "title": "The Weight of a Whisper",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-08-03T08:20:16.286Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
