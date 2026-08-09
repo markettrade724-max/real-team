@@ -1,0 +1,53 @@
+{
+  "name": "identity_shard_projector",
+  "label": "Mnemonic Projection Gauntlet",
+  "domain": "weapons",
+  "godotFeature": "Resources, ShaderMaterial, Callable/Signals",
+  "poeticVision": "The desperate act of tearing a piece of your very self – a vibrant echo of who you were – and hurling it as a weapon against the approaching Silence. Feel the immediate, visceral void it leaves behind: a flash of skill forgotten, a moment of confusion, a color fading from your sight. Every shot is a gamble with your soul, making you question: what memory can I afford to lose to survive this moment?",
+  "usage": "Attach this `identity_shard_projector.gd` script to a `Node3D` in your scene (e.g., Lyra's gauntlet or character node). Populate the `shard_pool` array in the Inspector with `MemoryShard` resources (create new `MemoryShard` resources and configure their properties like `damage`, `void_effect_type`, `projectile_color`, etc.). When Lyra needs to attack, call the `fire(direction: Vector3)` method, passing the desired projectile direction. Connect to the `memory_void_triggered` signal from Lyra's character script to apply temporary debuffs or visual/audio effects based on the `void_effect_type` and `duration`. Connect to the `memory_eroded` signal to update Lyra's core identity state or apply permanent changes as `erosion_value` increases. Ensure a `SphereMesh` resource is available at `res://default_sphere.tres` or replace the `projectile_mesh` export with your desired mesh.",
+  "parameters": [
+    {
+      "name": "shard_pool",
+      "type": "Array[MemoryShard]",
+      "default": "[]",
+      "description": "An array of MemoryShard resources representing the available memories Lyra can weaponize."
+    },
+    {
+      "name": "projectile_speed",
+      "type": "float",
+      "default": "50.0",
+      "description": "The speed at which memory shards are projected."
+    },
+    {
+      "name": "projectile_lifetime",
+      "type": "float",
+      "default": "2.0",
+      "description": "The duration in seconds before a projected memory shard despawns if it doesn't hit anything."
+    },
+    {
+      "name": "projectile_mesh",
+      "type": "Mesh",
+      "default": "preload(\"res://default_sphere.tres\")",
+      "description": "The 3D mesh used for the visual representation of the projected memory shard."
+    },
+    {
+      "name": "projectile_collision_layer",
+      "type": "int",
+      "default": "1",
+      "description": "The physics layer(s) this projectile belongs to."
+    },
+    {
+      "name": "projectile_collision_mask",
+      "type": "int",
+      "default": "1",
+      "description": "The physics layer(s) this projectile will detect collisions with."
+    }
+  ],
+  "dependencies": [
+    "res://default_sphere.tres (a SphereMesh resource or any other Mesh resource)"
+  ],
+  "verdict": "A brilliant weapon forged from the very essence of self, turning every desperate shot into a poignant sacrifice that carves Lyra's fading identity into the player's soul.",
+  "impact": "This invention fundamentally transforms combat from a simple damage exchange into a profound, identity-eroding struggle. Players will constantly weigh survival against self-loss, making every shot a desperate gamble that deepens their connection to Lyra's fading identity and the tragic cost of her fight. The immediate, visceral debuffs and the escalating erosion of memories will create an unforgettable, emotionally charged gameplay loop, perfectly embodying the universe's core themes.",
+  "score": 95,
+  "inventedAt": "2026-08-09T03:36:33.935Z"
+}

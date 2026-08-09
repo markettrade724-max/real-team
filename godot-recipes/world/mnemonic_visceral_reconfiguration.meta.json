@@ -1,0 +1,48 @@
+{
+  "name": "mnemonic_visceral_reconfiguration",
+  "label": "Visceral Memory Reconfiguration",
+  "domain": "world",
+  "godotFeature": "Dynamic Mesh Manipulation (ArrayMesh), Physics Server, GDShader, NavigationMesh Generation",
+  "poeticVision": "To feel the very ground beneath your feet twist into alien forms, or crumble into void as your own sense of self unravels. Every lost memory isn't just a void in your mind; it’s a gaping chasm in the world, a path erased, a shelter dissolved, rendering the solid architecture of reality as fluid and vulnerable as your own fading identity. The world itself becomes a living, suffering organ, reacting physically to your struggle.",
+  "usage": "Attach this script to a MeshInstance3D node representing the deformable environment. The 'mesh' property of this MeshInstance3D should be set to an initial Mesh resource (e.g., a CubeMesh or imported scene mesh). Set the 'nav_region_path' to a NavigationRegion3D node in your scene. Call 'lose_memory(position: Vector3)' when Lyra loses a memory, passing the world position where the deformation should occur. Call 'silence_proximity_effect(position: Vector3)' when the Silence is near, passing the world position for its influence. The script will dynamically deform the mesh, update its collision shape, and re-bake the NavigationMesh.",
+  "parameters": [
+    {
+      "name": "deformation_strength_memory_loss",
+      "type": "float",
+      "default": "0.5",
+      "description": "The intensity of mesh deformation when a memory is lost (inward/downward)."
+    },
+    {
+      "name": "deformation_strength_silence",
+      "type": "float",
+      "default": "0.3",
+      "description": "The intensity of mesh deformation when the Silence is in proximity (outward/upward)."
+    },
+    {
+      "name": "deformation_radius",
+      "type": "float",
+      "default": "5.0",
+      "description": "The radius around the event position within which mesh vertices will be deformed."
+    },
+    {
+      "name": "nav_region_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "NodePath to the NavigationRegion3D that needs to be updated with the deformed mesh."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (node to attach script to)",
+    "NavigationRegion3D (referenced by nav_region_path)",
+    "res://shaders/visceral_memory_shader.gdshader (required shader file)",
+    "StaticBody3D (created dynamically)",
+    "CollisionShape3D (created dynamically)",
+    "ConcavePolygonShape3D (created dynamically)",
+    "NavigationMeshSourceGeometryData3D (created dynamically)",
+    "NavigationMesh (created dynamically)"
+  ],
+  "verdict": "The very fabric of reality weeps and writhes, a visceral echo of a soul unraveling, turning the world itself into a desperate, shifting battleground for identity.",
+  "impact": "This invention fundamentally transforms the game world into a living, reactive entity, directly mirroring Lyra's internal struggle. Players will experience the tangible consequences of memory loss as paths crumble into impassable voids, forcing immediate adaptation and problem-solving. The encroaching Silence will be felt not just as a distant threat, but as a physical distortion of reality, heightening tension and urgency. This mechanic ensures that every step is a precarious dance between survival and self-dissolution, making the environment a constant, visceral reminder of Lyra's fading identity and the relentless pursuit.",
+  "score": 95,
+  "inventedAt": "2026-08-09T03:35:38.368Z"
+}

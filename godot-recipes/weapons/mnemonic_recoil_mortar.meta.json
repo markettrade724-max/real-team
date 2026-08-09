@@ -1,0 +1,58 @@
+{
+  "name": "mnemonic_recoil_mortar",
+  "label": "Mnemonic Recoil Mortar",
+  "domain": "weapons",
+  "godotFeature": "RigidBody3D, ShaderMaterial, GPUParticles3D, PhysicsServer3D",
+  "poeticVision": "The desperate calculation: point, aim, surrender. Each 'shot' is a piece of Lyra's past, physically hurled into the void, a desperate gambit against the Silence. Players will feel the tangible weight of choosing which fragment of self to sacrifice, witnessing it shatter into weaponized truth, knowing that even if retrieved, it will echo with the scars of conflict.",
+  "usage": "1.  **Create a `MemoryShardResource`:** Create a new GDScript file named `memory_shard_resource.gd` with the following content:\n\n    gdscript\n    # memory_shard_resource.gd\n    class_name MemoryShardResource extends Resource\n\n    @export var id: String = \"\"\n    @export var description: String = \"\"\n    @export var integrity: float = 1.0:\n    \tset(value):\n    \t\tintegrity = clampf(value, 0.0, 1.0)\n    @export var is_weaponized: bool = false\n\n    func degrade(amount: float):\n    \tintegrity -= amount\n    \tis_weaponized = true\n    \n\n    Then, create actual `.tres` or `.res` instances of this resource (e.g., `my_memory_shard_01.tres`) in your project, filling in `id`, `description`, and `integrity`.\n\n2.  **Create a Memory Shard Scene:** Create a new `RigidBody3D` scene (e.g., `memory_shard_scene.tscn`). Add a `MeshInstance3D` as a child (e.g., a `SphereMesh` or `BoxMesh`) and optionally assign a `StandardMaterial3D` with an `albedo_texture` to it. The `MnemonicRecoilMortar` script will automatically replace this with a `ShaderMaterial` and copy the texture.\n\n3.  **Setup the Mortar Node:**\n    *   Add a `Node3D` to your scene and attach the `mnemonic_recoil_mortar.gd` script to it.\n    *   Create a child `Node3D` (e.g., named `Muzzle`) and position it where projectiles should originate. Assign this `Muzzle` node to the `muzzle_node` property in the Inspector.\n    *   Adjust `fire_force`, `degradation_cost_per_shot`, and visual degradation parameters as desired.\n\n4.  **Load and Fire Shards:**\n    *   To load a shard, call the `load_shard()` method, passing a `PackedScene` of your `memory_shard_scene.tscn` and an instance of your `MemoryShardResource`.\n\n        gdscript\n        @onready var mortar = $\"MnemonicRecoilMortar\"\n        var shard_scene = preload(\"res://Scenes/memory_shard_scene.tscn\")\n        var memory_resource = preload(\"res://Resources/my_memory_shard_01.tres\")\n\n        func _input(event):\n        \tif event.is_action_pressed(\"load_shard\"):\n        \t\tmortar.load_shard(shard_scene, memory_resource.duplicate()) # Duplicate to prevent modifying original resource\n        \tif event.is_action_pressed(\"fire_shard\"):\n        \t\tmortar.fire_shard()\n        \n\n    *   When `fire_shard()` is called, the loaded `RigidBody3D` will be unparented, launched, its material will visually degrade, and its associated `MemoryShardResource`'s `integrity` will be reduced and `is_weaponized` set to `true`. `GPUParticles3D` will also activate for a 'memory bleed' effect.\n\n    *   Listen to the `shard_fired` signal to react to a memory being weaponized, or `no_shard_loaded` if `fire_shard()` is called without a loaded memory.\n\nThis setup allows Lyra to physically hurl fragments of her identity, witnessing their degradation and feeling the cost of each desperate shot.",
+  "parameters": [
+    {
+      "name": "muzzle_node",
+      "type": "Node3D",
+      "default": "null",
+      "description": "The Node3D representing the muzzle of the mortar, where shards are spawned and from where force is applied."
+    },
+    {
+      "name": "fire_force",
+      "type": "float",
+      "default": "100.0",
+      "description": "The magnitude of the impulse applied to the memory shard when fired."
+    },
+    {
+      "name": "degradation_cost_per_shot",
+      "type": "float",
+      "default": "0.25",
+      "description": "The amount by which the memory shard's integrity (and visual degradation) is reduced per shot (0.0 to 1.0)."
+    },
+    {
+      "name": "shard_degradation_color",
+      "type": "Color",
+      "default": "Color(0.8, 0.2, 0.1, 1.0)",
+      "description": "The color used to represent the degraded parts of the memory shard's material."
+    },
+    {
+      "name": "shard_degradation_noise_scale",
+      "type": "float",
+      "default": "10.0",
+      "description": "Controls the scale of the noise pattern used for the degradation effect on the shard's material."
+    },
+    {
+      "name": "shard_degradation_edge_sharpness",
+      "type": "float",
+      "default": "5.0",
+      "description": "Controls the sharpness of the degradation edges on the shard's material."
+    }
+  ],
+  "dependencies": [
+    "Node3D (for the mortar itself)",
+    "Node3D (for 'muzzle_node' export)",
+    "RigidBody3D (for the memory shard scene)",
+    "MeshInstance3D (child of RigidBody3D in shard scene)",
+    "GPUParticles3D (dynamically added to shard)",
+    "memory_shard_resource.gd (custom Resource script)"
+  ],
+  "verdict": "A weapon forged from the very essence of self, each desperate shot a fragment of Lyra's soul hurled into the void, echoing with the profound cost of survival.",
+  "impact": "The player will constantly grapple with the emotional weight of their choices, turning every combat encounter into a desperate negotiation with their own identity. The visual and mechanical feedback of a memory degrading will create a visceral connection to Lyra's struggle, making survival feel both empowering and profoundly costly. This mechanic transforms a simple weapon into a central narrative device, deepening the themes of self-loss and the fight to retain who you are.",
+  "score": 95,
+  "inventedAt": "2026-08-09T03:26:02.164Z"
+}

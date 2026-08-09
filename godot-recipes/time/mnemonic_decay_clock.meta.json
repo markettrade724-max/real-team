@@ -1,0 +1,46 @@
+{
+  "name": "mnemonic_decay_clock",
+  "label": "The Looming Dissolution",
+  "domain": "time",
+  "godotFeature": "Godot's Physics Engine (RigidBody dynamics, CollisionShape updates)",
+  "poeticVision": "The player will feel an ever-present, suffocating dread as the very ground beneath Lyra's feet literally dissolves and shifts into oblivion. Each second spent is a second lost, not just to the Silence, but to the memory itself unraveling. It’s a desperate race against an existential clock, where the environment is Lyra's rapidly fading past, actively collapsing around her, forcing split-second choices and amplifying the terror of self-loss.",
+  "usage": "This script orchestrates the 'Looming Dissolution' effect, progressively decaying parts of the environment. To use it:\n\n1.  **Create a Dissolve Shader:** Create a new `Shader` resource (e.g., `res://shaders/dissolve_shader.gdshader`) and paste the following GLSL code into it:\n\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform sampler2D texture_albedo : source_color;\n    uniform float dissolve_amount : hint_range(0.0, 1.0) = 0.0;\n    uniform vec4 dissolve_color : source_color = vec4(1.0, 0.5, 0.0, 1.0); // Orange glow\n    uniform float dissolve_edge_width : hint_range(0.0, 0.1) = 0.02;\n\n    void fragment() {\n    \tvec4 albedo_tex = texture(texture_albedo, UV);\n    \tvec3 albedo_base = albedo_tex.rgb;\n    \tfloat alpha = albedo_tex.a;\n\n    \t// Simple noise for dissolve pattern\n    \t// Using UV for simplicity, a more complex noise texture could be used\n    \tfloat noise = fract(sin(dot(UV * 10.0, vec2(12.9898, 78.233))) * 43758.5453);\n\n    \t// Dissolve effect\n    \tfloat dissolve_threshold = dissolve_amount;\n    \tif (noise < dissolve_threshold) {\n    \t\tdiscard; // Discard fragments below the threshold\n    \t}\n\n    \t// Dissolve edge glow\n    \tfloat edge_start = dissolve_threshold;\n    \tfloat edge_end = dissolve_threshold + dissolve_edge_width;\n\n    \tif (noise >= edge_start && noise < edge_end) {\n    \t\t// Calculate glow intensity based on position within the edge\n    \t\tfloat edge_progress = (noise - edge_start) / dissolve_edge_width;\n    \t\tALBEDO = mix(albedo_base, dissolve_color.rgb, smoothstep(0.0, 1.0, edge_progress));\n    \t\tALPHA = mix(alpha, dissolve_color.a, smoothstep(0.0, 1.0, edge_progress));\n    \t} else {\n    \t\tALBEDO = albedo_base;\n    \t\tALPHA = alpha;\n    \t}\n    }\n    \n\n2.  **Create a ShaderMaterial:** Create a new `ShaderMaterial` resource (e.g., `res://materials/dissolve_material.tres`) and assign the `dissolve_shader.gdshader` to its `Shader` property.\n\n3.  **Prepare Decayable Environment:** In your 3D scene, create a `Node3D` (e.g., named `DecayableEnvironment`) to serve as the container for all pieces that will decay. Populate this `DecayableEnvironment` node with `RigidBody3D` nodes. Each `RigidBody3D` should:\n    *   Have its `Mode` property set to `Static` in the Inspector (so it acts as a static part of the environment initially).\n    *   Have at least one `MeshInstance3D` child (e.g., a `BoxMesh`, `CylinderMesh`, etc.).\n    *   Have at least one `CollisionShape3D` child (e.g., a `BoxShape3D` matching the mesh).\n\n4.  **Attach and Configure the Script:** Attach this `mnemonic_decay_clock.gd` script to a `Node3D` in your scene (e.g., the root of your level or a dedicated game manager node). In the Inspector for this script:\n    *   Set the `Decay Root Path` property to the NodePath of your `DecayableEnvironment` node (e.g., `/root/MyScene/DecayableEnvironment`).\n    *   Assign the `Dissolve Shader Material Template` property to the `dissolve_material.tres` ShaderMaterial resource you created.\n    *   Adjust `Decay Interval` (how often a piece decays) and `Total Decay Duration` as desired.\n\n5.  **Run the Scene:** When the scene runs, the `RigidBody3D` nodes within the `DecayableEnvironment` will progressively transition from `Static` mode to `Rigid` mode (falling under gravity) and visually dissolve using the shader, creating an urgent sense of environmental collapse.",
+  "parameters": [
+    {
+      "name": "decay_interval",
+      "type": "float",
+      "default": "5.0",
+      "description": "The time in seconds between each environmental piece decaying."
+    },
+    {
+      "name": "total_decay_duration",
+      "type": "float",
+      "default": "60.0",
+      "description": "The total conceptual time until all memories (decayable areas) are gone. Currently used for progress tracking, not direct timing of all decays."
+    },
+    {
+      "name": "decay_root_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "The NodePath to a Node3D that contains all the RigidBody3D nodes intended to decay."
+    },
+    {
+      "name": "dissolve_shader_material_template",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "A ShaderMaterial resource that uses the dissolve_shader.gdshader. This template will be duplicated and applied to each decaying MeshInstance3D."
+    }
+  ],
+  "dependencies": [
+    "RigidBody3D",
+    "MeshInstance3D",
+    "CollisionShape3D",
+    "ShaderMaterial",
+    "Tween",
+    "res://shaders/dissolve_shader.gdshader (as described in usage)"
+  ],
+  "verdict": "The very ground beneath Lyra's feet becomes a ticking clock of existential dread, making the loss of self a tangible, crumbling reality.",
+  "impact": "This mechanic will fundamentally transform the player's experience by turning the environment itself into a relentless, physical manifestation of Lyra's fading identity. Every step becomes a desperate gamble against oblivion, forcing constant movement and amplifying the core themes of self-loss and urgent survival. The player will feel an inescapable, suffocating dread as their past literally crumbles beneath their feet, making the abstract threat of forgetting terrifyingly real and immediate.",
+  "score": 85,
+  "inventedAt": "2026-08-09T03:27:29.684Z"
+}

@@ -1,0 +1,46 @@
+{
+  "name": "mnemonic_structural_atrophy",
+  "label": "The Withering Path",
+  "domain": "world",
+  "godotFeature": "PhysicsServer3D for dynamic environmental destruction and GPUParticles3D for erosion effects.",
+  "poeticVision": "The crushing realization that the very ground beneath your feet is dissolving, not from external forces, but because *you* are forgetting. Every lost memory tears away a piece of the world, leaving treacherous chasms and vanishing paths, a constant, tangible reminder of your fading self.",
+  "usage": "Attach this 'mnemonic_structural_atrophy.gd' script to a Node3D that represents a memory-linked structural module in the environment. This Node3D should have a 'StaticBody3D' and a 'MeshInstance3D' as direct children. Optionally, an 'AnimationPlayer' child with an animation named 'decay' can be used for custom visual effects. Configure the 'memory_id' export variable with a unique string that corresponds to a specific memory fragment. Assign pre-configured 'GPUParticles3D' and 'RigidBody3D' scenes to 'erosion_particles_scene' and 'fractured_body_scene' respectively. When a global 'MemoryManager' singleton emits a 'memory_lost_event' signal with a matching 'memory_id', or when the 'trigger_decay_if_linked' method is called with the correct ID, the module's collision will be disabled, erosion particles will emit, and its visual representation will decay (either via animation or fading), potentially being replaced by a dynamically simulated fractured body.",
+  "parameters": [
+    {
+      "name": "memory_id",
+      "type": "String",
+      "default": "",
+      "description": "A unique identifier string linking this structural module to a specific memory fragment. When this memory is lost, the module decays."
+    },
+    {
+      "name": "decay_duration",
+      "type": "float",
+      "default": "2.0",
+      "description": "The time in seconds for the visual decay effect (fading) if no 'AnimationPlayer' with a 'decay' animation is present."
+    },
+    {
+      "name": "erosion_particles_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A PackedScene containing a pre-configured GPUParticles3D node. This scene will be instantiated and played at the module's location during decay to simulate erosion."
+    },
+    {
+      "name": "fractured_body_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "An optional PackedScene containing a pre-fractured RigidBody3D version of this module. If provided, the original module will be replaced by this dynamic body upon decay, allowing for physics-driven destruction."
+    }
+  ],
+  "dependencies": [
+    "StaticBody3D (as a child node)",
+    "MeshInstance3D (as a child node)",
+    "AnimationPlayer (optional, as a child node, for 'decay' animation)",
+    "GPUParticles3D (required for 'erosion_particles_scene' PackedScene)",
+    "RigidBody3D (optional, required for 'fractured_body_scene' PackedScene)",
+    "MemoryManager (global singleton, assumed to emit 'memory_lost_event' signal)"
+  ],
+  "verdict": "The very ground beneath Lyra's feet becomes a cruel mirror, shattering with each lost memory, forcing a desperate dance on the edge of oblivion.",
+  "impact": "This mechanic transforms the environment into a dynamic, hostile entity directly reflecting the player's internal struggle. Every step becomes a gamble, every path a temporary reprieve, forcing constant adaptation and reinforcing the desperate urgency of Lyra's quest. It makes the abstract concept of 'forgetting' a tangible, immediate threat that shapes the very ground she walks on, creating profound tension and a unique sense of vulnerability.",
+  "score": 95,
+  "inventedAt": "2026-08-09T03:24:57.341Z"
+}

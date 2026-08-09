@@ -1,0 +1,59 @@
+{
+  "name": "synaptic_drift_hud",
+  "label": "Synaptic Drift HUD",
+  "domain": "ui",
+  "godotFeature": "Control Nodes, Tween, CanvasItem Shaders",
+  "poeticVision": "Feel the fragile grip on your own awareness as critical information slips from your sight. Your health, your memory count — they drift like fractured thoughts across the screen, demanding a desperate, split-second act of mental fortitude to pull them back into focus, lest your very ability to strategize unravels.",
+  "usage": "1. Create a new `Control` node in your scene (e.g., named `SynapticDriftHUD`).\n2. Attach this `synaptic_drift_hud.gd` script to the `SynapticDriftHUD` node.\n3. Create a new `Shader` file named `drift_shader.gdshader` with the following GLSL code:\n\nglsl\n// drift_shader.gdshader\nshader_type canvas_item;\n\nuniform float drift_intensity : hint_range(0.0, 1.0) = 0.0;\nuniform float scramble_speed : hint_range(0.0, 10.0) = 5.0;\nuniform sampler2D texture : hint_filter_linear;\nuniform vec4 color : source_color;\n\nvoid fragment() {\n\tvec2 uv_offset = vec2(\n\t\tsin(TIME * scramble_speed + UV.y * 10.0) * 0.01,\n\t\tcos(TIME * scramble_speed * 0.7 + UV.x * 10.0) * 0.01\n\t) * drift_intensity;\n\n\tvec4 tex_color = texture(texture, UV + uv_offset);\n\n\t// Desaturate and reduce alpha based on drift_intensity\n\tfloat luma = dot(tex_color.rgb, vec3(0.2126, 0.7152, 0.0722));\n\tvec3 desaturated_color = mix(tex_color.rgb, vec3(luma), drift_intensity * 0.5);\n\ttex_color.rgb = desaturated_color;\n\ttex_color.a *= (1.0 - drift_intensity * 0.3);\n\n\tCOLOR = tex_color * color;\n}\n\n\n4. As children of the `SynapticDriftHUD` node, create your actual HUD elements (e.g., `Label`s for health, memory count, and objective text, or `TextureRect`s for icons/bars).\n5. For each of these child HUD elements:\n   a. In the Inspector, under `Control` -> `Material`, create a `New ShaderMaterial`.\n   b. In the `ShaderMaterial`, load the `drift_shader.gdshader` file into the `Shader` property.\n   c. Ensure their initial `position` is set relative to their parent `SynapticDriftHUD` (e.g., `Vector2(0,0)` if you want them to drift from the parent's top-left corner).\n6. In the Inspector for the `SynapticDriftHUD` node, drag and drop your created HUD elements into the corresponding `@export` slots (`Health Display`, `Memory Display`, `Objective Display`).\n7. To control the overall drift intensity, call the `set_global_drift_intensity(intensity: float)` method from your game logic. `intensity` should be between `0.0` (no drift/clear) and `1.0` (maximum drift/scramble). For example, `get_node(\"SynapticDriftHUD\").set_global_drift_intensity(Lyra.damage_level / Lyra.max_health)`.\n8. The `_attempt_snap_all_elements()` function includes commented-out placeholder logic for resource management. You should replace this with your game's actual 'focus' resource check and depletion logic.",
+  "parameters": [
+    {
+      "name": "drift_speed",
+      "type": "float",
+      "default": "0.5",
+      "description": "How fast elements drift (seconds per drift cycle)."
+    },
+    {
+      "name": "max_drift_range",
+      "type": "float",
+      "default": "50.0",
+      "description": "Maximum pixels elements can drift from their initial origin."
+    },
+    {
+      "name": "snap_duration",
+      "type": "float",
+      "default": "0.2",
+      "description": "How fast elements snap back to their original position and clarity."
+    },
+    {
+      "name": "snap_focus_cost",
+      "type": "float",
+      "default": "10.0",
+      "description": "Example resource cost incurred when the player snaps the HUD back into focus."
+    },
+    {
+      "name": "health_display",
+      "type": "Control",
+      "default": "null",
+      "description": "Reference to the Control node displaying health information."
+    },
+    {
+      "name": "memory_display",
+      "type": "Control",
+      "default": "null",
+      "description": "Reference to the Control node displaying memory count or status."
+    },
+    {
+      "name": "objective_display",
+      "type": "Control",
+      "default": "null",
+      "description": "Reference to the Control node displaying the current objective."
+    }
+  ],
+  "dependencies": [
+    "drift_shader.gdshader"
+  ],
+  "verdict": "A brilliant manifestation of internal struggle, turning the very interface into a dynamic battleground for clarity and survival.",
+  "impact": "This mechanic elevates the HUD from a passive information display to an active, challenging element of gameplay. It directly translates Lyra's internal struggle with memory loss into a tangible, player-facing obstacle, forcing constant engagement with the theme of identity dissolution. Players will experience a heightened sense of urgency and vulnerability, as maintaining mental clarity becomes a critical resource management task amidst the chaos of survival.",
+  "score": 88,
+  "inventedAt": "2026-08-09T03:33:17.468Z"
+}

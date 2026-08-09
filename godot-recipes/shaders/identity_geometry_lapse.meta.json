@@ -1,0 +1,67 @@
+{
+  "name": "identity_geometry_lapse",
+  "label": "Veil of the Forgetting Path",
+  "domain": "shaders",
+  "godotFeature": "SpatialMaterial vertex shader manipulation",
+  "poeticVision": "The ground beneath Lyra's feet, the walls she clings to, begin to unravel. Geometric forms stretch, twist, and collapse into the grey void of forgotten data, only to momentarily re-form into chaotic, jumbled patterns of misplaced memory before dissolving again. Each step is precarious, a constant battle against the world itself attempting to forget its own shape, forcing the player to navigate a path that visibly disintegrates as Lyra's identity fades, creating a profound sense of disorientation and urgency as the tangible world mirrors her internal loss.",
+  "usage": "To use this shader:\n1. Create a new `Shader` resource in Godot (e.g., `res://shaders/identity_geometry_lapse.gdshader`) and paste the provided GLSL code into it.\n2. Create a new `ShaderMaterial` resource.\n3. Assign the created `Shader` to the `Shader` property of the `ShaderMaterial`.\n4. Assign a `NoiseTexture` resource (e.g., a `FastNoiseLite` wrapped in a `NoiseTexture`) to the `noise_texture` uniform within the `ShaderMaterial`'s parameters.\n5. Apply this `ShaderMaterial` to the `material_override` or `material` property of any `MeshInstance3D` node whose geometry you want to affect.\n6. From a GDScript, dynamically update the `time`, `memory_integrity`, and `proximity_to_silence` uniforms on the `ShaderMaterial` to control the distortion effect. For example:\n   gdscript\n   # In a script attached to a MeshInstance3D or a game manager:\n   func _process(delta):\n   \tif material_override is ShaderMaterial:\n   \t\tmaterial_override.set_shader_parameter(\"time\", Time.get_ticks_msec() / 1000.0)\n   \t\t# Example: Update based on game state\n   \t\tmaterial_override.set_shader_parameter(\"memory_integrity\", Lyra.current_memory_level)\n   \t\tmaterial_override.set_shader_parameter(\"proximity_to_silence\", Lyra.get_silence_proximity())\n   ",
+  "parameters": [
+    {
+      "name": "noise_texture",
+      "type": "sampler2D",
+      "default": "hint_default_black",
+      "description": "A NoiseTexture resource that provides the displacement pattern. A FastNoiseLite wrapped in a NoiseTexture is recommended."
+    },
+    {
+      "name": "time",
+      "type": "float",
+      "default": "0.0",
+      "description": "A global time value (e.g., `Time.get_ticks_msec() / 1000.0`) to animate the noise pattern, creating a sense of constant flux."
+    },
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Represents Lyra's current memory state (0.0 = completely forgotten, 1.0 = full memory). Lower values increase distortion."
+    },
+    {
+      "name": "proximity_to_silence",
+      "type": "float",
+      "default": "0.0",
+      "description": "Represents how close Silence entities are (0.0 = far, 1.0 = very close). Higher values increase distortion."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "Overall multiplier for the geometric displacement. Controls how far vertices are pushed."
+    },
+    {
+      "name": "distortion_frequency",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the spatial scale of the noise pattern. Higher values create more detailed, 'finer' distortions."
+    },
+    {
+      "name": "void_color",
+      "type": "vec4",
+      "default": "vec4(0.1, 0.1, 0.1, 1.0)",
+      "description": "The color that is revealed as the geometry distorts and 'unravels'."
+    },
+    {
+      "name": "void_blend_threshold",
+      "type": "float",
+      "default": "0.05",
+      "description": "The minimum displacement magnitude at which the 'void_color' begins to blend in. Higher values require more distortion to reveal the void."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D",
+    "ShaderMaterial",
+    "NoiseTexture"
+  ],
+  "verdict": "The very ground beneath Lyra's feet becomes a treacherous mirror of her dissolving self, a path of beautiful, terrifying oblivion.",
+  "impact": "This mechanic will immerse the player in Lyra's internal struggle, making her fading identity a tangible, environmental threat. Every step becomes a precarious decision, amplifying the urgency and tension as the world literally unravels around them, forcing constant adaptation and reinforcing the feeling of self-loss. It provides immediate, visceral feedback on critical game states (memory integrity, proximity to the Silence), transforming the environment into a dynamic, hostile entity that perfectly embodies the game's core themes.",
+  "score": 85,
+  "inventedAt": "2026-08-09T03:29:18.383Z"
+}

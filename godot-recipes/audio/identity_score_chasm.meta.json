@@ -1,0 +1,42 @@
+{
+  "name": "identity_score_chasm",
+  "label": "The Soul's Echoing Void",
+  "domain": "audio",
+  "godotFeature": "Dynamic control of AudioStreamPlayer instances and their parameters, coupled with custom algorithmic music generation logic.",
+  "poeticVision": "The player will experience the profound and unsettling grief of musical absence. As Lyra's identity erodes, specific, beloved melodic lines and harmonious layers that once defined her in the soundtrack will permanently fade into silence or stark dissonance. It’s not just distorted sound; it's the deliberate and irreversible deletion of her very musical soul, leaving behind a haunting void that echoes the emptiness within Lyra and the relentless hunger of the Silence. The music becomes a constant, auditory reminder of what has been irrevocably lost.",
+  "usage": "Attach this script to a Node in your scene (e.g., a 'MusicManager' node). Create a parent Node (e.g., 'MusicStems') and add multiple `AudioStreamPlayer` nodes as its children, each containing a distinct musical stem (e.g., a melody, a bassline, a pad). Create another `AudioStreamPlayer` node (e.g., 'DissonancePlayer') with a jarring sound effect or noise. Assign the NodePaths to `audio_stems_node_path` and `dissonance_player_node_path` in the Inspector. Call `lose_memory_fragment(fragment_id: String)` from other game logic (e.g., when Lyra fails a challenge or an enemy hits her) to trigger the permanent fading of a specific musical layer and potentially introduce dissonance. The `fragment_id` corresponds to the automatically generated IDs (e.g., 'fragment_00', 'fragment_01') assigned to the `AudioStreamPlayer` children in the order they appear under the 'MusicStems' node.",
+  "parameters": [
+    {
+      "name": "memory_fragments_total",
+      "type": "int",
+      "default": "10",
+      "description": "Total number of memory fragments Lyra starts with, determining the initial musical complexity and the maximum number of active stems."
+    },
+    {
+      "name": "audio_stems_node_path",
+      "type": "NodePath",
+      "default": "NodePath(\"MusicStems\")",
+      "description": "Path to the Node containing all AudioStreamPlayer nodes that represent individual musical stems/layers. Each child AudioStreamPlayer will be treated as a memory fragment."
+    },
+    {
+      "name": "dissonance_player_node_path",
+      "type": "NodePath",
+      "default": "NodePath(\"DissonancePlayer\")",
+      "description": "Path to an AudioStreamPlayer node used to play jarring dissonance or noise as identity erodes. Its volume will increase as more memories are lost."
+    },
+    {
+      "name": "fade_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "Duration in seconds for a musical stem to smoothly fade out when a memory fragment is lost."
+    }
+  ],
+  "dependencies": [
+    "AudioStreamPlayer",
+    "Node"
+  ],
+  "verdict": "The silence of a fading melody echoes the soul's deepest grief, a brilliant symphony of absence.",
+  "impact": "This invention profoundly deepens the player's emotional connection to Lyra's struggle, transforming the soundtrack from mere background into a dynamic, fragile representation of her very being. Each lost memory becomes an audible, irreversible void, creating a constant, haunting reminder of the stakes and the relentless erosion of self, making the player viscerally feel the grief of self-loss.",
+  "score": 85,
+  "inventedAt": "2026-08-09T03:31:04.080Z"
+}

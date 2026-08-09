@@ -1,0 +1,57 @@
+{
+  "name": "identity_fissure_architect_ai",
+  "label": "The Identity Fissure Architect",
+  "domain": "ai",
+  "godotFeature": "Dynamic modification of NavigationMesh and procedural environment generation (e.g., using MeshDataTool or instantiating PackedScenes based on game state)",
+  "poeticVision": "The crushing realization that your own failing mind is being turned against you. Every forgotten truth becomes a tangible trap, every lost identity a new wall in your path. It's not just being hunted; it's being outmaneuvered by the gaps in your own soul, a chilling sense of internal betrayal as the world twists against you based on what you've lost.",
+  "usage": "This 'Identity Fissure Architect' AI is designed to dynamically alter the game environment based on Lyra's diminishing memory integrity. It should be added as a Node3D to the main game scene or a persistent manager scene. The architect listens for changes in Lyra's memory state (assumed to be managed by a separate 'LyraMemorySystem' node which emits a 'memory_integrity_changed' signal). When Lyra's memory integrity drops below a configured threshold, the architect instantiates pre-defined 'fissure' PackedScenes (either traps or walls) around Lyra's current position. These instantiated obstacles, if they contain a NavigationObstacle3D, will automatically affect the game's NavigationMesh, creating dynamic pathfinding challenges for Lyra and her pursuers. This directly weaponizes Lyra's internal state against her external progression, fulfilling the vision of her own failing mind being turned against her.",
+  "parameters": [
+    {
+      "name": "player_node_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "The NodePath to Lyra's player character node. This node is expected to have a 'memory_integrity_changed' signal that emits Lyra's current memory integrity (float from 0.0 to 1.0)."
+    },
+    {
+      "name": "navigation_region_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "The NodePath to the primary NavigationRegion3D in the scene. While NavigationObstacle3D nodes handle themselves, this path can be used for future explicit NavMesh interactions or debugging."
+    },
+    {
+      "name": "memory_loss_threshold",
+      "type": "float",
+      "default": "0.1",
+      "description": "The amount of memory integrity loss (e.g., 0.1 means a 10% drop) required to trigger the generation of a new fissure obstacle."
+    },
+    {
+      "name": "fissure_trap_scenes",
+      "type": "Array[PackedScene]",
+      "default": "[]",
+      "description": "An array of PackedScene resources representing various 'trap' type fissures. These should be 3D scenes containing collision shapes and optionally NavigationObstacle3D nodes."
+    },
+    {
+      "name": "fissure_wall_scenes",
+      "type": "Array[PackedScene]",
+      "default": "[]",
+      "description": "An array of PackedScene resources representing various 'wall' type fissures. These should be 3D scenes containing collision shapes and NavigationObstacle3D nodes to block paths."
+    },
+    {
+      "name": "fissure_spawn_radius",
+      "type": "float",
+      "default": "10.0",
+      "description": "The maximum radius around Lyra's current position within which a new fissure obstacle can be spawned. A robust implementation would also check for valid ground and NavMesh placement."
+    }
+  ],
+  "dependencies": [
+    "Node3D (base class)",
+    "NavigationRegion3D (for pathfinding context, referenced by path)",
+    "PackedScene (for fissure traps and walls)",
+    "Player character node (assumed to emit 'memory_integrity_changed' signal)",
+    "NavigationObstacle3D (expected to be a child of instantiated fissure scenes to dynamically affect NavMesh)"
+  ],
+  "verdict": "The mind's decay becomes the world's weapon, a chilling testament to the self's unraveling.",
+  "impact": "This invention transforms the abstract concept of memory loss into a tangible, ever-present environmental threat. Players will experience a profound sense of internal betrayal as the very world around them twists and turns against them, directly reflecting their fading identity. Every forgotten truth becomes a new obstacle, forcing constant adaptation and reinforcing the desperate struggle against self-dissolution. It elevates the core tension of the game, making the internal battle as immediate and dangerous as any external hunter.",
+  "score": 85,
+  "inventedAt": "2026-08-09T03:30:10.660Z"
+}

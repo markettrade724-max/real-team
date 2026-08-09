@@ -1,0 +1,45 @@
+{
+  "name": "mnemonic_decay_surfing",
+  "label": "Episodic Atrophy Drift",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D, RigidBody3D, Joint3D, PhysicsServer3D",
+  "poeticVision": "The desperate exhilaration of riding a crumbling memory-wave. The floor beneath Lyra isn't just decaying; it's a transient platform she must learn to surf, its disintegration a brutal current to navigate. Every collapsing shard is a fleeting opportunity, a memory she can briefly stand on or push away, forcing split-second decisions as her own past becomes a treacherous, shifting ground.",
+  "usage": "This script defines the behavior of a 'Memory Fragment' in the 'Episodic Atrophy Drift' mechanic. To use it:\n\n1.  **Create a Memory Fragment Scene:** Create a new scene with a `RigidBody3D` as the root. Attach this `memory_fragment.gd` script to it. Add a `MeshInstance3D` (e.g., a CubeMesh) and a `CollisionShape3D` (e.g., a BoxShape3D) as children to represent the physical fragment. Ensure the `RigidBody3D` has its `mode` set to `MODE_RIGID` or `MODE_STATIC` initially if you want it to be stable before decay.\n2.  **Create a Player Scene:** Create a `CharacterBody3D` scene for Lyra. Attach a script (e.g., `player.gd`) to handle movement, jumping, and interaction. This player script should include logic to detect nearby `MemoryFragment` nodes (e.g., using an `Area3D` child) and call `apply_player_kick_off` on them when a specific input action (e.g., 'kick_off') is pressed. The player script would also apply a counter-force to Lyra for a realistic kick-off feel.\n3.  **Assemble the World Scene:** In your main game scene, instantiate multiple `MemoryFragment` scenes. To create the 'crumbling memory-wave' effect, you can connect these fragments using the `connect_to_fragment` method. For example, in a parent `Node3D`'s `_ready()` function, you could iterate through instantiated fragments and call `fragment1.connect_to_fragment(fragment2, joint_position)`. This will create `Generic6DOFJoint3D` nodes connecting them. These joints will break when a fragment decays.\n4.  **Input Actions:** Configure Godot's Project Settings -> Input Map with actions like 'jump', 'move_left', 'move_right', 'move_forward', 'move_back', and 'kick_off'.\n\nWhen Lyra interacts with a decaying fragment via `apply_player_kick_off`, the fragment will receive an impulse, allowing players to strategically push or alter the trajectory of crumbling platforms. The `decay_time` parameter controls how long a fragment remains stable before its connections break and it becomes fully dynamic, reflecting the constant tension of self-loss and the urgent motion described in the Soul Document.",
+  "parameters": [
+    {
+      "name": "decay_time",
+      "type": "float",
+      "default": "5.0",
+      "description": "The time in seconds before the memory fragment begins to decay and break its connections."
+    },
+    {
+      "name": "kick_off_strength",
+      "type": "float",
+      "default": "10.0",
+      "description": "The impulse strength applied to the fragment when Lyra 'kicks off' it."
+    },
+    {
+      "name": "initial_decay_impulse",
+      "type": "float",
+      "default": "5.0",
+      "description": "The initial impulse applied to the fragment when it first breaks away due to decay."
+    },
+    {
+      "name": "decay_visual_effect_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The duration over which visual decay effects (e.g., shrinking, color change) would play before the fragment fully breaks."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (for Lyra's player character)",
+    "RigidBody3D (for other memory fragments)",
+    "Generic6DOFJoint3D (for connecting fragments)",
+    "Timer",
+    "PhysicsServer3D"
+  ],
+  "verdict": "A brilliant dance on the edge of oblivion, where the very ground of memory becomes a treacherous, surfable current, demanding constant adaptation and desperate ingenuity.",
+  "impact": "This mechanic fundamentally transforms the environment from static obstacles into dynamic, interactive elements, forcing constant adaptation and strategic engagement with the very ground Lyra stands upon. It elevates the sense of urgency and desperation, making every step a calculated risk and every memory fragment a potential tool or trap, deeply integrating the theme of self-loss into the core gameplay loop.",
+  "score": 85,
+  "inventedAt": "2026-08-09T03:28:31.667Z"
+}
