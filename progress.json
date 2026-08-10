@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-08-09T07:54:16.641Z",
-  "current": null,
+  "updatedAt": "2026-08-10T06:22:35.559Z",
+  "current": {
+    "type": "episode",
+    "episode": 24,
+    "id": null,
+    "startedAt": "2026-08-10T06:06:26.414Z",
+    "updatedAt": "2026-08-10T06:22:35.559Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 24,
     "totalEpisodes": 24,
@@ -672,6 +679,35 @@
         "startedAt": "2026-08-05T07:32:19.135Z",
         "completedAt": "2026-08-05T09:41:09.136Z",
         "failReason": null
+      },
+      "24": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-08-10T06:08:04.300Z",
+            "title": "The Last Chord",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-08-10T06:10:33.752Z",
+            "title": "The Last Chord",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-08-10T06:11:21.378Z",
+            "title": "The Last Chord",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-08-10T06:06:26.414Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
