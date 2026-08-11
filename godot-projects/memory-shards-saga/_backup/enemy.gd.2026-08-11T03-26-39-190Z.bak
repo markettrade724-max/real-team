@@ -149,7 +149,6 @@ func die() -> void:
 	set_collision_mask(0)
 	
 	# Queue free after a short delay to allow death animation/effects to play.
-	await get_tree().create_timer(0.5).timeout # Added delay
 	if is_inside_tree():
 		queue_free()
 

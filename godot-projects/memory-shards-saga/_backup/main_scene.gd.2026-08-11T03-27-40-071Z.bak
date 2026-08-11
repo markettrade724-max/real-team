@@ -78,7 +78,6 @@ func _input(event: InputEvent):
 	            get_viewport().set_input_as_handled()
 
 func _connect_enemy_signals(enemy_node: Node):
-	# Assumes enemy nodes are in the "enemy" group and emit a 'died' signal with an optional 'points' argument.
 	if enemy_node.is_in_group("enemy"):
 	    if enemy_node.has_signal("died"):
 	        if not enemy_node.died.is_connected(_on_enemy_died):
@@ -138,7 +137,6 @@ func _set_game_state(new_state: GameState):
 
 func _spawn_player_if_needed():
 	# Spawn player if not already present or if returning from main menu
-	# Assumes the player scene emits 'player_died' and 'player_health_changed(new_health: int, max_health: int)' signals.
 	if not is_instance_valid(_player_instance) and player_scene:
 	    _player_instance = player_scene.instantiate()
 	    
