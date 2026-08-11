@@ -159,6 +159,10 @@ func _spawn_player_if_needed():
 	    # Initial HUD update is now handled by the player's _ready() signal emission
 	    # and the connected _on_player_health_changed function.
 	    # The manual call below is no longer needed.
+	    # if _player_instance.has_method("get_current_health") and _player_instance.has_method("get_max_health"):
+	    #     _on_player_health_changed(_player_instance.get_current_health(), _player_instance.get_max_health())
+	    # else:
+	    #     push_warning("Player instance does not have get_current_health or get_max_health methods for initial HUD update.")
 	elif not player_scene:
 	    push_error("Player scene not assigned in main_scene.gd! Cannot start gameplay.")
 
