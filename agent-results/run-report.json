@@ -1,22 +1,22 @@
 {
-  "runId": "2026-08-11T0809",
-  "mode": "game-fix",
-  "success": true,
-  "timestamp": "2026-08-11T08:11:24.402Z",
-  "totalDuration": "105.3s",
+  "runId": "2026-08-12T0354",
+  "mode": "screenplay-production",
+  "success": false,
+  "timestamp": "2026-08-12T04:08:04.679Z",
+  "totalDuration": "844.4s",
   "budget": {
-    "total": 9,
+    "total": 6,
     "limit": 40,
-    "left": 31,
+    "left": 34,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 9,
+        "total": 6,
         "limit": 20,
-        "left": 11,
+        "left": 14,
         "exhausted": false,
         "library": 0,
-        "agents": 9
+        "agents": 6
       },
       {
         "key": "KEY_2",
@@ -44,15 +44,45 @@
     "gamesDone": 1
   },
   "agents": {
-    "gamefix": {
+    "screenplay": {
       "success": true,
-      "duration": "104.7s",
+      "duration": "—",
       "error": null
+    },
+    "voice": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "scene": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "visual": {
+      "success": true,
+      "duration": "46.3s",
+      "error": null
+    },
+    "subtitle": {
+      "success": true,
+      "duration": "0ms",
+      "error": null
+    },
+    "music": {
+      "success": true,
+      "duration": "5ms",
+      "error": null
+    },
+    "production": {
+      "success": false,
+      "duration": "—",
+      "error": "Timeout after 600s"
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 1,
-    "failed": 0
+    "total": 7,
+    "passed": 6,
+    "failed": 1
   }
 }
