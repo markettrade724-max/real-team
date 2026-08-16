@@ -1,0 +1,33 @@
+{
+  "name": "synaptic_resonance_devour",
+  "label": "Frequency of Forgetting",
+  "domain": "audio",
+  "godotFeature": "AudioStreamGeneratorPlayback, Audio Buses, AudioEffectEQ, AudioEffectFilter",
+  "poeticVision": "Feel the chilling realization that your own inner sound, the very hum of your existence, is being actively consumed. Hear the Silence not as an absence, but as a hungry void that rips specific frequencies from your auditory self, leaving gaps, distortions, and a visceral sense of emptiness where your memories once sang. When a memory fades, a unique sonic layer representing that memory is torn from your perception, replaced by an invasive, resonant 'void' sound at the missing frequencies. The closer the Silence, the more violent the acoustic tearing, creating an internal echo of profound, irreversible loss.",
+  "usage": "Attach this script to a Node in your scene. Add two AudioStreamPlayer nodes as children, named 'IdentityPlayer' and 'VoidPlayer'. Create two AudioStreamGenerator resources (e.g., 'IdentityGenerator.tres' and 'VoidGenerator.tres') and assign them to the 'identity_generator_resource' and 'void_generator_resource' properties in the Inspector. In Project Settings -> Audio Bus Layout, create two new buses: 'LyraIdentity' and 'VoidResonance'. Both should be children of the 'Master' bus. On the 'LyraIdentity' bus, add an 'AudioEffectEQ' (as effect 0) and an 'AudioEffectFilter' (as effect 1). On the 'VoidResonance' bus, add an 'AudioEffectEQ' (as effect 0). Ensure the 'AudioEffectEQ' on both buses has at least 'MAX_MEMORIES' bands (e.g., 8 or 10 bands). Call `add_memory_fragment(memory_id: String, frequency: float)` to register new memory fragments. Call `lose_memory_fragment(memory_id: String)` when Lyra loses a memory, which will remove its frequency from the identity soundscape and replace it with a void sound. Call `update_silence_proximity(proximity_factor: float)` to dynamically adjust the overall sound based on the Silence's closeness.",
+  "parameters": [
+    {
+      "name": "identity_generator_resource",
+      "type": "AudioStreamGenerator",
+      "default": "null",
+      "description": "The AudioStreamGenerator resource for Lyra's internal identity soundscape."
+    },
+    {
+      "name": "void_generator_resource",
+      "type": "AudioStreamGenerator",
+      "default": "null",
+      "description": "The AudioStreamGenerator resource for the unsettling void sound that replaces lost memories."
+    }
+  ],
+  "dependencies": [
+    "Node",
+    "AudioStreamPlayer",
+    "AudioStreamGenerator",
+    "AudioEffectEQ",
+    "AudioEffectFilter"
+  ],
+  "verdict": "A symphony of self-loss, where the Silence devours not just memories, but the very frequencies of one's being, leaving behind a resonant, chilling void.",
+  "impact": "This invention transforms the abstract concept of identity loss into a deeply visceral and unsettling auditory experience. Players will not merely observe memories fading; they will viscerally feel a part of Lyra's internal soundscape being torn away, replaced by an invasive, resonant void. This creates a pervasive, internal tension that perfectly mirrors the external physical threats, making the struggle for selfhood as immediate and terrifying as the hunters themselves.",
+  "score": 92,
+  "inventedAt": "2026-08-16T02:56:47.359Z"
+}

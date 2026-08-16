@@ -1,0 +1,43 @@
+{
+  "name": "temporal_identity_desync",
+  "label": "Memory's Ticking Ghost",
+  "domain": "time",
+  "godotFeature": "Godot's Physics Engine (RigidBody3D, CharacterBody3D, Area3D) combined with custom _physics_process and global_transform manipulation",
+  "poeticVision": "Player will experience a visceral anxiety as the environment itself betrays their immediate past actions. The adrenaline of survival amplifies into a chilling paranoia when a successfully dodged attack might retroactively land, or a safely crossed platform collapses moments *after* they've left it. It's the physical manifestation of self-doubt and the terrifying reality that your own fading identity actively makes your world unstable, punishing you for what you *thought* you had achieved. The player will feel the gut-punch of 'I thought I was safe, but my mind betrayed me.'",
+  "usage": "Attach this script to any PhysicsBody3D (RigidBody3D, StaticBody3D, CharacterBody3D) that should exhibit temporal desynchronization. Ensure the PhysicsBody3D has a visual child node (e.g., MeshInstance3D, MultiMeshInstance3D, CSGBox3D) and, if it's a platform, a CollisionShape3D child. When 'desync_enabled' is true, the visual representation of the object will lag behind its physical collision, creating a disorienting effect. If 'is_platform' is true, the platform's collision shape will also have a chance to momentarily disable, causing players to fall through seemingly solid ground. A central 'MemoryManager' or 'GameManager' script should toggle the 'desync_enabled' property on relevant objects when Lyra loses a memory fragment.",
+  "parameters": [
+    {
+      "name": "desync_enabled",
+      "type": "bool",
+      "default": "false",
+      "description": "If true, temporal desynchronization effects are active for this object. Set to false to reset the object to normal state."
+    },
+    {
+      "name": "desync_lag_time",
+      "type": "float",
+      "default": "0.1",
+      "description": "The duration (in seconds) that the object's visual representation lags behind its true physical position. A higher value means more visual lag."
+    },
+    {
+      "name": "is_platform",
+      "type": "bool",
+      "default": "false",
+      "description": "If true, enables additional desynchronization logic specific to platforms, such as momentary collision disabling."
+    },
+    {
+      "name": "platform_desync_chance",
+      "type": "float",
+      "default": "0.1",
+      "description": "The chance per second (0.0 to 1.0) for a platform's collision to momentarily disable when 'is_platform' is true and 'desync_enabled' is active. A value of 0.1 means a 10% chance per second."
+    }
+  ],
+  "dependencies": [
+    "Parent node must be a PhysicsBody3D (RigidBody3D, StaticBody3D, or CharacterBody3D).",
+    "A child visual node (e.g., MeshInstance3D, MultiMeshInstance3D, CSGBox3D) for visual desync.",
+    "A child CollisionShape3D node (required for platform-specific desync)."
+  ],
+  "verdict": "A brilliant temporal distortion, this mechanic masterfully weaves the terror of a fading mind into the very fabric of the world, making every step a treacherous dance with forgotten truths.",
+  "impact": "This mechanic will instill a profound and constant sense of paranoia and self-doubt, forcing players to question their own perceptions and past actions. Every seemingly safe moment becomes a potential trap, amplifying the core themes of memory loss and identity dissolution into a visceral, unforgettable struggle against a world that actively betrays them.",
+  "score": 92,
+  "inventedAt": "2026-08-16T02:52:23.457Z"
+}

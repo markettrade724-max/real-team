@@ -1,0 +1,63 @@
+{
+  "name": "synaptic_gaze_fracture",
+  "label": "The Shifting Gaze of Self",
+  "domain": "ui",
+  "godotFeature": "SubViewport, ViewportContainer, CanvasItemMaterial (custom shader), AnimationPlayer",
+  "poeticVision": "The player feels their very perception of the game world and their own status slipping away, an encroaching madness mirroring Lyra's identity loss. The HUD isn't just an informational overlay; it's a fragile construct of her mind, physically tearing, glitching, and re-stitching in real-time. Recovering a memory is not just collecting an item, but a momentary anchor that stitches a piece of their visual reality back together, only for the Silence to rip it anew. Every glance at the UI is a micro-struggle against cognitive decay.",
+  "usage": "1. Create a `SubViewport` node (e.g., named 'UIRenderViewport') as a child of a `CanvasLayer` or other `Control`.\n2. Place all your UI elements (health bar, memory counter, objective text, etc.) as children of this `SubViewport`.\n3. Create a `ViewportContainer` node (e.g., named 'UIContainer') as a sibling or child of the `SubViewport`'s parent. Set its `stretch` property to `true` and ensure it covers the desired screen area.\n4. Set the `ViewportContainer`'s `viewport` property to reference your 'UIRenderViewport'.\n5. Create a new `ShaderMaterial` resource. Assign this `synaptic_gaze_fracture.gdshader` to its `shader` property.\n6. Assign a `NoiseTexture2D` (e.g., a Perlin or Simplex noise) to the `noise_texture` uniform in the `ShaderMaterial`.\n7. Assign this `ShaderMaterial` to the `material` property of the `ViewportContainer`.\n8. From a GDScript (e.g., a dedicated UI Manager script), get a reference to the `ShaderMaterial`.\n9. Dynamically update the shader's uniform parameters (e.g., `identity_integrity`, `tear_amount`, `glitch_intensity`, `rip_effect`, `suture_effect`) using `material.set_shader_parameter(\"uniform_name\", value)` based on Lyra's identity integrity, proximity to Silence entities, or memory loss/recovery events. Use `Tween` nodes or `AnimationPlayer` to smoothly animate these values for visual transitions.",
+  "parameters": [
+    {
+      "name": "noise_texture",
+      "type": "sampler2D",
+      "default": "hint_default_white",
+      "description": "A noise texture (e.g., Perlin, Simplex) used to generate varied distortion patterns, tears, and glitches. Essential for organic-looking effects."
+    },
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Represents Lyra's mental state. A value of 1.0 means perfect integrity (minimal distortion), 0.0 means complete corruption (maximum distortion). Controls the overall visual stability of the UI."
+    },
+    {
+      "name": "tear_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the intensity and visibility of 'tears' or gaps in the UI. A value of 0.0 means no tears, 1.0 means significant portions of the UI are discarded, revealing the game world underneath."
+    },
+    {
+      "name": "glitch_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the strength of temporary visual glitches, such as chromatic aberration and subtle UV jitter. A value of 0.0 means no glitches, 1.0 means strong, frequent glitches."
+    },
+    {
+      "name": "rip_effect",
+      "type": "float",
+      "default": "0.0",
+      "description": "A temporary, aggressive effect triggered by critical memory loss. Causes violent tearing, desaturation, and color shifts. Should be animated from 1.0 back to 0.0 over a short duration."
+    },
+    {
+      "name": "suture_effect",
+      "type": "float",
+      "default": "0.0",
+      "description": "A temporary 'healing' effect triggered by recovering a memory. Blends the UI back towards its original, stable state and adds a slight glow. Should be animated from 1.0 back to 0.0 over a short duration."
+    },
+    {
+      "name": "time_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "A multiplier for the internal `TIME` variable, controlling the speed of all time-based dynamic effects (e.g., distortion movement, glitch frequency). Set to 0.0 to pause dynamic effects."
+    }
+  ],
+  "dependencies": [
+    "SubViewport",
+    "ViewportContainer",
+    "CanvasItemMaterial (ShaderMaterial)",
+    "Shader (this GLSL code)",
+    "NoiseTexture2D (for 'noise_texture' uniform)"
+  ],
+  "verdict": "Through a fractured lens, the player will taste the bitter dust of a mind unraveling, making every recovered memory a fleeting, precious stitch against the encroaching void.",
+  "impact": "This invention transforms the player's HUD from a mere informational overlay into a living, breathing manifestation of Lyra's deteriorating identity. It ensures that the core theme of self-loss is not just a narrative element but a constant, visceral presence in the player's moment-to-moment experience. Every visual glitch, tear, or re-stitching directly communicates the stakes of memory recovery and the relentless pressure of the Silence, forcing players to actively contend with cognitive decay as a physical challenge. This deepens immersion, heightens tension, and makes the fight for identity profoundly personal and unforgettable.",
+  "score": 85,
+  "inventedAt": "2026-08-16T02:58:12.082Z"
+}

@@ -1,0 +1,59 @@
+{
+  "name": "identity_echo_quakes",
+  "label": "Echo-Quake Architecture",
+  "domain": "world",
+  "godotFeature": "Physics Server (dynamic collision shape modification), GeometryTools (runtime mesh deformation), Shaders (real-time visual degradation/reconstruction), GDScript (procedural logic for memory-to-world mapping)",
+  "poeticVision": "Imagine the ground beneath your feet not just crumbling, but actively *recoiling* from your fading self. Every lost memory reverberates through the very architecture of the world, twisting familiar paths into deadly traps, or revealing fleeting, unstable bridges forged from half-forgotten emotions. You feel the immediate, visceral consequence of your eroding identity as the environment itself becomes a dangerous, unpredictable mirror of your internal decay, forcing you to constantly adapt to a world that reshapes itself based on your own self-loss. It's the profound terror of watching your past literally disintegrate into physical hazards, a direct testament to the Silence's corrosive power, making the pursuit not just external, but intimately internal as well.",
+  "usage": "1.  **Add the script:** Attach `identity_echo_quakes.gd` to a `Node3D` in your main scene (e.g., a 'GameManager' node).\n2.  **Prepare environmental elements:** For any `MeshInstance3D` or `StaticBody3D`/`RigidBody3D` that should react to memory loss:\n    *   For visual dissolution, ensure `MeshInstance3D` nodes use a `ShaderMaterial` with the `echo_quake_dissolve.gdshader` (provided below). Configure its `noise_texture`, `dissolve_color`, and `dissolve_edge_width` uniforms.\n    *   For physical reactions, ensure `StaticBody3D` or `RigidBody3D` nodes have appropriate `CollisionShape3D` children.\n3.  **Register elements:** In your game logic (e.g., `_ready()` of your level script), get a reference to the `IdentityEchoQuakes` node and call `register_memory_linked_element(memory_id: String, element: Node3D)` for each object you want to link to a specific memory. `memory_id` should be a unique string identifier for that memory.\n    *   Example: `get_node(\"GameManager/IdentityEchoQuakes\").register_memory_linked_element(\"childhood_home_layout\", $MemoryWall)`\n4.  **Trigger memory loss:** When Lyra loses a memory, call `lyra_loses_memory(memory_id: String)` on the `IdentityEchoQuakes` node with the corresponding `memory_id`.\n    *   Example: `get_node(\"GameManager/IdentityEchoQuakes\").lyra_loses_memory(\"childhood_home_layout\")`\n5.  **Advanced deformation (GeometryTools):** For more complex mesh deformation or fracturing (e.g., breaking a wall into pieces), you would extend the `_apply_echo_quake_effect` function. This would involve duplicating the `MeshInstance3D`'s mesh, using `GeometryTools` to manipulate its vertices or faces, and then creating new `MeshInstance3D` or `RigidBody3D` nodes for the resulting fragments. This is a more advanced topic and would require more lines of code than this recipe's limit.",
+  "parameters": [
+    {
+      "name": "memory_id",
+      "type": "String",
+      "default": "null",
+      "description": "A unique string identifier for a specific memory Lyra can lose. Used to link memories to environmental elements."
+    },
+    {
+      "name": "element",
+      "type": "Node3D",
+      "default": "null",
+      "description": "The Node3D in the scene (e.g., MeshInstance3D, StaticBody3D, RigidBody3D) that will be affected when the linked memory is lost."
+    },
+    {
+      "name": "dissolve_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Shader uniform. Controls the progress of the visual dissolution effect (0.0 = fully solid, 1.0 = fully dissolved)."
+    },
+    {
+      "name": "noise_texture",
+      "type": "sampler2D",
+      "default": "WhiteTexture",
+      "description": "Shader uniform. A grayscale texture (e.g., Perlin noise) used to create an irregular, organic dissolve pattern."
+    },
+    {
+      "name": "dissolve_color",
+      "type": "vec4",
+      "default": "vec4(1.0, 0.5, 0.0, 1.0)",
+      "description": "Shader uniform. The color of the glowing edge that appears during the dissolution effect."
+    },
+    {
+      "name": "dissolve_edge_width",
+      "type": "float",
+      "default": "0.05",
+      "description": "Shader uniform. The width of the glowing dissolve edge, relative to the dissolve progress."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D",
+    "StaticBody3D",
+    "RigidBody3D",
+    "CollisionShape3D",
+    "ShaderMaterial",
+    "Tween",
+    "echo_quake_dissolve.gdshader"
+  ],
+  "verdict": "A collapsing world, mirroring a fading mind, transforms the very ground Lyra treads into a treacherous testament to her eroding self, brilliantly fusing internal loss with external peril.",
+  "impact": "This invention fundamentally transforms memory loss from an abstract narrative element into a visceral, immediate, and dangerous gameplay mechanic. Players will experience the profound terror of their internal decay manifesting as external, physical hazards, forcing constant adaptation and reinforcing the emotional weight of Lyra's journey. Every lost memory will not just be a narrative beat, but a literal, perilous shift in the environment, making the pursuit both external and intimately internal.",
+  "score": 92,
+  "inventedAt": "2026-08-16T02:59:16.623Z"
+}

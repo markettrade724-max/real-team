@@ -1,0 +1,47 @@
+{
+  "name": "mnemonic_temporal_flicker",
+  "label": "The Shimmering Echoes of What Was",
+  "domain": "time",
+  "godotFeature": "SubViewport/SubViewportContainer, ShaderMaterial, PhysicsServer3D",
+  "poeticVision": "The player feels a constant, dizzying uncertainty as the very ground beneath them and the walls around them flicker unstably between present danger and past stillness. Every step is a gamble, every opening a temporal mirage, forcing split-second decisions to exploit a fleeting past escape route or brace for the imminent snap back to a collapsed present. It's the terror of a dissolving reality, where time itself is breaking apart around Lyra.",
+  "usage": "Attach this script to a Node3D in your scene. Populate the 'Temporal State Nodes' array with Node3D objects representing different temporal versions of your environment (e.g., one for an intact state, one for a decayed state). Assign a MeshInstance3D (e.g., a PlaneMesh or QuadMesh) to 'Blend Display Mesh' which will visually render the flickering effect; this mesh must have a ShaderMaterial using the provided 'mnemonic_temporal_flicker.gdshader'. Finally, link the corresponding CollisionShape3D nodes for each temporal state to the 'Collision Shapes' array. The script will automatically create SubViewports to render each temporal state and dynamically switch the active collision and visual blend factor at the specified 'Flicker Interval'.",
+  "parameters": [
+    {
+      "name": "flicker_interval",
+      "type": "float",
+      "default": "0.2",
+      "description": "The time in seconds between each temporal state flicker (visual and collision switch)."
+    },
+    {
+      "name": "temporal_state_nodes",
+      "type": "Array[Node3D]",
+      "default": "[]",
+      "description": "An array of Node3D objects, each representing a distinct temporal state of the environment (e.g., an intact version, a decayed version). These nodes will be rendered into SubViewports."
+    },
+    {
+      "name": "blend_display_mesh",
+      "type": "MeshInstance3D",
+      "default": "null",
+      "description": "The MeshInstance3D that will display the blended output of the temporal states. It must have a ShaderMaterial assigned that uses 'mnemonic_temporal_flicker.gdshader'."
+    },
+    {
+      "name": "collision_shapes",
+      "type": "Array[CollisionShape3D]",
+      "default": "[]",
+      "description": "An array of CollisionShape3D nodes, corresponding one-to-one with the 'temporal_state_nodes'. Only the collision shapes of the currently active temporal state will be enabled."
+    }
+  ],
+  "dependencies": [
+    "Timer",
+    "SubViewport",
+    "MeshInstance3D",
+    "ShaderMaterial",
+    "CollisionShape3D",
+    "PhysicsBody3D",
+    "mnemonic_temporal_flicker.gdshader"
+  ],
+  "verdict": "A temporal tear in reality, where every step is a desperate gamble against the memory's fleeting grasp.",
+  "impact": "This invention fundamentally transforms the environment into a dynamic, unpredictable antagonist. Players will experience constant spatial uncertainty, forcing split-second decisions and heightening the sense of a dissolving reality. Every path becomes a temporal gamble, demanding acute awareness and quick adaptation, making the very ground beneath Lyra a source of immediate danger and a poignant reminder of what is being lost.",
+  "score": 85,
+  "inventedAt": "2026-08-16T03:04:14.340Z"
+}

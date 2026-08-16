@@ -1,0 +1,41 @@
+{
+  "name": "mnemonic_trace_collapse",
+  "label": "Echoing Path of Oblivion",
+  "domain": "movement",
+  "godotFeature": "Godot Physics engine (CharacterBody3D, RigidBody3D, CollisionShape3D) combined with procedural instancing",
+  "poeticVision": "The very ground Lyra walks upon remembers her passing, only to immediately forget it with violent collapse. Every stride forward unravels the path behind her into a dangerous void, forcing a desperate, relentless momentum. The player feels their own presence rapidly eroding the world, a direct, physical manifestation of identity loss and the relentless march of forgetting.",
+  "usage": "Attach this script to a StaticBody3D node that represents a ground tile. This tile must have a MeshInstance3D, a CollisionShape3D, and an Area3D as direct children. The Area3D should also have a CollisionShape3D to define its detection zone. When the player character (a CharacterBody3D named 'Lyra') steps off this tile, a timer starts. Upon timeout, the tile's mesh and collision are disabled, and a pre-configured 'fragment_scene' (a RigidBody3D) is instantiated at the tile's position, given an initial velocity, and then removed after a set duration. The original StaticBody3D tile is then freed.",
+  "parameters": [
+    {
+      "name": "collapse_delay",
+      "type": "float",
+      "default": "1.0",
+      "description": "Time in seconds before the tile collapses after the player leaves it."
+    },
+    {
+      "name": "collapse_duration",
+      "type": "float",
+      "default": "2.0",
+      "description": "Time in seconds before the instantiated fragment RigidBody3D is removed from the scene."
+    },
+    {
+      "name": "fragment_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A PackedScene containing a RigidBody3D node (with a MeshInstance3D and CollisionShape3D) that will be instantiated when the tile collapses."
+    }
+  ],
+  "dependencies": [
+    "StaticBody3D (node this script is attached to)",
+    "MeshInstance3D (child of StaticBody3D, named 'MeshInstance3D')",
+    "CollisionShape3D (child of StaticBody3D, named 'CollisionShape3D')",
+    "Area3D (child of StaticBody3D, named 'Area3D')",
+    "CollisionShape3D (child of Area3D, for detection)",
+    "CharacterBody3D (player node, must be named 'Lyra')",
+    "PackedScene (a .tscn file for the fragment, containing a RigidBody3D with mesh and collision)"
+  ],
+  "verdict": "A brilliant mechanic that transforms the abstract terror of forgetting into a tangible, crumbling world underfoot, forcing a desperate dance against oblivion.",
+  "impact": "The player will experience relentless pressure, a constant visual and physical reminder of Lyra's eroding identity, and a profound sense of urgency. Every step becomes a commitment, every pause a risk, forcing a desperate, forward momentum that perfectly mirrors the narrative's themes of survival against forgetting.",
+  "score": 95,
+  "inventedAt": "2026-08-16T03:05:02.322Z"
+}

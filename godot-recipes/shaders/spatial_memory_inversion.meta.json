@@ -1,0 +1,42 @@
+{
+  "name": "spatial_memory_inversion",
+  "label": "Spatial Memory Inversion",
+  "domain": "shaders",
+  "godotFeature": "ShaderMaterial (Vertex Shader, Global Shader parameters)",
+  "poeticVision": "The player experiences the world's fabric itself betraying them. As a memory is violently consumed by the Silence, the very space around Lyra doesn't just decay; it *inverts*, *folds in on itself*, or *rips open*, revealing chaotic, non-euclidean voids. This isn't just a visual distortion but a physical, temporary alteration of the environment, forcing Lyra to re-evaluate her path as solid ground becomes impossible geometry, instilling a visceral fear of permanent self-erasure.",
+  "usage": "To use this shader, create a new ShaderMaterial resource and assign this .gdshader file to it. Apply this ShaderMaterial to any MeshInstance3D node (or similar node that uses a material for its geometry) that you want to be affected by the spatial inversion. In your GDScript, get a reference to the ShaderMaterial (e.g., `mesh_instance.get_active_material(0)` or `mesh_instance.material_override`). Then, dynamically update the shader's uniform parameters using `material.set_shader_parameter(\"uniform_name\", value)` to control the inversion effect. For example, when a memory is lost at a specific world position, set `inversion_origin` to that position, `inversion_radius` to define the affected area, `inversion_intensity` to animate the strength of the inversion (e.g., from 0.0 to 1.0), and `inversion_active` to 1.0 to enable the effect. Remember to set `inversion_active` back to 0.0 when the effect is not needed to save performance.",
+  "parameters": [
+    {
+      "name": "inversion_origin",
+      "type": "vec3",
+      "default": "vec3(0.0, 0.0, 0.0)",
+      "description": "The world-space coordinates of the center point around which the spatial inversion occurs. This should be set to the location where a memory is being consumed or lost."
+    },
+    {
+      "name": "inversion_radius",
+      "type": "float",
+      "default": "5.0",
+      "description": "The radius of the spherical area (in world units) within which the inversion effect is applied. Vertices outside this radius are unaffected."
+    },
+    {
+      "name": "inversion_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the strength of the inversion effect. A value of 0.0 means no inversion (original geometry), and 1.0 means full spherical inversion. This parameter should be animated to create a dynamic effect."
+    },
+    {
+      "name": "inversion_active",
+      "type": "float",
+      "default": "0.0",
+      "description": "A boolean-like float to activate or deactivate the shader effect. Set to 0.0 to disable the inversion (no performance cost from the inversion logic), and >0.5 (e.g., 1.0) to enable it."
+    }
+  ],
+  "dependencies": [
+    "ShaderMaterial",
+    "MeshInstance3D"
+  ],
+  "verdict": "The world itself becomes a fractured mirror, twisting and betraying the path as memory dissolves into non-euclidean dread.",
+  "impact": "This mechanic will profoundly deepen the player's sense of disorientation and vulnerability, transforming the environment from a mere setting into an active antagonist. It forces constant adaptation and quick decision-making, directly translating Lyra's internal struggle with memory loss into a tangible, physical threat that makes every step a desperate gamble against the world's unraveling.",
+  "score": 88,
+  "inventedAt": "2026-08-16T02:54:07.212Z"
+}

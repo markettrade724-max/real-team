@@ -1,0 +1,39 @@
+{
+  "name": "mnemonic_grav_lapse",
+  "label": "Mnemonic Grav-Lapse",
+  "domain": "movement",
+  "godotFeature": "PhysicsServer3D, Area3D, CharacterBody3D, WorldEnvironment",
+  "poeticVision": "The chilling dread of the ground beneath your feet turning into the ceiling, then vanishing entirely, as the very fabric of memory around you warps. A constant fight not just against pursuers, but against the raw, indifferent chaos of a collapsing reality, where 'down' is a fleeting concept and every jump might send you into the void or onto a wall.",
+  "usage": "1.  **Create Player Character**: Add a `CharacterBody3D` node to your scene. Attach this `mnemonic_grav_lapse_character.gd` script to it. Add a `CollisionShape3D` (e.g., CapsuleShape3D) and a `MeshInstance3D` (e.g., CapsuleMesh) for visualization. Add a `Camera3D` as a child for player perspective.\n2.  **Create Grav-Lapse Zones**: For each area where gravity should change, add an `Area3D` node. Attach a new script named `grav_lapse_zone.gd` (provided as a commented dependency within the main script for convenience) to each `Area3D`. Add a `CollisionShape3D` (e.g., BoxShape3D) to define the zone's boundaries. For visualization, you can add a `MeshInstance3D` with a transparent material.\n3.  **Configure Zones**: In the Inspector for each `Area3D` with `grav_lapse_zone.gd` attached, set the `custom_gravity_vector` to your desired gravity direction and strength (e.g., `Vector3(0, 9.8, 0)` for upward gravity, `Vector3(9.8, 0, 0)` for gravity towards positive X).\n4.  **Input Map Setup**: In Project Settings -> Input Map, add the following actions:\n    *   `move_left` (e.g., 'A' key)\n    *   `move_right` (e.g., 'D' key)\n    *   `move_forward` (e.g., 'W' key)\n    *   `move_backward` (e.g., 'S' key)\n    *   `jump` (e.g., 'Spacebar')\n5.  **Visual Cues (Optional)**: To enhance the effect, use a `WorldEnvironment` node with a `Environment` resource. You can dynamically adjust its `fog_density`, `sky_material`, or `glow` properties via GDScript when Lyra enters/exits a grav-lapse zone to visually indicate the shift. Local shaders on the `Area3D` meshes or on Lyra's material can also be used to create distortion or color shifts.\n6.  **Scene Setup**: Place the `CharacterBody3D` and `Area3D` zones in your 3D world. Ensure Lyra has a floor to stand on (e.g., a `StaticBody3D` with a `CollisionShape3D`). When Lyra enters a `GravLapseZone`, her gravity will dynamically change, forcing players to re-orient and adapt to the new 'down' direction.",
+  "parameters": [
+    {
+      "name": "move_speed",
+      "type": "float",
+      "default": "7.0",
+      "description": "The speed at which the character moves horizontally."
+    },
+    {
+      "name": "jump_velocity",
+      "type": "float",
+      "default": "10.0",
+      "description": "The initial velocity applied when the character jumps."
+    },
+    {
+      "name": "default_gravity",
+      "type": "Vector3",
+      "default": "Vector3(0, -9.8, 0)",
+      "description": "The global default gravity vector applied when Lyra is not in any grav-lapse zone."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "Area3D",
+    "grav_lapse_zone.gd (a separate script to be attached to Area3D nodes)",
+    "WorldEnvironment (for optional visual effects)",
+    "Input Map actions: 'move_left', 'move_right', 'move_forward', 'move_backward', 'jump'"
+  ],
+  "verdict": "In the collapsing theatre of memory, gravity itself becomes a cruel, shifting stage, demanding a dance of desperate adaptation against the void.",
+  "impact": "This mechanic would fundamentally alter player navigation, transforming environments into dynamic, hostile puzzles. It would amplify the sense of urgency and disorientation, forcing players to constantly adapt to a reality that literally shifts beneath their feet, making every step a calculated risk and every chase a desperate struggle against both hunters and the unraveling fabric of existence. The constant re-evaluation of 'up' and 'down' adds a profound layer of physical and psychological tension, perfectly mirroring Lyra's internal struggle with identity loss.",
+  "score": 88,
+  "inventedAt": "2026-08-16T02:53:22.592Z"
+}
