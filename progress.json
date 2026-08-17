@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-08-16T07:31:19.789Z",
-  "current": null,
+  "updatedAt": "2026-08-17T05:41:47.142Z",
+  "current": {
+    "type": "episode",
+    "episode": 26,
+    "id": null,
+    "startedAt": "2026-08-17T05:27:11.559Z",
+    "updatedAt": "2026-08-17T05:41:47.142Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 26,
     "totalEpisodes": 26,
@@ -730,6 +737,35 @@
         "startedAt": "2026-08-12T06:07:19.909Z",
         "completedAt": "2026-08-12T08:21:58.868Z",
         "failReason": null
+      },
+      "26": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-08-17T05:28:36.910Z",
+            "title": "The Loom's Embrace",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-08-17T05:29:48.863Z",
+            "title": "The Loom's Embrace",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-08-17T05:30:36.466Z",
+            "title": "The Loom's Embrace",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-08-17T05:27:11.559Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
