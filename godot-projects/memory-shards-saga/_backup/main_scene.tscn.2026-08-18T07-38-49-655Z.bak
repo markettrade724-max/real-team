@@ -57,32 +57,21 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ScoreLabel" type="Label" parent="UI/HUD"]
-layout_mode = 1
-anchors_preset = 4
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 0.0
-anchor_bottom = 1.0
+layout_mode = 0
 offset_left = 20.0
-offset_top = -50.0
-offset_right = 150.0
-offset_bottom = -20.0
-grow_vertical = 0
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 50.0
 text = "Score: 0"
-horizontal_alignment = 0
-vertical_alignment = 1
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
 [node name="HealthLabel" type="Label" parent="UI/HUD"]
-layout_mode = 1
-anchors_preset = 0
+layout_mode = 0
 offset_left = 20.0
-offset_top = 20.0
-offset_right = 150.0
-offset_bottom = 50.0
+offset_top = 60.0
+offset_right = 200.0
+offset_bottom = 90.0
 text = "HP: 100/100"
-horizontal_alignment = 0
-vertical_alignment = 1
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 
 [node name="GameOverUI" type="Control" parent="UI"]
