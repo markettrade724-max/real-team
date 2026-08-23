@@ -1,0 +1,132 @@
+{
+  "name": "memory_substrate_erosion",
+  "label": "Substrate of Forgetting",
+  "domain": "shaders",
+  "godotFeature": "Custom ShaderMaterial with fragment shader, global uniforms, and procedural noise for dynamic material blending.",
+  "poeticVision": "The player will not just see but *feel* the world fraying at its edges, its very substance flaking away like a diseased skin, revealing the cold, crystalline emptiness of the Silence beneath. Every lost memory isn't an abstract concept, but a visible, visceral tearing of reality's fabric, turning solid paths into unstable chasms, forcing Lyra to confront the imminent collapse of her own existence mirrored in the decaying environment.",
+  "usage": "To use this shader, create a new `ShaderMaterial` resource in Godot. Assign this `memory_substrate_erosion.gdshader` file to the `Shader` property of the `ShaderMaterial`. Then, apply this `ShaderMaterial` to any `MeshInstance3D` node's `material_override` property, or directly to its `material` property if it's the only material. Populate the `albedo_texture`, `normal_texture`, and `roughness_texture` with your desired base material textures, and similarly for the `silence_normal_texture` and `silence_roughness_texture` to define the 'Silence substrate' appearance. The `memory_integrity` and `silence_proximity_intensity` uniforms should be updated dynamically from a GDScript. For example, in a `_process` function of a game manager or the player script, you can access and modify these uniforms like so:\n\ngdscript\n# Assuming 'mesh_node' is a reference to your MeshInstance3D\n# and it has this ShaderMaterial applied.\nvar shader_material = mesh_node.get_active_material(0) # Or get_surface_override_material(0)\n\n# Update memory integrity (e.g., based on player's health/memory fragments)\nshader_material.set_shader_parameter(\"memory_integrity\", current_memory_value) # current_memory_value is a float 0.0-1.0\n\n# Update silence proximity (e.g., based on distance to Silence entities)\nshader_material.set_shader_parameter(\"silence_proximity_intensity\", current_proximity_value) # current_proximity_value is a float 0.0-1.0\n\n\nAdjust `erosion_threshold`, `erosion_speed`, `erosion_seed`, and `noise_scale` in the Inspector or via script to fine-tune the visual effect.",
+  "parameters": [
+    {
+      "name": "albedo_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The base albedo (color) texture of the original material."
+    },
+    {
+      "name": "albedo_color",
+      "type": "vec4",
+      "default": "vec4(1.0)",
+      "description": "A tint color applied to the base albedo texture."
+    },
+    {
+      "name": "normal_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The base normal map texture of the original material."
+    },
+    {
+      "name": "normal_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "The strength of the normal map for the original material."
+    },
+    {
+      "name": "roughness_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The base roughness texture (red channel) of the original material."
+    },
+    {
+      "name": "roughness_value",
+      "type": "float",
+      "default": "0.5",
+      "description": "A global roughness value applied to the original material."
+    },
+    {
+      "name": "silence_albedo_color",
+      "type": "vec4",
+      "default": "vec4(0.1, 0.0, 0.2, 1.0)",
+      "description": "The albedo color of the 'Silence substrate' material."
+    },
+    {
+      "name": "silence_normal_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The normal map texture for the 'Silence substrate' material."
+    },
+    {
+      "name": "silence_normal_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "The strength of the normal map for the 'Silence substrate' material."
+    },
+    {
+      "name": "silence_roughness_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The roughness texture (red channel) for the 'Silence substrate' material."
+    },
+    {
+      "name": "silence_roughness_value",
+      "type": "float",
+      "default": "0.2",
+      "description": "A global roughness value applied to the 'Silence substrate' material."
+    },
+    {
+      "name": "silence_emissive_color",
+      "type": "vec4",
+      "default": "vec4(0.5, 0.0, 1.0, 1.0)",
+      "description": "The emissive (glow) color of the 'Silence substrate' material."
+    },
+    {
+      "name": "silence_refraction_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "The strength of refraction for the 'Silence substrate' material. Requires refraction_enabled render_mode."
+    },
+    {
+      "name": "erosion_threshold",
+      "type": "float",
+      "default": "0.5",
+      "description": "The base threshold for the noise function to determine where erosion occurs (0.0-1.0). Lower values mean more erosion."
+    },
+    {
+      "name": "erosion_speed",
+      "type": "float",
+      "default": "1.0",
+      "description": "The speed at which the noise pattern animates, creating dynamic erosion."
+    },
+    {
+      "name": "erosion_seed",
+      "type": "vec3",
+      "default": "vec3(0.0, 0.0, 0.0)",
+      "description": "A 3D offset for the noise function, useful for varying the erosion pattern across different objects or instances."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "The scale of the noise pattern and the tiling of triplanar textures. Larger values create smaller, more detailed patterns."
+    },
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "A global game state value (0.0-1.0) representing Lyra's memory integrity. Lower values increase erosion."
+    },
+    {
+      "name": "silence_proximity_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "A global game state value (0.0-1.0) representing the proximity or intensity of Silence entities. Higher values increase erosion."
+    }
+  ],
+  "dependencies": [
+    "ShaderMaterial",
+    "MeshInstance3D"
+  ],
+  "verdict": "The world itself weeps Lyra's fading memories, crumbling into the hungry embrace of the Silence.",
+  "impact": "This invention transforms the environment from a static backdrop into a dynamic, hostile entity that viscerally mirrors Lyra's internal struggle. It provides constant, immediate, and profound visual feedback on her memory integrity and the Silence's encroaching presence, forcing adaptive gameplay and heightening tension. Paths that once seemed solid will visibly fray and dissolve, demanding split-second decisions and making every step a perilous gamble, directly embodying the game's core themes of self-loss and urgent survival.",
+  "score": 95,
+  "inventedAt": "2026-08-23T02:56:01.258Z"
+}

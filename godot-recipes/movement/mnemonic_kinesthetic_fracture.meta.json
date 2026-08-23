@@ -1,0 +1,56 @@
+{
+  "name": "mnemonic_kinesthetic_fracture",
+  "label": "Kinesthetic Memory Fracture",
+  "domain": "movement",
+  "godotFeature": "Godot Physics Engine (CharacterBody3D, PhysicsServer3D, Area3D)",
+  "poeticVision": "The player feels their very sense of balance and space shatter as the ground beneath them becomes unreliable, an ever-shifting tapestry of forgotten physics. Each stride is a gamble, each jump a prayer, as the fundamental constants of movement—gravity, friction, momentum—fracture and re-form around Lyra, a terrifying echo of her own dissolving self. Survival demands constant, desperate adaptation to a world that actively fights against her learned instincts.",
+  "usage": "This `FractureZone` script is attached to an `Area3D` node to define a region where physics properties are altered. When a `CharacterBody3D` (like Lyra) enters this zone, its movement behavior should adapt based on the zone's properties.\n\n**To use this recipe:**\n1.  **Create a `FractureZone` scene:**\n    *   Create a new `Area3D` node in your scene.\n    *   Attach this `mnemonic_kinesthetic_fracture.gd` script to it.\n    *   Add a `CollisionShape3D` child to define the zone's boundaries (e.g., a `BoxShape3D`). Ensure its `collision_layer` and `collision_mask` are set to detect your player character.\n    *   (Optional but recommended for visualization): Add a `MeshInstance3D` child (e.g., a `BoxMesh`) to visualize the zone. The script will automatically apply a transparent debug material to it.\n2.  **Configure `FractureZone` properties:**\n    *   In the Inspector, adjust `gravity_override_strength`, `local_gravity_direction`, `friction_multiplier`, and `bounce_factor` to define the desired physics alteration. These values will be queried by Lyra's script.\n    *   Enable `randomize_on_ready` and optionally set a `random_seed` if you want the zone's properties to be randomized each time the scene loads.\n3.  **Modify Lyra's `CharacterBody3D` script:**\n    *   Lyra's script must have a `current_fracture_zone: FractureZone` variable (initialized to `null`).\n    *   Implement two public methods:\n        *   `func set_kinesthetic_fracture_effect(zone: FractureZone) -> void:`\n            *   `current_fracture_zone = zone`\n            *   (Optional) Trigger visual/audio feedback for entering a fractured zone.\n        *   `func clear_kinesthetic_fracture_effect() -> void:`\n            *   `current_fracture_zone = null`\n            *   (Optional) Revert visual/audio feedback.\n    *   Inside Lyra's `_physics_process(delta: float)`:\n        *   If `current_fracture_zone` is not `null`:\n            *   **Gravity:** Apply `current_fracture_zone.get_local_gravity_direction() * ProjectSettings.get_setting(\"physics/3d/default_gravity\") * current_fracture_zone.get_gravity_override_strength()` to Lyra's `velocity` vector.\n            *   **Friction:** Adjust Lyra's movement acceleration/deceleration or directly modify `velocity` to simulate the `current_fracture_zone.get_friction_multiplier()` effect (e.g., higher multiplier means faster deceleration, lower means more slippery).\n            *   **Bounce:** Implement custom collision response logic (e.g., using `get_last_slide_collision()`) to apply `current_fracture_zone.get_bounce_factor()` on impacts, modifying `velocity` accordingly.\n        *   Otherwise (if `current_fracture_zone` is `null`), apply normal physics behavior.\n        *   Finally, call `move_and_slide()` with the adjusted `velocity`.",
+  "parameters": [
+    {
+      "name": "gravity_override_strength",
+      "type": "float",
+      "default": "1.0",
+      "description": "Multiplier for the default gravity within this zone. 1.0 is normal, 0.0 is no gravity, 2.0 is double gravity."
+    },
+    {
+      "name": "local_gravity_direction",
+      "type": "Vector3",
+      "default": "Vector3(0, -1, 0)",
+      "description": "The normalized direction of gravity within this zone. Only active if gravity_override_strength is > 0."
+    },
+    {
+      "name": "friction_multiplier",
+      "type": "float",
+      "default": "1.0",
+      "description": "Multiplier for the character's effective friction. Higher values make surfaces 'stickier', lower values make them 'slippier'."
+    },
+    {
+      "name": "bounce_factor",
+      "type": "float",
+      "default": "0.0",
+      "description": "How much the character bounces on collision within this zone. 0.0 is no bounce, 1.0 is full bounce."
+    },
+    {
+      "name": "randomize_on_ready",
+      "type": "bool",
+      "default": "false",
+      "description": "If true, the fracture properties will be randomized when the zone is loaded."
+    },
+    {
+      "name": "random_seed",
+      "type": "int",
+      "default": "0",
+      "description": "Seed for randomization. If 0, a time-based seed will be used."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "Area3D",
+    "CollisionShape3D",
+    "MeshInstance3D (optional for visualization)"
+  ],
+  "verdict": "The very ground beneath Lyra's feet becomes a treacherous echo of her fracturing mind, demanding desperate adaptation in a world that forgets its own rules.",
+  "impact": "This invention will fundamentally alter the player's interaction with the environment, transforming stable ground into a treacherous, unpredictable adversary. It will force constant, desperate adaptation to a world that actively fights against learned instincts, creating a visceral sense of Lyra's own dissolving identity and the relentless pressure of the Silence. Every step becomes a conscious, high-stakes decision, amplifying the core themes of survival and self-loss.",
+  "score": 90,
+  "inventedAt": "2026-08-23T03:07:11.737Z"
+}

@@ -1,0 +1,52 @@
+{
+  "name": "mnemonic_chrono_tear",
+  "label": "Memory Chrono-Tear",
+  "domain": "time",
+  "godotFeature": "ShaderMaterial with vertex displacement & dynamic CollisionShape3D modification",
+  "poeticVision": "Feel the desperate urgency as the very fabric of time within a memory tears around you. Objects, platforms, and even crucial memory fragments flicker into non-existence, then violently snap back, but never quite the same. It's not just decay; it's a frantic, unpredictable struggle against a reality that cannot decide what it *is*, forcing split-second decisions to grab what remains before it's gone for good, or be swallowed by the void of forgetfulness. The world itself is having a seizure of temporal confusion.",
+  "usage": "This GDScript orchestrates the 'Memory Chrono-Tear' effect. To use it:\n1.  Save the provided GDScript code as `chrono_tear_zone.gd`.\n2.  Create an `Area3D` node in your Godot scene and attach the `chrono_tear_zone.gd` script to it.\n3.  Save the following GLSL code as `mnemonic_chrono_tear.gdshader` in your project, for example, in `res://shaders/mnemonic_chrono_tear.gdshader`:\n\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform sampler2D noise_texture;\n    uniform float tear_factor : hint_range(0.0, 1.0) = 0.0;\n    uniform float tear_speed = 5.0; // For internal shader animation speed\n    uniform float time_offset = 0.0; // Passed from GDScript for consistent animation across objects\n\n    uniform vec4 albedo : source_color;\n    uniform sampler2D texture_albedo : source_color;\n\n    void vertex() {\n    \t// Use a combination of UV and TIME_OFFSET for noise sampling to ensure unique but consistent animation\n    \tvec3 noise_sample = texture(noise_texture, UV * 5.0 + time_offset * tear_speed).rgb;\n    \t// Displace vertices along their normal based on noise and tear_factor\n    \tVERTEX += NORMAL * noise_sample.r * tear_factor * 0.2;\n    }\n\n    void fragment() {\n    \t// Sample base color from albedo texture or uniform color\n    \tvec4 base_color = texture(texture_albedo, UV) * albedo;\n\n    \t// Use a different noise sample for alpha clipping, possibly screen-space or object-space\n    \t// Using SCREEN_UV for a more global, chaotic tear effect\n    \tfloat alpha_noise = texture(noise_texture, SCREEN_UV * 10.0 + time_offset * tear_speed * 0.5).r;\n\n    \t// Discard fragments where noise is below the tear_factor, creating the flickering effect\n    \tif (alpha_noise < tear_factor) {\n    \t\tdiscard;\n    \t}\n\n    \tALBEDO = base_color.rgb;\n    \tALPHA = base_color.a;\n    }\n    \n\n4.  In the Godot editor, select your `Area3D` node with the attached script. In the Inspector:\n    *   Set the `Tear Shader Path` property to the `mnemonic_chrono_tear.gdshader` file you saved.\n    *   Assign a `NoiseTexture` resource to the `Noise Texture` property. (You can create a new `NoiseTexture` and set its `Noise` property to a `FastNoiseLite` or similar).\n    *   Adjust `Flicker Interval`, `Tear Intensity`, and `Tear Speed` to fine-tune the effect.\n5.  Ensure that any 3D objects (e.g., platforms, memory fragments) you want to be affected by the Chrono-Tear have both a `MeshInstance3D` and a `CollisionShape3D`. These can be direct children of the physics body (e.g., `StaticBody3D`) that enters the `Area3D`, or the physics body itself can be a `MeshInstance3D` or `CollisionShape3D`.\n6.  When an eligible object enters the `Area3D`, its material will be overridden with the Chrono-Tear shader, and its collision shape will dynamically enable/disable, creating the visual and physical flickering effect.",
+  "parameters": [
+    {
+      "name": "tear_shader_path",
+      "type": "String",
+      "default": "res://shaders/mnemonic_chrono_tear.gdshader",
+      "description": "Path to the Chrono-Tear shader resource file (.gdshader)."
+    },
+    {
+      "name": "flicker_interval",
+      "type": "float",
+      "default": "0.1",
+      "description": "Time in seconds between collision state changes (on/off) for affected objects."
+    },
+    {
+      "name": "tear_intensity",
+      "type": "float",
+      "default": "0.7",
+      "description": "Overall intensity of the visual tear effect (0.0-1.0). Higher values mean more aggressive tearing."
+    },
+    {
+      "name": "tear_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Speed of the internal noise animation within the shader, contributing to the visual chaos."
+    },
+    {
+      "name": "noise_texture",
+      "type": "NoiseTexture",
+      "default": "null",
+      "description": "A NoiseTexture resource used by the shader for vertex displacement and alpha clipping patterns."
+    }
+  ],
+  "dependencies": [
+    "Area3D",
+    "MeshInstance3D",
+    "CollisionShape3D",
+    "ShaderMaterial",
+    "Shader",
+    "NoiseTexture"
+  ],
+  "verdict": "In the fractured echoes of time, Lyra will find her resolve tested, her very existence a fleeting whisper against the Silence's ravenous maw.",
+  "impact": "The player will experience constant, visceral tension. Every step through a Chrono-Tear zone becomes a calculated risk, a frantic dance between solid ground and the void. It forces immediate, high-stakes decision-making, transforming environmental traversal into a desperate struggle against the very fabric of reality, directly embodying the theme of identity dissolving and memories crumbling.",
+  "score": 95,
+  "inventedAt": "2026-08-23T03:05:59.611Z"
+}

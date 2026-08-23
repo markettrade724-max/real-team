@@ -1,0 +1,45 @@
+{
+  "name": "synaptic_feedback_eraser_ai",
+  "label": "Synaptic Feedback Eraser",
+  "domain": "ai",
+  "godotFeature": "InputMap runtime modification & Control node manipulation",
+  "poeticVision": "The terrifying moment when your own hands betray you. The hunter's attack doesn't just cut your health; it slices at your muscle memory, scrambling the very controls you rely on for survival. You're left fighting against the enemy *and* against your own reflexes, forced to relearn basic movements under intense pressure, embodying the cruel truth of self-loss in a desperate scramble for agency.",
+  "usage": "1. Create a new GDScript file named `synaptic_feedback_eraser_manager.gd` and paste the provided GDScript code into it.\n2. Create a new Shader file named `synaptic_distortion_shader.gdshader` and paste the GLSL code (provided separately below) into it.\n3. In your game scene (e.g., your main game world or player scene), add a `Node` and attach the `synaptic_feedback_eraser_manager.gd` script to it.\n4. In your UI scene, create a `ColorRect` node (e.g., named `UIDistortionOverlay`) that covers the entire screen. Set its `Layout` to `Full Rect`.\n5. In the Inspector for the `SynapticFeedbackEraserManager` node:\n    *   Populate the `Actions To Scramble` array with the names of player input actions (e.g., \"move_left\", \"jump\") that should be remapped during the debuff.\n    *   Populate the `Available Keys For Scramble` array with `Key` enum values that the actions can be randomly remapped to.\n    *   Drag the `UIDistortionOverlay` node from your scene into the `Ui Distortion Overlay Path` property.\n    *   Drag the `synaptic_distortion_shader.gdshader` resource into the `Ui Distortion Shader` property.\n6. To apply the 'Synaptic Feedback Erosion' debuff, an enemy AI or game event should call the `apply_erosion` method on the manager node. For example:\n    `$SynapticFeedbackEraserManager.apply_erosion(5.0, [$PlayerUI/HealthBar, $PlayerUI/AbilityIcons])`\n    The first argument is the duration in seconds. The second (optional) argument is an array of `Control` nodes that should be hidden during the debuff.",
+  "parameters": [
+    {
+      "name": "actions_to_scramble",
+      "type": "Array[String]",
+      "default": "[\"move_left\", \"move_right\", \"jump\", \"attack\"]",
+      "description": "A list of InputMap action names whose key bindings will be scrambled."
+    },
+    {
+      "name": "available_keys_for_scramble",
+      "type": "Array[Key]",
+      "default": "[KEY_Q, KEY_E, KEY_R, KEY_T, KEY_Y, KEY_U, KEY_I, KEY_O, KEY_P, KEY_F, KEY_G, KEY_H, KEY_J, KEY_K, KEY_L, KEY_Z, KEY_X, KEY_C, KEY_V, KEY_B, KEY_N, KEY_M]",
+      "description": "A pool of `Key` enum values that actions can be randomly remapped to during the debuff."
+    },
+    {
+      "name": "ui_distortion_overlay_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "NodePath to a `ColorRect` node that will serve as a full-screen overlay for UI distortion. This node should be set to `Full Rect` layout."
+    },
+    {
+      "name": "ui_distortion_shader",
+      "type": "Shader",
+      "default": null,
+      "description": "The `Shader` resource (`.gdshader` file) to apply to the `ui_distortion_overlay` for visual distortion effects."
+    }
+  ],
+  "dependencies": [
+    "Node",
+    "ColorRect",
+    "ShaderMaterial",
+    "Shader (synaptic_distortion_shader.gdshader)",
+    "Control (for UI elements to hide)"
+  ],
+  "verdict": "A cruel genius, this invention transmutes the abstract horror of self-loss into the visceral agony of betraying hands, forcing players to confront their own dissolving identity with every scrambled command.",
+  "impact": "This mechanic will force players into a state of profound disorientation and panic, directly embodying Lyra's struggle against self-loss. Every hit from a Silence hunter becomes a terrifying assault on the player's very agency, transforming muscle memory into a fragile, fleeting resource. It will make combat encounters intensely personal and emotionally draining, deepening the player's empathy for Lyra's plight as she fights not just enemies, but her own fading self.",
+  "score": 88,
+  "inventedAt": "2026-08-23T02:57:13.524Z"
+}

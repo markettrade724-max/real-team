@@ -1,0 +1,65 @@
+{
+  "name": "synaptic_feedback_erasure",
+  "label": "The Silence's Sonic Scars",
+  "domain": "audio",
+  "godotFeature": "Dynamic AudioBus routing and real-time AudioEffect manipulation (e.g., AudioEffectEQ, AudioEffectDistortion, AudioEffectPitchShift) applied to individual AudioStreamPlayers.",
+  "poeticVision": "The player feels a chilling sense of targeted absence, a void where specific, familiar sounds *should* be, a direct assault on the world's sonic integrity tied to Lyra's fading memories. The act of trying to reclaim those sounds through interaction brings a painful, disorienting sonic feedback, making remembrance a perilous, self-destructive endeavor. It's the horror of active, intelligent sonic erasure and the self-inflicted pain of resisting it.",
+  "usage": "This `SonicScarsManager` script should be added as a singleton (Project Settings -> Autoload) or instantiated in a central scene. For each `AudioStreamPlayer` that represents a memory-linked environmental sound, call `register_memory_sound(audio_player_node, \"UniqueBusName\")` to route its audio through a dynamically created and managed bus, immediately applying the 'silence' effects. When the player interacts with the object associated with that sound, call `trigger_recollection_feedback(\"UniqueBusName\")` to temporarily revert the silence, apply disorienting feedback effects, and then re-apply the silence, simulating the painful act of remembrance.",
+  "parameters": [
+    {
+      "name": "feedback_duration",
+      "type": "float",
+      "default": "0.8",
+      "description": "The total duration (in seconds) for the feedback loop to ramp up and down."
+    },
+    {
+      "name": "silence_gain_db",
+      "type": "float",
+      "default": "-18.0",
+      "description": "The decibel reduction applied to the overall gain when a sound is 'silenced'."
+    },
+    {
+      "name": "silence_eq_band_gain",
+      "type": "float",
+      "default": "-12.0",
+      "description": "The decibel reduction applied to a specific EQ band when a sound is 'silenced'."
+    },
+    {
+      "name": "silence_eq_band_idx",
+      "type": "int",
+      "default": "4",
+      "description": "The index of the EQ band to target for silencing (e.g., 0 for low, 4 for mid, 8 for high)."
+    },
+    {
+      "name": "feedback_distortion_mix",
+      "type": "float",
+      "default": "0.7",
+      "description": "The maximum mix level for the distortion effect during the feedback loop (0.0-1.0)."
+    },
+    {
+      "name": "feedback_pitch_shift",
+      "type": "float",
+      "default": "1.5",
+      "description": "The maximum pitch scale for the pitch shift effect during the feedback loop (1.0 is normal pitch)."
+    },
+    {
+      "name": "feedback_gain_peak_db",
+      "type": "float",
+      "default": "6.0",
+      "description": "The peak decibel gain during the feedback loop, creating a volume surge."
+    }
+  ],
+  "dependencies": [
+    "AudioStreamPlayer",
+    "AudioServer",
+    "Tween",
+    "AudioEffectEQ",
+    "AudioEffectDistortion",
+    "AudioEffectPitchShift",
+    "AudioEffectGain"
+  ],
+  "verdict": "A symphony of absence, where the echoes of self-loss become a weapon and remembrance a beautiful, agonizing scream.",
+  "impact": "This invention will imbue the game world with a pervasive, unsettling auditory tension, transforming the abstract concept of memory loss into a visceral, sensory assault. Players will experience the Silence not just as a visual threat, but as an active, intelligent force that erases the very fabric of their sonic reality. The act of recovering a memory becomes a perilous, self-destructive endeavor, forcing players to confront the painful cost of their identity through disorienting feedback, making every moment of remembrance a struggle against self-inflicted sonic chaos.",
+  "score": 90,
+  "inventedAt": "2026-08-23T02:58:06.776Z"
+}

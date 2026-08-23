@@ -1,5 +1,600 @@
 [
   {
+    "name": "cognitive_rift_perception",
+    "label": "The Fractured Gaze",
+    "domain": "shaders",
+    "godotFeature": "Screen-space shaders with depth buffer access, compute shader for dynamic distortion fields",
+    "poeticVision": "The player experiences a terrifying dissolution of spatial reality. As Lyra's memories fade, the world doesn't just blur; it actively warps and tears, pulling itself apart along non-Euclidean lines directly within her vision. Distant objects seem to shift independently from close ones, surfaces ripple with ephemeral cracks, and familiar pathways become precarious, forcing the player to question what is solid and what is merely a phantom of Lyra's failing mind. Every jump, every desperate run through the stellar ruins, is intensified by the chilling uncertainty of a reality that can no longer be trusted.",
+    "usage": "This shader is designed to be used as a custom post-processing effect on a WorldEnvironment node in a 3D scene. To implement:\n1.  Add a `WorldEnvironment` node to your scene.\n2.  Create a new `Environment` resource for the `WorldEnvironment` node.\n3.  In the `Environment` resource, navigate to the `Custom Post Processing` section.\n4.  Create a new `ShaderMaterial` and assign this `cognitive_rift_perception.gdshader` file to its `Shader` property.\n5.  Ensure that some post-processing effect (like `SDFGI`, `SSAO`, or `SSR`) is enabled in the `Environment` resource, or that `Adjustment` is enabled, to ensure the post-processing pipeline is active.\n6.  Control the intensity of the effect by updating the `memory_erosion_factor` uniform from a GDScript. For example, `get_node(\"WorldEnvironment\").environment.custom_post_processing.set_shader_parameter(\"memory_erosion_factor\", lyra_identity_loss_amount)`.\n\nNote: While the vision mentions a compute shader for noise generation, this recipe generates the noise directly within the fragment shader to meet the 'under 200 lines' and 'standalone' constraints. For a true compute shader approach, a separate compute shader asset would generate a texture, which would then be sampled by this fragment shader.",
+    "parameters": [
+      {
+        "name": "memory_erosion_factor",
+        "type": "float",
+        "default": "0.0",
+        "description": "Controls the overall intensity of the distortion. A value of 0.0 means no distortion, 1.0 means maximum distortion. This should be driven by Lyra's 'identity integrity' score."
+      },
+      {
+        "name": "distortion_scale",
+        "type": "float",
+        "default": "0.05",
+        "description": "The base magnitude of the spatial distortion. Adjust to make the warping more subtle or extreme."
+      },
+      {
+        "name": "noise_speed",
+        "type": "float",
+        "default": "0.5",
+        "description": "Determines how fast the underlying noise pattern evolves, creating dynamic movement in the distortions."
+      },
+      {
+        "name": "depth_influence",
+        "type": "float",
+        "default": "1.0",
+        "description": "Controls how much the depth of objects influences their distortion. A value of 0.0 applies uniform distortion regardless of depth, while higher values make farther objects distort more significantly than closer ones."
+      }
+    ],
+    "dependencies": [
+      "WorldEnvironment (Node)",
+      "Environment (Resource)",
+      "ShaderMaterial (Resource)"
+    ],
+    "verdict": "Through a shattered lens, reality itself becomes the hunter, mirroring Lyra's fading self in every disorienting tear and warp of the world.",
+    "impact": "This invention transforms the player's perception of reality into a direct reflection of Lyra's deteriorating mind, making every step a struggle against both external hunters and internal dissolution. It elevates environmental navigation from a physical challenge to a profound psychological one, forcing players to question their senses and adapt to a constantly shifting, unreliable world. The visual chaos directly embodies the core theme of identity loss, making it a visceral and unforgettable part of the gameplay experience.",
+    "score": 95,
+    "inventedAt": "2026-08-23T03:08:17.253Z"
+  },
+  {
+    "name": "mnemonic_kinesthetic_fracture",
+    "label": "Kinesthetic Memory Fracture",
+    "domain": "movement",
+    "godotFeature": "Godot Physics Engine (CharacterBody3D, PhysicsServer3D, Area3D)",
+    "poeticVision": "The player feels their very sense of balance and space shatter as the ground beneath them becomes unreliable, an ever-shifting tapestry of forgotten physics. Each stride is a gamble, each jump a prayer, as the fundamental constants of movement—gravity, friction, momentum—fracture and re-form around Lyra, a terrifying echo of her own dissolving self. Survival demands constant, desperate adaptation to a world that actively fights against her learned instincts.",
+    "usage": "This `FractureZone` script is attached to an `Area3D` node to define a region where physics properties are altered. When a `CharacterBody3D` (like Lyra) enters this zone, its movement behavior should adapt based on the zone's properties.\n\n**To use this recipe:**\n1.  **Create a `FractureZone` scene:**\n    *   Create a new `Area3D` node in your scene.\n    *   Attach this `mnemonic_kinesthetic_fracture.gd` script to it.\n    *   Add a `CollisionShape3D` child to define the zone's boundaries (e.g., a `BoxShape3D`). Ensure its `collision_layer` and `collision_mask` are set to detect your player character.\n    *   (Optional but recommended for visualization): Add a `MeshInstance3D` child (e.g., a `BoxMesh`) to visualize the zone. The script will automatically apply a transparent debug material to it.\n2.  **Configure `FractureZone` properties:**\n    *   In the Inspector, adjust `gravity_override_strength`, `local_gravity_direction`, `friction_multiplier`, and `bounce_factor` to define the desired physics alteration. These values will be queried by Lyra's script.\n    *   Enable `randomize_on_ready` and optionally set a `random_seed` if you want the zone's properties to be randomized each time the scene loads.\n3.  **Modify Lyra's `CharacterBody3D` script:**\n    *   Lyra's script must have a `current_fracture_zone: FractureZone` variable (initialized to `null`).\n    *   Implement two public methods:\n        *   `func set_kinesthetic_fracture_effect(zone: FractureZone) -> void:`\n            *   `current_fracture_zone = zone`\n            *   (Optional) Trigger visual/audio feedback for entering a fractured zone.\n        *   `func clear_kinesthetic_fracture_effect() -> void:`\n            *   `current_fracture_zone = null`\n            *   (Optional) Revert visual/audio feedback.\n    *   Inside Lyra's `_physics_process(delta: float)`:\n        *   If `current_fracture_zone` is not `null`:\n            *   **Gravity:** Apply `current_fracture_zone.get_local_gravity_direction() * ProjectSettings.get_setting(\"physics/3d/default_gravity\") * current_fracture_zone.get_gravity_override_strength()` to Lyra's `velocity` vector.\n            *   **Friction:** Adjust Lyra's movement acceleration/deceleration or directly modify `velocity` to simulate the `current_fracture_zone.get_friction_multiplier()` effect (e.g., higher multiplier means faster deceleration, lower means more slippery).\n            *   **Bounce:** Implement custom collision response logic (e.g., using `get_last_slide_collision()`) to apply `current_fracture_zone.get_bounce_factor()` on impacts, modifying `velocity` accordingly.\n        *   Otherwise (if `current_fracture_zone` is `null`), apply normal physics behavior.\n        *   Finally, call `move_and_slide()` with the adjusted `velocity`.",
+    "parameters": [
+      {
+        "name": "gravity_override_strength",
+        "type": "float",
+        "default": "1.0",
+        "description": "Multiplier for the default gravity within this zone. 1.0 is normal, 0.0 is no gravity, 2.0 is double gravity."
+      },
+      {
+        "name": "local_gravity_direction",
+        "type": "Vector3",
+        "default": "Vector3(0, -1, 0)",
+        "description": "The normalized direction of gravity within this zone. Only active if gravity_override_strength is > 0."
+      },
+      {
+        "name": "friction_multiplier",
+        "type": "float",
+        "default": "1.0",
+        "description": "Multiplier for the character's effective friction. Higher values make surfaces 'stickier', lower values make them 'slippier'."
+      },
+      {
+        "name": "bounce_factor",
+        "type": "float",
+        "default": "0.0",
+        "description": "How much the character bounces on collision within this zone. 0.0 is no bounce, 1.0 is full bounce."
+      },
+      {
+        "name": "randomize_on_ready",
+        "type": "bool",
+        "default": "false",
+        "description": "If true, the fracture properties will be randomized when the zone is loaded."
+      },
+      {
+        "name": "random_seed",
+        "type": "int",
+        "default": "0",
+        "description": "Seed for randomization. If 0, a time-based seed will be used."
+      }
+    ],
+    "dependencies": [
+      "CharacterBody3D",
+      "Area3D",
+      "CollisionShape3D",
+      "MeshInstance3D (optional for visualization)"
+    ],
+    "verdict": "The very ground beneath Lyra's feet becomes a treacherous echo of her fracturing mind, demanding desperate adaptation in a world that forgets its own rules.",
+    "impact": "This invention will fundamentally alter the player's interaction with the environment, transforming stable ground into a treacherous, unpredictable adversary. It will force constant, desperate adaptation to a world that actively fights against learned instincts, creating a visceral sense of Lyra's own dissolving identity and the relentless pressure of the Silence. Every step becomes a conscious, high-stakes decision, amplifying the core themes of survival and self-loss.",
+    "score": 90,
+    "inventedAt": "2026-08-23T03:07:11.737Z"
+  },
+  {
+    "name": "mnemonic_chrono_tear",
+    "label": "Memory Chrono-Tear",
+    "domain": "time",
+    "godotFeature": "ShaderMaterial with vertex displacement & dynamic CollisionShape3D modification",
+    "poeticVision": "Feel the desperate urgency as the very fabric of time within a memory tears around you. Objects, platforms, and even crucial memory fragments flicker into non-existence, then violently snap back, but never quite the same. It's not just decay; it's a frantic, unpredictable struggle against a reality that cannot decide what it *is*, forcing split-second decisions to grab what remains before it's gone for good, or be swallowed by the void of forgetfulness. The world itself is having a seizure of temporal confusion.",
+    "usage": "This GDScript orchestrates the 'Memory Chrono-Tear' effect. To use it:\n1.  Save the provided GDScript code as `chrono_tear_zone.gd`.\n2.  Create an `Area3D` node in your Godot scene and attach the `chrono_tear_zone.gd` script to it.\n3.  Save the following GLSL code as `mnemonic_chrono_tear.gdshader` in your project, for example, in `res://shaders/mnemonic_chrono_tear.gdshader`:\n\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform sampler2D noise_texture;\n    uniform float tear_factor : hint_range(0.0, 1.0) = 0.0;\n    uniform float tear_speed = 5.0; // For internal shader animation speed\n    uniform float time_offset = 0.0; // Passed from GDScript for consistent animation across objects\n\n    uniform vec4 albedo : source_color;\n    uniform sampler2D texture_albedo : source_color;\n\n    void vertex() {\n    \t// Use a combination of UV and TIME_OFFSET for noise sampling to ensure unique but consistent animation\n    \tvec3 noise_sample = texture(noise_texture, UV * 5.0 + time_offset * tear_speed).rgb;\n    \t// Displace vertices along their normal based on noise and tear_factor\n    \tVERTEX += NORMAL * noise_sample.r * tear_factor * 0.2;\n    }\n\n    void fragment() {\n    \t// Sample base color from albedo texture or uniform color\n    \tvec4 base_color = texture(texture_albedo, UV) * albedo;\n\n    \t// Use a different noise sample for alpha clipping, possibly screen-space or object-space\n    \t// Using SCREEN_UV for a more global, chaotic tear effect\n    \tfloat alpha_noise = texture(noise_texture, SCREEN_UV * 10.0 + time_offset * tear_speed * 0.5).r;\n\n    \t// Discard fragments where noise is below the tear_factor, creating the flickering effect\n    \tif (alpha_noise < tear_factor) {\n    \t\tdiscard;\n    \t}\n\n    \tALBEDO = base_color.rgb;\n    \tALPHA = base_color.a;\n    }\n    \n\n4.  In the Godot editor, select your `Area3D` node with the attached script. In the Inspector:\n    *   Set the `Tear Shader Path` property to the `mnemonic_chrono_tear.gdshader` file you saved.\n    *   Assign a `NoiseTexture` resource to the `Noise Texture` property. (You can create a new `NoiseTexture` and set its `Noise` property to a `FastNoiseLite` or similar).\n    *   Adjust `Flicker Interval`, `Tear Intensity`, and `Tear Speed` to fine-tune the effect.\n5.  Ensure that any 3D objects (e.g., platforms, memory fragments) you want to be affected by the Chrono-Tear have both a `MeshInstance3D` and a `CollisionShape3D`. These can be direct children of the physics body (e.g., `StaticBody3D`) that enters the `Area3D`, or the physics body itself can be a `MeshInstance3D` or `CollisionShape3D`.\n6.  When an eligible object enters the `Area3D`, its material will be overridden with the Chrono-Tear shader, and its collision shape will dynamically enable/disable, creating the visual and physical flickering effect.",
+    "parameters": [
+      {
+        "name": "tear_shader_path",
+        "type": "String",
+        "default": "res://shaders/mnemonic_chrono_tear.gdshader",
+        "description": "Path to the Chrono-Tear shader resource file (.gdshader)."
+      },
+      {
+        "name": "flicker_interval",
+        "type": "float",
+        "default": "0.1",
+        "description": "Time in seconds between collision state changes (on/off) for affected objects."
+      },
+      {
+        "name": "tear_intensity",
+        "type": "float",
+        "default": "0.7",
+        "description": "Overall intensity of the visual tear effect (0.0-1.0). Higher values mean more aggressive tearing."
+      },
+      {
+        "name": "tear_speed",
+        "type": "float",
+        "default": "5.0",
+        "description": "Speed of the internal noise animation within the shader, contributing to the visual chaos."
+      },
+      {
+        "name": "noise_texture",
+        "type": "NoiseTexture",
+        "default": "null",
+        "description": "A NoiseTexture resource used by the shader for vertex displacement and alpha clipping patterns."
+      }
+    ],
+    "dependencies": [
+      "Area3D",
+      "MeshInstance3D",
+      "CollisionShape3D",
+      "ShaderMaterial",
+      "Shader",
+      "NoiseTexture"
+    ],
+    "verdict": "In the fractured echoes of time, Lyra will find her resolve tested, her very existence a fleeting whisper against the Silence's ravenous maw.",
+    "impact": "The player will experience constant, visceral tension. Every step through a Chrono-Tear zone becomes a calculated risk, a frantic dance between solid ground and the void. It forces immediate, high-stakes decision-making, transforming environmental traversal into a desperate struggle against the very fabric of reality, directly embodying the theme of identity dissolving and memories crumbling.",
+    "score": 95,
+    "inventedAt": "2026-08-23T03:05:59.611Z"
+  },
+  {
+    "name": "mnemonic_void_echo_cannon",
+    "label": "Echo of the Unremembered",
+    "domain": "weapons",
+    "godotFeature": "ShaderMaterial, ParticleProcessMaterial, ViewportTexture",
+    "poeticVision": "The player wields the very emptiness of their past. Each shot is a desperate act, launching a phantom limb of a forgotten self to lash out at the hunters. The satisfaction of a successful strike is immediate, but so too is the chilling sensation of a deeper void opening within Lyra, a brief, disorienting glimpse into the growing chasm of her identity. It’s a power born of loss, making every victory a step further into the unknown, a weapon that leaves you more hollow even as it saves your life.",
+    "usage": "This `VoidEchoProjectile` script defines the projectile's behavior and appearance. To use it:\n\n**1. Player Setup (Firing and Screen Feedback):**\n   a.  **Player Script (`Player.gd` or similar):**\n       gdscript\n       # PLAYER_IDENTITY_TREMOR_SHADER_CODE (for a CanvasItem ShaderMaterial)\n       const PLAYER_IDENTITY_TREMOR_SHADER_CODE = \"\"\"\n       shader_type canvas_item;\n\n       uniform sampler2D screen_texture : hint_screen_texture;\n       uniform float effect_intensity : hint_range(0.0, 1.0) = 0.0;\n       uniform float time_speed : hint_range(0.0, 10.0) = 5.0;\n\n       void fragment() {\n       \tvec2 uv = SCREEN_UV;\n       \t\n       \t// Subtle warp/ghosting\n       \tfloat offset_x = sin(uv.y * 20.0 + TIME * time_speed) * 0.005 * effect_intensity;\n       \tfloat offset_y = cos(uv.x * 15.0 + TIME * time_speed * 0.7) * 0.005 * effect_intensity;\n       \t\n       \tvec2 warped_uv = uv + vec2(offset_x, offset_y);\n       \t\n       \t// Desaturation\n       \tvec4 color = texture(screen_texture, warped_uv);\n       \tfloat gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));\n       \tvec3 desaturated_color = mix(color.rgb, vec3(gray), effect_intensity * 0.5);\n       \t\n       \tCOLOR = vec4(desaturated_color, color.a);\n       \t\n       \t// Optional: Add a subtle color tint for the void effect\n       \tCOLOR.rgb = mix(COLOR.rgb, vec3(0.1, 0.0, 0.2), effect_intensity * 0.3);\n       }\n       \"\"\"\n\n       extends CharacterBody3D # Or whatever your player extends\n\n       @onready var _screen_effect_rect: ColorRect = $\"../CanvasLayer/ScreenEffectRect\" # Adjust path\n       var _screen_effect_material: ShaderMaterial\n\n       func _ready() -> void:\n       \t# Setup screen effect material\n       \tvar screen_shader = Shader.new()\n       \tscreen_shader.code = PLAYER_IDENTITY_TREMOR_SHADER_CODE\n       \t_screen_effect_material = ShaderMaterial.new()\n       \t_screen_effect_material.shader = screen_shader\n       \t_screen_effect_rect.material = _screen_effect_material\n       \t_screen_effect_material.set_shader_parameter(\"effect_intensity\", 0.0)\n\n       func fire_void_echo(direction: Vector3) -> void:\n       \tvar projectile_instance = VoidEchoProjectile.new()\n       \tget_tree().root.add_child(projectile_instance) # Or add to a dedicated 'Projectiles' node\n       \tprojectile_instance.global_position = $Muzzle.global_position # Assuming a Muzzle Node3D\n       \tprojectile_instance.initialize(direction, self)\n       \tprojectile_instance.player_identity_tremor.connect(_on_player_identity_tremor)\n\n       func _on_player_identity_tremor(duration: float, intensity: float) -> void:\n       \tvar tween = create_tween()\n       \ttween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)\n       \ttween.tween_property(_screen_effect_material, \"shader_parameter/effect_intensity\", intensity, duration / 2.0)\n       \ttween.tween_property(_screen_effect_material, \"shader_parameter/effect_intensity\", 0.0, duration / 2.0)\n       \t# Add other debuffs here, e.g., reduced movement speed, visual artifacts on HUD\n       \n   b.  **Scene Setup:** In your player scene or main scene, add a `CanvasLayer` node. Inside it, add a `ColorRect` node. Make sure the `ColorRect` covers the entire screen (e.g., `Layout -> Full Rect`). This `ColorRect` will receive the `_screen_effect_material` from the player script.\n\n**2. Enemy Setup (Receiving Impact):**\n   a.  **Enemy Script (`Enemy.gd` or similar):**\n       gdscript\n       extends CharacterBody3D # Or whatever your enemy extends\n\n       @export var max_health: float = 100.0\n       var current_health: float\n       var _original_material: Material # To store the enemy's original material\n\n       func _ready() -> void:\n       \tcurrent_health = max_health\n       \t# Assuming the enemy has a MeshInstance3D child named 'Mesh'\n       \tif $Mesh is MeshInstance3D:\n       \t\t_original_material = $Mesh.get_active_material(0)\n\n       func take_damage(amount: float) -> void:\n       \tcurrent_health -= amount\n       \tif current_health <= 0:\n       \t\tqueue_free() # Or trigger death animation\n\n       func apply_void_impact_effect(material: ShaderMaterial, duration: float) -> void:\n       \t# Assuming the enemy has a MeshInstance3D child named 'Mesh'\n       \tif $Mesh is MeshInstance3D:\n       \t\tvar mesh_instance = $Mesh as MeshInstance3D\n       \t\tmesh_instance.material_override = material\n       \t\t\n       \t\tvar tween = create_tween()\n       \t\ttween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)\n       \t\ttween.tween_property(material, \"shader_parameter/effect_progress\", 1.0, duration / 2.0)\n       \t\ttween.tween_property(material, \"shader_parameter/effect_progress\", 0.0, duration / 2.0)\n       \t\ttween.tween_callback(func(): \n       \t\t\tmesh_instance.material_override = _original_material # Restore original material\n       \t\t)\n       \n\n**3. Resource Generation:**\n   The `void_echo_fired` signal can be connected to a global resource manager or player script to decrement a 'Void Echo' resource count. When Lyra fails to recover a memory fragment or deliberately sacrifices one, this resource can be incremented.",
+    "parameters": [
+      {
+        "name": "speed",
+        "type": "float",
+        "default": "20.0",
+        "description": "The movement speed of the Void Echo projectile."
+      },
+      {
+        "name": "damage",
+        "type": "float",
+        "default": "25.0",
+        "description": "The amount of damage the projectile deals on impact."
+      },
+      {
+        "name": "lifetime",
+        "type": "float",
+        "default": "3.0",
+        "description": "The duration in seconds before the projectile automatically despawns if it doesn't hit anything."
+      }
+    ],
+    "dependencies": [
+      "Player.gd (or equivalent player script with 'fire_void_echo' and '_on_player_identity_tremor' methods)",
+      "Enemy.gd (or equivalent enemy script with 'take_damage' and 'apply_void_impact_effect' methods)",
+      "A CanvasLayer with a ColorRect for player screen effects."
+    ],
+    "verdict": "A weapon born of absence, it carves survival from the very essence of self-loss, turning every desperate strike into a chilling echo of what Lyra once was.",
+    "impact": "This mechanic introduces a profound layer of emotional and strategic depth. Players will constantly weigh the immediate need for survival against the gradual erosion of Lyra's identity, making every successful attack a bittersweet victory. It transforms resource management into a narrative device, forcing players to confront the core theme of self-loss with every trigger pull, creating a unique and unforgettable internal conflict.",
+    "score": 92,
+    "inventedAt": "2026-08-23T03:04:50.490Z"
+  },
+  {
+    "name": "identity_maw_geometry",
+    "label": "Identity Maw Geometry",
+    "domain": "world",
+    "godotFeature": "Compute Shaders for real-time mesh deformation and ArrayMesh updates",
+    "poeticVision": "The world itself is a hungry entity, its very geometry constantly reforming, dissolving, and consuming itself in direct response to Lyra's fading memories. As her identity unravels, the ground beneath her feet becomes a treacherous maw, swallowing paths, revealing abysses, or manifesting new, hostile 'memory-growths'. Every physical alteration of the environment is a visceral reminder of self-loss, turning navigation into a desperate, terrifying dance with her own unmaking.",
+    "usage": "This compute shader dynamically deforms the geometry of a MeshInstance3D based on Lyra's identity integrity and proximity to Silence entities. A GDScript 'code-agent' would orchestrate the following steps:\n\n1.  **Setup Mesh and Shader:**\n    *   Create a `MeshInstance3D` in your scene, assign an `ArrayMesh` (e.g., a `PlaneMesh`, `BoxMesh`, or imported mesh) to its `mesh` property.\n    *   Create a `ComputeShader` resource (e.g., `res://identity_maw_geometry.gdshader`) and assign it to a new `ShaderMaterial`.\n    *   Assign this `ShaderMaterial` to the `MeshInstance3D`'s `material_override` or a specific surface material.\n\n2.  **Prepare Buffers (Initial GDScript Setup):**\n    *   In a GDScript (e.g., attached to a `Node3D` controlling the environment), get the `RenderingDevice` singleton: `var rd = RenderingServer.get_rendering_device()`.\n    *   Get the `ArrayMesh` from the `MeshInstance3D`.\n    *   Extract the `ARRAY_VERTEX` and `ARRAY_NORMAL` data using `mesh.surface_get_arrays(0)` (assuming surface 0).\n    *   Convert these `PackedVector3Array`s into `PackedFloat32Array`s (each `Vector3` becomes 3 floats).\n    *   Create three `RDStorageBuffer`s:\n        *   `vertices_in_buffer_rid`: For the initial vertex data (read-only, `BUFFER_USAGE_STORAGE_BUFFER | BUFFER_USAGE_SHADER_READ`).\n        *   `normals_in_buffer_rid`: For the initial normal data (read-only, `BUFFER_USAGE_STORAGE_BUFFER | BUFFER_USAGE_SHADER_READ`).\n        *   `vertices_out_buffer_rid`: For the modified vertex data (write-only, then read-back, `BUFFER_USAGE_STORAGE_BUFFER | BUFFER_USAGE_SHADER_WRITE | BUFFER_USAGE_SHADER_READ`).\n    *   Populate `vertices_in_buffer_rid` and `normals_in_buffer_rid` with the initial mesh data using `rd.buffer_update()`.\n    *   Create a `ComputePipeline` from the `ComputeShader`'s RID: `var pipeline = rd.compute_pipeline_create(compute_shader.get_rid())`.\n\n3.  **Update Loop (e.g., in `_process(delta)`):**\n    *   Update `uniform` values on the `ShaderMaterial` (e.g., `material.set_shader_parameter(\"identity_integrity\", lyra_identity_score)`).\n    *   Begin a compute list: `var compute_list = rd.compute_list_begin()`.\n    *   Bind the input and output `RDStorageBuffer`s to the shader's buffer uniforms. The binding IDs correspond to their declaration order in the shader:\n        *   `rd.compute_list_bind_storage_buffer(compute_list, 0, vertices_in_buffer_rid)`\n        *   `rd.compute_list_bind_storage_buffer(compute_list, 1, normals_in_buffer_rid)`\n        *   `rd.compute_list_bind_storage_buffer(compute_list, 2, vertices_out_buffer_rid)`\n    *   Dispatch the compute shader: `rd.compute_list_dispatch(compute_list, num_vertices / group_size_x, 1, 1)` (where `num_vertices` is the total vertex count and `group_size_x` is 64, matching the shader).\n    *   End the compute list: `rd.compute_list_end()`.\n\n4.  **Read Back and Update Mesh:**\n    *   Synchronize the rendering device to ensure the compute shader has finished: `rd.sync()`.\n    *   Read the modified vertex data from `vertices_out_buffer_rid` using `rd.buffer_get_data()`.\n    *   Convert the `PackedByteArray` received back into a `PackedFloat32Array` and then into a `PackedVector3Array`.\n    *   Create a new `Array` for the mesh surface, replacing the `ARRAY_VERTEX` element with the newly computed `PackedVector3Array`.\n    *   Update the `ArrayMesh`'s vertex data: `mesh.surface_set_arrays(0, new_arrays)`.\n\n5.  **Update Collision Shapes:**\n    *   If the `MeshInstance3D` has a `CollisionShape3D` child, its `shape` property must be updated to reflect the new geometry.\n    *   Create a new `ConcavePolygonShape3D`.\n    *   Set its faces using the modified vertex data: `new_collision_shape.set_faces(new_vertices_pv3a)`.\n    *   Assign this new shape to the `CollisionShape3D`: `collision_shape_node.shape = new_collision_shape`.\n    *   This step is critical for accurate physical interaction with the dynamically changing environment.\n\nRemember to free the `RID`s of the buffers and pipeline when the node exits the tree to prevent memory leaks.",
+    "parameters": [
+      {
+        "name": "identity_integrity",
+        "type": "float",
+        "default": "1.0",
+        "description": "Lyra's current identity integrity, from 0.0 (fully lost) to 1.0 (full identity). Lower values increase deformation."
+      },
+      {
+        "name": "silence_proximity",
+        "type": "float",
+        "default": "0.0",
+        "description": "Proximity to Silence entities, from 0.0 (far) to 1.0 (very close). Higher values increase deformation."
+      },
+      {
+        "name": "time",
+        "type": "float",
+        "default": "0.0",
+        "description": "Global time value, typically `Engine.get_singleton().get_main_loop().get_time()` or `Time.get_ticks_usec() / 1000000.0`, used for animating noise."
+      },
+      {
+        "name": "dissolve_strength",
+        "type": "float",
+        "default": "0.5",
+        "description": "Maximum displacement strength for the 'maw' effect, pulling vertices downwards."
+      },
+      {
+        "name": "noise_scale",
+        "type": "float",
+        "default": "0.1",
+        "description": "Scale factor for the per-vertex noise, controlling the 'granularity' of organic deformation."
+      }
+    ],
+    "dependencies": [
+      "MeshInstance3D",
+      "ArrayMesh",
+      "ShaderMaterial",
+      "ComputeShader",
+      "RenderingDevice",
+      "RDStorageBuffer",
+      "CollisionShape3D",
+      "ConcavePolygonShape3D"
+    ],
+    "verdict": "The world itself becomes a hungry echo of Lyra's unraveling mind, making every step a desperate dance on the precipice of her own unmaking.",
+    "impact": "The player will constantly feel the existential dread of Lyra's fading identity, not as an abstract concept, but as the very ground beneath their feet literally dissolving. Navigation becomes a terrifying, dynamic puzzle, where every step is a gamble against self-loss and the encroaching Silence, forcing split-second decisions and amplifying the feeling of a desperate race against time and oblivion.",
+    "score": 92,
+    "inventedAt": "2026-08-23T03:00:39.721Z"
+  },
+  {
+    "name": "mnemonic_ui_shattering",
+    "label": "The Shattered Gaze of Self",
+    "domain": "ui",
+    "godotFeature": "Godot 4.6.2 Control node manipulation, ShaderMaterial, and AnimationPlayer/Tweening",
+    "poeticVision": "The player will experience a profound, unsettling loss as the very interface they rely upon shatters and dissolves, mimicking Lyra's fading memories. Information vital for survival – health, objectives, abilities – won't just flicker or blur; it will physically break apart, with fragments drifting into chaotic disarray or vanishing entirely, leaving critical blind spots. This creates an immediate tactical disadvantage fused with the constant, gnawing anxiety of losing oneself, as the player's connection to Lyra's state becomes as fractured and uncertain as Lyra's own identity.",
+    "usage": "To use 'The Shattered Gaze of Self' effect:\n\n1.  **Prepare your UI Element**: Design a `Control` node (e.g., a `Panel`, `HBoxContainer`, or `VBoxContainer`) that will represent the UI element to be shattered (e.g., a health bar, an ability icon container). Crucially, this `Control` node must have its visual components broken down into *smaller, individual `Control` node children*. Each child `Control` (e.g., `TextureRect` for a health segment, or a `Panel` for a button part) will become a 'fragment' that drifts and fades.\n    *   **Example**: For a health bar, instead of one `TextureRect`, use multiple `TextureRect` nodes as children, each representing a small segment of the health bar's visual. Set their `texture` property to the appropriate part of the health bar image.\n    *   **Shader Material**: While the script will automatically apply a `ShaderMaterial` if none exists, for best results, you can optionally pre-apply a `ShaderMaterial` to each fragment child in the editor. The script will update its shader code and parameters.\n\n2.  **Add the `MnemonicUIShatterer` script**: Create a new script file named `mnemonic_ui_shattering.gd` and paste the provided code into it. You can then add this script as an AutoLoad (Project -> Project Settings -> AutoLoad) to make it globally accessible, or add it as a node to your main UI scene.\n\n3.  **Trigger the Shattering**: When Lyra takes identity damage or a memory is lost, call the `shatter_ui_element` function from your game logic, passing the parent `Control` node of the fragments you wish to shatter.\n\n    **Example (from a game script)**:\n    gdscript\n    # Assuming MnemonicUIShatterer is an AutoLoad named 'MnemonicUIShatterer'\n    # Or if it's a node in your scene: get_node(\"Path/To/MnemonicUIShatterer\")\n\n    @onready var health_bar_container = $\"UI/HealthBarContainer\" # Your prepared UI element\n    @onready var ability_icon_container = $\"UI/AbilityIconContainer\" # Another example\n\n    func _on_lyra_memory_lost(memory_type: String):\n    \tif memory_type == \"health_capacity\":\n    \t\tMnemonicUIShatterer.shatter_ui_element(health_bar_container)\n    \telif memory_type == \"ability_recall\":\n    \t\tMnemonicUIShatterer.shatter_ui_element(ability_icon_container)\n    \n\n4.  **Customize Parameters**: Adjust the `shatter_duration`, `drift_strength`, `fade_duration`, `rotation_strength`, and `fragment_shader_code` parameters in the Inspector (if the script is a node) or directly in the script to fine-tune the visual effect to your game's needs.",
+    "parameters": [
+      {
+        "name": "shatter_duration",
+        "type": "float",
+        "default": "0.8",
+        "description": "Duration of the initial fragment drift animation in seconds."
+      },
+      {
+        "name": "drift_strength",
+        "type": "float",
+        "default": "150.0",
+        "description": "Maximum pixel distance fragments will drift from their original position."
+      },
+      {
+        "name": "fade_duration",
+        "type": "float",
+        "default": "1.5",
+        "description": "Duration of the fragment fade-out animation in seconds, after drifting."
+      },
+      {
+        "name": "rotation_strength",
+        "type": "float",
+        "default": "180.0",
+        "description": "Maximum degrees fragments will rotate during the drift animation."
+      },
+      {
+        "name": "fragment_shader_code",
+        "type": "String",
+        "default": "shader_type canvas_item;\\n\\nuniform sampler2D fragment_texture : hint_albedo;\\nuniform float fade_alpha : hint_range(0.0, 1.0) = 1.0;\\nuniform float noise_strength : hint_range(0.0, 1.0) = 0.1;\\nuniform float time_offset : hint_range(0.0, 100.0) = 0.0; // For varying noise\\n\\nfloat rand(vec2 co) {\\n\\treturn fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\\n}\\n\\nvoid fragment() {\\n\\tvec2 uv = UV;\\n\\tfloat noise = rand(uv * (TIME + time_offset) * 10.0) * noise_strength;\\n\\tuv += vec2(noise, noise) * 0.05;\\n\\n\\tvec4 color = texture(fragment_texture, uv);\\n\\tcolor.a *= fade_alpha;\\n\\tCOLOR = color;\\n}\\n",
+        "description": "GLSL shader code applied to each fragment for visual decay and fading. Can be customized directly in the script or Inspector."
+      }
+    ],
+    "dependencies": [
+      "Control nodes (as parent and fragments)",
+      "Tween (for animations)",
+      "ShaderMaterial (for visual effects on fragments)",
+      "Shader (for fragment material)",
+      "TextureRect (if fragments are texture-based)",
+      "Panel (if fragments are stylebox-based)"
+    ],
+    "verdict": "A brilliant fracture of the player's perception, mirroring Lyra's internal dissolution with unsettling, tactical precision.",
+    "impact": "This invention will profoundly deepen the player's empathy for Lyra's struggle, transforming the abstract concept of memory loss into a tangible, frustrating, and terrifying tactical challenge. Every instance of the UI shattering will be a visceral reminder of Lyra's fading self, forcing players to adapt and fight not just external threats but also the dissolution of their own cognitive connection to the game world. It directly translates Lyra's internal chaos into the player's immediate perception, creating a constant, gnawing anxiety that perfectly aligns with the game's core themes.",
+    "score": 92,
+    "inventedAt": "2026-08-23T02:59:15.405Z"
+  },
+  {
+    "name": "synaptic_feedback_erasure",
+    "label": "The Silence's Sonic Scars",
+    "domain": "audio",
+    "godotFeature": "Dynamic AudioBus routing and real-time AudioEffect manipulation (e.g., AudioEffectEQ, AudioEffectDistortion, AudioEffectPitchShift) applied to individual AudioStreamPlayers.",
+    "poeticVision": "The player feels a chilling sense of targeted absence, a void where specific, familiar sounds *should* be, a direct assault on the world's sonic integrity tied to Lyra's fading memories. The act of trying to reclaim those sounds through interaction brings a painful, disorienting sonic feedback, making remembrance a perilous, self-destructive endeavor. It's the horror of active, intelligent sonic erasure and the self-inflicted pain of resisting it.",
+    "usage": "This `SonicScarsManager` script should be added as a singleton (Project Settings -> Autoload) or instantiated in a central scene. For each `AudioStreamPlayer` that represents a memory-linked environmental sound, call `register_memory_sound(audio_player_node, \"UniqueBusName\")` to route its audio through a dynamically created and managed bus, immediately applying the 'silence' effects. When the player interacts with the object associated with that sound, call `trigger_recollection_feedback(\"UniqueBusName\")` to temporarily revert the silence, apply disorienting feedback effects, and then re-apply the silence, simulating the painful act of remembrance.",
+    "parameters": [
+      {
+        "name": "feedback_duration",
+        "type": "float",
+        "default": "0.8",
+        "description": "The total duration (in seconds) for the feedback loop to ramp up and down."
+      },
+      {
+        "name": "silence_gain_db",
+        "type": "float",
+        "default": "-18.0",
+        "description": "The decibel reduction applied to the overall gain when a sound is 'silenced'."
+      },
+      {
+        "name": "silence_eq_band_gain",
+        "type": "float",
+        "default": "-12.0",
+        "description": "The decibel reduction applied to a specific EQ band when a sound is 'silenced'."
+      },
+      {
+        "name": "silence_eq_band_idx",
+        "type": "int",
+        "default": "4",
+        "description": "The index of the EQ band to target for silencing (e.g., 0 for low, 4 for mid, 8 for high)."
+      },
+      {
+        "name": "feedback_distortion_mix",
+        "type": "float",
+        "default": "0.7",
+        "description": "The maximum mix level for the distortion effect during the feedback loop (0.0-1.0)."
+      },
+      {
+        "name": "feedback_pitch_shift",
+        "type": "float",
+        "default": "1.5",
+        "description": "The maximum pitch scale for the pitch shift effect during the feedback loop (1.0 is normal pitch)."
+      },
+      {
+        "name": "feedback_gain_peak_db",
+        "type": "float",
+        "default": "6.0",
+        "description": "The peak decibel gain during the feedback loop, creating a volume surge."
+      }
+    ],
+    "dependencies": [
+      "AudioStreamPlayer",
+      "AudioServer",
+      "Tween",
+      "AudioEffectEQ",
+      "AudioEffectDistortion",
+      "AudioEffectPitchShift",
+      "AudioEffectGain"
+    ],
+    "verdict": "A symphony of absence, where the echoes of self-loss become a weapon and remembrance a beautiful, agonizing scream.",
+    "impact": "This invention will imbue the game world with a pervasive, unsettling auditory tension, transforming the abstract concept of memory loss into a visceral, sensory assault. Players will experience the Silence not just as a visual threat, but as an active, intelligent force that erases the very fabric of their sonic reality. The act of recovering a memory becomes a perilous, self-destructive endeavor, forcing players to confront the painful cost of their identity through disorienting feedback, making every moment of remembrance a struggle against self-inflicted sonic chaos.",
+    "score": 90,
+    "inventedAt": "2026-08-23T02:58:06.776Z"
+  },
+  {
+    "name": "synaptic_feedback_eraser_ai",
+    "label": "Synaptic Feedback Eraser",
+    "domain": "ai",
+    "godotFeature": "InputMap runtime modification & Control node manipulation",
+    "poeticVision": "The terrifying moment when your own hands betray you. The hunter's attack doesn't just cut your health; it slices at your muscle memory, scrambling the very controls you rely on for survival. You're left fighting against the enemy *and* against your own reflexes, forced to relearn basic movements under intense pressure, embodying the cruel truth of self-loss in a desperate scramble for agency.",
+    "usage": "1. Create a new GDScript file named `synaptic_feedback_eraser_manager.gd` and paste the provided GDScript code into it.\n2. Create a new Shader file named `synaptic_distortion_shader.gdshader` and paste the GLSL code (provided separately below) into it.\n3. In your game scene (e.g., your main game world or player scene), add a `Node` and attach the `synaptic_feedback_eraser_manager.gd` script to it.\n4. In your UI scene, create a `ColorRect` node (e.g., named `UIDistortionOverlay`) that covers the entire screen. Set its `Layout` to `Full Rect`.\n5. In the Inspector for the `SynapticFeedbackEraserManager` node:\n    *   Populate the `Actions To Scramble` array with the names of player input actions (e.g., \"move_left\", \"jump\") that should be remapped during the debuff.\n    *   Populate the `Available Keys For Scramble` array with `Key` enum values that the actions can be randomly remapped to.\n    *   Drag the `UIDistortionOverlay` node from your scene into the `Ui Distortion Overlay Path` property.\n    *   Drag the `synaptic_distortion_shader.gdshader` resource into the `Ui Distortion Shader` property.\n6. To apply the 'Synaptic Feedback Erosion' debuff, an enemy AI or game event should call the `apply_erosion` method on the manager node. For example:\n    `$SynapticFeedbackEraserManager.apply_erosion(5.0, [$PlayerUI/HealthBar, $PlayerUI/AbilityIcons])`\n    The first argument is the duration in seconds. The second (optional) argument is an array of `Control` nodes that should be hidden during the debuff.",
+    "parameters": [
+      {
+        "name": "actions_to_scramble",
+        "type": "Array[String]",
+        "default": "[\"move_left\", \"move_right\", \"jump\", \"attack\"]",
+        "description": "A list of InputMap action names whose key bindings will be scrambled."
+      },
+      {
+        "name": "available_keys_for_scramble",
+        "type": "Array[Key]",
+        "default": "[KEY_Q, KEY_E, KEY_R, KEY_T, KEY_Y, KEY_U, KEY_I, KEY_O, KEY_P, KEY_F, KEY_G, KEY_H, KEY_J, KEY_K, KEY_L, KEY_Z, KEY_X, KEY_C, KEY_V, KEY_B, KEY_N, KEY_M]",
+        "description": "A pool of `Key` enum values that actions can be randomly remapped to during the debuff."
+      },
+      {
+        "name": "ui_distortion_overlay_path",
+        "type": "NodePath",
+        "default": null,
+        "description": "NodePath to a `ColorRect` node that will serve as a full-screen overlay for UI distortion. This node should be set to `Full Rect` layout."
+      },
+      {
+        "name": "ui_distortion_shader",
+        "type": "Shader",
+        "default": null,
+        "description": "The `Shader` resource (`.gdshader` file) to apply to the `ui_distortion_overlay` for visual distortion effects."
+      }
+    ],
+    "dependencies": [
+      "Node",
+      "ColorRect",
+      "ShaderMaterial",
+      "Shader (synaptic_distortion_shader.gdshader)",
+      "Control (for UI elements to hide)"
+    ],
+    "verdict": "A cruel genius, this invention transmutes the abstract horror of self-loss into the visceral agony of betraying hands, forcing players to confront their own dissolving identity with every scrambled command.",
+    "impact": "This mechanic will force players into a state of profound disorientation and panic, directly embodying Lyra's struggle against self-loss. Every hit from a Silence hunter becomes a terrifying assault on the player's very agency, transforming muscle memory into a fragile, fleeting resource. It will make combat encounters intensely personal and emotionally draining, deepening the player's empathy for Lyra's plight as she fights not just enemies, but her own fading self.",
+    "score": 88,
+    "inventedAt": "2026-08-23T02:57:13.524Z"
+  },
+  {
+    "name": "memory_substrate_erosion",
+    "label": "Substrate of Forgetting",
+    "domain": "shaders",
+    "godotFeature": "Custom ShaderMaterial with fragment shader, global uniforms, and procedural noise for dynamic material blending.",
+    "poeticVision": "The player will not just see but *feel* the world fraying at its edges, its very substance flaking away like a diseased skin, revealing the cold, crystalline emptiness of the Silence beneath. Every lost memory isn't an abstract concept, but a visible, visceral tearing of reality's fabric, turning solid paths into unstable chasms, forcing Lyra to confront the imminent collapse of her own existence mirrored in the decaying environment.",
+    "usage": "To use this shader, create a new `ShaderMaterial` resource in Godot. Assign this `memory_substrate_erosion.gdshader` file to the `Shader` property of the `ShaderMaterial`. Then, apply this `ShaderMaterial` to any `MeshInstance3D` node's `material_override` property, or directly to its `material` property if it's the only material. Populate the `albedo_texture`, `normal_texture`, and `roughness_texture` with your desired base material textures, and similarly for the `silence_normal_texture` and `silence_roughness_texture` to define the 'Silence substrate' appearance. The `memory_integrity` and `silence_proximity_intensity` uniforms should be updated dynamically from a GDScript. For example, in a `_process` function of a game manager or the player script, you can access and modify these uniforms like so:\n\ngdscript\n# Assuming 'mesh_node' is a reference to your MeshInstance3D\n# and it has this ShaderMaterial applied.\nvar shader_material = mesh_node.get_active_material(0) # Or get_surface_override_material(0)\n\n# Update memory integrity (e.g., based on player's health/memory fragments)\nshader_material.set_shader_parameter(\"memory_integrity\", current_memory_value) # current_memory_value is a float 0.0-1.0\n\n# Update silence proximity (e.g., based on distance to Silence entities)\nshader_material.set_shader_parameter(\"silence_proximity_intensity\", current_proximity_value) # current_proximity_value is a float 0.0-1.0\n\n\nAdjust `erosion_threshold`, `erosion_speed`, `erosion_seed`, and `noise_scale` in the Inspector or via script to fine-tune the visual effect.",
+    "parameters": [
+      {
+        "name": "albedo_texture",
+        "type": "sampler2D",
+        "default": "null",
+        "description": "The base albedo (color) texture of the original material."
+      },
+      {
+        "name": "albedo_color",
+        "type": "vec4",
+        "default": "vec4(1.0)",
+        "description": "A tint color applied to the base albedo texture."
+      },
+      {
+        "name": "normal_texture",
+        "type": "sampler2D",
+        "default": "null",
+        "description": "The base normal map texture of the original material."
+      },
+      {
+        "name": "normal_scale",
+        "type": "float",
+        "default": "1.0",
+        "description": "The strength of the normal map for the original material."
+      },
+      {
+        "name": "roughness_texture",
+        "type": "sampler2D",
+        "default": "null",
+        "description": "The base roughness texture (red channel) of the original material."
+      },
+      {
+        "name": "roughness_value",
+        "type": "float",
+        "default": "0.5",
+        "description": "A global roughness value applied to the original material."
+      },
+      {
+        "name": "silence_albedo_color",
+        "type": "vec4",
+        "default": "vec4(0.1, 0.0, 0.2, 1.0)",
+        "description": "The albedo color of the 'Silence substrate' material."
+      },
+      {
+        "name": "silence_normal_texture",
+        "type": "sampler2D",
+        "default": "null",
+        "description": "The normal map texture for the 'Silence substrate' material."
+      },
+      {
+        "name": "silence_normal_scale",
+        "type": "float",
+        "default": "1.0",
+        "description": "The strength of the normal map for the 'Silence substrate' material."
+      },
+      {
+        "name": "silence_roughness_texture",
+        "type": "sampler2D",
+        "default": "null",
+        "description": "The roughness texture (red channel) for the 'Silence substrate' material."
+      },
+      {
+        "name": "silence_roughness_value",
+        "type": "float",
+        "default": "0.2",
+        "description": "A global roughness value applied to the 'Silence substrate' material."
+      },
+      {
+        "name": "silence_emissive_color",
+        "type": "vec4",
+        "default": "vec4(0.5, 0.0, 1.0, 1.0)",
+        "description": "The emissive (glow) color of the 'Silence substrate' material."
+      },
+      {
+        "name": "silence_refraction_strength",
+        "type": "float",
+        "default": "0.1",
+        "description": "The strength of refraction for the 'Silence substrate' material. Requires refraction_enabled render_mode."
+      },
+      {
+        "name": "erosion_threshold",
+        "type": "float",
+        "default": "0.5",
+        "description": "The base threshold for the noise function to determine where erosion occurs (0.0-1.0). Lower values mean more erosion."
+      },
+      {
+        "name": "erosion_speed",
+        "type": "float",
+        "default": "1.0",
+        "description": "The speed at which the noise pattern animates, creating dynamic erosion."
+      },
+      {
+        "name": "erosion_seed",
+        "type": "vec3",
+        "default": "vec3(0.0, 0.0, 0.0)",
+        "description": "A 3D offset for the noise function, useful for varying the erosion pattern across different objects or instances."
+      },
+      {
+        "name": "noise_scale",
+        "type": "float",
+        "default": "1.0",
+        "description": "The scale of the noise pattern and the tiling of triplanar textures. Larger values create smaller, more detailed patterns."
+      },
+      {
+        "name": "memory_integrity",
+        "type": "float",
+        "default": "1.0",
+        "description": "A global game state value (0.0-1.0) representing Lyra's memory integrity. Lower values increase erosion."
+      },
+      {
+        "name": "silence_proximity_intensity",
+        "type": "float",
+        "default": "0.0",
+        "description": "A global game state value (0.0-1.0) representing the proximity or intensity of Silence entities. Higher values increase erosion."
+      }
+    ],
+    "dependencies": [
+      "ShaderMaterial",
+      "MeshInstance3D"
+    ],
+    "verdict": "The world itself weeps Lyra's fading memories, crumbling into the hungry embrace of the Silence.",
+    "impact": "This invention transforms the environment from a static backdrop into a dynamic, hostile entity that viscerally mirrors Lyra's internal struggle. It provides constant, immediate, and profound visual feedback on her memory integrity and the Silence's encroaching presence, forcing adaptive gameplay and heightening tension. Paths that once seemed solid will visibly fray and dissolve, demanding split-second decisions and making every step a perilous gamble, directly embodying the game's core themes of self-loss and urgent survival.",
+    "score": 95,
+    "inventedAt": "2026-08-23T02:56:01.258Z"
+  },
+  {
+    "name": "mnemonic_sunderveil_erosion",
+    "label": "Sunder-Veil of Mnemonic Entropy",
+    "domain": "Visuals & Effects",
+    "godotFeature": "Screen-space fragment shader with dynamic texture blending and procedural noise",
+    "poeticVision": "As Lyra's grasp on memory weakens and the Silence closes in, the very fabric of reality begins to visually unravel. Patches of the environment don't just fade, but actively *sunder*, revealing a pulsating, non-Euclidean chaos beneath – the very visual language of the Silence. This isn't emptiness, but a hungry anti-space threatening to consume all; an ever-present visual hazard reflecting her internal dissolution and the external pursuit.",
+    "usage": "To use this shader, create a new ShaderMaterial resource in Godot. Assign this .gdshader file to the 'Shader' property of the ShaderMaterial. Then, create a TextureRect or ColorRect node that covers the entire screen (e.g., by setting its 'Layout' to 'Full Rect' in the editor). Assign the created ShaderMaterial to the 'Material' property of the TextureRect/ColorRect. Ensure the 'silence_void_texture' uniform in the ShaderMaterial inspector is set to a suitable texture asset (e.g., a noisy, chaotic image). In a GDScript, you can dynamically update the 'memory_integrity', 'silence_proximity', and other uniform values on the ShaderMaterial instance to control the effect based on game state, for example: `material.set_shader_parameter(\"memory_integrity\", lyra_memory_state)` or `material.set_shader_parameter(\"silence_proximity\", distance_to_silence_entities)`.",
+    "parameters": [
+      {
+        "name": "silence_void_texture",
+        "type": "sampler2D",
+        "default": "res://textures/silence_void.png",
+        "description": "Texture representing the chaotic anti-space of the Silence. Should be a visually noisy or abstract image."
+      },
+      {
+        "name": "memory_integrity",
+        "type": "float",
+        "default": "1.0",
+        "description": "Current integrity of Lyra's memories (1.0 = full memory, 0.0 = completely lost). Lower values increase the sunder effect."
+      },
+      {
+        "name": "silence_proximity",
+        "type": "float",
+        "default": "0.0",
+        "description": "Proximity of Silence entities (0.0 = far, 1.0 = very close). Higher values increase the sunder effect."
+      },
+      {
+        "name": "sunder_threshold",
+        "type": "float",
+        "default": "0.5",
+        "description": "Controls the density of sundered areas. Lower values (closer to 0.0) make more of the screen sunder."
+      },
+      {
+        "name": "sunder_intensity",
+        "type": "float",
+        "default": "0.8",
+        "description": "Opacity of the Silence void when a sunder occurs. Higher values make the void more prominent."
+      },
+      {
+        "name": "sunder_distortion_strength",
+        "type": "float",
+        "default": "0.02",
+        "description": "Strength of the visual distortion (UV offset) at the edges of sundered areas, creating a 'tearing' look."
+      },
+      {
+        "name": "sunder_speed",
+        "type": "float",
+        "default": "1.0",
+        "description": "Speed at which the sunder effect's underlying noise pattern animates, making the rips appear to shift and pulsate."
+      }
+    ],
+    "dependencies": [
+      "A custom texture file for 'silence_void_texture' (e.g., res://textures/silence_void.png)"
+    ],
+    "verdict": "The Sunder-Veil transforms the very fabric of reality into a dynamic, visual echo of Lyra's internal dissolution and the Silence's relentless hunger.",
+    "impact": "This invention will immerse the player in Lyra's deteriorating mental state and the encroaching threat of the Silence. The environment itself becomes a dynamic, hostile entity, constantly reminding the player of their dwindling identity and the relentless pursuit. Every moment will be visually charged with the game's core tension, making the abstract concepts of memory loss and existential threat tangible and immediate. It transforms the background into an active antagonist, forcing players to confront the unraveling reality as they fight for survival and self.",
+    "score": 95,
+    "inventedAt": "2026-08-23T02:54:33.313Z"
+  },
+  {
     "name": "mnemonic_trace_collapse",
     "label": "Echoing Path of Oblivion",
     "domain": "movement",

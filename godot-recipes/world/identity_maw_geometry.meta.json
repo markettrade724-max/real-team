@@ -1,0 +1,54 @@
+{
+  "name": "identity_maw_geometry",
+  "label": "Identity Maw Geometry",
+  "domain": "world",
+  "godotFeature": "Compute Shaders for real-time mesh deformation and ArrayMesh updates",
+  "poeticVision": "The world itself is a hungry entity, its very geometry constantly reforming, dissolving, and consuming itself in direct response to Lyra's fading memories. As her identity unravels, the ground beneath her feet becomes a treacherous maw, swallowing paths, revealing abysses, or manifesting new, hostile 'memory-growths'. Every physical alteration of the environment is a visceral reminder of self-loss, turning navigation into a desperate, terrifying dance with her own unmaking.",
+  "usage": "This compute shader dynamically deforms the geometry of a MeshInstance3D based on Lyra's identity integrity and proximity to Silence entities. A GDScript 'code-agent' would orchestrate the following steps:\n\n1.  **Setup Mesh and Shader:**\n    *   Create a `MeshInstance3D` in your scene, assign an `ArrayMesh` (e.g., a `PlaneMesh`, `BoxMesh`, or imported mesh) to its `mesh` property.\n    *   Create a `ComputeShader` resource (e.g., `res://identity_maw_geometry.gdshader`) and assign it to a new `ShaderMaterial`.\n    *   Assign this `ShaderMaterial` to the `MeshInstance3D`'s `material_override` or a specific surface material.\n\n2.  **Prepare Buffers (Initial GDScript Setup):**\n    *   In a GDScript (e.g., attached to a `Node3D` controlling the environment), get the `RenderingDevice` singleton: `var rd = RenderingServer.get_rendering_device()`.\n    *   Get the `ArrayMesh` from the `MeshInstance3D`.\n    *   Extract the `ARRAY_VERTEX` and `ARRAY_NORMAL` data using `mesh.surface_get_arrays(0)` (assuming surface 0).\n    *   Convert these `PackedVector3Array`s into `PackedFloat32Array`s (each `Vector3` becomes 3 floats).\n    *   Create three `RDStorageBuffer`s:\n        *   `vertices_in_buffer_rid`: For the initial vertex data (read-only, `BUFFER_USAGE_STORAGE_BUFFER | BUFFER_USAGE_SHADER_READ`).\n        *   `normals_in_buffer_rid`: For the initial normal data (read-only, `BUFFER_USAGE_STORAGE_BUFFER | BUFFER_USAGE_SHADER_READ`).\n        *   `vertices_out_buffer_rid`: For the modified vertex data (write-only, then read-back, `BUFFER_USAGE_STORAGE_BUFFER | BUFFER_USAGE_SHADER_WRITE | BUFFER_USAGE_SHADER_READ`).\n    *   Populate `vertices_in_buffer_rid` and `normals_in_buffer_rid` with the initial mesh data using `rd.buffer_update()`.\n    *   Create a `ComputePipeline` from the `ComputeShader`'s RID: `var pipeline = rd.compute_pipeline_create(compute_shader.get_rid())`.\n\n3.  **Update Loop (e.g., in `_process(delta)`):**\n    *   Update `uniform` values on the `ShaderMaterial` (e.g., `material.set_shader_parameter(\"identity_integrity\", lyra_identity_score)`).\n    *   Begin a compute list: `var compute_list = rd.compute_list_begin()`.\n    *   Bind the input and output `RDStorageBuffer`s to the shader's buffer uniforms. The binding IDs correspond to their declaration order in the shader:\n        *   `rd.compute_list_bind_storage_buffer(compute_list, 0, vertices_in_buffer_rid)`\n        *   `rd.compute_list_bind_storage_buffer(compute_list, 1, normals_in_buffer_rid)`\n        *   `rd.compute_list_bind_storage_buffer(compute_list, 2, vertices_out_buffer_rid)`\n    *   Dispatch the compute shader: `rd.compute_list_dispatch(compute_list, num_vertices / group_size_x, 1, 1)` (where `num_vertices` is the total vertex count and `group_size_x` is 64, matching the shader).\n    *   End the compute list: `rd.compute_list_end()`.\n\n4.  **Read Back and Update Mesh:**\n    *   Synchronize the rendering device to ensure the compute shader has finished: `rd.sync()`.\n    *   Read the modified vertex data from `vertices_out_buffer_rid` using `rd.buffer_get_data()`.\n    *   Convert the `PackedByteArray` received back into a `PackedFloat32Array` and then into a `PackedVector3Array`.\n    *   Create a new `Array` for the mesh surface, replacing the `ARRAY_VERTEX` element with the newly computed `PackedVector3Array`.\n    *   Update the `ArrayMesh`'s vertex data: `mesh.surface_set_arrays(0, new_arrays)`.\n\n5.  **Update Collision Shapes:**\n    *   If the `MeshInstance3D` has a `CollisionShape3D` child, its `shape` property must be updated to reflect the new geometry.\n    *   Create a new `ConcavePolygonShape3D`.\n    *   Set its faces using the modified vertex data: `new_collision_shape.set_faces(new_vertices_pv3a)`.\n    *   Assign this new shape to the `CollisionShape3D`: `collision_shape_node.shape = new_collision_shape`.\n    *   This step is critical for accurate physical interaction with the dynamically changing environment.\n\nRemember to free the `RID`s of the buffers and pipeline when the node exits the tree to prevent memory leaks.",
+  "parameters": [
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Lyra's current identity integrity, from 0.0 (fully lost) to 1.0 (full identity). Lower values increase deformation."
+    },
+    {
+      "name": "silence_proximity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Proximity to Silence entities, from 0.0 (far) to 1.0 (very close). Higher values increase deformation."
+    },
+    {
+      "name": "time",
+      "type": "float",
+      "default": "0.0",
+      "description": "Global time value, typically `Engine.get_singleton().get_main_loop().get_time()` or `Time.get_ticks_usec() / 1000000.0`, used for animating noise."
+    },
+    {
+      "name": "dissolve_strength",
+      "type": "float",
+      "default": "0.5",
+      "description": "Maximum displacement strength for the 'maw' effect, pulling vertices downwards."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "0.1",
+      "description": "Scale factor for the per-vertex noise, controlling the 'granularity' of organic deformation."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D",
+    "ArrayMesh",
+    "ShaderMaterial",
+    "ComputeShader",
+    "RenderingDevice",
+    "RDStorageBuffer",
+    "CollisionShape3D",
+    "ConcavePolygonShape3D"
+  ],
+  "verdict": "The world itself becomes a hungry echo of Lyra's unraveling mind, making every step a desperate dance on the precipice of her own unmaking.",
+  "impact": "The player will constantly feel the existential dread of Lyra's fading identity, not as an abstract concept, but as the very ground beneath their feet literally dissolving. Navigation becomes a terrifying, dynamic puzzle, where every step is a gamble against self-loss and the encroaching Silence, forcing split-second decisions and amplifying the feeling of a desperate race against time and oblivion.",
+  "score": 92,
+  "inventedAt": "2026-08-23T03:00:39.721Z"
+}

@@ -1,0 +1,59 @@
+{
+  "name": "mnemonic_sunderveil_erosion",
+  "label": "Sunder-Veil of Mnemonic Entropy",
+  "domain": "Visuals & Effects",
+  "godotFeature": "Screen-space fragment shader with dynamic texture blending and procedural noise",
+  "poeticVision": "As Lyra's grasp on memory weakens and the Silence closes in, the very fabric of reality begins to visually unravel. Patches of the environment don't just fade, but actively *sunder*, revealing a pulsating, non-Euclidean chaos beneath – the very visual language of the Silence. This isn't emptiness, but a hungry anti-space threatening to consume all; an ever-present visual hazard reflecting her internal dissolution and the external pursuit.",
+  "usage": "To use this shader, create a new ShaderMaterial resource in Godot. Assign this .gdshader file to the 'Shader' property of the ShaderMaterial. Then, create a TextureRect or ColorRect node that covers the entire screen (e.g., by setting its 'Layout' to 'Full Rect' in the editor). Assign the created ShaderMaterial to the 'Material' property of the TextureRect/ColorRect. Ensure the 'silence_void_texture' uniform in the ShaderMaterial inspector is set to a suitable texture asset (e.g., a noisy, chaotic image). In a GDScript, you can dynamically update the 'memory_integrity', 'silence_proximity', and other uniform values on the ShaderMaterial instance to control the effect based on game state, for example: `material.set_shader_parameter(\"memory_integrity\", lyra_memory_state)` or `material.set_shader_parameter(\"silence_proximity\", distance_to_silence_entities)`.",
+  "parameters": [
+    {
+      "name": "silence_void_texture",
+      "type": "sampler2D",
+      "default": "res://textures/silence_void.png",
+      "description": "Texture representing the chaotic anti-space of the Silence. Should be a visually noisy or abstract image."
+    },
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Current integrity of Lyra's memories (1.0 = full memory, 0.0 = completely lost). Lower values increase the sunder effect."
+    },
+    {
+      "name": "silence_proximity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Proximity of Silence entities (0.0 = far, 1.0 = very close). Higher values increase the sunder effect."
+    },
+    {
+      "name": "sunder_threshold",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the density of sundered areas. Lower values (closer to 0.0) make more of the screen sunder."
+    },
+    {
+      "name": "sunder_intensity",
+      "type": "float",
+      "default": "0.8",
+      "description": "Opacity of the Silence void when a sunder occurs. Higher values make the void more prominent."
+    },
+    {
+      "name": "sunder_distortion_strength",
+      "type": "float",
+      "default": "0.02",
+      "description": "Strength of the visual distortion (UV offset) at the edges of sundered areas, creating a 'tearing' look."
+    },
+    {
+      "name": "sunder_speed",
+      "type": "float",
+      "default": "1.0",
+      "description": "Speed at which the sunder effect's underlying noise pattern animates, making the rips appear to shift and pulsate."
+    }
+  ],
+  "dependencies": [
+    "A custom texture file for 'silence_void_texture' (e.g., res://textures/silence_void.png)"
+  ],
+  "verdict": "The Sunder-Veil transforms the very fabric of reality into a dynamic, visual echo of Lyra's internal dissolution and the Silence's relentless hunger.",
+  "impact": "This invention will immerse the player in Lyra's deteriorating mental state and the encroaching threat of the Silence. The environment itself becomes a dynamic, hostile entity, constantly reminding the player of their dwindling identity and the relentless pursuit. Every moment will be visually charged with the game's core tension, making the abstract concepts of memory loss and existential threat tangible and immediate. It transforms the background into an active antagonist, forcing players to confront the unraveling reality as they fight for survival and self.",
+  "score": 95,
+  "inventedAt": "2026-08-23T02:54:33.313Z"
+}

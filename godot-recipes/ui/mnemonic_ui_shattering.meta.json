@@ -1,0 +1,52 @@
+{
+  "name": "mnemonic_ui_shattering",
+  "label": "The Shattered Gaze of Self",
+  "domain": "ui",
+  "godotFeature": "Godot 4.6.2 Control node manipulation, ShaderMaterial, and AnimationPlayer/Tweening",
+  "poeticVision": "The player will experience a profound, unsettling loss as the very interface they rely upon shatters and dissolves, mimicking Lyra's fading memories. Information vital for survival – health, objectives, abilities – won't just flicker or blur; it will physically break apart, with fragments drifting into chaotic disarray or vanishing entirely, leaving critical blind spots. This creates an immediate tactical disadvantage fused with the constant, gnawing anxiety of losing oneself, as the player's connection to Lyra's state becomes as fractured and uncertain as Lyra's own identity.",
+  "usage": "To use 'The Shattered Gaze of Self' effect:\n\n1.  **Prepare your UI Element**: Design a `Control` node (e.g., a `Panel`, `HBoxContainer`, or `VBoxContainer`) that will represent the UI element to be shattered (e.g., a health bar, an ability icon container). Crucially, this `Control` node must have its visual components broken down into *smaller, individual `Control` node children*. Each child `Control` (e.g., `TextureRect` for a health segment, or a `Panel` for a button part) will become a 'fragment' that drifts and fades.\n    *   **Example**: For a health bar, instead of one `TextureRect`, use multiple `TextureRect` nodes as children, each representing a small segment of the health bar's visual. Set their `texture` property to the appropriate part of the health bar image.\n    *   **Shader Material**: While the script will automatically apply a `ShaderMaterial` if none exists, for best results, you can optionally pre-apply a `ShaderMaterial` to each fragment child in the editor. The script will update its shader code and parameters.\n\n2.  **Add the `MnemonicUIShatterer` script**: Create a new script file named `mnemonic_ui_shattering.gd` and paste the provided code into it. You can then add this script as an AutoLoad (Project -> Project Settings -> AutoLoad) to make it globally accessible, or add it as a node to your main UI scene.\n\n3.  **Trigger the Shattering**: When Lyra takes identity damage or a memory is lost, call the `shatter_ui_element` function from your game logic, passing the parent `Control` node of the fragments you wish to shatter.\n\n    **Example (from a game script)**:\n    gdscript\n    # Assuming MnemonicUIShatterer is an AutoLoad named 'MnemonicUIShatterer'\n    # Or if it's a node in your scene: get_node(\"Path/To/MnemonicUIShatterer\")\n\n    @onready var health_bar_container = $\"UI/HealthBarContainer\" # Your prepared UI element\n    @onready var ability_icon_container = $\"UI/AbilityIconContainer\" # Another example\n\n    func _on_lyra_memory_lost(memory_type: String):\n    \tif memory_type == \"health_capacity\":\n    \t\tMnemonicUIShatterer.shatter_ui_element(health_bar_container)\n    \telif memory_type == \"ability_recall\":\n    \t\tMnemonicUIShatterer.shatter_ui_element(ability_icon_container)\n    \n\n4.  **Customize Parameters**: Adjust the `shatter_duration`, `drift_strength`, `fade_duration`, `rotation_strength`, and `fragment_shader_code` parameters in the Inspector (if the script is a node) or directly in the script to fine-tune the visual effect to your game's needs.",
+  "parameters": [
+    {
+      "name": "shatter_duration",
+      "type": "float",
+      "default": "0.8",
+      "description": "Duration of the initial fragment drift animation in seconds."
+    },
+    {
+      "name": "drift_strength",
+      "type": "float",
+      "default": "150.0",
+      "description": "Maximum pixel distance fragments will drift from their original position."
+    },
+    {
+      "name": "fade_duration",
+      "type": "float",
+      "default": "1.5",
+      "description": "Duration of the fragment fade-out animation in seconds, after drifting."
+    },
+    {
+      "name": "rotation_strength",
+      "type": "float",
+      "default": "180.0",
+      "description": "Maximum degrees fragments will rotate during the drift animation."
+    },
+    {
+      "name": "fragment_shader_code",
+      "type": "String",
+      "default": "shader_type canvas_item;\\n\\nuniform sampler2D fragment_texture : hint_albedo;\\nuniform float fade_alpha : hint_range(0.0, 1.0) = 1.0;\\nuniform float noise_strength : hint_range(0.0, 1.0) = 0.1;\\nuniform float time_offset : hint_range(0.0, 100.0) = 0.0; // For varying noise\\n\\nfloat rand(vec2 co) {\\n\\treturn fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\\n}\\n\\nvoid fragment() {\\n\\tvec2 uv = UV;\\n\\tfloat noise = rand(uv * (TIME + time_offset) * 10.0) * noise_strength;\\n\\tuv += vec2(noise, noise) * 0.05;\\n\\n\\tvec4 color = texture(fragment_texture, uv);\\n\\tcolor.a *= fade_alpha;\\n\\tCOLOR = color;\\n}\\n",
+      "description": "GLSL shader code applied to each fragment for visual decay and fading. Can be customized directly in the script or Inspector."
+    }
+  ],
+  "dependencies": [
+    "Control nodes (as parent and fragments)",
+    "Tween (for animations)",
+    "ShaderMaterial (for visual effects on fragments)",
+    "Shader (for fragment material)",
+    "TextureRect (if fragments are texture-based)",
+    "Panel (if fragments are stylebox-based)"
+  ],
+  "verdict": "A brilliant fracture of the player's perception, mirroring Lyra's internal dissolution with unsettling, tactical precision.",
+  "impact": "This invention will profoundly deepen the player's empathy for Lyra's struggle, transforming the abstract concept of memory loss into a tangible, frustrating, and terrifying tactical challenge. Every instance of the UI shattering will be a visceral reminder of Lyra's fading self, forcing players to adapt and fight not just external threats but also the dissolution of their own cognitive connection to the game world. It directly translates Lyra's internal chaos into the player's immediate perception, creating a constant, gnawing anxiety that perfectly aligns with the game's core themes.",
+  "score": 92,
+  "inventedAt": "2026-08-23T02:59:15.405Z"
+}

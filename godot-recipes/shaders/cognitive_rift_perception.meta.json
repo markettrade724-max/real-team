@@ -1,0 +1,43 @@
+{
+  "name": "cognitive_rift_perception",
+  "label": "The Fractured Gaze",
+  "domain": "shaders",
+  "godotFeature": "Screen-space shaders with depth buffer access, compute shader for dynamic distortion fields",
+  "poeticVision": "The player experiences a terrifying dissolution of spatial reality. As Lyra's memories fade, the world doesn't just blur; it actively warps and tears, pulling itself apart along non-Euclidean lines directly within her vision. Distant objects seem to shift independently from close ones, surfaces ripple with ephemeral cracks, and familiar pathways become precarious, forcing the player to question what is solid and what is merely a phantom of Lyra's failing mind. Every jump, every desperate run through the stellar ruins, is intensified by the chilling uncertainty of a reality that can no longer be trusted.",
+  "usage": "This shader is designed to be used as a custom post-processing effect on a WorldEnvironment node in a 3D scene. To implement:\n1.  Add a `WorldEnvironment` node to your scene.\n2.  Create a new `Environment` resource for the `WorldEnvironment` node.\n3.  In the `Environment` resource, navigate to the `Custom Post Processing` section.\n4.  Create a new `ShaderMaterial` and assign this `cognitive_rift_perception.gdshader` file to its `Shader` property.\n5.  Ensure that some post-processing effect (like `SDFGI`, `SSAO`, or `SSR`) is enabled in the `Environment` resource, or that `Adjustment` is enabled, to ensure the post-processing pipeline is active.\n6.  Control the intensity of the effect by updating the `memory_erosion_factor` uniform from a GDScript. For example, `get_node(\"WorldEnvironment\").environment.custom_post_processing.set_shader_parameter(\"memory_erosion_factor\", lyra_identity_loss_amount)`.\n\nNote: While the vision mentions a compute shader for noise generation, this recipe generates the noise directly within the fragment shader to meet the 'under 200 lines' and 'standalone' constraints. For a true compute shader approach, a separate compute shader asset would generate a texture, which would then be sampled by this fragment shader.",
+  "parameters": [
+    {
+      "name": "memory_erosion_factor",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the overall intensity of the distortion. A value of 0.0 means no distortion, 1.0 means maximum distortion. This should be driven by Lyra's 'identity integrity' score."
+    },
+    {
+      "name": "distortion_scale",
+      "type": "float",
+      "default": "0.05",
+      "description": "The base magnitude of the spatial distortion. Adjust to make the warping more subtle or extreme."
+    },
+    {
+      "name": "noise_speed",
+      "type": "float",
+      "default": "0.5",
+      "description": "Determines how fast the underlying noise pattern evolves, creating dynamic movement in the distortions."
+    },
+    {
+      "name": "depth_influence",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls how much the depth of objects influences their distortion. A value of 0.0 applies uniform distortion regardless of depth, while higher values make farther objects distort more significantly than closer ones."
+    }
+  ],
+  "dependencies": [
+    "WorldEnvironment (Node)",
+    "Environment (Resource)",
+    "ShaderMaterial (Resource)"
+  ],
+  "verdict": "Through a shattered lens, reality itself becomes the hunter, mirroring Lyra's fading self in every disorienting tear and warp of the world.",
+  "impact": "This invention transforms the player's perception of reality into a direct reflection of Lyra's deteriorating mind, making every step a struggle against both external hunters and internal dissolution. It elevates environmental navigation from a physical challenge to a profound psychological one, forcing players to question their senses and adapt to a constantly shifting, unreliable world. The visual chaos directly embodies the core theme of identity loss, making it a visceral and unforgettable part of the gameplay experience.",
+  "score": 95,
+  "inventedAt": "2026-08-23T03:08:17.253Z"
+}

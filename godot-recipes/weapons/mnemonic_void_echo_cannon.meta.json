@@ -1,0 +1,37 @@
+{
+  "name": "mnemonic_void_echo_cannon",
+  "label": "Echo of the Unremembered",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterial, ParticleProcessMaterial, ViewportTexture",
+  "poeticVision": "The player wields the very emptiness of their past. Each shot is a desperate act, launching a phantom limb of a forgotten self to lash out at the hunters. The satisfaction of a successful strike is immediate, but so too is the chilling sensation of a deeper void opening within Lyra, a brief, disorienting glimpse into the growing chasm of her identity. It’s a power born of loss, making every victory a step further into the unknown, a weapon that leaves you more hollow even as it saves your life.",
+  "usage": "This `VoidEchoProjectile` script defines the projectile's behavior and appearance. To use it:\n\n**1. Player Setup (Firing and Screen Feedback):**\n   a.  **Player Script (`Player.gd` or similar):**\n       gdscript\n       # PLAYER_IDENTITY_TREMOR_SHADER_CODE (for a CanvasItem ShaderMaterial)\n       const PLAYER_IDENTITY_TREMOR_SHADER_CODE = \"\"\"\n       shader_type canvas_item;\n\n       uniform sampler2D screen_texture : hint_screen_texture;\n       uniform float effect_intensity : hint_range(0.0, 1.0) = 0.0;\n       uniform float time_speed : hint_range(0.0, 10.0) = 5.0;\n\n       void fragment() {\n       \tvec2 uv = SCREEN_UV;\n       \t\n       \t// Subtle warp/ghosting\n       \tfloat offset_x = sin(uv.y * 20.0 + TIME * time_speed) * 0.005 * effect_intensity;\n       \tfloat offset_y = cos(uv.x * 15.0 + TIME * time_speed * 0.7) * 0.005 * effect_intensity;\n       \t\n       \tvec2 warped_uv = uv + vec2(offset_x, offset_y);\n       \t\n       \t// Desaturation\n       \tvec4 color = texture(screen_texture, warped_uv);\n       \tfloat gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));\n       \tvec3 desaturated_color = mix(color.rgb, vec3(gray), effect_intensity * 0.5);\n       \t\n       \tCOLOR = vec4(desaturated_color, color.a);\n       \t\n       \t// Optional: Add a subtle color tint for the void effect\n       \tCOLOR.rgb = mix(COLOR.rgb, vec3(0.1, 0.0, 0.2), effect_intensity * 0.3);\n       }\n       \"\"\"\n\n       extends CharacterBody3D # Or whatever your player extends\n\n       @onready var _screen_effect_rect: ColorRect = $\"../CanvasLayer/ScreenEffectRect\" # Adjust path\n       var _screen_effect_material: ShaderMaterial\n\n       func _ready() -> void:\n       \t# Setup screen effect material\n       \tvar screen_shader = Shader.new()\n       \tscreen_shader.code = PLAYER_IDENTITY_TREMOR_SHADER_CODE\n       \t_screen_effect_material = ShaderMaterial.new()\n       \t_screen_effect_material.shader = screen_shader\n       \t_screen_effect_rect.material = _screen_effect_material\n       \t_screen_effect_material.set_shader_parameter(\"effect_intensity\", 0.0)\n\n       func fire_void_echo(direction: Vector3) -> void:\n       \tvar projectile_instance = VoidEchoProjectile.new()\n       \tget_tree().root.add_child(projectile_instance) # Or add to a dedicated 'Projectiles' node\n       \tprojectile_instance.global_position = $Muzzle.global_position # Assuming a Muzzle Node3D\n       \tprojectile_instance.initialize(direction, self)\n       \tprojectile_instance.player_identity_tremor.connect(_on_player_identity_tremor)\n\n       func _on_player_identity_tremor(duration: float, intensity: float) -> void:\n       \tvar tween = create_tween()\n       \ttween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)\n       \ttween.tween_property(_screen_effect_material, \"shader_parameter/effect_intensity\", intensity, duration / 2.0)\n       \ttween.tween_property(_screen_effect_material, \"shader_parameter/effect_intensity\", 0.0, duration / 2.0)\n       \t# Add other debuffs here, e.g., reduced movement speed, visual artifacts on HUD\n       \n   b.  **Scene Setup:** In your player scene or main scene, add a `CanvasLayer` node. Inside it, add a `ColorRect` node. Make sure the `ColorRect` covers the entire screen (e.g., `Layout -> Full Rect`). This `ColorRect` will receive the `_screen_effect_material` from the player script.\n\n**2. Enemy Setup (Receiving Impact):**\n   a.  **Enemy Script (`Enemy.gd` or similar):**\n       gdscript\n       extends CharacterBody3D # Or whatever your enemy extends\n\n       @export var max_health: float = 100.0\n       var current_health: float\n       var _original_material: Material # To store the enemy's original material\n\n       func _ready() -> void:\n       \tcurrent_health = max_health\n       \t# Assuming the enemy has a MeshInstance3D child named 'Mesh'\n       \tif $Mesh is MeshInstance3D:\n       \t\t_original_material = $Mesh.get_active_material(0)\n\n       func take_damage(amount: float) -> void:\n       \tcurrent_health -= amount\n       \tif current_health <= 0:\n       \t\tqueue_free() # Or trigger death animation\n\n       func apply_void_impact_effect(material: ShaderMaterial, duration: float) -> void:\n       \t# Assuming the enemy has a MeshInstance3D child named 'Mesh'\n       \tif $Mesh is MeshInstance3D:\n       \t\tvar mesh_instance = $Mesh as MeshInstance3D\n       \t\tmesh_instance.material_override = material\n       \t\t\n       \t\tvar tween = create_tween()\n       \t\ttween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)\n       \t\ttween.tween_property(material, \"shader_parameter/effect_progress\", 1.0, duration / 2.0)\n       \t\ttween.tween_property(material, \"shader_parameter/effect_progress\", 0.0, duration / 2.0)\n       \t\ttween.tween_callback(func(): \n       \t\t\tmesh_instance.material_override = _original_material # Restore original material\n       \t\t)\n       \n\n**3. Resource Generation:**\n   The `void_echo_fired` signal can be connected to a global resource manager or player script to decrement a 'Void Echo' resource count. When Lyra fails to recover a memory fragment or deliberately sacrifices one, this resource can be incremented.",
+  "parameters": [
+    {
+      "name": "speed",
+      "type": "float",
+      "default": "20.0",
+      "description": "The movement speed of the Void Echo projectile."
+    },
+    {
+      "name": "damage",
+      "type": "float",
+      "default": "25.0",
+      "description": "The amount of damage the projectile deals on impact."
+    },
+    {
+      "name": "lifetime",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration in seconds before the projectile automatically despawns if it doesn't hit anything."
+    }
+  ],
+  "dependencies": [
+    "Player.gd (or equivalent player script with 'fire_void_echo' and '_on_player_identity_tremor' methods)",
+    "Enemy.gd (or equivalent enemy script with 'take_damage' and 'apply_void_impact_effect' methods)",
+    "A CanvasLayer with a ColorRect for player screen effects."
+  ],
+  "verdict": "A weapon born of absence, it carves survival from the very essence of self-loss, turning every desperate strike into a chilling echo of what Lyra once was.",
+  "impact": "This mechanic introduces a profound layer of emotional and strategic depth. Players will constantly weigh the immediate need for survival against the gradual erosion of Lyra's identity, making every successful attack a bittersweet victory. It transforms resource management into a narrative device, forcing players to confront the core theme of self-loss with every trigger pull, creating a unique and unforgettable internal conflict.",
+  "score": 92,
+  "inventedAt": "2026-08-23T03:04:50.490Z"
+}
