@@ -1,31 +1,31 @@
 {
-  "runId": "2026-08-23T0733",
-  "mode": "inventor",
+  "runId": "2026-08-24T0255",
+  "mode": "screenplay-production",
   "success": false,
-  "timestamp": "2026-08-23T07:33:24.071Z",
-  "totalDuration": "12ms",
+  "timestamp": "2026-08-24T02:55:43.327Z",
+  "totalDuration": "35.6s",
   "budget": {
-    "total": 38,
+    "total": 1,
     "limit": 40,
-    "left": 2,
+    "left": 39,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 20,
+        "total": 1,
         "limit": 20,
-        "left": 0,
+        "left": 19,
         "exhausted": false,
         "library": 0,
-        "agents": 20
+        "agents": 1
       },
       {
         "key": "KEY_2",
-        "total": 18,
+        "total": 0,
         "limit": 20,
-        "left": 2,
+        "left": 20,
         "exhausted": false,
         "library": 0,
-        "agents": 18
+        "agents": 0
       }
     ]
   },
@@ -43,10 +43,16 @@
     "totalEpisodes": 28,
     "gamesDone": 1
   },
-  "agents": {},
+  "agents": {
+    "screenplay": {
+      "success": false,
+      "duration": "—",
+      "error": "Backbone invalid — missing acts"
+    }
+  },
   "summary": {
-    "total": 0,
+    "total": 1,
     "passed": 0,
-    "failed": 0
+    "failed": 1
   }
 }
