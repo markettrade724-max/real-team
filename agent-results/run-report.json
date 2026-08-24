@@ -1,22 +1,22 @@
 {
-  "runId": "2026-08-24T0255",
+  "runId": "2026-08-24T0529",
   "mode": "screenplay-production",
   "success": false,
-  "timestamp": "2026-08-24T02:55:43.327Z",
-  "totalDuration": "35.6s",
+  "timestamp": "2026-08-24T05:44:05.381Z",
+  "totalDuration": "874.5s",
   "budget": {
-    "total": 1,
+    "total": 7,
     "limit": 40,
-    "left": 39,
+    "left": 33,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 1,
+        "total": 7,
         "limit": 20,
-        "left": 19,
+        "left": 13,
         "exhausted": false,
         "library": 0,
-        "agents": 1
+        "agents": 7
       },
       {
         "key": "KEY_2",
@@ -45,14 +45,44 @@
   },
   "agents": {
     "screenplay": {
+      "success": true,
+      "duration": "—",
+      "error": null
+    },
+    "voice": {
+      "success": true,
+      "duration": "23.3s",
+      "error": null
+    },
+    "scene": {
+      "success": true,
+      "duration": "1ms",
+      "error": null
+    },
+    "visual": {
+      "success": true,
+      "duration": "46.5s",
+      "error": null
+    },
+    "subtitle": {
+      "success": true,
+      "duration": "19ms",
+      "error": null
+    },
+    "music": {
+      "success": true,
+      "duration": "11ms",
+      "error": null
+    },
+    "production": {
       "success": false,
       "duration": "—",
-      "error": "Backbone invalid — missing acts"
+      "error": "Timeout after 600s"
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 0,
+    "total": 7,
+    "passed": 6,
     "failed": 1
   }
 }
