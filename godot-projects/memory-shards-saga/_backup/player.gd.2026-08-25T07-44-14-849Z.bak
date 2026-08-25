@@ -33,14 +33,6 @@ func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	current_health = max_health
 	emit_signal("player_health_changed", current_health, max_health) # Initial health update for HUD
-	
-	# Explicitly set collision layers and masks for clarity and robustness
-	set_collision_layer_value(1, true) # Player is on layer 1
-	# Player collides with:
-	# Layer 1 (e.g., other players or environment if needed)
-	set_collision_mask_value(1, true)
-	# Layer 2 (e.g., Enemies, for collision detection if player needs to react to enemy bodies)
-	set_collision_mask_value(2, true)
 
 	# Get nodes using exported paths with robust checks
 	if camera_pivot_path:

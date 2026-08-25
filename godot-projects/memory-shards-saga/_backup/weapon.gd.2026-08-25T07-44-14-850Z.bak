@@ -30,9 +30,8 @@ func shoot():
 		_cooldown_timer.start()
 
 		var bullet_instance = BULLET.instantiate()
-		# Add the bullet to the scene's root for better organization and global scope.
-		# This ensures bullets are not removed if the weapon or player is temporarily removed.
-		get_tree().get_root().add_child(bullet_instance)
+		# Add the bullet to the current scene's root for proper physics interaction
+		get_tree().current_scene.add_child(bullet_instance)
 
 		# Set bullet's initial transform to muzzle point's global transform
 		bullet_instance.global_transform = _muzzle_point.global_transform
