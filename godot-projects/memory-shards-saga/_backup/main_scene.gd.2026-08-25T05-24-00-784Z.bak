@@ -128,11 +128,13 @@ func _set_game_state(new_state: GameState):
 	        get_tree().paused = true # Pause the game on Game Over
 	        if game_over_layer: game_over_layer.show() # Show Game Over screen
 	        _update_game_over_display()
+	        # _cleanup_game_elements() # Removed: Redundant as scene will be reloaded by get_tree().reload_current_scene()
 	        
 	    GameState.VICTORY: # New: Victory state handling
 	        get_tree().paused = true # Pause the game on Victory
 	        if victory_layer: victory_layer.show() # Show Victory screen
 	        _update_victory_display()
+	        # _cleanup_game_elements() # Removed: Redundant as scene will be reloaded by get_tree().reload_current_scene()
 
 func _spawn_player_if_needed():
 	# Spawn player if not already present or if returning from main menu
@@ -159,6 +161,16 @@ func _spawn_player_if_needed():
 	    # The manual call below is no longer needed.
 	elif not player_scene:
 	    push_error("Player scene not assigned in main_scene.gd! Cannot start gameplay.")
+
+func _cleanup_game_elements():
+	# Clean up player instance
+	if is_instance_valid(_player_instance):
+	    _player_instance.queue_free()
+	    _player_instance = null
+	
+	# Clean up any remaining enemies (optional, but good for a clean restart)
+	for enemy in get_tree().get_nodes_in_group("enemy"):
+		enemy.queue_free()
 
 func _on_player_died():
 	print("Game Over! Player died.")
