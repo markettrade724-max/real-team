@@ -4,7 +4,6 @@ extends CharacterBody3D
 # - "fire": For shooting the weapon.
 # - "jump": For player jumping.
 # - "move_left", "move_right", "move_forward", "move_backward": For player movement.
-# These custom actions must be defined in Project Settings -> Input Map.
 
 @export var speed: float = 5.0
 @export var jump_velocity: float = 4.5

@@ -128,13 +128,13 @@ func _set_game_state(new_state: GameState):
 	        get_tree().paused = true # Pause the game on Game Over
 	        if game_over_layer: game_over_layer.show() # Show Game Over screen
 	        _update_game_over_display()
-	        # _cleanup_game_elements() # Removed: Redundant as scene will be reloaded by get_tree().reload_current_scene()
+	        _cleanup_game_elements() # Clean up game elements for a fresh restart
 	        
 	    GameState.VICTORY: # New: Victory state handling
 	        get_tree().paused = true # Pause the game on Victory
 	        if victory_layer: victory_layer.show() # Show Victory screen
 	        _update_victory_display()
-	        # _cleanup_game_elements() # Removed: Redundant as scene will be reloaded by get_tree().reload_current_scene()
+	        _cleanup_game_elements() # Clean up game elements for a fresh restart
 
 func _spawn_player_if_needed():
 	# Spawn player if not already present or if returning from main menu
