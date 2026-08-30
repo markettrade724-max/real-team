@@ -1,0 +1,46 @@
+{
+  "name": "semantic_echo_disjunction",
+  "label": "Semantic Echo Disjunction",
+  "domain": "audio",
+  "godotFeature": "AudioStreamGeneratorPlayback, AudioServer API (custom effects)",
+  "poeticVision": "To hear your own forgotten laughter morph into the screech of your hunter, or a beloved melody warp into the very thrum of the Silence's approach. It's the profound violation of self, the grief of recognizing a piece of your soul weaponized against you. Every chase becomes a macabre dance with your own past, twisted into an instrument of despair by the very entity claiming to 'protect' it.",
+  "usage": "1.  **Create an Audio Bus**: In Godot's Project Settings -> Audio -> Buses, create a new bus (e.g., named \"CorruptionBus\"). Add desired audio effects to this bus, such as `AudioEffectPitchShift`, `AudioEffectDistortion`, and `AudioEffectFilter`. This script will dynamically adjust their parameters.\n2.  **Prepare Memory Shards**: Import your 'memory-shard' audio files (e.g., laughter, melodies) as `AudioStreamWAV` resources. Ensure they are set to `Loop: Disabled` if you want them to play once per trigger.\n3.  **Add `SemanticEchoDisjunction` Node**: Add an instance of this `SemanticEchoDisjunction` node to your scene (e.g., as a child of your hunter entity or a global audio manager).\n4.  **Configure Node Properties**: In the Inspector for the `SemanticEchoDisjunction` node:\n    *   Drag your `AudioStreamWAV` memory shards into the `Memory Shards` array.\n    *   Set `Bus Name` to the name of the audio bus you created (e.g., \"CorruptionBus\").\n    *   Adjust `Buffer Size Seconds` for desired latency/responsiveness.\n    *   Set an initial `Corruption Intensity` (0.0 for no corruption, 1.0 for maximum).\n5.  **Trigger Playback**: Call the `play_corrupted_shard(shard_index: int, intensity: float = -1.0)` method from your game logic. `shard_index` refers to the index in the `memory_shards` array. The optional `intensity` parameter allows overriding the node's default `corruption_intensity` for a specific playback.\n    *   Example: `get_node(\"Path/To/SemanticEchoDisjunction\").play_corrupted_shard(0, 0.75)` to play the first memory shard with 75% corruption.\n6.  **Stop Playback**: Call `stop_playback()` when the sound should cease.\n\nThis setup allows the game to dynamically play fragments of 'memory shards' through a dedicated audio bus, with real-time effects applied to create a sense of corruption and disjunction, directly integrating with the hunter's presence or attacks.",
+  "parameters": [
+    {
+      "name": "memory_shards",
+      "type": "Array[AudioStreamWAV]",
+      "default": "[]",
+      "description": "An array of AudioStreamWAV resources representing the 'memory fragments' to be sampled and corrupted. These are the source sounds (e.g., laughter, melodies)."
+    },
+    {
+      "name": "bus_name",
+      "type": "String",
+      "default": "\"Master\"",
+      "description": "The name of the Audio Bus in Project Settings where real-time audio effects (Pitch Shift, Distortion, Filter, etc.) are applied to corrupt the sound. This bus must exist and have effects configured."
+    },
+    {
+      "name": "buffer_size_seconds",
+      "type": "float",
+      "default": "0.5",
+      "description": "The length of the AudioStreamGenerator's internal buffer in seconds. A smaller buffer reduces latency but might increase CPU usage; a larger buffer increases latency but can be more stable."
+    },
+    {
+      "name": "corruption_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "A normalized value (0.0 to 1.0) controlling the intensity of the corruption effects applied to the memory shard. 0.0 means no corruption, 1.0 means maximum corruption. This value dynamically adjusts the parameters of effects on the specified audio bus."
+    }
+  ],
+  "dependencies": [
+    "AudioStreamPlayer",
+    "AudioStreamGenerator",
+    "AudioStreamWAV (resource type)",
+    "AudioEffectPitchShift (on bus)",
+    "AudioEffectDistortion (on bus)",
+    "AudioEffectFilter (on bus)"
+  ],
+  "verdict": "A symphony of self-violation, this invention masterfully weaponizes the echoes of a lost past, transforming every pursuit into a haunting dance with the fragments of a dissolving soul.",
+  "impact": "This mechanic will profoundly deepen the player's emotional connection to Lyra's struggle, transforming the abstract concept of memory loss into a visceral, auditory assault. It will elevate every chase sequence into a psychological battle, where the very soundscape becomes a haunting echo of what Lyra is fighting to reclaim, making the Silence's presence intimately terrifying and the stakes intensely personal. The dynamic corruption ensures a constantly evolving, unsettling atmosphere that directly reflects Lyra's internal state and external peril.",
+  "score": 95,
+  "inventedAt": "2026-08-30T07:39:19.664Z"
+}

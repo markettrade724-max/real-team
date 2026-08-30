@@ -1,0 +1,80 @@
+{
+  "name": "mnemonic_devourer_front",
+  "label": "The Devouring Horizon",
+  "domain": "world",
+  "godotFeature": "Compute Shaders for procedural erosion, SDFGI/Voxel GI for dynamic void lighting, Physics server for dynamic environmental interaction",
+  "poeticVision": "Feel the primal terror as the very fabric of existence unravels. The world itself transforms into a hungry, iridescent void, actively consuming the path ahead and behind. Its relentless advance is a direct, visceral manifestation of Lyra's fading self. Every step is a desperate race against the unmaking, not just of the environment, but of her own being, forcing her to confront the physical horror of forgetting.",
+  "usage": "This compute shader generates a 3D erosion field. A GDScript controller (e.g., 'DevouringHorizonManager.gd') would:\n1.  Initialize an 'ImageTexture3D' (e.g., 64x64x64, R8 format) and set it as the 'erosion_field' uniform.\n2.  Load this 'mnemonic_devourer_front.gdshader' as a 'Shader' resource.\n3.  Create a 'ShaderMaterial' and assign the loaded 'Shader'.\n4.  Update the 'player_pos', 'identity_integrity', 'global_erosion_progress', 'silence_entity_positions', and other uniform values from the game state.\n5.  Dispatch the compute shader using 'RenderingServer.compute_shader_dispatch(shader_rid, workgroup_count_x, workgroup_count_y, workgroup_count_z)'. The workgroup count should be 'ceil(field_resolution / local_size)'.\n6.  After dispatch, the 'erosion_field' texture contains the updated erosion data.\n7.  World geometry materials (e.g., custom 'SpatialShader's) would then sample this 'erosion_field' (passed as a uniform texture) to perform real-time vertex displacement, dissolve effects, and modify normals, creating the visual unmaking of the environment. SDFGI/Voxel GI will automatically react to these geometry changes.\n8.  For collision, a separate system would need to interpret the 'erosion_field' to dynamically update 'ConcavePolygonShape3D's or similar collision primitives, representing the physical 'devourer front'.",
+  "parameters": [
+    {
+      "name": "player_pos",
+      "type": "vec3",
+      "default": "vec3(0.0)",
+      "description": "World position of Lyra, influencing localized erosion."
+    },
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Lyra's current identity integrity (0.0 = fully lost, 1.0 = intact). Lower values increase erosion around Lyra."
+    },
+    {
+      "name": "global_erosion_progress",
+      "type": "float",
+      "default": "0.0",
+      "description": "Overall progression of the devouring horizon (0.0 = start, 1.0 = fully eroded along Z-axis)."
+    },
+    {
+      "name": "num_silence_entities",
+      "type": "int",
+      "default": "0",
+      "description": "Number of active Silence entities to consider for localized erosion (up to MAX_SILENCE_ENTITIES)."
+    },
+    {
+      "name": "silence_entity_positions",
+      "type": "vec3[]",
+      "default": "[vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0)]",
+      "description": "Array of world positions for Silence entities, causing localized erosion."
+    },
+    {
+      "name": "erosion_radius_player",
+      "type": "float",
+      "default": "10.0",
+      "description": "Radius around Lyra where identity integrity influences erosion."
+    },
+    {
+      "name": "erosion_radius_silence",
+      "type": "float",
+      "default": "15.0",
+      "description": "Radius around Silence entities where they cause erosion."
+    },
+    {
+      "name": "world_bounds_min",
+      "type": "vec3",
+      "default": "vec3(-100.0, -100.0, -100.0)",
+      "description": "Minimum world coordinates defining the erosion field's spatial extent."
+    },
+    {
+      "name": "world_bounds_max",
+      "type": "vec3",
+      "default": "vec3(100.0, 100.0, 100.0)",
+      "description": "Maximum world coordinates defining the erosion field's spatial extent."
+    },
+    {
+      "name": "field_resolution",
+      "type": "vec3",
+      "default": "vec3(64.0, 64.0, 64.0)",
+      "description": "Resolution of the 3D erosion_field texture (width, height, depth)."
+    }
+  ],
+  "dependencies": [
+    "ImageTexture3D (created via GDScript)",
+    "RenderingServer (for dispatching compute shader)",
+    "ShaderMaterial (to hold the compute shader and its uniforms)",
+    "SpatialMaterial or custom Spatial Shader (for world geometry to sample erosion_field)"
+  ],
+  "verdict": "A masterful fusion of narrative and mechanics, this devouring horizon transforms the very world into a relentless, visceral manifestation of Lyra's fading self, ensuring every step is a desperate fight against oblivion.",
+  "impact": "The player will experience constant, visceral pressure as the environment itself actively erodes, visually manifesting Lyra's fading identity and the relentless advance of the Silence. This transforms every moment into a desperate race against time and self-dissolution, forcing urgent decision-making and making the abstract horror of forgetting a tangible, terrifying reality. The world becomes a dynamic antagonist, mirroring Lyra's internal struggle externally and ensuring no moment of calm.",
+  "score": 95,
+  "inventedAt": "2026-08-30T07:41:20.934Z"
+}

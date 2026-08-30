@@ -1,0 +1,49 @@
+{
+  "name": "mnemonic_reverberant_self",
+  "label": "Reverberant Self Echo",
+  "domain": "Time & Memory",
+  "godotFeature": "AnimationPlayer (record/playback), PhysicsServer3D (ghostly interaction), ShaderMaterial (visual effect), Callable (action triggers)",
+  "poeticVision": "The desperate act of reaching back into your own immediate past, not to change it, but to pull a ghost of yourself forward. A shimmering, fleeting 'you' that remembers a few precious seconds of your last efforts, and offers them to your present peril. It's a bitter echo of self-reliance, a physical manifestation of what you *were* that might just save what you *are*, for a price.",
+  "usage": "Attach this script to your player character or a game manager node. In the editor, assign a 'ReverbSelf.tscn' PackedScene to the 'Reverb Self Scene' export variable. This 'ReverbSelf.tscn' should be a CharacterBody3D with a MeshInstance3D child and the 'ReverbSelf.gd' script attached to its root. Call 'start_recording()' to begin capturing player movement (e.g., on a button press). Call 'activate_reverb_self()' to spawn a ghost that replays the recorded sequence (e.g., on another button press). Connect the 'ephemeral_memory_drained' and 'identity_blurred' signals to your game's resource management system to apply the associated costs and debuffs.",
+  "parameters": [
+    {
+      "name": "reverb_self_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene for the Reverb Self ghost entity. This scene must contain a CharacterBody3D with the 'ReverbSelf.gd' script attached and a MeshInstance3D child."
+    },
+    {
+      "name": "record_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration in seconds for which player actions are recorded. This also dictates the lifespan of the spawned Reverb Self."
+    },
+    {
+      "name": "memory_cost_per_use",
+      "type": "float",
+      "default": "20.0",
+      "description": "The amount of 'Ephemeral Memory' resource drained when activating a Reverb Self."
+    },
+    {
+      "name": "blur_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "The duration of the temporary visual identity blur/stat debuff applied to the player."
+    },
+    {
+      "name": "blur_strength",
+      "type": "float",
+      "default": "0.5",
+      "description": "The intensity of the temporary visual identity blur/stat debuff applied to the player."
+    }
+  ],
+  "dependencies": [
+    "res://scenes/reverb_self.tscn (A PackedScene that serves as the template for the Reverb Self ghost. Its root node should be a CharacterBody3D with 'ReverbSelf.gd' attached, and it should have a MeshInstance3D child for visual representation.)",
+    "res://scripts/ReverbSelf.gd (A GDScript file attached to the root of 'reverb_self.tscn'. This script is responsible for playing back the recorded movement sequence and handling ghost-specific physics interactions. It expects a 'play_recorded_sequence(sequence: Array[Dictionary], lifespan_duration: float)' method.)",
+    "res://shaders/reverb_self_shader.gdshader (An optional ShaderMaterial used by the MeshInstance3D within 'reverb_self.tscn' to give the ghost a distinct, ethereal, and flickering visual effect.)"
+  ],
+  "verdict": "A desperate echo of self, weaponized against oblivion, this mechanic brilliantly fuses survival with the poignant cost of a fading identity.",
+  "impact": "This mechanic will profoundly deepen the player's connection to Lyra's struggle, transforming tactical choices into poignant acts of self-sacrifice. Every use of the 'Reverberant Self Echo' will be a desperate gamble, a physical manifestation of Lyra's fading identity used as a shield against the Silence, forcing players to confront the very essence of what they are fighting to preserve. It adds a unique layer of strategic depth, allowing for creative solutions to immediate dangers while constantly reinforcing the core theme of self-loss and the urgency of the narrative.",
+  "score": 88,
+  "inventedAt": "2026-08-30T07:46:41.197Z"
+}

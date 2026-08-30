@@ -1,0 +1,35 @@
+{
+  "name": "mnemic_coalescence_hunter_ai",
+  "label": "Memory Coalescence Hunter",
+  "domain": "ai",
+  "godotFeature": "GDScript Resource manipulation & ShaderMaterial",
+  "poeticVision": "The chilling dread of seeing your own lost memories physically manifest as new, terrifying abilities in your hunter. It's not just a chase for survival, but a desperate race to prevent pieces of your past from being weaponized against you. You will feel the profound violation of your identity not just dissolving, but being absorbed and twisted by the very entities hunting you, making each encounter a fight against a warped reflection of yourself.",
+  "usage": "This GDScript defines the 'Memory Coalescence Hunter' AI. To use it, follow these steps:\n\n1.  **Create the Hunter Scene:**\n    *   Create a new `CharacterBody3D` node and rename it (e.g., 'Hunter'). Attach this `mnemic_coalescence_hunter_ai.gd` script to it.\n    *   Add an `Area3D` child node named 'DetectionArea'. Add a `CollisionShape3D` child to 'DetectionArea' (e.g., a `SphereShape3D`) and set its radius to define the hunter's memory detection range. Ensure 'DetectionArea' has its `collision_mask` set to detect memory fragments (e.g., layer 2).\n    *   Add a `MeshInstance3D` child node named 'MeshInstance3D' (e.g., a `SphereMesh` or `BoxMesh`) to represent the hunter's body. This mesh will visually change as memories are assimilated.\n    *   Create a new `ShaderMaterial` for the `MeshInstance3D`. Assign the following GLSL shader code to it:\n\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform vec4 albedo_color : source_color = vec4(0.5, 0.5, 0.5, 1.0);\n    uniform float emission_strength : hint_range(0.0, 10.0) = 0.0;\n    uniform float distortion_factor : hint_range(0.0, 1.0) = 0.0;\n    uniform sampler2D texture_albedo : source_color;\n\n    void vertex() {\n    \t// Simple vertex distortion based on distortion_factor\n    \tvec3 distorted_vertex = VERTEX;\n    \tdistorted_vertex.y += sin(TIME * 5.0 + VERTEX.x * 10.0) * distortion_factor * 0.1;\n    \tdistorted_vertex.x += cos(TIME * 5.0 + VERTEX.y * 10.0) * distortion_factor * 0.1;\n    \tVERTEX = distorted_vertex;\n    }\n\n    void fragment() {\n    \tvec4 albedo_tex = texture(texture_albedo, UV);\n    \tALBEDO = albedo_color.rgb * albedo_tex.rgb;\n    \tEMISSION = albedo_color.rgb * emission_strength;\n    \tALPHA = albedo_color.a * albedo_tex.a;\n    }\n    \n\n2.  **Create the MemoryFragmentResource:**\n    *   Create a new GDScript file named `memory_fragment_resource.gd` and paste the following code:\n\n    gdscript\n    # memory_fragment_resource.gd\n    class_name MemoryFragmentResource extends Resource\n\n    @export var fragment_id: String = \"\"\n    @export var fragment_color: Color = Color.WHITE\n    @export var ability_type: String = \"none\" # e.g., \"speed_boost\", \"shield\", \"projectile\"\n    @export var defense_modifier: float = 0.0\n    @export var attack_modifier: float = 0.0\n    \n    *   In the Godot editor, right-click in the FileSystem dock -> New -> Resource. Select `MemoryFragmentResource` and save it (e.g., `res://memories/memory_shard_blue.tres`). Configure its properties (ID, color, ability, modifiers).\n\n3.  **Create Memory Fragment Nodes:**\n    *   Create a new GDScript file named `memory_fragment_node.gd` and paste the following code:\n\n    gdscript\n    # memory_fragment_node.gd\n    extends Node3D\n\n    class_name MemoryFragmentNode\n\n    @export var memory_data: MemoryFragmentResource # Assign your custom resource here\n\n    func get_memory_resource() -> MemoryFragmentResource:\n    \treturn memory_data\n    \n    *   In your scene, create `Node3D` nodes to represent physical memory fragments. Attach the `memory_fragment_node.gd` script to each. In the Inspector, assign one of your created `MemoryFragmentResource` instances to the `memory_data` property.\n    *   Add a `CollisionShape3D` child to each `MemoryFragmentNode` and set its `collision_layer` to match the hunter's 'DetectionArea' `collision_mask` (e.g., layer 2).\n\n4.  **Run the Scene:** The hunter will now seek out and assimilate memory fragments, dynamically changing its appearance and gaining abilities based on the assimilated memories.",
+  "parameters": [
+    {
+      "name": "move_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Movement speed of the hunter when pursuing a memory fragment."
+    },
+    {
+      "name": "assimilation_range",
+      "type": "float",
+      "default": "2.0",
+      "description": "The distance at which the hunter will assimilate a detected memory fragment."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (base node for the hunter)",
+    "Area3D (child of hunter, named 'DetectionArea', for memory detection)",
+    "CollisionShape3D (child of 'DetectionArea', defines detection radius)",
+    "MeshInstance3D (child of hunter, named 'MeshInstance3D', for visual representation)",
+    "ShaderMaterial (applied to 'MeshInstance3D', using the provided GLSL shader code)",
+    "memory_fragment_resource.gd (custom Resource script, defined in usage)",
+    "memory_fragment_node.gd (Node3D script for physical memory fragments, defined in usage)"
+  ],
+  "verdict": "A chilling reflection of self-loss, this hunter transforms forgotten fragments into a weaponized past, making every pursuit a battle against a piece of your own dissolving soul.",
+  "impact": "The player will experience a profound sense of dread and violation. Every memory fragment they fail to protect will not just be lost, but actively turned against them, making the hunters more formidable and personally threatening. This escalates the emotional stakes of each encounter, transforming a simple chase into a fight against a twisted reflection of their own past, deepening the game's core theme of self-loss.",
+  "score": 98,
+  "inventedAt": "2026-08-30T07:37:59.834Z"
+}

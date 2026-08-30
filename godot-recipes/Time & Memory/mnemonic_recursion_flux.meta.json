@@ -1,0 +1,45 @@
+{
+  "name": "mnemonic_recursion_flux",
+  "label": "Recursive Memory Flux",
+  "domain": "Time & Memory",
+  "godotFeature": "PhysicsServer3D & Callable Scheduling for Dynamic Temporal Objects",
+  "poeticVision": "The ground you just traversed re-materializes behind you, briefly blocking your escape. A projectile you dodged an instant ago echoes into existence, repeating its trajectory to strike you from an impossible past. Your own movements, fragmented and recursive, become a ghost against your present will, threatening to trip you over the phantom steps of your own recent past. Every instance of memory loss sutures your present with a chaotic fragment of your past actions.",
+  "usage": "Attach this `mnemonic_recursion_flux.gd` script to a `Node` in your scene (e.g., a singleton or a manager node). During gameplay, Lyra's movement controller or environmental hazard systems should call `record_player_action(player_transform, player_linear_velocity)` and `record_environmental_block(block_transform, block_extents)` respectively, to continuously feed recent events into the system's memory history. When Lyra takes damage or experiences identity decay (a 'memory loss event'), call `trigger_memory_flux()` on this node. This will instantly create a physical 'ghost' object from a randomly selected past memory, which can block Lyra, push her, or collide with her, creating immediate, physically disruptive temporal paradoxes. Ensure your project's physics layers and masks are configured so that `ghost_collision_layer` and `ghost_collision_mask` allow ghosts to interact with Lyra's physics body.",
+  "parameters": [
+    {
+      "name": "max_history_size",
+      "type": "int",
+      "default": "20",
+      "description": "The maximum number of past actions/events the system remembers. Older memories are discarded."
+    },
+    {
+      "name": "ghost_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration (in seconds) for which a spawned ghost object persists in the world before despawning."
+    },
+    {
+      "name": "ghost_collision_layer",
+      "type": "int",
+      "default": "2",
+      "description": "The physics collision layer for all spawned ghost objects. Configure this in Project Settings -> Physics -> 3D."
+    },
+    {
+      "name": "ghost_collision_mask",
+      "type": "int",
+      "default": "1",
+      "description": "The physics collision mask for all spawned ghost objects, determining which layers they interact with. For example, if Lyra is on layer 1, set this to 1."
+    },
+    {
+      "name": "default_ghost_extents",
+      "type": "Vector3",
+      "default": "Vector3(0.5, 0.5, 0.5)",
+      "description": "The default half-extents (size) for box-shaped ghost objects if no specific extents are provided for environmental blocks."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A brilliant echo of self-loss, where the very ground beneath Lyra's feet and the air she breathes betray her with the phantom touch of a forgotten past, making every step a haunting dance with what she once was.",
+  "impact": "This mechanic will profoundly deepen the player's connection to Lyra's struggle, transforming memory loss from an abstract concept into a tangible, immediate threat. Players will constantly be forced to contend with the physical manifestation of their own past actions and the environment's decay, creating a unique layer of strategic thinking and reactive gameplay. It will amplify the sense of urgency and the psychological burden of a dissolving identity, as every memory loss literally turns a piece of their history into a present obstacle or threat, making the fight for survival inseparable from the fight for self.",
+  "score": 92,
+  "inventedAt": "2026-08-30T07:47:38.625Z"
+}

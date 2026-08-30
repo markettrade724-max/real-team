@@ -1,0 +1,96 @@
+{
+  "name": "mnemonic_temporal_shred",
+  "label": "Chronal Shred: Echo of Self-Erasure",
+  "domain": "Time & Memory",
+  "godotFeature": "PhysicsServer3D and SpatialShader",
+  "poeticVision": "The desperate act of quickening one's own perception, a fleeting burst of temporal acceleration that tears the very fabric of memory-space. Witness the world around you age millennia in seconds, ancient structures crumbling into dust and void as your own recollections fragment and bleed into the accelerating decay. Every step faster is a step closer to self-erasure, a harrowing trade of precious time for precious self.",
+  "usage": "This recipe implements Lyra's 'Chronal Shred' ability, causing nearby memory fragments to visually and physically decay while Lyra loses memories. To use it:\n\n1.  **Create the main script:** Save the provided GDScript code as `mnemonic_temporal_shred.gd` and attach it to Lyra's `CharacterBody3D` node.\n2.  **Create the shader:** Copy the content of the `TEMPORAL_DECAY_SHADER_CODE` constant into a new `Shader` resource file named `temporal_decay_shader.gdshader` in your project.\n3.  **Setup Input Action:** Go to `Project -> Project Settings -> Input Map` and add a new action named `activate_shred`. Assign a key (e.g., 'F' or 'Q') to it.\n4.  **Create Memory Fragment Nodes:**\n    *   For each environmental object that should decay, create a new scene or node setup.\n    *   Root node should be a `RigidBody3D` (named, for example, `MemoryFragment`).\n    *   Add a `MeshInstance3D` as a child to the `RigidBody3D`. Assign a `Mesh` to it (e.g., a `CubeMesh`, `SphereMesh`, or imported model).\n    *   Create a new `ShaderMaterial` resource for the `MeshInstance3D`. Assign `temporal_decay_shader.gdshader` to this `ShaderMaterial`.\n    *   Configure the `ShaderMaterial`'s uniforms: assign `albedo_texture`, `normal_texture`, `ruin_normal_texture` (a normal map for the decayed state), and optionally `displacement_texture`.\n    *   Attach the `memory_fragment.gd` script (provided as a commented block within `mnemonic_temporal_shred.gd`) to the `RigidBody3D` node. Save this script as a separate file named `memory_fragment.gd`.\n    *   In the `RigidBody3D`'s Inspector, set its `Collision -> Layer` to `1` (or any layer you configure in `mnemonic_temporal_shred.gd`'s `collision_mask`).\n5.  **Integrate Player Movement (Optional):** The `activate_chronal_shred` and `deactivate_chronal_shred` functions contain commented-out lines for adjusting Lyra's speed. You will need to uncomment and adapt these to interact with your actual player movement script.\n\nWhen Lyra activates the 'Chronal Shred' ability, nearby `MemoryFragment` nodes will progressively decay visually via the shader and physically crumble when their decay factor reaches the `crumble_threshold`.",
+  "parameters": [
+    {
+      "name": "shred_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "Duration of the Chronal Shred ability in seconds."
+    },
+    {
+      "name": "shred_speed_multiplier",
+      "type": "float",
+      "default": "2.0",
+      "description": "Multiplier for Lyra's speed while Chronal Shred is active (requires integration with player movement)."
+    },
+    {
+      "name": "memory_loss_rate",
+      "type": "float",
+      "default": "10.0",
+      "description": "Rate at which Lyra loses memory fragments per second while the ability is active."
+    },
+    {
+      "name": "decay_radius",
+      "type": "float",
+      "default": "10.0",
+      "description": "Radius around Lyra within which memory fragments will be affected by decay."
+    },
+    {
+      "name": "decay_force_multiplier",
+      "type": "float",
+      "default": "50.0",
+      "description": "Multiplier for the physical impulse applied to crumbling memory fragments."
+    },
+    {
+      "name": "time_decay_factor",
+      "type": "float",
+      "default": "0.0",
+      "description": "Shader uniform: Controls the level of visual decay (0.0 = no decay, 1.0 = full decay)."
+    },
+    {
+      "name": "displacement_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "Shader uniform: Strength of vertex displacement for crumbling effect."
+    },
+    {
+      "name": "alpha_erosion_threshold",
+      "type": "float",
+      "default": "0.5",
+      "description": "Shader uniform: Alpha value below which pixels are discarded, creating erosion."
+    },
+    {
+      "name": "crumble_threshold",
+      "type": "float",
+      "default": "0.8",
+      "description": "MemoryFragment script: The decay factor at which the fragment physically crumbles."
+    },
+    {
+      "name": "crumble_impulse_strength",
+      "type": "float",
+      "default": "10.0",
+      "description": "MemoryFragment script: Strength of the central impulse applied when crumbling."
+    },
+    {
+      "name": "crumble_angular_impulse_strength",
+      "type": "float",
+      "default": "5.0",
+      "description": "MemoryFragment script: Strength of the torque impulse applied when crumbling."
+    },
+    {
+      "name": "decayed_mesh_resource",
+      "type": "Mesh",
+      "default": "null",
+      "description": "MemoryFragment script: Optional mesh to swap to when the fragment crumbles (e.g., a pre-fractured mesh)."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (for Lyra)",
+    "RigidBody3D (for Memory Fragments)",
+    "MeshInstance3D (for Memory Fragments)",
+    "ShaderMaterial (for Memory Fragments' visual decay)",
+    "SphereShape3D (for physics queries)",
+    "InputMap (for 'activate_shred' action)",
+    "temporal_decay_shader.gdshader (shader file generated from constant)",
+    "memory_fragment.gd (helper script for RigidBody3D nodes)"
+  ],
+  "verdict": "A desperate temporal acceleration, tearing through memory and self, that embodies the very soul of Lyra's harrowing fight against oblivion.",
+  "impact": "This mechanic will profoundly deepen the player's experience by introducing a constant, agonizing trade-off between immediate survival and the very essence of Lyra's identity. Every activation of Chronal Shred will be a desperate gamble, a visually spectacular but emotionally devastating choice that forces players to confront the cost of their actions, making Lyra's struggle against both external hunters and internal dissolution intensely personal and unforgettable. It transforms the environment into a dynamic canvas of Lyra's fading self, directly embodying the game's core themes of adrenaline, grief, and the physical manifestation of memory loss.",
+  "score": 95,
+  "inventedAt": "2026-08-30T07:48:58.414Z"
+}

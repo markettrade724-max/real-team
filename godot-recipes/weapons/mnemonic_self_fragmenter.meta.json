@@ -1,0 +1,51 @@
+{
+  "name": "mnemonic_self_fragmenter",
+  "label": "The Echo Carver",
+  "domain": "weapons",
+  "godotFeature": "Custom Resources, SubViewport, GPUParticles3D, Custom Shaders",
+  "poeticVision": "The player wields a weapon fueled not by ammunition, but by Lyra's very past. Each devastating shot carves a fragment directly from her recovered memories, or from the core of her identity itself. The screen briefly flickers with a ghostly image – a face, a place, a moment – before it's consumed, its essence repurposed into raw kinetic force against the Silence. This isn't just a cost; it's a deliberate act of self-mutilation for survival, forcing the player to confront the tragic paradox: how much of Lyra can be sacrificed before there’s nothing left to save? The feeling is one of desperate, self-destructive power, where every victory is also a profound, irreversible loss.",
+  "usage": "This script defines a custom resource 'MemoryFragment'. Create new resources of this type (e.g., 'res://mem_joy.tres') and fill in its properties (name, texture, narrative tag, power, debuff effect, and duration). These resources will be assigned to the 'EchoCarver' weapon's 'memory_pool' array.",
+  "parameters": [
+    {
+      "name": "fragment_name",
+      "type": "String",
+      "default": "Unnamed Memory",
+      "description": "A descriptive name for the memory fragment."
+    },
+    {
+      "name": "texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "The visual representation of this memory, used for the consumption effect and particle infusion."
+    },
+    {
+      "name": "narrative_tag",
+      "type": "String",
+      "default": "Generic",
+      "description": "A tag describing the memory's nature (e.g., 'Childhood Joy', 'Agility')."
+    },
+    {
+      "name": "power_value",
+      "type": "float",
+      "default": "1.0",
+      "description": "The base power contribution this memory provides to the weapon's projectile."
+    },
+    {
+      "name": "debuff_effect",
+      "type": "String",
+      "default": "",
+      "description": "A string identifier for the debuff applied to Lyra upon consuming this memory (e.g., 'reduce_speed')."
+    },
+    {
+      "name": "debuff_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration in seconds for which the 'debuff_effect' is active."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "The Echo Carver transmutes the agony of self-loss into a weapon of desperate survival, forging an unforgettable paradox where every shot fired erases a piece of the soul it fights to protect.",
+  "impact": "This mechanic transforms memory loss from a narrative device into a visceral, agonizing gameplay choice. Players will constantly weigh immediate survival against the irreversible erosion of Lyra's identity, creating a deeply personal and unforgettable struggle where every victory carries the bitter taste of self-sacrifice. It elevates the core theme of identity dissolution into a core gameplay loop, forcing players to embody Lyra's tragic dilemma.",
+  "score": 98,
+  "inventedAt": "2026-08-30T07:44:57.700Z"
+}

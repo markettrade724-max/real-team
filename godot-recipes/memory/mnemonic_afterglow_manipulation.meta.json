@@ -1,0 +1,60 @@
+{
+  "name": "mnemonic_afterglow_manipulation",
+  "label": "Mnemonic Afterglow Manipulation",
+  "domain": "memory",
+  "godotFeature": "GPUParticles3D with custom ShaderMaterial, Physics Interactions",
+  "poeticVision": "A desperate, fleeting grasp at what slips away. The player will feel the gut-wrenching urgency of turning a fragment's dying breath into a momentary shield against oblivion or a fragile weapon against the Silence. It's the bitter joy of salvaging a tiny, transient edge from irreversible loss, a continuous act of making tragedy useful, cementing the feeling that Lyra is literally fighting with the remnants of her dissolving self.",
+  "usage": "1.  Create a new `GPUParticles3D` scene (e.g., `res://scenes/afterglow_particles.tscn`).\n2.  Configure the `GPUParticles3D` node:\n    *   Set `Process Material` to a new `ParticleProcessMaterial`.\n    *   Inside the `ParticleProcessMaterial`, set `Shader` to a new `ShaderMaterial`.\n    *   Load the `mnemonic_afterglow.gdshader` (provided below) into this `ShaderMaterial`.\n    *   Set `Draw Passes` -> `Pass 1` to a `MeshInstance3D` (e.g., `QuadMesh` or `SphereMesh`) with a suitable `StandardMaterial3D` (e.g., `Unshaded`, `Billboard`).\n    *   Adjust `Amount`, `Lifetime`, `Speed Scale`, `Emission Shape`, `Spread`, etc., as desired for the base particle effect.\n3.  Add a `MnemonicAfterglowManipulator` node (using this script) to your main scene or a game manager node.\n4.  In the Inspector for `MnemonicAfterglowManipulator`, drag and drop your `afterglow_particles.tscn` into the `Afterglow Particle Scene` slot.\n5.  When a memory fragment is lost or threatened, call `var afterglow = manipulator_node.spawn_afterglow(fragment_position)`.\n6.  Based on player input or game logic, call one of the manipulation methods:\n    *   `manipulator_node.activate_shield(afterglow, player_node)`: To create a temporary shield around the player.\n    *   `manipulator_node.launch_projectile(afterglow, player_forward_direction)`: To fire the afterglow as a projectile.\n    *   `manipulator_node.create_platform(afterglow, target_position)`: To solidify the afterglow into a temporary platform.\n\n**mnemonic_afterglow.gdshader:**\nglsl\nshader_type particles;\n\nuniform sampler2D texture_albedo : hint_albedo;\nuniform vec4 base_color : source_color;\nuniform vec4 fade_color : source_color;\nuniform float distortion_strength : hint_range(0.0, 1.0) = 0.0;\n\nvoid fragment() {\n\tvec4 albedo_tex = texture(texture_albedo, UV);\n\t\n\t// CUSTOM.y is normalized particle lifetime (0.0 at birth, 1.0 at death)\n\tfloat lifetime_ratio = CUSTOM.y; \n\t\n\t// Interpolate color from base to fade color over lifetime\n\tvec4 current_color = mix(base_color, fade_color, lifetime_ratio);\n\t\n\t// Fade out alpha over lifetime\n\tcurrent_color.a *= (1.0 - lifetime_ratio);\n\t\n\t// Apply distortion_strength to alpha to simulate density/solidity\n\t// Higher distortion_strength means less transparency, more 'solid' look\n\tcurrent_color.a = clamp(current_color.a + distortion_strength * 0.7, 0.0, 1.0);\n\t\n\t// Combine with albedo texture\n\tALBEDO = albedo_tex.rgb * current_color.rgb;\n\tALPHA = albedo_tex.a * current_color.a;\n\t\n\t// Emission for glow effect, stronger with higher alpha and distortion\n\tEMISSION = ALBEDO * ALPHA * (1.0 + distortion_strength * 3.0);\n}\n",
+  "parameters": [
+    {
+      "name": "afterglow_particle_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene containing the pre-configured GPUParticles3D node that will be instantiated."
+    },
+    {
+      "name": "afterglow_lifetime",
+      "type": "float",
+      "default": "3.0",
+      "description": "The base duration in seconds for which a spawned afterglow instance persists before fading out and being freed."
+    },
+    {
+      "name": "shield_duration",
+      "type": "float",
+      "default": "1.5",
+      "description": "The duration in seconds for which the afterglow acts as a temporary shield."
+    },
+    {
+      "name": "projectile_speed",
+      "type": "float",
+      "default": "20.0",
+      "description": "The speed in units per second at which an afterglow projectile travels."
+    },
+    {
+      "name": "platform_duration",
+      "type": "float",
+      "default": "2.0",
+      "description": "The duration in seconds for which the afterglow solidifies into a temporary platform."
+    },
+    {
+      "name": "afterglow_base_color",
+      "type": "Color",
+      "default": "Color(\"00aaff\")",
+      "description": "The starting color for the particles of the afterglow effect."
+    },
+    {
+      "name": "afterglow_fade_color",
+      "type": "Color",
+      "default": "Color(\"aa00ff\")",
+      "description": "The ending color for the particles as the afterglow effect fades over its lifetime."
+    }
+  ],
+  "dependencies": [
+    "res://scenes/afterglow_particles.tscn (example path to a GPUParticles3D scene)",
+    "res://shaders/mnemonic_afterglow.gdshader (example path to the custom shader)"
+  ],
+  "verdict": "From the fading echoes of self, a desperate light ignites, forging fleeting tools against the encroaching night.",
+  "impact": "This mechanic will fundamentally deepen the player's connection to Lyra's struggle. Every recovered memory becomes a desperate, tactical choice, forcing players to weigh the immediate need for survival against the irreversible loss of identity. The transient nature of these abilities will create constant tension and a unique rhythm of resource management, where the 'resource' is Lyra's very self, making every action a poignant act of defiance against oblivion. It perfectly embodies the game's core themes of self-loss and urgent survival, ensuring that every interaction with a memory fragment is a moment of high stakes and emotional resonance.",
+  "score": 90,
+  "inventedAt": "2026-08-30T07:52:15.921Z"
+}

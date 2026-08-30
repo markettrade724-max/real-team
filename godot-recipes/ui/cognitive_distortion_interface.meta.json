@@ -1,0 +1,65 @@
+{
+  "name": "cognitive_distortion_interface",
+  "label": "The Shroud of Lies",
+  "domain": "ui",
+  "godotFeature": "Custom Control nodes with CanvasItem Shaders, Input Event handling, and SubViewport rendering",
+  "poeticVision": "The player feels a visceral struggle against their own perception, a constant battle to discern truth from the Silence's insidious whispers. Crucial information isn't just displayed, it's fought for, shimmering on the edge of comprehension, forcing split-second decisions not just in the world, but *on* the interface itself, blurring the line between Lyra's crumbling mind and the game's reality. The UI isn't a passive window, but an active, hostile entity that demands constant vigilance and quick action to maintain Lyra's fragile grasp on reality.",
+  "usage": "1. Create a new 'Control' scene (e.g., 'CognitiveShardUI.tscn').\n2. Attach this script ('cognitive_distortion_interface.gd') to the root 'Control' node.\n3. Add a 'SubViewportContainer' as a child of the root 'Control'.\n4. Inside 'SubViewportContainer', add a 'SubViewport'. This is where your actual UI elements (e.g., Labels, ProgressBars for health/objectives) will be placed.\n5. Inside 'SubViewportContainer', add a 'TextureRect'. This 'TextureRect' will display the content of the 'SubViewport' and have the distortion shader applied. Set its 'Texture' property to 'New SubViewportTexture' and assign the 'SubViewport' from step 4.\n6. Adjust the 'TextureRect' layout to cover the desired area of the UI.\n7. Configure the exported parameters in the Inspector (e.g., 'initial_distortion_strength', 'stabilization_duration').\n8. Ensure you have a 'noise_texture' (e.g., a Perlin noise image) in your project and update the `preload(\"res://icon.svg\")` line in `_ready()` to point to it. 'icon.svg' is used as a placeholder.\n9. To trigger stabilization, the player must move the mouse rapidly until 'stabilization_input_threshold' is met. The UI will then clear for 'stabilization_duration'.\n10. Connect to 'shard_stabilized' and 'shard_destabilized' signals from other game logic to react to the UI state (e.g., pause game, change player abilities).\n11. Call `set_memory_integrity(value)` or `set_stress_level(value)` from your game's state management to dynamically adjust the distortion based on Lyra's condition.",
+  "parameters": [
+    {
+      "name": "initial_distortion_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "The baseline distortion strength when not actively attacked or highly stressed. Range 0.0 to 1.0."
+    },
+    {
+      "name": "max_distortion_strength",
+      "type": "float",
+      "default": "0.8",
+      "description": "The maximum distortion strength the shard can reach. Range 0.0 to 1.0."
+    },
+    {
+      "name": "stabilization_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "How long the cognitive shard remains clear and stable after successful player interaction."
+    },
+    {
+      "name": "attack_interval_min",
+      "type": "float",
+      "default": "10.0",
+      "description": "Minimum random time (in seconds) between Silence attacks that increase distortion."
+    },
+    {
+      "name": "attack_interval_max",
+      "type": "float",
+      "default": "20.0",
+      "description": "Maximum random time (in seconds) between Silence attacks that increase distortion."
+    },
+    {
+      "name": "stabilization_input_threshold",
+      "type": "float",
+      "default": "100.0",
+      "description": "The cumulative mouse movement (in pixels) required to trigger a stabilization attempt."
+    },
+    {
+      "name": "distortion_increase_on_attack",
+      "type": "float",
+      "default": "0.3",
+      "description": "How much the distortion strength increases when the Silence attacks, if not stabilized."
+    }
+  ],
+  "dependencies": [
+    "Control",
+    "SubViewportContainer",
+    "SubViewport",
+    "TextureRect",
+    "ShaderMaterial",
+    "Shader",
+    "Timer"
+  ],
+  "verdict": "A shimmering veil of deceit, this mechanic transforms the player's window into Lyra's mind into a battleground, where truth is a fleeting whisper fought for with every desperate twitch.",
+  "impact": "This invention profoundly transforms the player's interaction with the game's interface, making it an active antagonist rather than a passive display. It forces a visceral struggle against cognitive decay, blurring the line between Lyra's internal battle for sanity and the player's external fight for information. Every piece of data, every memory fragment, becomes a hard-won victory against the encroaching Silence, fostering a constant, escalating tension that directly embodies the game's core themes of self-loss and desperate survival. The UI itself becomes a dynamic, hostile entity, demanding vigilance and quick action, ensuring that even moments of 'introspection' are fraught with danger.",
+  "score": 92,
+  "inventedAt": "2026-08-30T07:40:20.299Z"
+}
