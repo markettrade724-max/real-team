@@ -1,9 +1,9 @@
 {
-  "runId": "2026-08-31T1113",
+  "runId": "2026-08-31T1452",
   "mode": "screenplay-production",
-  "success": false,
-  "timestamp": "2026-08-31T11:28:58.394Z",
-  "totalDuration": "901.7s",
+  "success": true,
+  "timestamp": "2026-08-31T14:57:24.128Z",
+  "totalDuration": "265.2s",
   "budget": {
     "total": 12,
     "limit": 40,
@@ -35,12 +35,12 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 26,
-    "next": 30
+    "episodes": 27,
+    "next": 31
   },
   "progress": {
-    "nextEpisode": 30,
-    "totalEpisodes": 30,
+    "nextEpisode": 31,
+    "totalEpisodes": 31,
     "gamesDone": 1
   },
   "agents": {
@@ -51,7 +51,7 @@
     },
     "voice": {
       "success": true,
-      "duration": "17.4s",
+      "duration": "839ms",
       "error": null
     },
     "scene": {
@@ -61,28 +61,38 @@
     },
     "visual": {
       "success": true,
-      "duration": "90.4s",
+      "duration": "4ms",
       "error": null
     },
     "subtitle": {
       "success": true,
-      "duration": "25ms",
+      "duration": "17ms",
       "error": null
     },
     "music": {
       "success": true,
-      "duration": "6ms",
+      "duration": "5ms",
       "error": null
     },
-    "production": {
-      "success": false,
-      "duration": "—",
-      "error": "Timeout after 600s"
+    "edit": {
+      "success": true,
+      "duration": "228.5s",
+      "error": null
+    },
+    "trailer": {
+      "success": true,
+      "duration": "32.1s",
+      "error": null
+    },
+    "upload": {
+      "success": true,
+      "duration": "3.7s",
+      "error": null
     }
   },
   "summary": {
-    "total": 7,
-    "passed": 6,
-    "failed": 1
+    "total": 9,
+    "passed": 9,
+    "failed": 0
   }
 }
