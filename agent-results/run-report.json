@@ -1,22 +1,22 @@
 {
-  "runId": "2026-09-05T1109",
-  "mode": "art-library",
-  "success": true,
-  "timestamp": "2026-09-05T11:10:01.293Z",
-  "totalDuration": "16.0s",
+  "runId": "2026-09-06T0636",
+  "mode": "inventor",
+  "success": false,
+  "timestamp": "2026-09-06T06:46:03.549Z",
+  "totalDuration": "600.0s",
   "budget": {
-    "total": 0,
+    "total": 14,
     "limit": 40,
-    "left": 40,
+    "left": 26,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 0,
+        "total": 14,
         "limit": 20,
-        "left": 20,
+        "left": 6,
         "exhausted": false,
         "library": 0,
-        "agents": 0
+        "agents": 14
       },
       {
         "key": "KEY_2",
@@ -44,15 +44,15 @@
     "gamesDone": 1
   },
   "agents": {
-    "artLibrary": {
-      "success": true,
-      "duration": "16.0s",
-      "error": null
+    "invention": {
+      "success": false,
+      "duration": "600.0s",
+      "error": "Timeout after 600s"
     }
   },
   "summary": {
     "total": 1,
-    "passed": 1,
-    "failed": 0
+    "passed": 0,
+    "failed": 1
   }
 }

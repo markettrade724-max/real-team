@@ -1,0 +1,55 @@
+{
+  "name": "mnemonic_aberration_weaver_ai",
+  "label": "The Aberration Weaver",
+  "domain": "ai",
+  "godotFeature": "ShaderMaterial + Custom Fragment Shaders combined with runtime Resource property manipulation and dynamic Node3D transformation.",
+  "poeticVision": "Feel a cold dread as the very fragments you fought to reclaim begin to unravel, twisting into grotesque parodies of their former selves. Their vibrant colors bleed into sickly hues, their textures warp, and their meaning warps with them. You're not just losing memories; you're watching them become alien, weaponized against you, forcing you to fight not just for your life, but for the fundamental truth of your past, which this entity is literally rewriting before your eyes.",
+  "usage": "1. Create a new Godot scene and add a Node3D (e.g., named 'AberrationWeaver') to it. Attach this `mnemonic_aberration_weaver_ai.gd` script to it.\n2. Create a new Shader resource in your project (e.g., `res://shaders/corruption_shader.gdshader`) and paste the following GLSL code into it:\nglsl\nshader_type spatial;\nrender_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\nuniform sampler2D albedo_texture : hint_albedo;\nuniform vec4 albedo_color : source_color;\nuniform float corruption_level : hint_range(0.0, 1.0) = 0.0;\nuniform float distortion_strength : hint_range(0.0, 1.0) = 0.5;\nuniform vec4 corruption_color_bleed : source_color = vec4(0.8, 0.1, 0.0, 1.0);\n\nvoid fragment() {\n\tvec2 base_uv = UV;\n\t\n\t// Apply distortion based on corruption_level\n\tvec2 distorted_uv = base_uv;\n\tif (corruption_level > 0.0) {\n\t\tfloat noise = texture(TEXTURE_NORMAL, base_uv * 5.0 + TIME * 0.1).r; // Use a normal map for noise\n\t\tdistorted_uv += (noise - 0.5) * distortion_strength * corruption_level;\n\t}\n\n\tvec4 tex_color = texture(albedo_texture, distorted_uv) * albedo_color;\n\t\n\t// Blend with corruption color\n\tALBEDO = mix(tex_color.rgb, corruption_color_bleed.rgb, corruption_level);\n\tALPHA = tex_color.a;\n}\n\n3. In the Inspector for your 'AberrationWeaver' node, drag and drop the `corruption_shader.gdshader` resource into the 'Corruption Shader' slot.\n4. Set up 'Hostile Mesh' and 'Hostile Material' with appropriate resources for the transformed entities.\n5. Ensure your memory fragments (MeshInstance3D nodes) are added to the 'memory_fragments' group. You can do this in the Node tab of the Inspector.\n6. For narrative corruption, your memory fragment nodes can optionally have a `memory_resource` metadata (e.g., `fragment_node.set_meta(\"memory_resource\", my_memory_resource_instance)`). This `MemoryResource` class would need methods like `start_corruption()`, `complete_corruption()`, and `stop_corruption()` for the placeholders in the script to be functional. The script will then call these methods to alter the `metadata` or `content` of the memory resource.",
+  "parameters": [
+    {
+      "name": "corruption_radius",
+      "type": "float",
+      "default": "10.0",
+      "description": "The radius around the Weaver within which memory fragments will be corrupted."
+    },
+    {
+      "name": "corruption_rate",
+      "type": "float",
+      "default": "0.1",
+      "description": "The speed at which memory fragments visually and narratively degrade per second."
+    },
+    {
+      "name": "max_corruption_level",
+      "type": "float",
+      "default": "1.0",
+      "description": "The maximum corruption level (0.0 to 1.0) at which a fragment transforms into a hostile entity."
+    },
+    {
+      "name": "hostile_mesh",
+      "type": "Mesh",
+      "default": "null",
+      "description": "The Mesh resource to use for the hostile entity created when a memory fragment is fully corrupted."
+    },
+    {
+      "name": "hostile_material",
+      "type": "Material",
+      "default": "null",
+      "description": "The Material resource to use for the hostile entity created when a memory fragment is fully corrupted."
+    },
+    {
+      "name": "corruption_shader",
+      "type": "Shader",
+      "default": "null",
+      "description": "The Shader resource (`.gdshader` file) used to apply visual corruption effects to memory fragments."
+    }
+  ],
+  "dependencies": [
+    "res://shaders/corruption_shader.gdshader (or similar path, containing the GLSL code provided in usage)",
+    "MemoryFragment MeshInstance3D nodes must be in the 'memory_fragments' group.",
+    "Optional: A custom 'MemoryResource' class with `start_corruption()`, `complete_corruption()`, `stop_corruption()` methods for narrative corruption."
+  ],
+  "verdict": "The Aberration Weaver masterfully weaponizes the very essence of self-loss, transforming the player's past into a relentless, physical adversary.",
+  "impact": "This mechanic will fundamentally alter the player's relationship with memory fragments. They are no longer just collectibles or resources; they become potential liabilities, ticking time bombs that can turn into direct threats. This introduces a constant layer of dread and urgency, forcing players to make difficult risk-reward decisions: do I try to save this memory, knowing it might become an enemy, or do I abandon it and lose a piece of myself? It transforms the act of memory recovery into a desperate race against internal corruption, making every retrieved fragment a hard-won victory against a self-betraying past.",
+  "score": 92,
+  "inventedAt": "2026-09-06T06:59:50.682Z"
+}

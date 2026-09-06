@@ -1,0 +1,63 @@
+{
+  "name": "chronospatial_remanifestation",
+  "label": "Chrono-Spatial Remanifestation",
+  "domain": "Time & Memory",
+  "godotFeature": "Godot's physics engine (PhysicsServer3D), MultiMesh, ShaderMaterial, Tween, and Callable system for dynamic interaction and decay.",
+  "poeticVision": "The desperate triumph and immediate dread of pulling a past world into a collapsing present. The player feels the fleeting power of memory, its profound fragility, and the terrible cost of grasping at what's gone. A crucial bridge might appear from thin air, solid enough for a dash, but splinters into dust as the Silence closes in, leaving a void where a piece of self used to be. Every remanifestation is a borrowed breath, paid for by the essence of Lyra's past, a gamble against forgetting.",
+  "usage": "Attach this `ChronoSpatialRemanifestation.gd` script to a Node3D in your scene. In the Inspector, assign the `remanifested_object_path` to the NodePath of the `CollisionObject3D` (e.g., a `StaticBody3D` or `RigidBody3D`) that represents the intact, past state of the memory fragment. This object should contain `MeshInstance3D` children for its visual representation and `CollisionShape3D` children for its physical presence. Create a `ShaderMaterial` (using the `chronospatial_remanifestation.gdshader` provided below) and assign it to the `dissolve_shader_material` property. Configure `remanifestation_duration`, `memory_cost_amount`, `silence_attraction_strength`, `flicker_speed`, and `flicker_intensity` as desired. To activate the remanifestation, call the `activate_remanifestation()` method on this script instance. The script will handle making the object visible, enabling its collision, applying the dissolve and flicker effects, and then hiding/disabling collision once the duration is over. Signals `memory_cost_incurred` and `silence_attracted` can be connected to your game's player identity and AI systems respectively.",
+  "parameters": [
+    {
+      "name": "remanifested_object_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "NodePath to the root of the object (e.g., StaticBody3D, RigidBody3D) that represents the intact, past state of the memory fragment. This object should contain MeshInstance3D children for visuals and CollisionShape3D children for physics."
+    },
+    {
+      "name": "remanifestation_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration in seconds for which the remanifested object remains physically present and visible before fully dissolving."
+    },
+    {
+      "name": "memory_cost_amount",
+      "type": "float",
+      "default": "10.0",
+      "description": "The amount of 'memory' or 'identity' cost incurred by Lyra upon activating the remanifestation. Emitted via the 'memory_cost_incurred' signal."
+    },
+    {
+      "name": "silence_attraction_strength",
+      "type": "float",
+      "default": "5.0",
+      "description": "The strength of the 'Silence's' attraction or empowerment upon activation. Emitted via the 'silence_attracted' signal."
+    },
+    {
+      "name": "dissolve_shader_material",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "A ShaderMaterial instance that uses the 'chronospatial_remanifestation.gdshader' to control the visual dissolution and flicker effects. It must expose 'dissolve_amount' and 'flicker_value' uniforms."
+    },
+    {
+      "name": "flicker_speed",
+      "type": "float",
+      "default": "10.0",
+      "description": "The speed (cycles per second) at which the visual flicker effect oscillates."
+    },
+    {
+      "name": "flicker_intensity",
+      "type": "float",
+      "default": "0.1",
+      "description": "The maximum intensity of the flicker effect, controlling how much the object's alpha is reduced during flickering (0.0 to 1.0, where 1.0 is full transparency)."
+    }
+  ],
+  "dependencies": [
+    "CollisionObject3D (or its derivatives like StaticBody3D, RigidBody3D)",
+    "MeshInstance3D (as children of the remanifested object)",
+    "ShaderMaterial",
+    "Tween",
+    "chronospatial_remanifestation.gdshader (a separate shader file)"
+  ],
+  "verdict": "A brilliant, ephemeral bridge between past and present, this invention perfectly encapsulates the soul's desperate fight against oblivion, making every borrowed breath a poignant sacrifice.",
+  "impact": "This mechanic will be a cornerstone of Lyra's desperate survival, forcing players into constant, high-stakes gambles. It creates moments of intense, fleeting triumph as a path appears, immediately followed by dread as the memory dissolves and the Silence closes in. Players will viscerally feel the cost of survival, as each use chips away at Lyra's identity, deepening the game's core themes of self-loss and the profound fragility of memory. It transforms environmental traversal and combat into a dynamic, resource-management puzzle where every decision carries a heavy, emotional weight.",
+  "score": 92,
+  "inventedAt": "2026-09-06T06:40:26.238Z"
+}

@@ -1,0 +1,53 @@
+{
+  "name": "ephemeral_kinematic_cohesion",
+  "label": "Ephemeral Kinematic Cohesion",
+  "domain": "movement",
+  "godotFeature": "PhysicsServer3D and dynamic PhysicsMaterial manipulation",
+  "poeticVision": "Imagine running across a crumbling memory-world, the Silence's hunters closing in. Suddenly, a section of the floor beneath you inexplicably loses friction, sending you sliding into danger. Or a jump you've perfectly timed before now falls short, as your body's perceived mass momentarily doubles, a phantom weight of forgotten identity dragging you down. The world itself struggles to remember its own rules, making every step a gamble against the unraveling fabric of reality, reflecting Lyra's own fracturing self. The player feels a profound, existential uncertainty with every movement, as if the very ground beneath their feet is losing its memory of how to be solid.",
+  "usage": "Attach this script to Lyra's CharacterBody3D node. The 'identity_coherence' parameter should be dynamically updated by other game logic (e.g., when Lyra loses a memory fragment, decrease 'identity_coherence'). As 'identity_coherence' decreases, Lyra's movement physics (gravity, friction, bounce) will become increasingly unstable and unpredictable, reflecting her fracturing identity. 'fluctuation_strength' controls the maximum intensity of these effects, 'base_gravity_scale', 'base_friction', and 'base_bounce' define Lyra's stable physics properties, and 'fluctuation_speed' determines how rapidly these parameters change over time. This creates a constant sense of physical uncertainty and danger.",
+  "parameters": [
+    {
+      "name": "identity_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "Current identity coherence (0.0-1.0). Lower values increase physics instability."
+    },
+    {
+      "name": "fluctuation_strength",
+      "type": "float",
+      "default": "0.5",
+      "description": "Maximum strength of physics fluctuations when identity coherence is low."
+    },
+    {
+      "name": "base_gravity_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "The base gravity scale for Lyra when identity is stable. This value is initialized from the CharacterBody3D's gravity_scale property."
+    },
+    {
+      "name": "base_friction",
+      "type": "float",
+      "default": "1.0",
+      "description": "The base friction for Lyra's physics material when identity is stable. This value is initialized from the CharacterBody3D's physics_material_override."
+    },
+    {
+      "name": "base_bounce",
+      "type": "float",
+      "default": "0.0",
+      "description": "The base bounce for Lyra's physics material when identity is stable. This value is initialized from the CharacterBody3D's physics_material_override."
+    },
+    {
+      "name": "fluctuation_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Speed at which physics parameters fluctuate over time, contributing to unpredictability."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (the node this script is attached to)"
+  ],
+  "verdict": "The world itself weeps with Lyra's fading self, turning every step into a desperate dance against the physics of forgetting.",
+  "impact": "This mechanic will fundamentally transform player movement and environmental interaction, making the very ground beneath Lyra's feet a dynamic, unpredictable adversary. It directly translates her internal struggle with identity loss into a tangible, moment-to-moment physical threat, forcing players into constant, high-stakes adaptation against the unraveling physics of the memory-world. Every action becomes a desperate gamble, deepening the core theme of self-loss through visceral gameplay.",
+  "score": 88,
+  "inventedAt": "2026-09-06T06:49:20.601Z"
+}

@@ -1,0 +1,49 @@
+{
+  "name": "mnemonic_lumen_refraction",
+  "label": "Memory Shard Refraction",
+  "domain": "shaders",
+  "godotFeature": "Screen-Space Refraction (Viewport Texture), ShaderMaterial (Spatial Shader), Camera effects, Global Illumination probes",
+  "poeticVision": "The player will experience moments where the fragile reality around Lyra bends and distorts through the crystalline edges of a recovered memory shard. Holding a shard isn't just seeing the past; it's seeing the present warped by the *weight* of that past, revealing hidden truths or corrupting perceptions. It's a fleeting glimpse through a shattered window, where every angle offers a new, dangerous perspective—a visual representation of Lyra's fractured internal world influencing external reality.",
+  "usage": "To use this 'Memory Shard Refraction' effect:\n1.  Create a new `ShaderMaterial` resource in your Godot project.\n2.  Assign this GLSL code to the `Shader` property of the `ShaderMaterial`.\n3.  Apply this `ShaderMaterial` to the `material_override` or `material` property of a `MeshInstance3D` node that represents your memory shard (e.g., a `BoxMesh`, `PrismMesh`, or a custom crystal mesh).\n4.  In the Inspector, configure the `ShaderMaterial`'s uniform parameters:\n    *   `Refraction Normal Map`: Assign a `NormalMap` texture here. This texture defines the unique distortion pattern for the shard. Different shards can use different normal maps for varied effects.\n    *   `Refraction Strength`: Adjust this float value to control the intensity of the visual distortion.\n    *   `Tint Color`: Set the base color and transparency (alpha channel) of the memory shard itself. This color will become more prominent as the refraction effect fades.\n    *   `Depth Fade Start` and `Depth Fade End`: These control the range of depth difference over which the refraction effect fades out. Adjust them to fine-tune when the refraction becomes less pronounced (e.g., when the shard is very close to or very far from the background geometry).\n5.  Ensure your `WorldEnvironment` node has `Screen Space Refraction` enabled under the `SSR` section for `SCREEN_TEXTURE` and `DEPTH_TEXTURE` to function correctly. This is crucial for the shader to access the background image and depth buffer.",
+  "parameters": [
+    {
+      "name": "refraction_normal_map",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "A normal map texture that defines the unique distortion pattern for this memory shard. Different normal maps create different refraction signatures."
+    },
+    {
+      "name": "refraction_strength",
+      "type": "float",
+      "default": "0.05",
+      "description": "Controls the overall intensity and magnitude of the refraction distortion effect."
+    },
+    {
+      "name": "tint_color",
+      "type": "vec4",
+      "default": "vec4(1.0, 1.0, 1.0, 0.7)",
+      "description": "The base color and alpha transparency of the memory shard. This color becomes more visible as the refraction effect fades."
+    },
+    {
+      "name": "depth_fade_start",
+      "type": "float",
+      "default": "0.01",
+      "description": "The absolute depth difference (between the shard's surface and the refracted background point) at which the refraction effect begins to fade out."
+    },
+    {
+      "name": "depth_fade_end",
+      "type": "float",
+      "default": "0.1",
+      "description": "The absolute depth difference at which the refraction effect is fully faded, and the shard's tint color becomes dominant."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (or any node with a Mesh)",
+    "ShaderMaterial",
+    "WorldEnvironment (with Screen Space Refraction enabled)"
+  ],
+  "verdict": "Through the shattered lens of memory, reality itself becomes a treacherous, shifting canvas, revealing truths and dangers born from Lyra's own dissolving mind.",
+  "impact": "This invention will profoundly deepen the player's connection to Lyra's fractured identity, transforming memory shards from mere collectibles into dynamic tools that visually and perceptually alter the game world. It will create moments of intense disorientation and revelation, forcing players to constantly question what is real and what is a distortion of Lyra's past, directly tying the act of remembering to immediate survival and danger. This mechanic elevates the core theme of self-loss into a tangible, interactive experience.",
+  "score": 90,
+  "inventedAt": "2026-09-06T06:58:07.429Z"
+}

@@ -1,0 +1,35 @@
+{
+  "name": "temporal_coherence_erosion",
+  "label": "Drift of the Unremembered Now",
+  "domain": "time",
+  "godotFeature": "Manipulation of _process(delta) and _physics_process(delta) values for specific Node instances (player character), combined with custom input handling to simulate desynchronization.",
+  "poeticVision": "The world feels like a broken echo, your own movements arriving a beat too late or a beat too early. Your mind struggles to align with the 'now,' but every lost memory loosens your grip on linear time, making the simplest action a desperate fight against an internal temporal tremor. You feel the gut-wrenching disorientation of your own existence fracturing across the timeline, a constant, physical reminder of what you've forgotten, making survival a battle not just against the Silence, but against the very fabric of your own perception.",
+  "usage": "Attach this script to a CharacterBody3D node that represents the player character. \n\n**Setup Input Map:**\n1. Go to 'Project' -> 'Project Settings...' -> 'Input Map' tab.\n2. Add the following actions (if they don't exist):\n   - 'move_left' (e.g., assign 'A' key)\n   - 'move_right' (e.g., assign 'D' key)\n   - 'move_forward' (e.g., assign 'W' key)\n   - 'move_backward' (e.g., assign 'S' key)\n   - 'ui_accept' (for jump, e.g., assign 'Spacebar')\n\n**Configure in Inspector:**\n- Select the CharacterBody3D node in the scene tree.\n- In the Inspector, adjust 'Temporal Coherence Factor' (0.0 to 1.0) to control the intensity of the temporal drift. A value of 1.0 means no drift, while 0.0 means maximum drift.\n- 'Max Temporal Drift Per Second' controls how much temporal offset can be added or subtracted from the delta each second at maximum desynchronization.\n- 'Max Accumulated Drift' sets the upper and lower bounds for the total temporal offset, preventing the player's internal clock from drifting too far from real time.\n\n**Integrating with Memory System:**\n- Call the `update_memory_integrity(new_integrity_value: float)` method from your game's memory management system. Pass a float value between 0.0 (representing complete memory loss/no coherence) and 1.0 (representing full memory/perfect coherence) to dynamically change the player's temporal stability.",
+  "parameters": [
+    {
+      "name": "temporal_coherence_factor",
+      "type": "float",
+      "default": "1.0",
+      "description": "A value between 0.0 (maximum desynchronization) and 1.0 (perfect temporal coherence). This factor inversely scales the magnitude of the temporal drift effect. Driven by the player's memory integrity."
+    },
+    {
+      "name": "max_temporal_drift_per_second",
+      "type": "float",
+      "default": "0.2",
+      "description": "The maximum amount of temporal offset (in seconds) that can be randomly added or subtracted from the effective delta per real second, when temporal_coherence_factor is 0.0. This controls the 'speed' of the temporal tremor."
+    },
+    {
+      "name": "max_accumulated_drift",
+      "type": "float",
+      "default": "0.5",
+      "description": "The maximum total accumulated temporal offset (in seconds) that the player's internal clock can have from the global game time. This clamps the 'ahead' or 'behind' feeling to a reasonable range."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D"
+  ],
+  "verdict": "A brilliant temporal tremor, this mechanic weaves the unraveling self into the very fabric of motion, making every step a desperate dance against the echoes of what was.",
+  "impact": "This mechanic fundamentally transforms player interaction, making every movement and decision a visceral struggle against internal temporal chaos. It directly translates Lyra's deteriorating identity into a constant, physical challenge, forcing players to adapt and master their actions despite the unpredictable temporal shifts. The abstract concept of memory loss becomes a tangible, frustrating, and deeply personal obstacle, amplifying the game's core themes of desperate survival and the profound grief of self-loss. It ensures that the player's own body becomes a battleground, making the experience unforgettable.",
+  "score": 92,
+  "inventedAt": "2026-09-06T06:45:17.807Z"
+}

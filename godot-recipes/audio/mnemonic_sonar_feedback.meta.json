@@ -1,0 +1,67 @@
+{
+  "name": "mnemonic_sonar_feedback",
+  "label": "Echoes of a Fractured Self",
+  "domain": "audio",
+  "godotFeature": "AudioServer, AudioEffect Buses (EQ, Filter, Delay, Distortion), Spatial Audio",
+  "poeticVision": "The player emits a subtle, subconscious 'sonar' pulse whenever they interact with a memory fragment. The returned echo (or lack thereof) doesn't just play a sound; it dynamically warps and reshapes the entire environmental soundscape, creating a visceral, localized auditory feedback loop of their identity's integrity. Successfully recovering a memory causes the world's sounds to momentarily enrich, gain clarity, or reveal forgotten layers. Losing a memory, or having it assailed by the Silence, causes environmental sounds to selectively phase out, invert stereo, glitch into dissonance, or become eerily absent in specific frequencies, reflecting the collapsing reality of self. It's the sound of information dissolving, or urgently re-coalescing, a constant sonic reminder that the world's very fabric is tied to Lyra's memories.",
+  "usage": "Attach this script to a global manager node (e.g., an autoload singleton) or a node in your main scene. Ensure the specified audio buses ('Ambience', 'WorldFX', 'SilenceDisruption') and their respective effects (AudioEffectLowPassFilter, AudioEffectEQ, AudioEffectDistortion) are configured in Project Settings -> Audio -> Buses at the indices specified by the exported parameters.\n\nWhen Lyra interacts with a memory fragment, call `process_memory_interaction(integrity: float)` from your player controller or the memory fragment script. The `integrity` value (0.0 for lost/corrupted, 1.0 for fully recovered) will dynamically adjust the soundscape to reflect Lyra's identity.\n\nWhen Silence entities are near Lyra, call `apply_silence_disruption(disruption_level: float)` from the entity's script or a proximity manager. The `disruption_level` (0.0 for no disruption, 1.0 for full disruption) will apply a chaotic, deadened soundscape effect.",
+  "parameters": [
+    {
+      "name": "ambience_bus_name",
+      "type": "String",
+      "default": "Ambience",
+      "description": "The name of the audio bus used for ambient sounds."
+    },
+    {
+      "name": "world_fx_bus_name",
+      "type": "String",
+      "default": "WorldFX",
+      "description": "The name of the audio bus used for world effects and general sound effects."
+    },
+    {
+      "name": "silence_bus_name",
+      "type": "String",
+      "default": "SilenceDisruption",
+      "description": "The name of the audio bus dedicated to Silence entity disruption effects."
+    },
+    {
+      "name": "ambience_low_pass_idx",
+      "type": "int",
+      "default": "0",
+      "description": "The index of the AudioEffectLowPassFilter on the 'Ambience' bus."
+    },
+    {
+      "name": "ambience_eq_idx",
+      "type": "int",
+      "default": "1",
+      "description": "The index of the AudioEffectEQ on the 'Ambience' bus."
+    },
+    {
+      "name": "world_fx_distortion_idx",
+      "type": "int",
+      "default": "0",
+      "description": "The index of the AudioEffectDistortion on the 'WorldFX' bus."
+    },
+    {
+      "name": "silence_low_pass_idx",
+      "type": "int",
+      "default": "0",
+      "description": "The index of the AudioEffectLowPassFilter on the 'SilenceDisruption' bus."
+    },
+    {
+      "name": "silence_distortion_idx",
+      "type": "int",
+      "default": "1",
+      "description": "The index of the AudioEffectDistortion on the 'SilenceDisruption' bus."
+    }
+  ],
+  "dependencies": [
+    "Audio Bus: Ambience (with AudioEffectLowPassFilter, AudioEffectEQ)",
+    "Audio Bus: WorldFX (with AudioEffectDistortion)",
+    "Audio Bus: SilenceDisruption (with AudioEffectLowPassFilter, AudioEffectDistortion)"
+  ],
+  "verdict": "Through the fractured symphony of a dying mind, this invention makes the very air a testament to Lyra's fading self, echoing her desperate fight against the encroaching Silence.",
+  "impact": "This invention will profoundly deepen player immersion by tying Lyra's internal struggle directly to their auditory perception of the game world. The dynamic soundscape will serve as a constant, non-verbal indicator of identity integrity, making every memory interaction and Silence encounter a visceral, unforgettable experience of self-coalescence or dissolution. It transforms sound from mere background to a critical, evolving narrative element.",
+  "score": 95,
+  "inventedAt": "2026-09-06T07:02:17.985Z"
+}
