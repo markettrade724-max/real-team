@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-09-06T11:32:52.705Z",
-  "current": null,
+  "updatedAt": "2026-09-07T10:04:51.189Z",
+  "current": {
+    "type": "episode",
+    "episode": 32,
+    "id": null,
+    "startedAt": "2026-09-07T09:50:18.003Z",
+    "updatedAt": "2026-09-07T10:04:51.189Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 32,
     "totalEpisodes": 32,
@@ -904,6 +911,35 @@
         "startedAt": "2026-09-02T09:10:59.978Z",
         "completedAt": "2026-09-02T12:03:51.635Z",
         "failReason": null
+      },
+      "32": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-09-07T09:51:48.174Z",
+            "title": "The Fading Compass",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-09-07T09:53:03.699Z",
+            "title": "The Fading Compass",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-09-07T09:53:37.154Z",
+            "title": "The Fading Compass",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-09-07T09:50:18.003Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
