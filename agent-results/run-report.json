@@ -1,22 +1,22 @@
 {
-  "runId": "2026-09-08T0914",
+  "runId": "2026-09-08T1200",
   "mode": "game-fix",
-  "success": true,
-  "timestamp": "2026-09-08T09:16:29.324Z",
-  "totalDuration": "103.9s",
+  "success": false,
+  "timestamp": "2026-09-08T12:01:06.696Z",
+  "totalDuration": "33.9s",
   "budget": {
-    "total": 6,
+    "total": 8,
     "limit": 40,
-    "left": 34,
+    "left": 32,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 6,
+        "total": 8,
         "limit": 20,
-        "left": 14,
+        "left": 12,
         "exhausted": false,
         "library": 0,
-        "agents": 6
+        "agents": 8
       },
       {
         "key": "KEY_2",
@@ -45,14 +45,14 @@
   },
   "agents": {
     "gamefix": {
-      "success": true,
-      "duration": "100.6s",
-      "error": null
+      "success": false,
+      "duration": "33.9s",
+      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experien"
     }
   },
   "summary": {
     "total": 1,
-    "passed": 1,
-    "failed": 0
+    "passed": 0,
+    "failed": 1
   }
 }
