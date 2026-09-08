@@ -9,8 +9,6 @@ extends Node3D
 @export var game_over_layer: CanvasLayer # New: For displaying game over screen
 @export var victory_layer: CanvasLayer # New: For displaying victory screen
 @export var player_scene: PackedScene # New: To instantiate the player
-@export var player_spawn_point_path: NodePath # New: Path to a Marker3D for player spawn
-@export var next_level_scene_path: String # New: Path to the next level scene for progression
 
 enum GameState {
 	GAMEPLAY,
@@ -76,10 +74,7 @@ func _input(event: InputEvent):
 	        if (event is InputEventMouseButton and event.is_pressed()) or \
 	           (event is InputEventScreenTouch and event.is_pressed()) or \
 	           event.is_action_pressed("ui_accept"): # Assuming 'ui_accept' for restart
-	            if current_state == GameState.VICTORY and next_level_scene_path:
-	                get_tree().change_scene_to_file(next_level_scene_path) # Progress to next level
-	            else:
-	                get_tree().reload_current_scene() # Restart current level or if no next level
+	            get_tree().reload_current_scene() # Simple restart
 	            get_viewport().set_input_as_handled()
 
 func _connect_enemy_signals(enemy_node: Node):
@@ -157,17 +152,7 @@ func _spawn_player_if_needed():
 	        push_warning("Player scene does not emit 'player_health_changed' signal. Health display will not update.")
 	    
 	    add_child(_player_instance) # Add player to the scene
-	    
-	    if player_spawn_point_path:
-	        var spawn_point = get_node_or_null(player_spawn_point_path)
-	        if spawn_point and spawn_point is Marker3D:
-	            _player_instance.global_position = spawn_point.global_position
-	        else:
-	            push_warning("Player spawn point not found or not a Marker3D at path: %s. Spawning at default (0,1,0)." % player_spawn_point_path)
-	            _player_instance.global_position = Vector3(0, 1, 0) # Fallback
-	    else:
-	        push_warning("Player spawn point path not set in main_scene.gd. Spawning at default (0,1,0).")
-	        _player_instance.global_position = Vector3(0, 1, 0) # Default spawn position
+	    _player_instance.global_position = Vector3(0, 1, 0) # Example spawn position
 	    
 	    # Initial HUD update is now handled by the player's _ready() signal emission
 	    # and the connected _on_player_health_changed function.
