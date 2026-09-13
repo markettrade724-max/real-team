@@ -1,0 +1,36 @@
+{
+  "name": "semantic_world_weave_degradation",
+  "label": "Semantic World Weave Degradation",
+  "domain": "world",
+  "godotFeature": "PhysicsServer3D (custom gravity, friction, collision layers), World3D, Material Shaders, GDScript scripting for dynamic property modification.",
+  "poeticVision": "Imagine traversing a ruined memory-scape, only for the foundational concept of 'gravity' or 'solidity' to fray from Lyra's mind. The world itself seems to lose its logic – paths once traversable become unpredictable, surfaces shift from stable to treacherous, and gravity itself may invert or become erratic, not due to an external force, but because Lyra's own understanding of reality is dissolving. The player feels a profound disorientation, where survival is not just about avoiding hunters, but about constantly re-learning the very physics of existence, amplifying the terror of inner decay by projecting it onto the external world.",
+  "usage": "To use the 'Semantic World Weave Degradation' system:\n1.  Add the 'semantic_degradation_manager.gd' script to any Node in your 3D scene (e.g., a dedicated 'GameManager' Node3D).\n2.  Create a new 'PhysicsMaterial' resource (e.g., 'res://materials/world_ground_material.tres'). This material will represent the default physics properties of your world's surfaces.\n3.  In the Godot editor, select your 'SemanticDegradationManager' node. In the Inspector, drag and drop your created 'PhysicsMaterial' resource into the 'Target Physics Material' slot.\n4.  Ensure that all relevant static bodies (ground, walls, platforms) and dynamic bodies (player, movable objects) in your scene use this 'target_physics_material' or a derived material that inherits its properties. This is crucial for the friction degradation to take effect.\n5.  When Lyra loses a memory fragment that corresponds to a semantic anchor (e.g., 'gravity' or 'friction'), call the 'lose_memory_fragment()' function from your game logic. For example, 'get_node(\"GameManager/SemanticDegradationManager\").lose_memory_fragment(SemanticDegradationManager.SemanticAnchor.GRAVITY_CONCEPT)'.\n6.  The script will automatically adjust the world's default gravity and the friction of the assigned 'target_physics_material'.\n7.  For visual and auditory feedback (as described in the vision), you would typically emit a signal from the '_apply_degradation_effects()' function and connect it to a Camera3D with a screen-space shader (e.g., for distortion or color shifts) and/or an AudioStreamPlayer3D for disorientation sound effects.",
+  "parameters": [
+    {
+      "name": "gravity_degradation_factor",
+      "type": "float",
+      "default": "0.2",
+      "description": "Controls how much gravity's magnitude changes per level of degradation. A value of 0.2 means gravity reduces by 20% per level, potentially inverting if degradation is severe enough."
+    },
+    {
+      "name": "friction_degradation_factor",
+      "type": "float",
+      "default": "0.2",
+      "description": "Controls how much friction reduces per level of degradation. A value of 0.2 means friction reduces by 20% per level, making surfaces progressively more slippery."
+    },
+    {
+      "name": "target_physics_material",
+      "type": "PhysicsMaterial",
+      "default": "null",
+      "description": "The PhysicsMaterial resource whose friction property will be modified. This material should be used by relevant surfaces (e.g., ground, walls) in the world for friction degradation to apply."
+    }
+  ],
+  "dependencies": [
+    "PhysicsMaterial (resource)",
+    "World3D (implicit, as the script needs to be in a 3D scene to access physics space)"
+  ],
+  "verdict": "As Lyra's mind unravels, the world itself becomes a treacherous mirror, reflecting the terrifying truth that even reality's foundations can crumble with a forgotten memory.",
+  "impact": "This mechanic will profoundly transform the player's experience, shifting their understanding of the game world from a stable environment to a constantly eroding, unpredictable entity. Every step will become a calculated risk, every jump a leap of faith, as the very laws of physics betray Lyra's fading mind. It will amplify the core themes of identity loss and desperate survival, forcing players to adapt not just to external threats, but to the fundamental instability of their own reality, creating a truly unforgettable and deeply unsettling journey.",
+  "score": 95,
+  "inventedAt": "2026-09-13T09:54:40.445Z"
+}

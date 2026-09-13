@@ -1,31 +1,31 @@
 {
-  "runId": "2026-09-13T0654",
+  "runId": "2026-09-13T0952",
   "mode": "inventor",
-  "success": false,
-  "timestamp": "2026-09-13T07:04:25.995Z",
-  "totalDuration": "600.0s",
+  "success": true,
+  "timestamp": "2026-09-13T09:54:40.463Z",
+  "totalDuration": "119.1s",
   "budget": {
-    "total": 10,
+    "total": 40,
     "limit": 40,
-    "left": 30,
+    "left": 0,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 10,
+        "total": 20,
         "limit": 20,
-        "left": 10,
+        "left": 0,
         "exhausted": false,
         "library": 0,
-        "agents": 10
+        "agents": 20
       },
       {
         "key": "KEY_2",
-        "total": 0,
+        "total": 20,
         "limit": 20,
-        "left": 20,
+        "left": 0,
         "exhausted": false,
         "library": 0,
-        "agents": 0
+        "agents": 20
       }
     ]
   },
@@ -45,14 +45,14 @@
   },
   "agents": {
     "invention": {
-      "success": false,
-      "duration": "600.0s",
-      "error": "Timeout after 600s"
+      "success": true,
+      "duration": "119.1s",
+      "error": null
     }
   },
   "summary": {
     "total": 1,
-    "passed": 0,
-    "failed": 1
+    "passed": 1,
+    "failed": 0
   }
 }

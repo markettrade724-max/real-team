@@ -1,0 +1,43 @@
+{
+  "name": "cognitive_dissonance_monologue",
+  "label": "The Eroding Whisper",
+  "domain": "ui",
+  "godotFeature": "RichTextLabel, CanvasItem Shaders, GDScript string manipulation",
+  "poeticVision": "Feel the horrifying vulnerability of Lyra's mind as her innermost thoughts, her very self-dialogue, become a battleground. Words will flicker, fragment, and dissolve into static, replaced by the chilling, invasive presence of the Silence's attempts to consume her consciousness. It's not just a visual effect; it's the visceral experience of losing your ability to think, to remember, to be *you*.",
+  "usage": "1. Create a `RichTextLabel` node in your scene.\n2. Attach the `cognitive_dissonance_monologue.gd` script to the `RichTextLabel` node.\n3. In the Inspector, set the `base_monologue` property to Lyra's initial internal thoughts.\n4. Ensure the `RichTextLabel`'s `autowrap_mode` is set to `TextServer.AUTOWRAP_WORD_SMART` or `AUTOWRAP_WORD` for proper text flow with gaps.\n5. From your game logic (e.g., a player script or a game manager), call `update_memory_integrity(float integrity)` to simulate Lyra's permanent memory loss. `integrity` should be a value between `0.0` (completely lost) and `1.0` (perfect memory). For example, `monologue_node.update_memory_integrity(player_memory_level / MAX_MEMORY_LEVEL)`.\n6. Call `update_silence_proximity(float strength)` to simulate the immediate, active presence of the Silence. `strength` should be a value between `0.0` (no Silence nearby) and `1.0` (Silence is very close/overwhelming). For example, `monologue_node.update_silence_proximity(distance_to_silence_entity / MAX_SILENCE_DISTANCE)`.\n7. The script automatically handles both semantic (word replacement/gaps) and visual (shader effects) corruption based on these inputs.",
+  "parameters": [
+    {
+      "name": "base_monologue",
+      "type": "String",
+      "default": "My thoughts are my own. I remember who I am. I must survive.",
+      "description": "The initial, uncorrupted internal monologue text that Lyra starts with."
+    },
+    {
+      "name": "corruption_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Controls how quickly the visual shader effects (displacement, pixelation, scanlines) react and transition to changes in Silence proximity."
+    },
+    {
+      "name": "memory_loss_threshold",
+      "type": "float",
+      "default": "0.2",
+      "description": "A multiplier for the chance that a word will be permanently removed (replaced with a gap) from the monologue when memory integrity is low. Higher values mean more aggressive permanent loss."
+    },
+    {
+      "name": "silence_glyph_pool",
+      "type": "Array[String]",
+      "default": "[\"█\", \"▓\", \"░\", \"▒\", \"■\", \"□\", \"▲\", \"▼\"]",
+      "description": "A collection of single-character strings (glyphs) used to replace parts of words when the Silence is actively scrambling Lyra's thoughts due to proximity."
+    }
+  ],
+  "dependencies": [
+    "RichTextLabel",
+    "ShaderMaterial",
+    "Shader"
+  ],
+  "verdict": "A chilling whisper from the void, this invention masterfully transmutes the abstract horror of self-loss into a tangible, unforgettable assault on the player's very perception of thought.",
+  "impact": "This invention transforms the player's internal monologue from a passive narrative element into an active, terrifying battleground. It viscerally communicates the core theme of identity loss and the relentless threat of the Silence, making every moment of mental vulnerability a palpable, unforgettable experience. Players will not just read about Lyra's struggle; they will *feel* their own ability to comprehend her thoughts erode, deepening their empathy and the stakes of every encounter.",
+  "score": 95,
+  "inventedAt": "2026-09-13T09:53:44.510Z"
+}
