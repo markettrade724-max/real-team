@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-09-13T12:34:51.493Z",
-  "current": null,
+  "updatedAt": "2026-09-14T10:18:57.809Z",
+  "current": {
+    "type": "episode",
+    "episode": 34,
+    "id": null,
+    "startedAt": "2026-09-14T10:12:09.097Z",
+    "updatedAt": "2026-09-14T10:18:57.809Z",
+    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+  },
   "series": {
     "nextEpisode": 34,
     "totalEpisodes": 34,
@@ -962,6 +969,26 @@
         "startedAt": "2026-09-09T09:18:04.223Z",
         "completedAt": "2026-09-09T12:15:54.085Z",
         "failReason": null
+      },
+      "34": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone"
+        ],
+        "pendingSteps": [
+          "scenes",
+          "dialogue"
+        ],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-09-14T10:14:25.627Z",
+            "title": "The Echo of My Name",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-09-14T10:12:09.097Z",
+        "completedAt": null,
+        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
       }
     }
   },
