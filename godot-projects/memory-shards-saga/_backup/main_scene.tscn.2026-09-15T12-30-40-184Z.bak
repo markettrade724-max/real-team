@@ -25,14 +25,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0) # Example spawn poin
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="PauseMenuUI" type="CanvasLayer" parent="UI"]
+[node name="PauseMenuUI" type="CanvasLayer" parent="UI"] # Changed from Control to CanvasLayer
 visible = false
 
 [node name="PausedLabel" type="Label" parent="UI/PauseMenuUI"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 0.5
+ancho_right = 0.5
 anchor_bottom = 0.5
 offset_left = -100.0
 offset_top = -30.0
@@ -40,49 +40,46 @@ offset_right = 100.0
 offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "PAUSED"
+text = "PAUSED" # Corrected text
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HUD" type="CanvasLayer" parent="UI"]
-visible = true # HUD should be visible by default in gameplay
+[node name="HUD" type="CanvasLayer" parent="UI"] # Added HUD CanvasLayer
 
-[node name="ScoreLabel" type="Label" parent="UI/HUD"]
-anchors_preset = 5
+[node name="ScoreLabel" type="Label" parent="UI/HUD"] # Added ScoreLabel
+anchors_preset = 4
 anchor_left = 0.0
-anchor_right = 0.0
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 200.0
-offset_bottom = 50.0
-grow_horizontal = 1
-text = "Score: 0"
-horizontal_alignment = 0
-vertical_alignment = 1
-
-[node name="HealthLabel" type="Label" parent="UI/HUD"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 0.0
-anchor_right = 0.5
-offset_left = -100.0
-offset_top = 20.0
+ancho_top = 0.0
+ancho_right = 0.0
+ancho_bottom = 0.0
+offset_left = 10.0
+offset_top = 10.0
 offset_right = 100.0
-offset_bottom = 50.0
-grow_horizontal = 2
-text = "HP: 100/100"
-horizontal_alignment = 1
-vertical_alignment = 1
+offset_bottom = 30.0
+text = "Score: 0"
 
-[node name="GameOverUI" type="CanvasLayer" parent="UI"]
+[node name="HealthLabel" type="Label" parent="UI/HUD"] # Added HealthLabel
+anchors_preset = 6
+anchor_left = 1.0
+ancho_top = 0.0
+ancho_right = 1.0
+ancho_bottom = 0.0
+offset_left = -100.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 30.0
+text = "HP: 100/100"
+horizontal_alignment = 2 # Align right
+
+[node name="GameOverUI" type="CanvasLayer" parent="UI"] # Changed from Control to CanvasLayer
 visible = false
 
-[node name="GameOverLabel" type="Label" parent="UI/GameOverUI"]
+[node name="GameOverLabel" type="Label" parent="UI/GameOverUI"] # Added GameOverLabel
 anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+ancho_top = 0.5
+ancho_right = 0.5
+ancho_bottom = 0.5
 offset_left = -150.0
 offset_top = -50.0
 offset_right = 150.0
@@ -93,15 +90,15 @@ text = "GAME OVER\nFinal Score: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VictoryUI" type="CanvasLayer" parent="UI"]
+[node name="VictoryUI" type="CanvasLayer" parent="UI"] # Added VictoryUI CanvasLayer
 visible = false
 
-[node name="VictoryLabel" type="Label" parent="UI/VictoryUI"]
+[node name="VictoryLabel" type="Label" parent="UI/VictoryUI"] # Added VictoryLabel
 anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+ancho_top = 0.5
+ancho_right = 0.5
+ancho_bottom = 0.5
 offset_left = -150.0
 offset_top = -50.0
 offset_right = 150.0
