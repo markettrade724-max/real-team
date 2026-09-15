@@ -58,11 +58,6 @@ func _ready():
 		else:
 			push_warning("Victory layer is missing a 'VictoryLabel' child. Victory text will not display.")	
 	
-	# Connect to child_entered_tree once in _ready to catch all dynamically spawned nodes.
-	# This ensures enemies spawned in any state (even paused) have their signals connected.
-	if not get_tree().child_entered_tree.is_connected(_on_child_entered_tree):
-		get_tree().child_entered_tree.connect(_on_child_entered_tree)
-
 	# Start directly in gameplay as per SOUL document, removing the MAIN_MENU state.
 	_set_game_state(GameState.GAMEPLAY)
 
@@ -111,8 +106,9 @@ func _set_game_state(new_state: GameState):
 	
 	get_tree().paused = false # Default to not paused, states will override if needed
 	
-	# Removed the disconnect/reconnect logic for child_entered_tree from here.
-	# It is now connected once in _ready() and remains connected.
+	# Disconnect child_entered_tree signal when not in gameplay to avoid unnecessary connections
+	if get_tree().child_entered_tree.is_connected(_on_child_entered_tree):
+		get_tree().child_entered_tree.disconnect(_on_child_entered_tree)
 
 	match current_state:
 	    # GameState.MAIN_MENU removed
@@ -122,9 +118,12 @@ func _set_game_state(new_state: GameState):
 	        _update_score_display() # Initial score display
 	        
 	        # Connect signals for all existing enemies in the scene that are in the "enemy" group.
-	        # This is still needed for enemies that exist at scene load, before _ready() finishes.
 	        for enemy in get_tree().get_nodes_in_group("enemy"):
 	            _connect_enemy_signals(enemy)
+	        
+	        # Connect to child_entered_tree to catch dynamically spawned enemies
+	        if not get_tree().child_entered_tree.is_connected(_on_child_entered_tree):
+	            get_tree().child_entered_tree.connect(_on_child_entered_tree)
 	        
 	    GameState.PAUSED:
 	        get_tree().paused = true
