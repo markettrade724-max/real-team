@@ -1,22 +1,22 @@
 {
-  "runId": "2026-09-14T1343",
-  "mode": "screenplay-production",
-  "success": false,
-  "timestamp": "2026-09-14T13:49:16.391Z",
-  "totalDuration": "370.7s",
+  "runId": "2026-09-15T0653",
+  "mode": "game-fix",
+  "success": true,
+  "timestamp": "2026-09-15T06:54:08.193Z",
+  "totalDuration": "65.6s",
   "budget": {
-    "total": 15,
+    "total": 3,
     "limit": 40,
-    "left": 25,
+    "left": 37,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 15,
+        "total": 3,
         "limit": 20,
-        "left": 5,
+        "left": 17,
         "exhausted": false,
         "library": 0,
-        "agents": 15
+        "agents": 3
       },
       {
         "key": "KEY_2",
@@ -44,15 +44,15 @@
     "gamesDone": 1
   },
   "agents": {
-    "screenplay": {
-      "success": false,
-      "duration": "—",
-      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+    "gamefix": {
+      "success": true,
+      "duration": "62.1s",
+      "error": null
     }
   },
   "summary": {
     "total": 1,
-    "passed": 0,
-    "failed": 1
+    "passed": 1,
+    "failed": 0
   }
 }
