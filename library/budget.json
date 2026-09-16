@@ -1,73 +1,39 @@
 {
-  "date": "2026-09-15",
-  "total": 9,
+  "date": "2026-09-16",
+  "total": 4,
   "limit": 20,
   "library": 0,
-  "agents": 9,
+  "agents": 4,
   "exhausted": false,
   "log": [
     {
-      "time": "06:53:02",
-      "caller": "code-agent-fix",
+      "time": "06:57:18",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 1,
       "left": 19
     },
     {
-      "time": "06:53:21",
-      "caller": "code-agent-fix",
+      "time": "06:57:52",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 2,
       "left": 18
     },
     {
-      "time": "06:53:42",
-      "caller": "code-agent-fix",
-      "success": true,
+      "time": "06:58:31",
+      "caller": "screenplay-agent",
+      "success": false,
       "total": 3,
-      "left": 17
+      "left": 17,
+      "errorType": "503"
     },
     {
-      "time": "09:42:03",
-      "caller": "code-agent-fix",
+      "time": "06:59:03",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 4,
       "left": 16
-    },
-    {
-      "time": "09:42:44",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 5,
-      "left": 15
-    },
-    {
-      "time": "09:43:06",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 6,
-      "left": 14
-    },
-    {
-      "time": "12:29:56",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 7,
-      "left": 13
-    },
-    {
-      "time": "12:30:21",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 8,
-      "left": 12
-    },
-    {
-      "time": "12:30:40",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 9,
-      "left": 11
     }
   ]
 }
