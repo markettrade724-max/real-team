@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-09-14T13:49:16.384Z",
+  "updatedAt": "2026-09-16T09:49:16.384Z",
   "current": {
     "type": "episode",
     "episode": 34,
     "id": null,
     "startedAt": "2026-09-14T10:12:09.097Z",
-    "updatedAt": "2026-09-14T13:49:16.384Z",
-    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+    "updatedAt": "2026-09-16T09:49:16.384Z",
+    "failReason": "production-failed: Timeout after 600s"
   },
   "series": {
     "nextEpisode": 34,
@@ -973,22 +973,31 @@
       "34": {
         "status": "failed",
         "completedSteps": [
-          "backbone"
-        ],
-        "pendingSteps": [
+          "backbone",
           "scenes",
           "dialogue"
         ],
+        "pendingSteps": [],
         "data": {
           "backbone": {
             "savedAt": "2026-09-14T10:14:25.627Z",
+            "title": "The Echo of My Name",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-09-16T09:37:32.487Z",
+            "title": "The Echo of My Name",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-09-16T09:38:09.997Z",
             "title": "The Echo of My Name",
             "summary": null
           }
         },
         "startedAt": "2026-09-14T10:12:09.097Z",
         "completedAt": null,
-        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
