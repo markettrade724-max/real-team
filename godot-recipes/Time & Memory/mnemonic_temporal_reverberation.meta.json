@@ -1,0 +1,49 @@
+{
+  "name": "mnemonic_temporal_reverberation",
+  "label": "Temporal Reverberation of Self",
+  "domain": "Time & Memory",
+  "godotFeature": "SubViewport, Shaders, PhysicsServer (collision layers/masks)",
+  "poeticVision": "The chilling sensation of being pulled backward into a vital past moment, not as an observer, but as an active participant. You are forced to physically relive a corrupted memory as a fractured battleground, while still grappling with the immediate threats of the present. It's the terror of fighting for survival in two collapsing timelines simultaneously, where every familiar detail now threatens to annihilate you, blurring the line between grief and adrenaline as you fight for the integrity of what was.",
+  "usage": "This script manages the 'Temporal Reverberation' effect. To use it:\n1.  **Scene Setup:**\n    *   In your main scene, create a `SubViewportContainer` (e.g., under a `CanvasLayer` for UI). Set its `layout_mode` to `full_rect` to cover the screen.\n    *   Inside the `SubViewportContainer`, add a `TextureRect`. Also set its `layout_mode` to `full_rect`.\n    *   Create a `SubViewport` node somewhere in your scene tree (e.g., as a sibling to the `SubViewportContainer`). Ensure it has a `Camera3D` child.\n    *   Create a new `ShaderMaterial` resource. Assign the `temporal_reverberation_shader.gdshader` (provided below) to its `Shader` property.\n    *   Assign this `ShaderMaterial` to the `TextureRect`'s `material` property.\n    *   Ensure Lyra (your player character) is a `CharacterBody3D` and has a `Camera3D` child.\n    *   Add present-day enemies to the 'present_hunters' group.\n    *   Add entities from the past memory scene that Lyra can physically interact with to the 'past_physical_entities' group.\n    *   Add entities from the past memory scene that are 'ghosts' (detectable but not physically collidable) to the 'past_ghost_entities' group.\n2.  **Script Attachment:**\n    *   Attach this `temporal_reverberation_manager.gd` script to a `Node` in your scene (e.g., a `GameManager` or `World` node).\n3.  **Exported Properties:**\n    *   Drag and drop the `SubViewportContainer`, `SubViewport`, `TextureRect`, the `ShaderMaterial` resource, and Lyra's `CharacterBody3D` node into their respective exported properties in the Inspector.\n4.  **Collision Layers:**\n    *   Go to `Project -> Project Settings -> Physics 3D -> Layers` and define the `LAYER_PRESENT_WORLD`, `LAYER_PRESENT_ENTITY`, `LAYER_PAST_PHYSICAL`, and `LAYER_PAST_GHOST` layers (e.g., Layer 1, 2, 3, 4 respectively).\n    *   Configure your present world and entities' collision layers/masks accordingly.\n5.  **Activation:**\n    *   Call the `start_reverberation(\"res://path/to/your_memory_scene.tscn\", 10.0)` method from another script (e.g., when Lyra interacts with a memory fragment). Replace `\"res://path/to/your_memory_scene.tscn\"` with the actual path to your memory scene and `10.0` with the desired duration in seconds.",
+  "parameters": [
+    {
+      "name": "sub_viewport_container",
+      "type": "SubViewportContainer",
+      "description": "The UI container that holds the TextureRect displaying the memory scene."
+    },
+    {
+      "name": "sub_viewport",
+      "type": "SubViewport",
+      "description": "The SubViewport node responsible for rendering the separate memory scene."
+    },
+    {
+      "name": "lyra_node",
+      "type": "CharacterBody3D",
+      "description": "The player character's main node, used for camera synchronization and collision adjustments. Assumed to have a Camera3D child."
+    },
+    {
+      "name": "memory_display_rect",
+      "type": "TextureRect",
+      "description": "The TextureRect UI element that will display the SubViewport's texture with the shader applied."
+    },
+    {
+      "name": "memory_shader_material",
+      "type": "ShaderMaterial",
+      "description": "The ShaderMaterial resource containing the 'temporal_reverberation_shader.gdshader' for visual effects."
+    }
+  ],
+  "dependencies": [
+    "SubViewportContainer",
+    "SubViewport",
+    "CharacterBody3D",
+    "Camera3D (as child of Lyra and SubViewport)",
+    "TextureRect",
+    "ShaderMaterial",
+    "temporal_reverberation_shader.gdshader (as a ShaderMaterial resource)",
+    "Nodes in groups: 'present_hunters', 'past_physical_entities', 'past_ghost_entities'"
+  ],
+  "verdict": "In the fractured echoes of self, Lyra will fight not just for her life, but for the very integrity of her being, against shadows that bleed from memory into the now.",
+  "impact": "This mechanic will fundamentally transform the player's experience, forcing them into a constant state of high-stakes, multi-layered combat and navigation. It will blur the lines between past and present threats, demanding split-second decisions and resource management against entities from two collapsing timelines. The emotional weight of fighting for one's identity within a corrupted memory, while simultaneously fending off present dangers, will create an unparalleled sense of urgency, grief, and adrenaline, making every encounter a desperate struggle for self-preservation.",
+  "score": 95,
+  "inventedAt": "2026-09-20T07:16:24.099Z"
+}

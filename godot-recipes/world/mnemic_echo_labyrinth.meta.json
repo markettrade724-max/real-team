@@ -1,0 +1,64 @@
+{
+  "name": "mnemic_echo_labyrinth",
+  "label": "Mnemic Echo Labyrinth",
+  "domain": "world",
+  "godotFeature": "MultiMesh, CSG, ShaderMaterial, global_shader_uniforms, FogVolume, Dynamic Lighting",
+  "poeticVision": "The player feels a profound sense of betrayal by their own past, where the very architecture of memory, once a guide, twists into a deceptive maze. Each path seems familiar, a whisper of a forgotten moment, only to reveal itself as a predatory lure that exploits their yearning for identity, making them question what is real and whether their own mind is now against them. It’s the grief of self-loss made manifest as a physical trap.",
+  "usage": "Attach this script to a Node3D in your Godot scene. It will procedurally generate a basic labyrinth structure using CSG nodes, populate it with MultiMesh instances (representing memory shards), and apply a custom ShaderMaterial that distorts the geometry and color based on the 'memory_loss_factor' and 'active_memory_id' from the 'MemoryState' resource. It also sets up a FogVolume and a DirectionalLight3D for atmospheric effects.\n\nTo use:\n1. Create a new Node3D in your scene and rename it (e.g., 'MnemicEchoLabyrinth').\n2. Attach this 'mnemic_echo_labyrinth.gd' script to the Node3D.\n3. In the Inspector, you can create a new 'MemoryState' resource for the 'memory_state' property or assign an existing one.\n4. Adjust the 'memory_loss_factor' on the 'MemoryState' resource (or via game logic) to see the labyrinth visually distort and change color in real-time.\n5. Modify 'labyrinth_size', 'fog_density', and 'light_intensity' parameters to customize the labyrinth's scale and atmosphere.\n6. The 'active_memory_id' in 'MemoryState' can be used to trigger specific visual distortions in the shader, allowing different memories to have unique visual effects when active or fading.",
+  "parameters": [
+    {
+      "name": "memory_state",
+      "type": "MemoryState (Resource)",
+      "default": "null (initialized if null)",
+      "description": "A custom resource tracking Lyra's memory loss and active memory ID, driving the labyrinth's distortion."
+    },
+    {
+      "name": "labyrinth_size",
+      "type": "Vector3",
+      "default": "Vector3(50, 20, 50)",
+      "description": "The overall dimensions of the generated labyrinth structure."
+    },
+    {
+      "name": "wall_thickness",
+      "type": "float",
+      "default": "1.0",
+      "description": "The thickness of the labyrinth walls (currently not directly used in this minimal CSG example)."
+    },
+    {
+      "name": "cell_size",
+      "type": "float",
+      "default": "10.0",
+      "description": "The conceptual size of a labyrinth cell (currently not directly used in this minimal CSG example)."
+    },
+    {
+      "name": "fog_density",
+      "type": "float",
+      "default": "0.05",
+      "description": "The density of the FogVolume, affecting visibility and atmosphere."
+    },
+    {
+      "name": "light_intensity",
+      "type": "float",
+      "default": "1.0",
+      "description": "The energy/intensity of the directional light illuminating the labyrinth."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "CSGCombiner3D",
+    "CSGBox3D",
+    "MultiMeshInstance3D",
+    "MultiMesh",
+    "BoxMesh",
+    "ShaderMaterial",
+    "Shader",
+    "FogVolume",
+    "FogMaterial",
+    "DirectionalLight3D",
+    "Resource (for MemoryState)"
+  ],
+  "verdict": "Within the labyrinth of a fracturing mind, memory's embrace becomes a visual betrayal, twisting the very path to self into a beautiful, perilous lie.",
+  "impact": "The player will experience a profound and constant visual reminder of their deteriorating identity and the hostile nature of their own past. The environment itself becomes an antagonist, visually shifting and betraying their perception, deepening the sense of self-loss and urgency. The physical manifestation of memory loss through vertex displacement and color shifts will create a visceral connection to Lyra's internal struggle, making every step through the labyrinth a fight against both external hunters and her own dissolving self.",
+  "score": 85,
+  "inventedAt": "2026-09-20T07:27:35.042Z"
+}

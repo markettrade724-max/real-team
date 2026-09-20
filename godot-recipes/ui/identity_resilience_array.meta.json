@@ -1,0 +1,73 @@
+{
+  "name": "identity_resilience_array",
+  "label": "The Shard-Core Interface",
+  "domain": "ui",
+  "godotFeature": "SubViewportContainer (for dynamic UI rendering) combined with Control nodes, custom ShaderMaterials, and InputEvent handling for real-time interaction.",
+  "poeticVision": "The player's very self-hood is laid bare on the screen—not as abstract bars, but as tangible shards orbiting a fading core. As the Silence hunts Lyra, these memories writhe, attempting to escape her grasp, pulled by unseen currents. The player feels a constant, desperate tug-of-war in real-time, struggling to anchor their fading identity while simultaneously fighting for physical survival. It's the visceral grief of self-loss made interactive, a direct measure of what slips away with every passing moment of danger.",
+  "usage": "Attach this `identity_resilience_array.gd` script to a `Control` node. This `Control` node should be a child of a `SubViewportContainer` within your UI scene. The `SubViewportContainer` will render this dynamic identity interface. External game logic (e.g., player takes damage, Silence entity is near, Lyra loses a memory) should call `add_stress(amount: float)` on this `Control` node to increase the overall stress level, causing shards to drift. Players interact by clicking on drifting shards to 'anchor' them, preventing their loss. Listen to the `shard_lost` and `shard_anchored` signals to implement game consequences (e.g., skill degradation, buffs/debuffs). Ensure `shard_material.gdshader` is created in `res://`.",
+  "parameters": [
+    {
+      "name": "core_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "The texture for the central identity core."
+    },
+    {
+      "name": "shard_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "The texture for individual memory shards."
+    },
+    {
+      "name": "num_shards",
+      "type": "int",
+      "default": "5",
+      "description": "The number of memory shards representing Lyra's identity."
+    },
+    {
+      "name": "base_orbit_radius",
+      "type": "float",
+      "default": "100.0",
+      "description": "The initial distance of shards from the core."
+    },
+    {
+      "name": "orbit_speed",
+      "type": "float",
+      "default": "0.5",
+      "description": "The speed at which shards orbit the core."
+    },
+    {
+      "name": "stress_drift_multiplier",
+      "type": "float",
+      "default": "0.1",
+      "description": "How much the current stress level influences the shard's outward drift speed."
+    },
+    {
+      "name": "max_shard_drift",
+      "type": "float",
+      "default": "50.0",
+      "description": "The maximum distance a shard can drift from its base orbit before being permanently lost."
+    },
+    {
+      "name": "anchor_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "The duration (in seconds) a shard remains 'anchored' after a successful player interaction, during which its drift is paused/reduced."
+    },
+    {
+      "name": "shard_size",
+      "type": "Vector2",
+      "default": "Vector2(32, 32)",
+      "description": "The size of the TextureRect nodes used for individual memory shards."
+    }
+  ],
+  "dependencies": [
+    "SubViewportContainer (parent node in UI hierarchy)",
+    "Texture2D resources for core_texture and shard_texture",
+    "res://shard_material.gdshader"
+  ],
+  "verdict": "A brilliant fusion of UI and core mechanics, this system makes the silent agony of self-loss a desperate, unforgettable fight for every fragment of who you are.",
+  "impact": "This invention transforms the abstract concept of identity loss into a visceral, interactive struggle. Players will constantly feel the dual pressure of external threats and internal decay, forcing split-second decisions that directly impact their sense of self. It elevates the game's core theme of 'grief of self-loss' from narrative to tangible gameplay, making every moment of danger a desperate fight not just for life, but for who Lyra *is*. The constant visual and interactive feedback ensures the player is always aware of their fading identity, deepening the emotional stakes of every encounter.",
+  "score": 92,
+  "inventedAt": "2026-09-20T07:25:42.086Z"
+}

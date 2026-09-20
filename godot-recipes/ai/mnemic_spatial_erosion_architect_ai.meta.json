@@ -1,0 +1,47 @@
+{
+  "name": "mnemic_spatial_erosion_architect_ai",
+  "label": "The Architect of Erosion",
+  "domain": "ai",
+  "godotFeature": "NavigationServer3D & PhysicsServer3D for dynamic environment modification",
+  "poeticVision": "The chilling dread of the memory-world itself betraying you. Imagine running across a crumbling path, only for an unseen force to actively erase the ground behind you, making retreat impossible. The next platform you eye flickers out of existence, or reconfigures into a maze of unstable fragments. This entity doesn't just chase; it intelligently rewrites the very reality Lyra is trying to traverse, making every step a gamble against the total dissolution of space. It's the silent horror of the world forgetting itself, making you doubt not just your path, but the certainty of existence itself.",
+  "usage": "Attach this script to a Node3D in your scene (e.g., named 'Architect'). Set the 'lyra_node_path' export variable to the NodePath of Lyra's CharacterBody3D node. Ensure your memory fragments are individual Node3D scenes, each containing a child StaticBody3D (named 'StaticBody3D'), a NavigationRegion3D (named 'NavigationRegion3D'), and optionally a MeshInstance3D (named 'MeshInstance3D'). Add all these root MemoryFragment Node3D nodes to the 'ErodibleFragment' group. The Architect will then dynamically erode or reconfigure these fragments within 'erosion_range' of Lyra, affecting their collision and navigation.",
+  "parameters": [
+    {
+      "name": "lyra_node_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "The NodePath to Lyra's CharacterBody3D node in the scene."
+    },
+    {
+      "name": "erosion_range",
+      "type": "float",
+      "default": "20.0",
+      "description": "The maximum distance from Lyra within which memory fragments are considered for erosion or reconfiguration."
+    },
+    {
+      "name": "erosion_interval",
+      "type": "float",
+      "default": "0.5",
+      "description": "The time in seconds between each erosion/reconfiguration cycle performed by the Architect."
+    },
+    {
+      "name": "reconfiguration_chance",
+      "type": "float",
+      "default": "0.3",
+      "description": "The probability (0.0 to 1.0) that a selected memory fragment will be reconfigured (moved/rotated/shape-swapped) instead of being fully eroded."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (for Lyra)",
+    "Node3D (for the Architect itself)",
+    "StaticBody3D (as a child of each memory fragment, named 'StaticBody3D')",
+    "CollisionShape3D (as children of StaticBody3D, for fragment collision)",
+    "MeshInstance3D (optional, as a child of each memory fragment, named 'MeshInstance3D', for visual representation)",
+    "NavigationRegion3D (as a child of each memory fragment, named 'NavigationRegion3D', for navigation mesh updates)",
+    "All manipulable memory fragment Node3D nodes must be added to the 'ErodibleFragment' group."
+  ],
+  "verdict": "The Architect of Erosion masterfully transmutes the very fabric of memory into a relentless, intelligent hunter, ensuring Lyra's desperate race is a constant, terrifying dance with oblivion.",
+  "impact": "The Architect of Erosion will fundamentally transform the player's relationship with the game world, turning the environment from a passive backdrop into an active, intelligent, and deeply unsettling antagonist. Players will experience constant paranoia and urgency as the very ground beneath them is actively erased or reconfigured, forcing split-second decisions and fostering a profound sense of existential dread. This mechanic ensures that every step is a gamble, every path a potential trap, and every moment a desperate struggle against the world's own dissolution, perfectly mirroring Lyra's internal battle against forgetting.",
+  "score": 95,
+  "inventedAt": "2026-09-20T07:23:34.252Z"
+}

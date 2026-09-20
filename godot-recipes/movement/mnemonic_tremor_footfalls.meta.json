@@ -1,0 +1,74 @@
+{
+  "name": "mnemonic_tremor_footfalls",
+  "label": "Quaking Steps of the Forgetting Echo",
+  "domain": "movement",
+  "godotFeature": "Physics Server & RayCasting/ShapeCasting with dynamic collision shape modification, coupled with compute/geometry shaders for localized terrain deformation and visual effects.",
+  "poeticVision": "The chilling realization that every step Lyra takes further destabilizes the crumbling memory-worlds beneath her. A desperate dance on the edge of dissolution, where the ground itself shatters with her presence, threatening to swallow not just her, but the precious fragments of who she once was. Players will feel the tangible weight of their movement, constantly calculating whether the immediate path is worth the potential cost of a seismic tremor that could erase a vital memory.",
+  "usage": "Attach this script to the player's CharacterBody3D node. Configure the 'Tremor Settings' in the Inspector. Set 'tremor_effect_scene' to a PackedScene containing a visual effect (e.g., a CPUParticles3D node configured for dust or cracks). Ensure ground nodes that represent 'memory-substrate' have their collision layer set to the 'memory_substrate_collision_layer' value. Memory fragment nodes should be RigidBody3D instances, added to the 'memory_fragments' group, and have their collision layer set to the 'memory_fragment_collision_layer' value. The script will automatically detect footfalls on memory-substrate, trigger tremors, dislodge nearby memory fragments, and emit signals for identity erosion and fragment loss.",
+  "parameters": [
+    {
+      "name": "tremor_radius",
+      "type": "float",
+      "default": "2.0",
+      "description": "The radius of the tremor effect around Lyra's footfall."
+    },
+    {
+      "name": "tremor_force",
+      "type": "float",
+      "default": "150.0",
+      "description": "The impulse force applied to dislodged memory fragments."
+    },
+    {
+      "name": "memory_erosion_amount",
+      "type": "float",
+      "default": "0.05",
+      "description": "The amount of memory stability (identity) lost with each tremor."
+    },
+    {
+      "name": "footfall_velocity_threshold",
+      "type": "float",
+      "default": "0.5",
+      "description": "Minimum velocity (vertical for landing, or horizontal for moving) to trigger a footfall tremor."
+    },
+    {
+      "name": "footfall_cooldown",
+      "type": "float",
+      "default": "0.3",
+      "description": "Minimum time between consecutive footfall tremors."
+    },
+    {
+      "name": "memory_fragment_group",
+      "type": "String",
+      "default": "memory_fragments",
+      "description": "The name of the node group that memory fragments belong to."
+    },
+    {
+      "name": "memory_substrate_collision_layer",
+      "type": "int",
+      "default": "1",
+      "description": "The collision layer used to identify memory-substrate ground."
+    },
+    {
+      "name": "memory_fragment_collision_layer",
+      "type": "int",
+      "default": "2",
+      "description": "The collision layer used for memory fragment RigidBody3D nodes."
+    },
+    {
+      "name": "tremor_effect_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A PackedScene containing a visual effect (e.g., CPUParticles3D) to instantiate at tremor locations."
+    }
+  ],
+  "dependencies": [
+    "Player's CharacterBody3D node (this script is attached to it)",
+    "RigidBody3D nodes for memory fragments (must be in the 'memory_fragments' group and on 'memory_fragment_collision_layer')",
+    "StaticBody3D or other CollisionObject3D nodes for ground (must be on 'memory_substrate_collision_layer')",
+    "A PackedScene for 'tremor_effect_scene' (e.g., a CPUParticles3D setup for visual feedback)"
+  ],
+  "verdict": "A brilliant dance of destruction, where every desperate step echoes the shattering of self.",
+  "impact": "This mechanic will fundamentally alter how players perceive movement. Every step becomes a calculated risk, a desperate negotiation between survival and self-preservation. It transforms the environment from a static backdrop into a dynamic, fragile extension of Lyra's own fading mind, forcing players into a constant, agonizing dilemma where their very actions accelerate their own loss. The feeling of urgency and the tangible cost of forgetting will be omnipresent, making the act of traversal itself a core emotional and mechanical challenge.",
+  "score": 95,
+  "inventedAt": "2026-09-20T07:21:16.315Z"
+}

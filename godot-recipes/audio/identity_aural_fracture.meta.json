@@ -1,0 +1,79 @@
+{
+  "name": "identity_aural_fracture",
+  "label": "Aural Identity Fracture",
+  "domain": "audio",
+  "godotFeature": "AudioBus system with AudioEffectEQ and real-time GDScript manipulation of bus parameters and audio sources",
+  "poeticVision": "The player hears Lyra's inner world literally disintegrate. As memories fade, specific frequency bands representing her past thoughts, aural recollections, and emotional resonance are perceptibly removed from the game's soundscape, leaving an unnatural void. This void is then subtly, insidiously filled by the creeping, abstract, non-Euclidean hum of the Silence – a sound that feels like an invasive presence, a whisper where a cherished memory once was. The feeling is one of profound psychological vulnerability, the audible loss of self, and the chilling realization that the absence isn't empty, but is being occupied.",
+  "usage": "This script manages the 'Aural Identity Fracture' effect by dynamically adjusting audio bus EQ gains. To use it:\n\n1.  **Configure Audio Buses (Project Settings -> Audio -> Buses):**\n    *   Create two new Audio Buses: `Memories_Bus` and `Silence_Bus`.\n    *   On *both* `Memories_Bus` and `Silence_Bus`, add an `AudioEffectEQ` (e.g., `AudioEffectEQ10`) as the *first* effect (index 0).\n    *   Configure the frequency bands of these `AudioEffectEQ` effects. Each band will represent a distinct memory 'slot'. For example, Band 0 could target low frequencies for 'childhood joy', Band 1 for mid-range 'first love', etc. Ensure corresponding bands on both EQs target the same frequency ranges.\n\n2.  **Scene Setup:**\n    *   Create a new scene or add this script to an existing Node (e.g., a `Node` named `AuralIdentityFracture`).\n    *   Add two `AudioStreamPlayer` nodes as children of the node with this script.\n        *   One `AudioStreamPlayer` for `memory_soundscape_player`. Assign an `AudioStream` (e.g., an ambient track, internal monologue fragments, or musical motifs representing Lyra's past) and set its `bus` property to `Memories_Bus`.\n        *   One `AudioStreamPlayer` for `silence_hum_player`. Assign an `AudioStream` (e.g., a low, unsettling hum, abstract noise, or a sound that feels invasive) and set its `bus` property to `Silence_Bus`.\n\n3.  **Script Configuration (Inspector):**\n    *   Assign the `AudioStreamPlayer` nodes to the `memory_soundscape_player` and `silence_hum_player` properties in the Inspector.\n    *   Populate the `memory_band_map` dictionary. The `Key` should be a unique string identifier for a memory (e.g., \"childhood_joy\"), and the `Value` should be the integer index of the corresponding band on the `AudioEffectEQ` (e.g., 0, 1, 2, etc.).\n    *   Adjust `memory_initial_gain_db`, `silence_initial_gain_db`, `memory_lost_gain_db`, `silence_active_gain_db`, and `transition_speed_db_per_sec` to fine-tune the audio effect.\n\n4.  **Triggering Memory Loss:**\n    *   To make Lyra lose a memory, call the `lose_memory()` function on this script, passing the `memory_id` string (e.g., `get_node(\"Path/To/AuralIdentityFractureNode\").lose_memory(\"childhood_joy\")`).\n    *   (Optional) To restore a memory, call `restore_memory()` with the `memory_id`.\n\nThis setup will cause the specified frequency band on the `Memories_Bus` to fade out, while the corresponding band on the `Silence_Bus` fades in, creating the audible effect of identity fracture and the Silence's encroachment.",
+  "parameters": [
+    {
+      "name": "memory_soundscape_player",
+      "type": "AudioStreamPlayer",
+      "default": "null",
+      "description": "The AudioStreamPlayer node responsible for Lyra's internal memory soundscape."
+    },
+    {
+      "name": "silence_hum_player",
+      "type": "AudioStreamPlayer",
+      "default": "null",
+      "description": "The AudioStreamPlayer node responsible for the Silence's encroaching hum."
+    },
+    {
+      "name": "memory_band_map",
+      "type": "Dictionary",
+      "default": "{}",
+      "description": "A dictionary mapping memory IDs (String) to AudioEffectEQ band indices (int). Each band index corresponds to a specific frequency range on the AudioEffectEQs."
+    },
+    {
+      "name": "memory_bus_name",
+      "type": "String",
+      "default": "\"Memories_Bus\"",
+      "description": "The name of the AudioBus where Lyra's memory soundscape is routed and its EQ is manipulated."
+    },
+    {
+      "name": "silence_bus_name",
+      "type": "String",
+      "default": "\"Silence_Bus\"",
+      "description": "The name of the AudioBus where the Silence's hum is routed and its EQ is manipulated."
+    },
+    {
+      "name": "memory_initial_gain_db",
+      "type": "float",
+      "default": "0.0",
+      "description": "The initial gain (in dB) for memory frequency bands when the memory is present."
+    },
+    {
+      "name": "silence_initial_gain_db",
+      "type": "float",
+      "default": "-60.0",
+      "description": "The initial gain (in dB) for silence frequency bands, effectively turning them off."
+    },
+    {
+      "name": "memory_lost_gain_db",
+      "type": "float",
+      "default": "-60.0",
+      "description": "The target gain (in dB) for memory frequency bands when the memory is lost."
+    },
+    {
+      "name": "silence_active_gain_db",
+      "type": "float",
+      "default": "0.0",
+      "description": "The target gain (in dB) for silence frequency bands when they take over a lost memory's frequency range."
+    },
+    {
+      "name": "transition_speed_db_per_sec",
+      "type": "float",
+      "default": "20.0",
+      "description": "The speed (in dB per second) at which the gain transitions occur when memories are lost or restored."
+    }
+  ],
+  "dependencies": [
+    "AudioStreamPlayer (two instances)",
+    "AudioBus 'Memories_Bus' with AudioEffectEQ (index 0)",
+    "AudioBus 'Silence_Bus' with AudioEffectEQ (index 0)"
+  ],
+  "verdict": "The audible fraying of Lyra's very essence, replaced by the invasive hum of the Silence, transforms the abstract horror of memory loss into a chilling, visceral symphony of self-erasure.",
+  "impact": "This invention will profoundly deepen the player's connection to Lyra's struggle. The audible disintegration of self, where cherished memories are not merely forgotten but are perceptibly removed from the soundscape and replaced by an alien, invasive presence, will create a constant, unsettling reminder of the stakes. It transforms memory loss from a narrative event into a visceral, sensory experience, enhancing the feeling of psychological vulnerability and the urgent fight against the encroaching Silence.",
+  "score": 92,
+  "inventedAt": "2026-09-20T07:24:45.341Z"
+}

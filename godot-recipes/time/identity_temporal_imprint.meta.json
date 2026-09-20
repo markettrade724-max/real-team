@@ -1,0 +1,43 @@
+{
+  "name": "identity_temporal_imprint",
+  "label": "The Echo of What Was",
+  "domain": "time",
+  "godotFeature": "ShaderMaterial, GPUParticles3D, PhysicsServer3D",
+  "poeticVision": "The player will feel the desperate utility of past actions, but also the painful, creeping emptiness as each 'echo' extracts a piece of Lyra's very being. It's a visceral choice between immediate survival and the slow erosion of self, making the world slightly less familiar, her own memories a little hazier. A powerful tool that saves her life at the cost of who she is, a heart-wrenching trade.",
+  "usage": "This recipe provides the 'TemporalEchoManager' GDScript, a 'spectral' shader for the echoes, and an 'identity cost' overlay shader. Here's how to integrate them:\n\n1.  **Create 'EchoInstance.tscn' (PackedScene):**\n    *   Create a new scene with a `Node3D` as its root.\n    *   Add a `MeshInstance3D` as a child. Assign a placeholder `Mesh` (e.g., `BoxMesh`) for initial setup. Create a new `ShaderMaterial` for this `MeshInstance3D` and load `res://echo_spectral.gdshader` into it.\n    *   Add a `GPUParticles3D` as a child. Configure its `Process Material` (e.g., `ParticleProcessMaterial`) for a dissipating, ethereal effect. Its `lifetime` will be overridden by the script.\n    *   Add a `StaticBody3D` as a child.\n    *   Add a `CollisionShape3D` as a child of the `StaticBody3D`. Assign a placeholder `Shape3D` (e.g., `BoxShape3D`). Its `shape` will be overridden by the script based on the captured mesh.\n    *   Ensure these nodes retain their default names (`MeshInstance3D`, `GPUParticles3D`, `StaticBody3D`, `CollisionShape3D`) or adjust the `find_child()` calls in `identity_temporal_imprint.gd` accordingly.\n    *   Save this scene as `res://EchoInstance.tscn`.\n\n2.  **Setup 'TemporalEchoManager' (GDScript):**\n    *   Add a `Node` to your main scene (e.g., as a child of your player character 'Lyra' or a global 'GameManager' node).\n    *   Attach the `identity_temporal_imprint.gd` script to this new node.\n    *   In the Inspector, drag and drop your `res://EchoInstance.tscn` into the `Echo Instance Scene` slot.\n    *   Adjust `Max History Size`, `Echo Duration`, and `Identity Cost Per Echo` as desired.\n\n3.  **Implement Identity Cost Visual (Overlay Shader):**\n    *   Add a `CanvasLayer` node to your scene (e.g., as a child of your `Camera3D` or directly under the root).\n    *   As a child of the `CanvasLayer`, add a `TextureRect` (or `ColorRect`). Set its `Layout` to `Full Rect` to cover the entire screen.\n    *   Create a new `ShaderMaterial` for this `TextureRect` and load `res://identity_cost_overlay.gdshader` into it.\n    *   **Crucially**, enable the `TextureRect`'s `material.shader_parameter.screen_texture_enabled` property (or check the 'Screen Texture' box in the material inspector).\n    *   In a script (e.g., your UI manager or Lyra's script), connect to the `TemporalEchoManager.identity_cost_incurred` signal. When this signal is emitted, animate the `intensity` uniform of the `identity_cost_overlay.gdshader` (e.g., quickly ramp it up to 1.0 and then fade it back to 0.0 over 1-2 seconds) to create a temporary screen distortion effect.\n\n4.  **Lyra's Interaction (Player Script):**\n    *   In Lyra's script, get a reference to your `TemporalEchoManager` node.\n    *   Call `temporal_echo_manager.capture_state(lyra.global_transform, lyra.get_node(\"MeshInstance3D\").mesh)` periodically (e.g., in `_physics_process` or at key movement points) to record Lyra's past states. Ensure `lyra.get_node(\"MeshInstance3D\").mesh` refers to the actual mesh Lyra is using.\n    *   When the player activates the 'Echo' ability, call `temporal_echo_manager.activate_echo(0)` (to activate the most recent echo) or provide UI to select an echo from `temporal_echo_manager.get_history_size()`.\n\n**Shader Files:**\n\n**`echo_spectral.gdshader`**\nglsl\nshader_type spatial;\nrender_mode unshaded, blend_mix, depth_draw_opaque, cull_back;\n\nuniform vec4 albedo : source_color = vec4(0.2, 0.6, 1.0, 0.7);\nuniform float duration = 1.0;\nuniform float start_time = 0.0; // Time when the echo was activated\n\nvoid fragment() {\n\tfloat current_time = TIME; // Global shader time\n\tfloat elapsed_time = current_time - start_time;\n\tfloat progress = clamp(elapsed_time / duration, 0.0, 1.0);\n\n\t// Fade out effect\n\tfloat alpha_fade = 1.0 - progress;\n\n\t// Shimmer effect\n\tfloat shimmer = sin(current_time * 15.0 + VERTEX.x * 5.0) * 0.1 + 0.9; // Faster shimmer\n\t\n\t// Combine base alpha, fade, and shimmer\n\tfloat final_alpha = albedo.a * alpha_fade * shimmer;\n\n\tALBEDO = albedo.rgb;\n\tALPHA = final_alpha;\n}\n\n\n**`identity_cost_overlay.gdshader`**\nglsl\nshader_type canvas_item;\n\nuniform float intensity : hint_range(0.0, 1.0) = 0.0; // 0.0 = no effect, 1.0 = full effect\nuniform float distortion_speed : hint_range(0.1, 10.0) = 2.0;\nuniform float distortion_amount : hint_range(0.0, 0.1) = 0.02;\n\nvoid fragment() {\n\tvec2 uv = SCREEN_UV;\n\t\n\t// Simple chromatic aberration / color shift\n\tvec4 color_r = texture(SCREEN_TEXTURE, uv + vec2(distortion_amount * intensity, 0.0));\n\tvec4 color_g = texture(SCREEN_TEXTURE, uv);\n\tvec4 color_b = texture(SCREEN_TEXTURE, uv - vec2(distortion_amount * intensity, 0.0));\n\t\n\t// Add a subtle wave distortion\n\tuv.x += sin(uv.y * 10.0 + TIME * distortion_speed) * distortion_amount * 0.5 * intensity;\n\tuv.y += cos(uv.x * 10.0 + TIME * distortion_speed) * distortion_amount * 0.5 * intensity;\n\t\n\tvec4 final_color = vec4(color_r.r, color_g.g, color_b.b, 1.0);\n\t\n\t// Blend with original color based on intensity\n\tvec4 original_color = texture(SCREEN_TEXTURE, SCREEN_UV);\n\tCOLOR = mix(original_color, final_color, intensity);\n}\n",
+  "parameters": [
+    {
+      "name": "echo_instance_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene for the Echo instance (Node3D with MeshInstance3D, GPUParticles3D, StaticBody3D, CollisionShape3D)."
+    },
+    {
+      "name": "max_history_size",
+      "type": "int",
+      "default": "10",
+      "description": "Maximum number of past states (echoes) to store in history."
+    },
+    {
+      "name": "echo_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "Duration in seconds for which an activated echo remains visible and interactive."
+    },
+    {
+      "name": "identity_cost_per_echo",
+      "type": "float",
+      "default": "0.1",
+      "description": "The amount of 'identity' lost (0.0 to 1.0) each time an echo is activated. Emitted via 'identity_cost_incurred' signal."
+    }
+  ],
+  "dependencies": [
+    "res://EchoInstance.tscn",
+    "res://echo_spectral.gdshader",
+    "res://identity_cost_overlay.gdshader"
+  ],
+  "verdict": "A brilliant echo of desperation, this mechanic weaves the very fabric of identity into the brutal calculus of survival, making every choice a haunting sacrifice.",
+  "impact": "This mechanic will force players into agonizing decisions, constantly weighing immediate survival against the slow, irreversible loss of Lyra's identity. Every use of an echo will be a moment of desperate utility, followed by a subtle but profound sense of emptiness, making the player viscerally feel the game's central theme of self-loss. It transforms memory from a narrative concept into a tangible, consumable resource, deepening the emotional stakes of every encounter.",
+  "score": 95,
+  "inventedAt": "2026-09-20T07:19:14.182Z"
+}

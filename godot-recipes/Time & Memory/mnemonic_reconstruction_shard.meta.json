@@ -1,0 +1,79 @@
+{
+  "name": "mnemonic_reconstruction_shard",
+  "label": "Shard of Reversal",
+  "domain": "Time & Memory",
+  "godotFeature": "ShaderMaterial, PhysicsServer3D, and AnimationPlayer",
+  "poeticVision": "The desperate, fleeting joy of seeing a forgotten path coalesce from dust, knowing that each restored memory costs a piece of your own. You feel the grit of time reversing underfoot, the structural groan of a memory-world mending itself, only to begin crumbling again, a bittersweet illusion bought with self-loss.",
+  "usage": "Attach this script to a Node3D in your scene. As children of this Node3D, add a MeshInstance3D (for visual representation) and a CollisionShape3D (for physical interaction). In the inspector, assign the 'shader_path' to the 'reversal_shader.gdshader' file (provided separately). Assign the 'pristine_albedo_texture', 'pristine_normal_texture', 'decayed_albedo_texture', and 'decayed_normal_texture' to appropriate Texture2D resources. Also, provide 'pristine_collision_shape' and 'decayed_collision_shape' resources (e.g., BoxShape3D, ConcavePolygonShape3D) to define the object's physical form in its restored and decayed states. To activate the reversal, call the 'activate_reversal()' method on this node from Lyra's character script or an interaction handler. The cost of activation (loss of a memory fragment or identity meter portion) should be managed by the calling script before invoking 'activate_reversal()'.",
+  "parameters": [
+    {
+      "name": "shader_path",
+      "type": "String",
+      "default": "",
+      "description": "Path to the GLSL shader file (reversal_shader.gdshader) used for visual interpolation."
+    },
+    {
+      "name": "pristine_albedo_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "Albedo texture for the object in its pristine, restored state."
+    },
+    {
+      "name": "pristine_normal_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "Normal map texture for the object in its pristine, restored state."
+    },
+    {
+      "name": "decayed_albedo_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "Albedo texture for the object in its decayed, initial state."
+    },
+    {
+      "name": "decayed_normal_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "Normal map texture for the object in its decayed, initial state."
+    },
+    {
+      "name": "reversal_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "Duration in seconds for the visual and physical transition from decayed to pristine."
+    },
+    {
+      "name": "restored_state_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "Duration in seconds the object remains in its pristine state before re-decaying."
+    },
+    {
+      "name": "re_decay_duration",
+      "type": "float",
+      "default": "2.0",
+      "description": "Duration in seconds for the visual and physical transition from pristine back to decayed."
+    },
+    {
+      "name": "pristine_collision_shape",
+      "type": "Shape3D",
+      "default": "null",
+      "description": "The CollisionShape3D resource representing the object's physical form when pristine."
+    },
+    {
+      "name": "decayed_collision_shape",
+      "type": "Shape3D",
+      "default": "null",
+      "description": "The CollisionShape3D resource representing the object's physical form when decayed."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (child node)",
+    "CollisionShape3D (child node)",
+    "reversal_shader.gdshader (separate file)"
+  ],
+  "verdict": "A brilliant shard of hope and despair, allowing Lyra to mend the fractured world at the cost of her own fading self.",
+  "impact": "This invention fundamentally transforms the environment into a dynamic, interactive puzzle, forcing players to make desperate, strategic choices under pressure. The temporary restoration of crumbling memory-worlds, coupled with the implied cost to Lyra's identity, deepens the emotional stakes of every encounter. It creates moments of fleeting triumph against overwhelming decay, making each path forward a bittersweet gamble and reinforcing the core theme of self-loss.",
+  "score": 85,
+  "inventedAt": "2026-09-20T07:17:18.977Z"
+}

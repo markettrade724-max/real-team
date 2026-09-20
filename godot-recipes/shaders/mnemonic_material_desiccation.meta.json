@@ -1,0 +1,66 @@
+{
+  "name": "mnemonic_material_desiccation",
+  "label": "Memory-Dust Substrate",
+  "domain": "shaders",
+  "godotFeature": "Custom Spatial Shaders manipulating ALBEDO, ROUGHNESS, and ALPHA channels based on noise textures and global uniform parameters (e.g., 'memory_integrity'). Uses render_mode blend_mix for dynamic alpha-based dissolution.",
+  "poeticVision": "Feel the world's very foundations turn to dust beneath your feet as your memories bleed away. Watch familiar structures wither into shimmering motes of light, their 'materiality' unraveling. Experience the horror as your own hands appear to fragment and desiccate, a constant, visceral reminder that your identity is dissolving, and with it, the reality around you. Every step is on borrowed ground, every surface a breath away from oblivion.",
+  "usage": "To use this shader, create a new 'ShaderMaterial' resource in Godot. Assign this 'mnemonic_material_desiccation.gdshader' file to the 'Shader' property of the ShaderMaterial. Then, assign your base 'albedo_texture' and a grayscale 'noise_texture' (e.g., a 'NoiseTexture2D' resource with Perlin or Worley noise) to the corresponding uniform slots in the ShaderMaterial. Apply this ShaderMaterial to any MeshInstance3D (for environment) or to the appropriate material slot of a CharacterBody3D (for Lyra's model). Control the 'memory_integrity' uniform via a script (e.g., a global game state manager or Lyra's character script) by setting `material.set_shader_parameter(\"memory_integrity\", current_integrity_value)` to dynamically drive the dissolution effect from 1.0 (fully solid) down to 0.0 (fully dissolved).",
+  "parameters": [
+    {
+      "name": "albedo_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Base texture for the material's color."
+    },
+    {
+      "name": "albedo_color",
+      "type": "vec4",
+      "default": "(1.0, 1.0, 1.0, 1.0)",
+      "description": "Overall color tint for the material, multiplied with the albedo texture."
+    },
+    {
+      "name": "roughness",
+      "type": "float",
+      "default": "0.5",
+      "description": "Roughness of the material surface, affecting light scattering."
+    },
+    {
+      "name": "noise_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Grayscale noise texture (e.g., Perlin, Worley) to define the granular dissolution pattern."
+    },
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Global integrity value (0.0 to 1.0). 1.0 is fully solid, 0.0 is fully dissolved. This value should be controlled by game logic to reflect Lyra's identity and the world's stability."
+    },
+    {
+      "name": "dissolve_color",
+      "type": "vec4",
+      "default": "(0.8, 0.9, 1.0, 1.0)",
+      "description": "Color of the shimmering energy or void revealed as the material dissolves."
+    },
+    {
+      "name": "dissolve_edge_width",
+      "type": "float",
+      "default": "0.05",
+      "description": "Controls the width of the smooth transition zone at the dissolution edge, creating a softer or sharper dissolve."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "Scales the UV coordinates when sampling the noise_texture, affecting the granularity and size of the dissolution pattern."
+    }
+  ],
+  "dependencies": [
+    "NoiseTexture2D (for noise_texture)",
+    "Texture2D (for albedo_texture)"
+  ],
+  "verdict": "The world itself weeps with Lyra's fading mind, a beautiful and terrifying dance of dissolution that makes every step a desperate prayer against the dust.",
+  "impact": "This invention will profoundly deepen the player's emotional connection to Lyra's struggle. The constant, visceral visual feedback of the world and her own body dissolving will serve as an ever-present, horrifying reminder of her fading identity, transforming the abstract concept of memory loss into a tangible, environmental threat. Every step will become a desperate act of defiance against oblivion, amplifying the game's core themes of survival, grief, and the desperate fight to reclaim oneself.",
+  "score": 95,
+  "inventedAt": "2026-09-20T07:22:07.098Z"
+}

@@ -1,0 +1,53 @@
+{
+  "name": "identity_reliquary_launcher",
+  "label": "The Reliquary of Fading Echoes",
+  "domain": "weapons",
+  "godotFeature": "Procedural Mesh Generation (SurfaceTool), ShaderMaterials, GPUParticles3D",
+  "poeticVision": "Feel the agonizing choice as you are forced to physically manifest a cherished memory—a tangible fragment of your past self—and hurl it as a desperate weapon against the Silence. Each shot is a visible act of self-erasure, a precious echo shattering into existence before dissolving forever. Experience the visceral dread of deciding which part of your identity to sacrifice for survival, the adrenaline of dodging a hunter intertwined with the profound grief of watching a piece of 'you' vanish, irrevocably, into the void.",
+  "usage": "Attach this `ReliquaryLauncher.gd` script to a Node3D in your scene (e.g., a 'Player' node or a dedicated 'GameManager').\n\n1.  **Create a Projectile Scene:** Create a new `RigidBody3D` scene. Add a `MeshInstance3D` as a child to it. Name the `MeshInstance3D` 'MeshInstance3D'. Add a `CollisionShape3D` as a child to the `RigidBody3D` and assign it a shape (e.g., `BoxShape3D`). Save this scene (e.g., `res://scenes/memory_projectile.tscn`).\n2.  **Create an Impact Particles Scene:** Create a new `GPUParticles3D` scene. Configure its `Process Material` (e.g., `ParticleProcessMaterial`) and `Draw Pass 1` (e.g., `QuadMesh` with a `StandardMaterial3D` or `ShaderMaterial`) to create a visual burst effect. Set `One Shot` to `true` and `Autostart` to `false`. Save this scene (e.g., `res://scenes/impact_particles.tscn`).\n3.  **Configure the Launcher:** In the editor, select the Node3D with the `ReliquaryLauncher.gd` script attached.\n    *   Drag your `memory_projectile.tscn` into the `Projectile Scene` slot.\n    *   Drag your `impact_particles.tscn` into the `Impact Particles Scene` slot.\n    *   Adjust `Launch Speed` and `Erosion Rate Per Second` as desired.\n    *   Populate the `Available Memories` array with `MemoryFragment` resources. You can create new `MemoryFragment` resources (Right-click in FileSystem -> New -> Resource -> MemoryFragment) and configure their `id`, `display_name`, `base_color`, `mesh_seed`, and `texture_path`.\n4.  **Launch a Memory:** To launch a memory, call the `launch_memory_fragment(fragment: MemoryFragment, launch_origin: Node3D)` method from another script (e.g., your player controller). `launch_origin` should be a `Node3D` representing the position and direction from which the projectile is fired (e.g., a `Marker3D` child of your player's camera).\n    *   Example: `get_node(\"ReliquaryLauncher\").launch_memory_fragment(my_selected_memory_fragment, $PlayerCamera/LaunchPoint)`\n5.  **Handle Memory Loss:** Connect to the `memory_lost` signal to update your game state when a memory fragment is used and destroyed.\n    *   Example: `get_node(\"ReliquaryLauncher\").memory_lost.connect(on_memory_fragment_lost)`",
+  "parameters": [
+    {
+      "name": "projectile_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene for the memory projectile. Must be a RigidBody3D with a MeshInstance3D child named 'MeshInstance3D'."
+    },
+    {
+      "name": "impact_particles_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene for the GPUParticles3D effect to play on projectile impact."
+    },
+    {
+      "name": "launch_speed",
+      "type": "float",
+      "default": "20.0",
+      "description": "The initial linear velocity magnitude of the launched memory fragment."
+    },
+    {
+      "name": "available_memories",
+      "type": "Array[MemoryFragment]",
+      "default": "[]",
+      "description": "A list of MemoryFragment resources that Lyra currently possesses and can use."
+    },
+    {
+      "name": "erosion_rate_per_second",
+      "type": "float",
+      "default": "0.5",
+      "description": "The rate at which the memory projectile visually erodes per second (0.0 to 1.0)."
+    }
+  ],
+  "dependencies": [
+    "RigidBody3D (for projectile_scene)",
+    "MeshInstance3D (as a child of RigidBody3D in projectile_scene, named 'MeshInstance3D')",
+    "CollisionShape3D (as a child of RigidBody3D in projectile_scene)",
+    "GPUParticles3D (for impact_particles_scene)",
+    "ShaderMaterial (created dynamically by script)",
+    "Shader (created dynamically by script)",
+    "ResourceLoader (for loading memory fragment textures)"
+  ],
+  "verdict": "A brilliant fusion of mechanics and narrative, this invention transforms the very essence of self into a desperate, fading weapon against oblivion.",
+  "impact": "This invention fundamentally reshapes the player's emotional and strategic engagement, forcing them to confront the central theme of identity loss in a direct, painful, and strategic way during every combat encounter. It transforms resource management into a deeply personal and agonizing choice, making each successful evasion or attack a bittersweet victory where a piece of Lyra's past is irrevocably sacrificed. The visual erosion and unique manifestation of each memory amplify the visceral dread and the profound grief of self-erasure, ensuring a truly unforgettable experience.",
+  "score": 92,
+  "inventedAt": "2026-09-20T07:15:17.805Z"
+}
