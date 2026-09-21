@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-09-20T12:03:11.401Z",
-  "current": null,
+  "updatedAt": "2026-09-21T10:32:19.020Z",
+  "current": {
+    "type": "episode",
+    "episode": 35,
+    "id": null,
+    "startedAt": "2026-09-21T10:17:55.620Z",
+    "updatedAt": "2026-09-21T10:32:19.020Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 35,
     "totalEpisodes": 35,
@@ -991,6 +998,35 @@
         "startedAt": "2026-09-14T10:12:09.097Z",
         "completedAt": "2026-09-16T12:32:17.510Z",
         "failReason": null
+      },
+      "35": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-09-21T10:19:33.508Z",
+            "title": "The Shard of Lost Skill",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-09-21T10:20:37.208Z",
+            "title": "The Shard of Lost Skill",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-09-21T10:21:11.800Z",
+            "title": "The Shard of Lost Skill",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-09-21T10:17:55.620Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
