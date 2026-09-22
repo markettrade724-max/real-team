@@ -1,102 +1,31 @@
 {
-  "date": "2026-09-21",
-  "total": 13,
+  "date": "2026-09-22",
+  "total": 3,
   "limit": 20,
   "library": 0,
-  "agents": 13,
+  "agents": 3,
   "exhausted": false,
   "log": [
     {
-      "time": "07:22:15",
-      "caller": "screenplay-agent",
+      "time": "06:58:23",
+      "caller": "code-agent-fix",
       "success": true,
       "total": 1,
       "left": 19
     },
     {
-      "time": "07:22:30",
-      "caller": "screenplay-agent",
-      "success": false,
+      "time": "06:58:50",
+      "caller": "code-agent-fix",
+      "success": true,
       "total": 2,
-      "left": 18,
-      "errorType": "503"
+      "left": 18
     },
     {
-      "time": "07:24:39",
-      "caller": "screenplay-agent",
+      "time": "06:59:07",
+      "caller": "code-agent-fix",
       "success": true,
       "total": 3,
       "left": 17
-    },
-    {
-      "time": "07:25:11",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 4,
-      "left": 16
-    },
-    {
-      "time": "07:25:47",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 5,
-      "left": 15
-    },
-    {
-      "time": "07:26:14",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 6,
-      "left": 14
-    },
-    {
-      "time": "07:26:48",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 7,
-      "left": 13
-    },
-    {
-      "time": "10:18:10",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 8,
-      "left": 12
-    },
-    {
-      "time": "10:18:30",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 9,
-      "left": 11
-    },
-    {
-      "time": "10:19:06",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 10,
-      "left": 10
-    },
-    {
-      "time": "10:19:48",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 11,
-      "left": 9
-    },
-    {
-      "time": "10:20:18",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 12,
-      "left": 8
-    },
-    {
-      "time": "10:20:52",
-      "caller": "screenplay-agent",
-      "success": true,
-      "total": 13,
-      "left": 7
     }
   ]
 }
