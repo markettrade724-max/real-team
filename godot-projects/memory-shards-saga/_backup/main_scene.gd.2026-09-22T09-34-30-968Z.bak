@@ -12,12 +12,6 @@ extends Node3D
 @export var player_spawn_point_path: NodePath # New: Path to a Marker3D for player spawn
 @export var next_level_scene_path: String # New: Path to the next level scene for progression
 
-# Exported NodePaths for UI Labels for better flexibility and editor integration
-@export var hud_score_label_path: NodePath
-@export var hud_health_label_path: NodePath
-@export var game_over_label_path: NodePath
-@export var victory_label_path: NodePath
-
 enum GameState {
 	GAMEPLAY,
 	PAUSED,
@@ -29,27 +23,40 @@ var current_state: GameState = GameState.GAMEPLAY # Changed: Start directly in g
 var _player_instance: CharacterBody3D # To hold the spawned player
 var score: int = 0 # New: Score variable
 
-# References to UI Labels
+# References to UI Labels (assuming they exist as children in the layers)
 var _score_label: Label
-var _health_label: Label
+var _health_label: Label # Reference for player health display
 var _game_over_label: Label
 var _victory_label: Label
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	# Get references to labels using exported NodePaths
-	_score_label = get_node_or_null(hud_score_label_path)
-	if not _score_label: push_warning("HUD ScoreLabel not found at path: %s. Score display will not work." % hud_score_label_path)
+	# Get references to labels. Assumes these labels are children of the respective CanvasLayers.
+	# For readability (white text, dark background), these properties should be set in the editor
+	# for the Label nodes themselves. Example: In the editor, select the Label node, go to Theme Overrides -> Font Colors, and set to white.
+	# For background, you might add a ColorRect behind the Label or use a custom font with a shadow.
+	if hud_layer:
+		if hud_layer.has_node("ScoreLabel"):
+			_score_label = hud_layer.get_node("ScoreLabel")
+		else:
+			push_warning("HUD layer is missing a 'ScoreLabel' child. Score display will not work.")
+		if hud_layer.has_node("HealthLabel"):
+			_health_label = hud_layer.get_node("HealthLabel")
+		else:
+			push_warning("HUD layer is missing a 'HealthLabel' child. Health display will not work.")
 	
-	_health_label = get_node_or_null(hud_health_label_path)
-	if not _health_label: push_warning("HUD HealthLabel not found at path: %s. Health display will not work." % hud_health_label_path)
+	if game_over_layer:
+		if game_over_layer.has_node("GameOverLabel"):
+			_game_over_label = game_over_layer.get_node("GameOverLabel")
+		else:
+			push_warning("Game Over layer is missing a 'GameOverLabel' child. Game Over text will not display.")
 	
-	_game_over_label = get_node_or_null(game_over_label_path)
-	if not _game_over_label: push_warning("Game Over Label not found at path: %s. Game Over text will not display." % game_over_label_path)
-	
-	_victory_label = get_node_or_null(victory_label_path)
-	if not _victory_label: push_warning("Victory Label not found at path: %s. Victory text will not display." % victory_label_path)
+	if victory_layer:
+		if victory_layer.has_node("VictoryLabel"):
+			_victory_label = victory_layer.get_node("VictoryLabel")
+		else:
+			push_warning("Victory layer is missing a 'VictoryLabel' child. Victory text will not display.")	
 	
 	# Connect to child_entered_tree once in _ready to catch all dynamically spawned nodes.
 	# This ensures enemies spawned in any state (even paused) have their signals connected.
@@ -178,11 +185,15 @@ func _on_player_health_changed(new_health: int, max_health: int):
 	print("HUD: Player Health: %d/%d" % [new_health, max_health])
 	if _health_label:
 	    _health_label.text = "HP: %d/%d" % [new_health, max_health]
+	else:
+	    push_warning("HealthLabel not found on hud_layer for health update.")
 
 # New: Score related functions
 func _update_score_display():
 	if _score_label:
 		_score_label.text = "Score: %d" % score
+	else:
+		push_warning("ScoreLabel not found on hud_layer for score update.")
 
 # This function should be connected to an enemy's 'died' signal.
 # Example: enemy_instance.died.connect(_on_enemy_died)
@@ -205,7 +216,11 @@ func _check_win_condition():
 func _update_game_over_display():
 	if _game_over_label:
 		_game_over_label.text = "GAME OVER\nFinal Score: %d" % score
+	else:
+		push_warning("GameOverLabel not found on game_over_layer for display.")
 
 func _update_victory_display():
 	if _victory_label:
 		_victory_label.text = "VICTORY!\nFinal Score: %d" % score
+	else:
+		push_warning("VictoryLabel not found on victory_layer for display.")
