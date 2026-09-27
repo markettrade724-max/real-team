@@ -1,0 +1,45 @@
+{
+  "name": "localized_temporal_resonance_suture",
+  "label": "Temporal Resonance Suture",
+  "domain": "time",
+  "godotFeature": "SubViewport & Engine.time_scale",
+  "poeticVision": "The harrowing act of grasping at a fragment of self as its temporal fabric unravels around you. You plunge into a pocket of accelerating memories, where echoes of your past speed by, demanding impossible reflexes to catch, or a rewind that strips away context, leaving only fractured sensation. It’s the agonizing race to save a drowning reflection from time itself.",
+  "usage": "This script creates a 'Temporal Resonance Suture' zone. When the player enters this zone, a localized memory pocket, rendered within a `SubViewport`, will begin to synchronize its time scale with the main game. The player's goal is to 'suture' the memory by staying in the zone until synchronization is complete.\n\n**Setup Steps:**\n1.  **Create a `TemporalResonanceSuture` Scene:**\n    *   Create a new `Area3D` node and name it `TemporalResonanceSuture`.\n    *   Attach this `localized_temporal_resonance_suture.gd` script to it.\n    *   Add a `CollisionShape3D` as a child to define the interaction area.\n    *   Add a `SubViewportContainer` as a child.\n    *   Add a `SubViewport` as a child of the `SubViewportContainer`.\n    *   Ensure the `SubViewportContainer` is sized appropriately to display the memory pocket.\n    *   Set the `SubViewport`'s `size` to match its container, `usage` to `3D`, and `transparent_bg` to `true` if you want it to blend with the main scene.\n\n2.  **Create a Memory Pocket Scene (e.g., `memory_pocket_scene.tscn`):**\n    *   Create a new `Node3D` scene. This will be the content displayed inside the `SubViewport`.\n    *   Add a script to the root `Node3D` of this scene (e.g., `memory_pocket_root.gd`). This script *must* implement `set_pocket_time_scale(value: float)` and `get_pocket_time_scale() -> float` methods.\n    *   Inside `memory_pocket_root.gd`, use the `_pocket_time_scale` (managed by the `set_pocket_time_scale` method) to modify the `delta` value in `_process` and `_physics_process` for any animations, movements, or physics calculations within this scene. For example:\n\n        gdscript\n        # memory_pocket_root.gd\n        extends Node3D\n\n        var _pocket_time_scale: float = 1.0\n\n        func set_pocket_time_scale(value: float) -> void:\n        \t_pocket_time_scale = max(0.0, value)\n\n        func get_pocket_time_scale() -> float:\n        \treturn _pocket_time_scale\n\n        func _process(delta: float) -> void:\n        \tvar effective_delta = delta * _pocket_time_scale\n        \t# Example: Rotate a child MeshInstance3D named \"RotatingMemoryShard\"\n        \tif has_node(\"RotatingMemoryShard\"):\n        \t\tvar shard: MeshInstance3D = get_node(\"RotatingMemoryShard\")\n        \t\tshard.rotation.y += effective_delta * deg_to_rad(90.0) # Rotates 90 degrees per effective second\n\n        func _physics_process(delta: float) -> void:\n        \tvar effective_delta = delta * _pocket_time_scale\n        \t# Example: Apply force to a child RigidBody3D named \"FloatingMemoryFragment\"\n        \tif has_node(\"FloatingMemoryFragment\"):\n        \t\tvar fragment: RigidBody3D = get_node(\"FloatingMemoryFragment\")\n        \t\t# fragment.apply_central_force(Vector3.UP * effective_delta * 5.0)\n        \n    *   Populate this scene with visual elements (e.g., `MeshInstance3D`, `AnimationPlayer`, `ParticleProcessMaterial`) that will be affected by the custom time scale.\n\n3.  **Configure `TemporalResonanceSuture` Node:**\n    *   In the Inspector for your `TemporalResonanceSuture` node, set the `Memory Pocket Scene Path` to your `memory_pocket_scene.tscn` file.\n    *   Adjust `Initial Pocket Time Scale` (e.g., `0.2` for slow motion, `2.0` for fast motion).\n    *   Set `Suture Duration` to control how long it takes for the memory pocket to synchronize.\n    *   Provide a unique `Memory Fragment ID`.\n\n**Functionality:**\n*   When a `body` (assumed to be the player, check `body.is_in_group(\"player_character\")`) enters the `Area3D`, the `_start_suture_process()` is called.\n*   A `Tween` smoothly changes the `_pocket_time_scale` of the loaded memory pocket scene from its `initial_pocket_time_scale` to `1.0` (normal speed).\n*   If the player exits the `Area3D` before suturing is complete, the process is canceled, and the memory pocket's time scale reverts to its initial state.\n*   Upon successful completion of the `Tween`, the `memory_sutured` signal is emitted with the `memory_fragment_id`, and the `TemporalResonanceSuture` node `queue_free()`s itself (can be customized to disable or hide).\n\nThis setup allows for localized time manipulation within a `SubViewport`, creating a distinct visual and interactive experience for recovering memory fragments.",
+  "parameters": [
+    {
+      "name": "memory_pocket_scene_path",
+      "type": "String",
+      "default": "",
+      "description": "Path to the PackedScene (.tscn) that represents the memory pocket to be rendered in the SubViewport and have its time scale manipulated."
+    },
+    {
+      "name": "initial_pocket_time_scale",
+      "type": "float",
+      "default": "0.2",
+      "description": "The initial time scale multiplier for the memory pocket. Values < 1.0 make it slower, > 1.0 make it faster."
+    },
+    {
+      "name": "suture_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "The duration in seconds over which the memory pocket's time scale will transition from its initial value to 1.0 (normal speed)."
+    },
+    {
+      "name": "memory_fragment_id",
+      "type": "String",
+      "default": "unidentified_fragment",
+      "description": "A unique identifier for the memory fragment recovered by successfully suturing this temporal pocket."
+    }
+  ],
+  "dependencies": [
+    "Area3D (self)",
+    "CollisionShape3D (child of Area3D, for player detection)",
+    "SubViewportContainer (child of Area3D)",
+    "SubViewport (child of SubViewportContainer)",
+    "A custom 'memory_pocket_root.gd' script (or similar) attached to the root node of the scene specified by 'memory_pocket_scene_path'. This script must implement 'set_pocket_time_scale(value: float)' and 'get_pocket_time_scale() -> float' methods, and use the internal '_pocket_time_scale' to modify delta for its children's animations/physics."
+  ],
+  "verdict": "A brilliant temporal mechanism that stitches the unraveling fabric of self, demanding desperate precision to reclaim a drowning reflection from the relentless current of forgetting.",
+  "impact": "This mechanism introduces a unique, high-stakes mini-game or interaction point where players must actively engage with the crumbling nature of memories. It transforms memory recovery from a passive pickup into an urgent, skill-based challenge, directly tying player action to the preservation of Lyra's identity. It creates a distinct visual and temporal distortion that reinforces the game's core themes of loss and the fight against forgetting, making each recovered fragment a hard-won victory against the Silence.",
+  "score": 85,
+  "inventedAt": "2026-09-27T07:20:33.778Z"
+}

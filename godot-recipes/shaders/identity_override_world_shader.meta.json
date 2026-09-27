@@ -1,0 +1,73 @@
+{
+  "name": "identity_override_world_shader",
+  "label": "Identity Override World Shader",
+  "domain": "shaders",
+  "godotFeature": "Godot 4.6.2 Spatial Shaders with global uniform parameters",
+  "poeticVision": "The player experiences the memory-worlds not merely decaying, but actively being overwritten, consumed by the invasive tendrils of the Silence. The environment itself becomes a battleground for Lyra's fading self — her identity shimmers as a faint, underlying truth, but it is constantly fought over, distorted, and replaced by the encroaching, hostile textures of forgetting. This creates a pervasive, visceral sense of losing ground, both physically and psychologically, making every environmental detail a testament to the Silence's relentless advance.",
+  "usage": "This shader should be applied to a SpatialMaterial resource, which is then assigned to the MeshInstance3D nodes representing the memory-world environment. A GDScript (e.g., a global game state manager or Lyra's player script) will be responsible for updating the shader's uniform parameters dynamically. For instance, 'identity_integrity' would decrease as Lyra loses memories, 'silence_intensity' and 'silence_spread' would increase when Silence entities are near or a 'forgetting' timer progresses, and 'time_elapsed' would be updated every frame to animate the glitch effect.",
+  "parameters": [
+    {
+      "name": "base_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "The primary texture representing the 'pure' memory world before corruption."
+    },
+    {
+      "name": "silence_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "A noise or glitch texture used to create the corrupting override effect of the Silence."
+    },
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "A normalized value (0.0 to 1.0) representing Lyra's current identity/memory state. 1.0 is full identity, 0.0 is completely lost, leading to a stronger identity tint."
+    },
+    {
+      "name": "identity_tint_color",
+      "type": "Color",
+      "default": "vec4(0.0, 0.5, 1.0, 0.1)",
+      "description": "The color that subtly tints the memory world as Lyra's identity fades. The alpha channel controls the tint's maximum strength."
+    },
+    {
+      "name": "silence_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "A normalized value (0.0 to 1.0) controlling the overall visual strength of the Silence's corruption. Higher values make the override more prominent."
+    },
+    {
+      "name": "silence_spread",
+      "type": "float",
+      "default": "0.0",
+      "description": "A normalized value (0.0 to 1.0) controlling how much of the environment surface is covered by the Silence's override effect. Higher values increase the affected area."
+    },
+    {
+      "name": "silence_glitch_speed",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the speed at which the 'silence_texture' animates, creating a dynamic glitch effect."
+    },
+    {
+      "name": "silence_glitch_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the tiling/scale of the 'silence_texture' on the geometry. Smaller values make the glitches larger."
+    },
+    {
+      "name": "time_elapsed",
+      "type": "float",
+      "default": "0.0",
+      "description": "A global time value, typically updated every frame by a script, used to animate the 'silence_texture' for a continuous glitch effect."
+    }
+  ],
+  "dependencies": [
+    "Texture2D resources for base_texture and silence_texture",
+    "A MeshInstance3D node with a SpatialMaterial using this shader",
+    "A GDScript (or similar) to update dynamic shader uniform parameters"
+  ],
+  "verdict": "The very fabric of existence shimmers with Lyra's fading self, a constant, haunting echo of the battle within and without.",
+  "impact": "This shader will fundamentally transform the player's perception of the game world, making it a dynamic, living representation of Lyra's internal struggle and the relentless external threat of the Silence. Every environmental detail will serve as a constant, visceral reminder of identity loss and the encroaching oblivion, deepening the sense of urgency, grief, and the high stakes of every action. It ensures that the core narrative conflict is always present, not just in dialogue or events, but in the very fabric of the world Lyra inhabits.",
+  "score": 95,
+  "inventedAt": "2026-09-27T07:25:01.987Z"
+}

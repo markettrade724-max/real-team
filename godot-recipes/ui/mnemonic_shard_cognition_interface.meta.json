@@ -1,0 +1,48 @@
+{
+  "name": "mnemonic_shard_cognition_interface",
+  "label": "Cognitive Shard Scramble",
+  "domain": "ui",
+  "godotFeature": "ShaderMaterial on Control nodes, AnimationPlayer for dynamic effects, SubViewportContainer for rendering 3D elements into UI",
+  "poeticVision": "The player feels the crushing weight of Lyra's decaying mind every time they attempt to interact with her memory fragments. The inventory isn't a clear grid, but a swirling, distorted collection of abstract forms. Identifying and selecting a 'weaponized memory' becomes a desperate gamble against the clock and Lyra's own failing identity, turning resource management into a high-stakes mini-game of recollection under duress. The UI itself becomes a direct reflection of self-loss, a treacherous interface between Lyra and her own past.",
+  "usage": "1.  Create a new GDScript file named `mnemonic_shard_cognition_interface.gd` and paste the provided code into it.\n2.  In your Godot project, create a new `Control` node (e.g., `InventoryUI`) in your UI scene.\n3.  Attach the `mnemonic_shard_cognition_interface.gd` script to this `InventoryUI` node.\n4.  (Optional but recommended for visual hints) Create some placeholder `PNG` textures (e.g., `hint_blast.png`, `hint_shield.png`) and place them in `res://assets/textures/`. Update the `hint_texture_path` values in the `_ready` function if your paths differ.\n5.  Ensure your project's `Input Map` (Project -> Project Settings -> Input Map) has actions named `ui_accept` (e.g., mapped to `Space` or `Enter`), `ui_left` (e.g., mapped to `Left Arrow`), and `ui_right` (e.g., mapped to `Right Arrow`).\n6.  Run the scene. The inventory will appear as a row of distorted, abstract shards. You can navigate between them using `ui_left`/`ui_right` and 'focus' on a shard. When focused, the shard will subtly reveal a hint of its identity. Pressing `ui_accept` while focused will 'use' the shard.\n7.  The `_lyra_memory_decay` and `_silence_proximity` variables are simulated for demonstration purposes. In a real game, these would be updated by a global game state manager (e.g., a `LyraState` singleton) based on Lyra's current condition and proximity to enemies.\n8.  The 'focus cost' and 'shard activation' logic are commented out as placeholders for integration with your game's core mechanics.\n9.  This recipe prioritizes the 'complex 2D shaders' approach for memory shard representation to meet the line limit and core visual requirements, rather than '3D models rendered via a SubViewport'.",
+  "parameters": [
+    {
+      "name": "shard_size",
+      "type": "Vector2",
+      "default": "Vector2(64, 64)",
+      "description": "The size of each individual memory shard control in the UI."
+    },
+    {
+      "name": "max_shards",
+      "type": "int",
+      "default": "10",
+      "description": "The maximum number of memory shards that can be displayed in the inventory at once."
+    },
+    {
+      "name": "focus_cost_per_second",
+      "type": "float",
+      "default": "0.1",
+      "description": "A placeholder value representing the cost to Lyra's attention or movement speed per second while focusing on a shard."
+    },
+    {
+      "name": "focus_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The time in seconds it takes for a shard to become fully focused and reveal its hint."
+    },
+    {
+      "name": "base_distortion_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "The base level of visual distortion applied to all memory shards, before procedural modulation."
+    }
+  ],
+  "dependencies": [
+    "Placeholder image files for shard hints (e.g., `res://assets/textures/hint_blast.png`, `res://assets/textures/hint_shield.png`).",
+    "Godot Input Map entries for 'ui_accept', 'ui_left', and 'ui_right'."
+  ],
+  "verdict": "A treacherous interface, born of fading thought, turns every memory into a desperate gamble against the encroaching void.",
+  "impact": "The player will viscerally experience Lyra's deteriorating mind, transforming inventory management from a mundane task into a frantic, high-stakes battle against self-loss and the encroaching Silence. Every attempt to recall a memory becomes a desperate act of recollection under duress, making the UI itself an antagonist and a constant reminder of Lyra's fading identity.",
+  "score": 95,
+  "inventedAt": "2026-09-27T07:32:48.819Z"
+}

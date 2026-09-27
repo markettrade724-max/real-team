@@ -1,5 +1,383 @@
 [
   {
+    "name": "mnemonic_shard_cognition_interface",
+    "label": "Cognitive Shard Scramble",
+    "domain": "ui",
+    "godotFeature": "ShaderMaterial on Control nodes, AnimationPlayer for dynamic effects, SubViewportContainer for rendering 3D elements into UI",
+    "poeticVision": "The player feels the crushing weight of Lyra's decaying mind every time they attempt to interact with her memory fragments. The inventory isn't a clear grid, but a swirling, distorted collection of abstract forms. Identifying and selecting a 'weaponized memory' becomes a desperate gamble against the clock and Lyra's own failing identity, turning resource management into a high-stakes mini-game of recollection under duress. The UI itself becomes a direct reflection of self-loss, a treacherous interface between Lyra and her own past.",
+    "usage": "1.  Create a new GDScript file named `mnemonic_shard_cognition_interface.gd` and paste the provided code into it.\n2.  In your Godot project, create a new `Control` node (e.g., `InventoryUI`) in your UI scene.\n3.  Attach the `mnemonic_shard_cognition_interface.gd` script to this `InventoryUI` node.\n4.  (Optional but recommended for visual hints) Create some placeholder `PNG` textures (e.g., `hint_blast.png`, `hint_shield.png`) and place them in `res://assets/textures/`. Update the `hint_texture_path` values in the `_ready` function if your paths differ.\n5.  Ensure your project's `Input Map` (Project -> Project Settings -> Input Map) has actions named `ui_accept` (e.g., mapped to `Space` or `Enter`), `ui_left` (e.g., mapped to `Left Arrow`), and `ui_right` (e.g., mapped to `Right Arrow`).\n6.  Run the scene. The inventory will appear as a row of distorted, abstract shards. You can navigate between them using `ui_left`/`ui_right` and 'focus' on a shard. When focused, the shard will subtly reveal a hint of its identity. Pressing `ui_accept` while focused will 'use' the shard.\n7.  The `_lyra_memory_decay` and `_silence_proximity` variables are simulated for demonstration purposes. In a real game, these would be updated by a global game state manager (e.g., a `LyraState` singleton) based on Lyra's current condition and proximity to enemies.\n8.  The 'focus cost' and 'shard activation' logic are commented out as placeholders for integration with your game's core mechanics.\n9.  This recipe prioritizes the 'complex 2D shaders' approach for memory shard representation to meet the line limit and core visual requirements, rather than '3D models rendered via a SubViewport'.",
+    "parameters": [
+      {
+        "name": "shard_size",
+        "type": "Vector2",
+        "default": "Vector2(64, 64)",
+        "description": "The size of each individual memory shard control in the UI."
+      },
+      {
+        "name": "max_shards",
+        "type": "int",
+        "default": "10",
+        "description": "The maximum number of memory shards that can be displayed in the inventory at once."
+      },
+      {
+        "name": "focus_cost_per_second",
+        "type": "float",
+        "default": "0.1",
+        "description": "A placeholder value representing the cost to Lyra's attention or movement speed per second while focusing on a shard."
+      },
+      {
+        "name": "focus_duration",
+        "type": "float",
+        "default": "0.5",
+        "description": "The time in seconds it takes for a shard to become fully focused and reveal its hint."
+      },
+      {
+        "name": "base_distortion_strength",
+        "type": "float",
+        "default": "0.1",
+        "description": "The base level of visual distortion applied to all memory shards, before procedural modulation."
+      }
+    ],
+    "dependencies": [
+      "Placeholder image files for shard hints (e.g., `res://assets/textures/hint_blast.png`, `res://assets/textures/hint_shield.png`).",
+      "Godot Input Map entries for 'ui_accept', 'ui_left', and 'ui_right'."
+    ],
+    "verdict": "A treacherous interface, born of fading thought, turns every memory into a desperate gamble against the encroaching void.",
+    "impact": "The player will viscerally experience Lyra's deteriorating mind, transforming inventory management from a mundane task into a frantic, high-stakes battle against self-loss and the encroaching Silence. Every attempt to recall a memory becomes a desperate act of recollection under duress, making the UI itself an antagonist and a constant reminder of Lyra's fading identity.",
+    "score": 95,
+    "inventedAt": "2026-09-27T07:32:48.819Z"
+  },
+  {
+    "name": "mnemonic_spatial_desynchronization",
+    "label": "Synaptic Driftfield Acoustics",
+    "domain": "audio",
+    "godotFeature": "Audio Buses with custom effects and dynamic AudioStreamPlayer3D property manipulation",
+    "poeticVision": "The world itself loses its sonic anchors. As Lyra's memories fray, so too does her spatial hearing. Sounds of distant threats or crucial pathways lose their clarity, their direction, their sense of depth. A hunter's thrum might feel like it's coming from everywhere, nowhere, or just behind her, even if it's far ahead. The familiar echo of a forgotten place might suddenly feel utterly alien and flat, as if its spatial context has been erased. The player feels a profound, disorienting vulnerability, making every sonic cue a deceptive trap or an unreliable guide, amplifying the terror of the unseen and the cost of self-loss.",
+    "usage": "Attach this script to a Node in your scene (e.g., a global manager or a dedicated 'AudioDriftManager' node). Configure the 'reverb_bus_name' and 'reverb_effect_index' to target an existing AudioEffectReverb or AudioEffectDelay on one of your project's Audio Buses. Any AudioStreamPlayer3D node whose apparent position should drift must be registered with this manager using the 'register_affected_player()' method. To simulate Lyra's memory loss, dynamically decrease the 'memory_integrity' property (e.g., from 1.0 for perfect memory to 0.0 for complete loss). This will automatically intensify both the global audio effects and the spatial drift of registered AudioStreamPlayer3D nodes.",
+    "parameters": [
+      {
+        "name": "memory_integrity",
+        "type": "float",
+        "default": "1.0",
+        "description": "Current state of Lyra's memory. 1.0 is perfect recall, 0.0 is complete memory loss. Affects both global audio effects and individual player drift."
+      },
+      {
+        "name": "drift_intensity_multiplier",
+        "type": "float",
+        "default": "5.0",
+        "description": "Maximum magnitude of the spatial drift for AudioStreamPlayer3D nodes when memory_integrity is 0.0."
+      },
+      {
+        "name": "drift_frequency",
+        "type": "float",
+        "default": "0.75",
+        "description": "Speed at which the apparent position of affected AudioStreamPlayer3D nodes shifts."
+      },
+      {
+        "name": "reverb_bus_name",
+        "type": "String",
+        "default": "Master",
+        "description": "Name of the audio bus containing the AudioEffectReverb or AudioEffectDelay to be modulated."
+      },
+      {
+        "name": "reverb_effect_index",
+        "type": "int",
+        "default": "0",
+        "description": "Index of the AudioEffect (Reverb or Delay) on the specified audio bus to be modulated."
+      }
+    ],
+    "dependencies": [
+      "AudioStreamPlayer3D",
+      "AudioBus (with AudioEffectReverb or AudioEffectDelay)"
+    ],
+    "verdict": "A symphony of self-loss, this mechanic transforms the very air into a disorienting echo of Lyra's fading mind, making every sound a treacherous whisper of forgotten truths.",
+    "impact": "The player will experience a profound and constant sense of auditory disorientation, directly correlating with Lyra's deteriorating memory. Sounds, typically reliable for threat detection and navigation, will become deceptive, shifting in perceived origin, depth, and clarity. This amplifies the terror of the unseen, forcing players to adapt to an unreliable sensory landscape, making every encounter with the Silence's hunters a more desperate and disorienting struggle. The abstract grief of self-loss is made tangible as the world itself loses its sonic anchors, deepening the emotional and survival stakes.",
+    "score": 92,
+    "inventedAt": "2026-09-27T07:29:39.684Z"
+  },
+  {
+    "name": "mnemic_dissonance_stalker_ai",
+    "label": "Mnemic Dissonance Stalker",
+    "domain": "ai",
+    "godotFeature": "InputMap manipulation and Control node dynamic modification",
+    "poeticVision": "The sickening lurch as your own body betrays you, your fingers forgetting the commands they've known since birth. An enemy that doesn't just damage your health, but your very capacity to act, making you fight yourself as much as them, deepening the terror of self-loss and the desperate scramble to regain control.",
+    "usage": "Attach this script to your Mnemic Dissonance Stalker enemy (e.g., a CharacterBody3D). When the Stalker successfully attacks the player, call the `apply_disorientation(player_node: Node)` method, passing a reference to the player's root node. The player node should contain the HUD elements as children (potentially nested). Configure the `affected_input_actions` array in the Inspector with the names of the InputMap actions you want to scramble (e.g., \"move_forward\", \"jump\"). Populate the `affected_hud_paths` array with NodePaths to the Control nodes within the player's scene that represent HUD elements (e.g., `NodePath(\"UI/HealthBar\")`, `NodePath(\"UI/ObjectiveMarker\")`). The script will automatically handle the duration, scrambling, and restoration of controls and HUD elements.",
+    "parameters": [
+      {
+        "name": "disorientation_duration",
+        "type": "float",
+        "default": "3.0",
+        "description": "The duration in seconds for which the player's controls and HUD will be disoriented."
+      },
+      {
+        "name": "hud_drift_intensity",
+        "type": "float",
+        "default": "0.5",
+        "description": "Controls the intensity of the random drifting and flickering effect on HUD elements (0.1 = subtle, 1.0 = extreme)."
+      },
+      {
+        "name": "affected_input_actions",
+        "type": "Array[String]",
+        "default": "[\"move_forward\", \"move_backward\", \"strafe_left\", \"strafe_right\", \"jump\", \"attack\"]",
+        "description": "A list of InputMap action names whose events will be randomly remapped during disorientation."
+      },
+      {
+        "name": "affected_hud_paths",
+        "type": "Array[NodePath]",
+        "default": "[]",
+        "description": "An array of NodePaths pointing to the Control nodes within the player's scene that should be disoriented."
+      }
+    ],
+    "dependencies": [
+      "CharacterBody3D (or any Node3D for the Stalker)",
+      "Timer",
+      "CanvasLayer",
+      "Control (for HUD elements)",
+      "InputMap (Godot singleton)"
+    ],
+    "verdict": "A chilling whisper of self-betrayal, this mechanic forces the player to fight the ghost in their own machine, making every step a desperate plea for forgotten control.",
+    "impact": "This invention will force players into a visceral struggle against their own failing senses and muscle memory, deepening the thematic terror of self-loss and making every encounter with the Stalker a desperate fight for mental and physical coherence. It transforms abstract identity loss into a concrete, frustrating, yet profoundly engaging gameplay challenge, provided the disorientation is tuned to be challenging rather than merely annoying.",
+    "score": 85,
+    "inventedAt": "2026-09-27T07:28:27.605Z"
+  },
+  {
+    "name": "identity_override_world_shader",
+    "label": "Identity Override World Shader",
+    "domain": "shaders",
+    "godotFeature": "Godot 4.6.2 Spatial Shaders with global uniform parameters",
+    "poeticVision": "The player experiences the memory-worlds not merely decaying, but actively being overwritten, consumed by the invasive tendrils of the Silence. The environment itself becomes a battleground for Lyra's fading self — her identity shimmers as a faint, underlying truth, but it is constantly fought over, distorted, and replaced by the encroaching, hostile textures of forgetting. This creates a pervasive, visceral sense of losing ground, both physically and psychologically, making every environmental detail a testament to the Silence's relentless advance.",
+    "usage": "This shader should be applied to a SpatialMaterial resource, which is then assigned to the MeshInstance3D nodes representing the memory-world environment. A GDScript (e.g., a global game state manager or Lyra's player script) will be responsible for updating the shader's uniform parameters dynamically. For instance, 'identity_integrity' would decrease as Lyra loses memories, 'silence_intensity' and 'silence_spread' would increase when Silence entities are near or a 'forgetting' timer progresses, and 'time_elapsed' would be updated every frame to animate the glitch effect.",
+    "parameters": [
+      {
+        "name": "base_texture",
+        "type": "Texture2D",
+        "default": "null",
+        "description": "The primary texture representing the 'pure' memory world before corruption."
+      },
+      {
+        "name": "silence_texture",
+        "type": "Texture2D",
+        "default": "null",
+        "description": "A noise or glitch texture used to create the corrupting override effect of the Silence."
+      },
+      {
+        "name": "identity_integrity",
+        "type": "float",
+        "default": "1.0",
+        "description": "A normalized value (0.0 to 1.0) representing Lyra's current identity/memory state. 1.0 is full identity, 0.0 is completely lost, leading to a stronger identity tint."
+      },
+      {
+        "name": "identity_tint_color",
+        "type": "Color",
+        "default": "vec4(0.0, 0.5, 1.0, 0.1)",
+        "description": "The color that subtly tints the memory world as Lyra's identity fades. The alpha channel controls the tint's maximum strength."
+      },
+      {
+        "name": "silence_intensity",
+        "type": "float",
+        "default": "0.0",
+        "description": "A normalized value (0.0 to 1.0) controlling the overall visual strength of the Silence's corruption. Higher values make the override more prominent."
+      },
+      {
+        "name": "silence_spread",
+        "type": "float",
+        "default": "0.0",
+        "description": "A normalized value (0.0 to 1.0) controlling how much of the environment surface is covered by the Silence's override effect. Higher values increase the affected area."
+      },
+      {
+        "name": "silence_glitch_speed",
+        "type": "float",
+        "default": "1.0",
+        "description": "Controls the speed at which the 'silence_texture' animates, creating a dynamic glitch effect."
+      },
+      {
+        "name": "silence_glitch_scale",
+        "type": "float",
+        "default": "1.0",
+        "description": "Controls the tiling/scale of the 'silence_texture' on the geometry. Smaller values make the glitches larger."
+      },
+      {
+        "name": "time_elapsed",
+        "type": "float",
+        "default": "0.0",
+        "description": "A global time value, typically updated every frame by a script, used to animate the 'silence_texture' for a continuous glitch effect."
+      }
+    ],
+    "dependencies": [
+      "Texture2D resources for base_texture and silence_texture",
+      "A MeshInstance3D node with a SpatialMaterial using this shader",
+      "A GDScript (or similar) to update dynamic shader uniform parameters"
+    ],
+    "verdict": "The very fabric of existence shimmers with Lyra's fading self, a constant, haunting echo of the battle within and without.",
+    "impact": "This shader will fundamentally transform the player's perception of the game world, making it a dynamic, living representation of Lyra's internal struggle and the relentless external threat of the Silence. Every environmental detail will serve as a constant, visceral reminder of identity loss and the encroaching oblivion, deepening the sense of urgency, grief, and the high stakes of every action. It ensures that the core narrative conflict is always present, not just in dialogue or events, but in the very fabric of the world Lyra inhabits.",
+    "score": 95,
+    "inventedAt": "2026-09-27T07:25:01.987Z"
+  },
+  {
+    "name": "identity_shear_momentum",
+    "label": "Shearing Momentum of Self",
+    "domain": "movement",
+    "godotFeature": "Custom CharacterBody3D physics via _integrate_forces, Area3D & RigidBody3D for dynamic environmental hazards, and instancing of physics-active scenes.",
+    "poeticVision": "You feel the raw cost of survival as a palpable, physical burden. Each desperate sprint, each impact with the crumbling world, visibly tears fragments of your very identity from your form. These lost pieces don't just fade; they become temporary, tangible physics disruptions – pockets of warped gravity, sticky fields, or fleeting barriers that you, and your pursuers, must navigate. The more you fight to live, the more you physically manifest the disintegration of self, forcing a horrifying choice between speed and coherence.",
+    "usage": "This script (identity_shear_momentum.gd) should be attached to Lyra's CharacterBody3D node. It manages Lyra's 'Identity Coherence' stat, sheds physical 'Identity Shard' entities based on movement velocity or damage taken, and applies physics effects from nearby shards using the _integrate_forces callback. To use this recipe:\n\n1.  **Create the Identity Shard Scene:**\n    *   Create a new scene named `identity_shard.tscn` (or any name, but update `shard_scene_path` accordingly).\n    *   Set the root node of this scene to `Area3D`.\n    *   Add a `CollisionShape3D` as a child of the `Area3D`. Assign a `SphereShape3D` (or other suitable shape) resource to its `shape` property to define the shard's detection volume.\n    *   (Optional) Add a `MeshInstance3D` as a child for visual representation of the shard.\n    *   Create a new GDScript file named `identity_shard.gd` and attach it to the `Area3D` node of `identity_shard.tscn`. The code for `identity_shard.gd` is provided below as a dependency.\n    *   Ensure the `Area3D`'s `collision_layer` matches the `shard_collision_layer_mask` set in `identity_shear_momentum.gd` (e.g., if mask is 1, shard should be on layer 0).\n\n2.  **Attach to Lyra:**\n    *   Attach `identity_shear_momentum.gd` to Lyra's `CharacterBody3D` node.\n\n3.  **Configure Parameters:**\n    *   In Lyra's inspector, set the `Shard Scene Path` to `res://scenes/identity_shard.tscn`.\n    *   Adjust `Identity Coherence`, `Shear Velocity Threshold`, `Shear Damage Threshold`, `Coherence Loss Rate`, `Shard Spawn Interval`, `Shard Detection Radius`, and `Shard Collision Layer Mask` as desired.\n\n4.  **Integrate Damage and Movement:**\n    *   Call the `take_damage(amount: float)` method on Lyra's script whenever Lyra takes damage.\n    *   Modify Lyra's base movement speed within the `_apply_coherence_effects()` function to reflect the `identity_coherence` level.\n\n5.  **Hunter Integration (Optional):**\n    *   For enemy `CharacterBody3D` hunters to absorb shards, their script must implement two methods:\n        *   `is_hunter() -> bool`: Returns `true` if the character is a hunter.\n        *   `absorb_shard(shard_node: Area3D)`: Called when a hunter overlaps with a shard. Implement logic here for the hunter to gain a buff or effect from absorbing the shard.",
+    "parameters": [
+      {
+        "name": "identity_coherence",
+        "type": "float",
+        "default": "100.0",
+        "description": "Current identity coherence (0-100)"
+      },
+      {
+        "name": "max_identity_coherence",
+        "type": "float",
+        "default": "100.0",
+        "description": "Maximum identity coherence"
+      },
+      {
+        "name": "shear_velocity_threshold",
+        "type": "float",
+        "default": "10.0",
+        "description": "Velocity needed to shed a shard"
+      },
+      {
+        "name": "shear_damage_threshold",
+        "type": "float",
+        "default": "10.0",
+        "description": "Damage amount to shed a shard"
+      },
+      {
+        "name": "passive_coherence_loss_rate",
+        "type": "float",
+        "default": "0.5",
+        "description": "Passive identity loss per second"
+      },
+      {
+        "name": "shard_scene_path",
+        "type": "String",
+        "default": "res://scenes/identity_shard.tscn",
+        "description": "Path to the IdentityShard scene"
+      },
+      {
+        "name": "shard_spawn_interval",
+        "type": "float",
+        "default": "0.2",
+        "description": "Minimum time between shard spawns"
+      },
+      {
+        "name": "shard_detection_radius",
+        "type": "float",
+        "default": "5.0",
+        "description": "Radius to detect nearby shards for _integrate_forces"
+      },
+      {
+        "name": "shard_collision_layer_mask",
+        "type": "int",
+        "default": "1",
+        "description": "Physics layer mask for detecting Identity Shards"
+      }
+    ],
+    "dependencies": [
+      "CharacterBody3D (Lyra's root node)",
+      "SphereShape3D (for PhysicsShapeQueryParameters3D)",
+      "identity_shard.tscn (a scene with an Area3D root, CollisionShape3D child, and the following script attached to the Area3D):",
+      "--- identity_shard.gd ---\nextends Area3D\n\n@export_category(\"Shard Properties\")\n@export_var(name: \"Effect Strength\", type: float, default: 5.0, hint: \"Magnitude of physics effect\")\nvar effect_strength: float = 5.0\n@export_var(name: \"Shard Lifetime\", type: float, default: 3.0, hint: \"Duration before shard despawns\")\nvar shard_lifetime: float = 3.0\n@export_var(name: \"Effect Type\", type: int, default: 0, hint_string: \"0: Repulsion, 1: Drag, 2: Gravity Shift\")\nvar effect_type: int = 0 # 0: Repulsion, 1: Drag, 2: Gravity Shift (simplified)\n@export_var(name: \"Gravity Shift Direction\", type: Vector3, default: Vector3(0, -1, 0), hint: \"Direction for gravity shift effect\")\nvar gravity_shift_direction: Vector3 = Vector3(0, -1, 0)\n\nvar _time_elapsed: float = 0.0\nvar _initial_direction: Vector3 = Vector3.ZERO\n\nfunc _ready() -> void:\n\tset_physics_process(true)\n\nfunc initialize_shard(direction: Vector3) -> void:\n\t_initial_direction = direction\n\nfunc _physics_process(delta: float) -> void:\n\t_time_elapsed += delta\n\tif _time_elapsed >= shard_lifetime:\n\t\tqueue_free()\n\t\treturn\n\n\tvar overlapping_bodies: Array[Node3D] = get_overlapping_bodies()\n\tfor body in overlapping_bodies:\n\t\tif body is CharacterBody3D:\n\t\t\tif body.has_method(\"is_hunter\") and body.is_hunter():\n\t\t\t\tif body.has_method(\"absorb_shard\"):\n\t\t\t\t\tbody.absorb_shard(self)\n\t\t\t\t\tqueue_free()\n\t\t\t\t\treturn\n\nfunc get_shard_effect_force(target_position: Vector3, target_velocity: Vector3) -> Vector3:\n\tvar effect_vector: Vector3 = Vector3.ZERO\n\tmatch effect_type:\n\t\t0: # Repulsion\n\t\t\teffect_vector = (target_position - global_position).normalized() * effect_strength\n\t\t1: # Drag\n\t\t\teffect_vector = -target_velocity.normalized() * effect_strength\n\t\t2: # Gravity Shift\n\t\t\teffect_vector = gravity_shift_direction.normalized() * effect_strength\n\treturn effect_vector"
+    ],
+    "verdict": "From the crucible of self-loss, a fragmented world is born, where every desperate stride carves the very essence of being into a weapon and a wound.",
+    "impact": "This mechanic transforms the abstract concept of identity loss into a tangible, dynamic environmental hazard. Players will constantly face a visceral dilemma: push their limits for survival, knowing each desperate action visibly tears away their self, creating obstacles that both hinder and potentially aid them against the relentless Silence. It deepens the emotional weight of every sprint and every hit, making the internal struggle of forgetting a physical, interactive challenge that defines the very landscape of their desperate escape.",
+    "score": 95,
+    "inventedAt": "2026-09-27T07:23:07.779Z"
+  },
+  {
+    "name": "localized_temporal_resonance_suture",
+    "label": "Temporal Resonance Suture",
+    "domain": "time",
+    "godotFeature": "SubViewport & Engine.time_scale",
+    "poeticVision": "The harrowing act of grasping at a fragment of self as its temporal fabric unravels around you. You plunge into a pocket of accelerating memories, where echoes of your past speed by, demanding impossible reflexes to catch, or a rewind that strips away context, leaving only fractured sensation. It’s the agonizing race to save a drowning reflection from time itself.",
+    "usage": "This script creates a 'Temporal Resonance Suture' zone. When the player enters this zone, a localized memory pocket, rendered within a `SubViewport`, will begin to synchronize its time scale with the main game. The player's goal is to 'suture' the memory by staying in the zone until synchronization is complete.\n\n**Setup Steps:**\n1.  **Create a `TemporalResonanceSuture` Scene:**\n    *   Create a new `Area3D` node and name it `TemporalResonanceSuture`.\n    *   Attach this `localized_temporal_resonance_suture.gd` script to it.\n    *   Add a `CollisionShape3D` as a child to define the interaction area.\n    *   Add a `SubViewportContainer` as a child.\n    *   Add a `SubViewport` as a child of the `SubViewportContainer`.\n    *   Ensure the `SubViewportContainer` is sized appropriately to display the memory pocket.\n    *   Set the `SubViewport`'s `size` to match its container, `usage` to `3D`, and `transparent_bg` to `true` if you want it to blend with the main scene.\n\n2.  **Create a Memory Pocket Scene (e.g., `memory_pocket_scene.tscn`):**\n    *   Create a new `Node3D` scene. This will be the content displayed inside the `SubViewport`.\n    *   Add a script to the root `Node3D` of this scene (e.g., `memory_pocket_root.gd`). This script *must* implement `set_pocket_time_scale(value: float)` and `get_pocket_time_scale() -> float` methods.\n    *   Inside `memory_pocket_root.gd`, use the `_pocket_time_scale` (managed by the `set_pocket_time_scale` method) to modify the `delta` value in `_process` and `_physics_process` for any animations, movements, or physics calculations within this scene. For example:\n\n        gdscript\n        # memory_pocket_root.gd\n        extends Node3D\n\n        var _pocket_time_scale: float = 1.0\n\n        func set_pocket_time_scale(value: float) -> void:\n        \t_pocket_time_scale = max(0.0, value)\n\n        func get_pocket_time_scale() -> float:\n        \treturn _pocket_time_scale\n\n        func _process(delta: float) -> void:\n        \tvar effective_delta = delta * _pocket_time_scale\n        \t# Example: Rotate a child MeshInstance3D named \"RotatingMemoryShard\"\n        \tif has_node(\"RotatingMemoryShard\"):\n        \t\tvar shard: MeshInstance3D = get_node(\"RotatingMemoryShard\")\n        \t\tshard.rotation.y += effective_delta * deg_to_rad(90.0) # Rotates 90 degrees per effective second\n\n        func _physics_process(delta: float) -> void:\n        \tvar effective_delta = delta * _pocket_time_scale\n        \t# Example: Apply force to a child RigidBody3D named \"FloatingMemoryFragment\"\n        \tif has_node(\"FloatingMemoryFragment\"):\n        \t\tvar fragment: RigidBody3D = get_node(\"FloatingMemoryFragment\")\n        \t\t# fragment.apply_central_force(Vector3.UP * effective_delta * 5.0)\n        \n    *   Populate this scene with visual elements (e.g., `MeshInstance3D`, `AnimationPlayer`, `ParticleProcessMaterial`) that will be affected by the custom time scale.\n\n3.  **Configure `TemporalResonanceSuture` Node:**\n    *   In the Inspector for your `TemporalResonanceSuture` node, set the `Memory Pocket Scene Path` to your `memory_pocket_scene.tscn` file.\n    *   Adjust `Initial Pocket Time Scale` (e.g., `0.2` for slow motion, `2.0` for fast motion).\n    *   Set `Suture Duration` to control how long it takes for the memory pocket to synchronize.\n    *   Provide a unique `Memory Fragment ID`.\n\n**Functionality:**\n*   When a `body` (assumed to be the player, check `body.is_in_group(\"player_character\")`) enters the `Area3D`, the `_start_suture_process()` is called.\n*   A `Tween` smoothly changes the `_pocket_time_scale` of the loaded memory pocket scene from its `initial_pocket_time_scale` to `1.0` (normal speed).\n*   If the player exits the `Area3D` before suturing is complete, the process is canceled, and the memory pocket's time scale reverts to its initial state.\n*   Upon successful completion of the `Tween`, the `memory_sutured` signal is emitted with the `memory_fragment_id`, and the `TemporalResonanceSuture` node `queue_free()`s itself (can be customized to disable or hide).\n\nThis setup allows for localized time manipulation within a `SubViewport`, creating a distinct visual and interactive experience for recovering memory fragments.",
+    "parameters": [
+      {
+        "name": "memory_pocket_scene_path",
+        "type": "String",
+        "default": "",
+        "description": "Path to the PackedScene (.tscn) that represents the memory pocket to be rendered in the SubViewport and have its time scale manipulated."
+      },
+      {
+        "name": "initial_pocket_time_scale",
+        "type": "float",
+        "default": "0.2",
+        "description": "The initial time scale multiplier for the memory pocket. Values < 1.0 make it slower, > 1.0 make it faster."
+      },
+      {
+        "name": "suture_duration",
+        "type": "float",
+        "default": "1.0",
+        "description": "The duration in seconds over which the memory pocket's time scale will transition from its initial value to 1.0 (normal speed)."
+      },
+      {
+        "name": "memory_fragment_id",
+        "type": "String",
+        "default": "unidentified_fragment",
+        "description": "A unique identifier for the memory fragment recovered by successfully suturing this temporal pocket."
+      }
+    ],
+    "dependencies": [
+      "Area3D (self)",
+      "CollisionShape3D (child of Area3D, for player detection)",
+      "SubViewportContainer (child of Area3D)",
+      "SubViewport (child of SubViewportContainer)",
+      "A custom 'memory_pocket_root.gd' script (or similar) attached to the root node of the scene specified by 'memory_pocket_scene_path'. This script must implement 'set_pocket_time_scale(value: float)' and 'get_pocket_time_scale() -> float' methods, and use the internal '_pocket_time_scale' to modify delta for its children's animations/physics."
+    ],
+    "verdict": "A brilliant temporal mechanism that stitches the unraveling fabric of self, demanding desperate precision to reclaim a drowning reflection from the relentless current of forgetting.",
+    "impact": "This mechanism introduces a unique, high-stakes mini-game or interaction point where players must actively engage with the crumbling nature of memories. It transforms memory recovery from a passive pickup into an urgent, skill-based challenge, directly tying player action to the preservation of Lyra's identity. It creates a distinct visual and temporal distortion that reinforces the game's core themes of loss and the fight against forgetting, making each recovered fragment a hard-won victory against the Silence.",
+    "score": 85,
+    "inventedAt": "2026-09-27T07:20:33.778Z"
+  },
+  {
+    "name": "eidetic_devourer",
+    "label": "The Eidetic Devourer",
+    "domain": "weapons",
+    "godotFeature": "ShaderMaterial & ParticleProcessMaterial with custom Resources",
+    "poeticVision": "The player will feel the chilling weight of every shot fired. Each pull of the trigger isn't just expending ammo; it's a silent question: 'Is this memory worth losing to survive this moment?' The fleeting sense of power gained from sacrificing a precious piece of self will be intoxicating, yet tinged with the deep dread of irreversible self-erosion. They'll witness their own past, their own identity, literally dissolve into raw, destructive energy, forced to make agonizing, split-second choices between lethal power and enduring who they are.",
+    "usage": "This recipe implements the 'Eidetic Devourer' weapon. To use it:\n\n1.  **Create `memory_shard.gd`:** Create a new script file named `memory_shard.gd` extending `Resource` with the following content:\n    gdscript\n    class_name MemoryShard extends Resource\n\n    @export var shard_name: String = \"Unnamed Memory\"\n    @export var effect_type: String = \"Kinetic\"\n    @export var damage_modifier: float = 1.0\n    @export var shard_color: Color = Color.WHITE\n    @export var identity_cost: float = 0.05\n    \n    Create instances of this resource (e.g., `res://MemoryShards/FireShard.tres`) to represent different memory fragments.\n\n2.  **Create `identity_meter.gd`:** Create a new script file named `identity_meter.gd` extending `Resource` with the following content:\n    gdscript\n    class_name IdentityMeter extends Resource\n\n    signal identity_changed(new_value: float)\n\n    @export_range(0.0, 1.0) var current_identity: float = 1.0:\n    \tset(value):\n    \t\tvar clamped_value = clampf(value, 0.0, 1.0)\n    \t\tif current_identity != clamped_value:\n    \t\t\tcurrent_identity = clamped_value\n    \t\t\tidentity_changed.emit(current_identity)\n\n    func decrease_identity(amount: float):\n    \tcurrent_identity -= amount\n\n    func increase_identity(amount: float):\n    \tcurrent_identity += amount\n    \n    It's recommended to set up an instance of `IdentityMeter` as a global autoload singleton for easy access throughout your game.\n\n3.  **Create `eidetic_devourer.gdshader`:** Create a new shader file named `eidetic_devourer.gdshader` with the following GLSL code:\n    glsl\n    shader_type spatial;\n    render_mode unshaded;\n\n    uniform vec4 shard_color : source_color = vec4(1.0);\n    uniform float effect_intensity : hint_range(0.0, 1.0) = 0.0;\n\n    void fragment() {\n    \tALBEDO = shard_color.rgb * (1.0 + effect_intensity * 0.5);\n    \tEMISSION = ALBEDO * effect_intensity;\n    }\n    \n\n4.  **Create `player_identity_shader.gdshader`:** Create a new shader file named `player_identity_shader.gdshader` with the following GLSL code:\n    glsl\n    shader_type canvas_item;\n\n    uniform float identity_level : hint_range(0.0, 1.0) = 1.0;\n\n    void fragment() {\n    \tvec4 color = texture(TEXTURE, UV);\n    \tfloat luma = dot(color.rgb, vec3(0.299, 0.587, 0.114));\n    \tvec3 desaturated_color = mix(vec3(luma), color.rgb, identity_level);\n    \tCOLOR = vec4(desaturated_color, color.a);\n    \tCOLOR.rgb *= (0.5 + identity_level * 0.5);\n    }\n    \n    Apply this shader to a `ShaderMaterial` on a `CanvasLayer` (for UI effects) or a player character mesh, and connect to the `IdentityMeter.identity_changed` signal to update the `identity_level` uniform.\n\n5.  **Set up the `EideticDevourer` node:**\n    *   Create a `Node3D` in your scene and attach this `eidetic_devourer.gd` script to it.\n    *   Create a `MeshInstance3D` node as a child (or reference an existing one) to represent the weapon's visual model. Assign a mesh (e.g., a `BoxMesh`).\n    *   Create a new `ShaderMaterial` resource in the Godot editor. Assign `eidetic_devourer.gdshader` to its `Shader` property. Assign this `ShaderMaterial` to the `Material Override` or `Material` slot of your weapon's `MeshInstance3D`.\n    *   Assign this `ShaderMaterial` resource to the `weapon_material` export property of your `EideticDevourer` node.\n    *   Create a `Node3D` as a child of `EideticDevourer` to act as the `fire_point`. Position it where projectiles should originate.\n    *   Create a `PackedScene` for your projectile (e.g., a `RigidBody3D` with a `MeshInstance3D` and `CollisionShape3D`, and a script that handles damage/effects). Assign this `PackedScene` to the `projectile_scene` export property.\n\n6.  **Interaction:** Call `load_shard(some_memory_shard_instance)` to load a memory fragment, then call `fire()` to consume it and fire a projectile. The weapon's appearance will change, and your global `IdentityMeter` will decrease.",
+    "parameters": [
+      {
+        "name": "weapon_mesh",
+        "type": "MeshInstance3D",
+        "default": "null",
+        "description": "The MeshInstance3D node representing the weapon's visual model. Its material will be updated by the weapon_material."
+      },
+      {
+        "name": "projectile_scene",
+        "type": "PackedScene",
+        "default": "null",
+        "description": "A PackedScene for the projectile fired by the weapon (e.g., a simple sphere with a script)."
+      },
+      {
+        "name": "fire_point",
+        "type": "Node3D",
+        "default": "null",
+        "description": "A Node3D representing the origin and direction of fired projectiles."
+      },
+      {
+        "name": "weapon_material",
+        "type": "ShaderMaterial",
+        "default": "null",
+        "description": "The ShaderMaterial instance that uses 'eidetic_devourer.gdshader' to visually alter the weapon. This material should also be applied to the weapon_mesh."
+      }
+    ],
+    "dependencies": [
+      "memory_shard.gd",
+      "identity_meter.gd",
+      "eidetic_devourer.gdshader",
+      "player_identity_shader.gdshader",
+      "A PackedScene for the projectile (e.g., a RigidBody3D with MeshInstance3D and CollisionShape3D)."
+    ],
+    "verdict": "A weapon forged from the soul's own fragments, it offers power at the price of self, turning every desperate shot into a haunting echo of what once was.",
+    "impact": "This mechanic will fundamentally alter the player's relationship with combat and their own progression. Every decision to fire a powerful shot becomes a moral and existential dilemma, forcing players to constantly weigh immediate survival against the gradual erosion of their character's very essence. It transforms resource management into a deeply personal and agonizing choice, making each victory feel both earned and costly, imbuing every encounter with profound emotional weight.",
+    "score": 95,
+    "inventedAt": "2026-09-27T07:19:02.044Z"
+  },
+  {
     "name": "mnemic_echo_labyrinth",
     "label": "Mnemic Echo Labyrinth",
     "domain": "world",

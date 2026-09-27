@@ -1,0 +1,74 @@
+{
+  "name": "identity_shear_momentum",
+  "label": "Shearing Momentum of Self",
+  "domain": "movement",
+  "godotFeature": "Custom CharacterBody3D physics via _integrate_forces, Area3D & RigidBody3D for dynamic environmental hazards, and instancing of physics-active scenes.",
+  "poeticVision": "You feel the raw cost of survival as a palpable, physical burden. Each desperate sprint, each impact with the crumbling world, visibly tears fragments of your very identity from your form. These lost pieces don't just fade; they become temporary, tangible physics disruptions – pockets of warped gravity, sticky fields, or fleeting barriers that you, and your pursuers, must navigate. The more you fight to live, the more you physically manifest the disintegration of self, forcing a horrifying choice between speed and coherence.",
+  "usage": "This script (identity_shear_momentum.gd) should be attached to Lyra's CharacterBody3D node. It manages Lyra's 'Identity Coherence' stat, sheds physical 'Identity Shard' entities based on movement velocity or damage taken, and applies physics effects from nearby shards using the _integrate_forces callback. To use this recipe:\n\n1.  **Create the Identity Shard Scene:**\n    *   Create a new scene named `identity_shard.tscn` (or any name, but update `shard_scene_path` accordingly).\n    *   Set the root node of this scene to `Area3D`.\n    *   Add a `CollisionShape3D` as a child of the `Area3D`. Assign a `SphereShape3D` (or other suitable shape) resource to its `shape` property to define the shard's detection volume.\n    *   (Optional) Add a `MeshInstance3D` as a child for visual representation of the shard.\n    *   Create a new GDScript file named `identity_shard.gd` and attach it to the `Area3D` node of `identity_shard.tscn`. The code for `identity_shard.gd` is provided below as a dependency.\n    *   Ensure the `Area3D`'s `collision_layer` matches the `shard_collision_layer_mask` set in `identity_shear_momentum.gd` (e.g., if mask is 1, shard should be on layer 0).\n\n2.  **Attach to Lyra:**\n    *   Attach `identity_shear_momentum.gd` to Lyra's `CharacterBody3D` node.\n\n3.  **Configure Parameters:**\n    *   In Lyra's inspector, set the `Shard Scene Path` to `res://scenes/identity_shard.tscn`.\n    *   Adjust `Identity Coherence`, `Shear Velocity Threshold`, `Shear Damage Threshold`, `Coherence Loss Rate`, `Shard Spawn Interval`, `Shard Detection Radius`, and `Shard Collision Layer Mask` as desired.\n\n4.  **Integrate Damage and Movement:**\n    *   Call the `take_damage(amount: float)` method on Lyra's script whenever Lyra takes damage.\n    *   Modify Lyra's base movement speed within the `_apply_coherence_effects()` function to reflect the `identity_coherence` level.\n\n5.  **Hunter Integration (Optional):**\n    *   For enemy `CharacterBody3D` hunters to absorb shards, their script must implement two methods:\n        *   `is_hunter() -> bool`: Returns `true` if the character is a hunter.\n        *   `absorb_shard(shard_node: Area3D)`: Called when a hunter overlaps with a shard. Implement logic here for the hunter to gain a buff or effect from absorbing the shard.",
+  "parameters": [
+    {
+      "name": "identity_coherence",
+      "type": "float",
+      "default": "100.0",
+      "description": "Current identity coherence (0-100)"
+    },
+    {
+      "name": "max_identity_coherence",
+      "type": "float",
+      "default": "100.0",
+      "description": "Maximum identity coherence"
+    },
+    {
+      "name": "shear_velocity_threshold",
+      "type": "float",
+      "default": "10.0",
+      "description": "Velocity needed to shed a shard"
+    },
+    {
+      "name": "shear_damage_threshold",
+      "type": "float",
+      "default": "10.0",
+      "description": "Damage amount to shed a shard"
+    },
+    {
+      "name": "passive_coherence_loss_rate",
+      "type": "float",
+      "default": "0.5",
+      "description": "Passive identity loss per second"
+    },
+    {
+      "name": "shard_scene_path",
+      "type": "String",
+      "default": "res://scenes/identity_shard.tscn",
+      "description": "Path to the IdentityShard scene"
+    },
+    {
+      "name": "shard_spawn_interval",
+      "type": "float",
+      "default": "0.2",
+      "description": "Minimum time between shard spawns"
+    },
+    {
+      "name": "shard_detection_radius",
+      "type": "float",
+      "default": "5.0",
+      "description": "Radius to detect nearby shards for _integrate_forces"
+    },
+    {
+      "name": "shard_collision_layer_mask",
+      "type": "int",
+      "default": "1",
+      "description": "Physics layer mask for detecting Identity Shards"
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (Lyra's root node)",
+    "SphereShape3D (for PhysicsShapeQueryParameters3D)",
+    "identity_shard.tscn (a scene with an Area3D root, CollisionShape3D child, and the following script attached to the Area3D):",
+    "--- identity_shard.gd ---\nextends Area3D\n\n@export_category(\"Shard Properties\")\n@export_var(name: \"Effect Strength\", type: float, default: 5.0, hint: \"Magnitude of physics effect\")\nvar effect_strength: float = 5.0\n@export_var(name: \"Shard Lifetime\", type: float, default: 3.0, hint: \"Duration before shard despawns\")\nvar shard_lifetime: float = 3.0\n@export_var(name: \"Effect Type\", type: int, default: 0, hint_string: \"0: Repulsion, 1: Drag, 2: Gravity Shift\")\nvar effect_type: int = 0 # 0: Repulsion, 1: Drag, 2: Gravity Shift (simplified)\n@export_var(name: \"Gravity Shift Direction\", type: Vector3, default: Vector3(0, -1, 0), hint: \"Direction for gravity shift effect\")\nvar gravity_shift_direction: Vector3 = Vector3(0, -1, 0)\n\nvar _time_elapsed: float = 0.0\nvar _initial_direction: Vector3 = Vector3.ZERO\n\nfunc _ready() -> void:\n\tset_physics_process(true)\n\nfunc initialize_shard(direction: Vector3) -> void:\n\t_initial_direction = direction\n\nfunc _physics_process(delta: float) -> void:\n\t_time_elapsed += delta\n\tif _time_elapsed >= shard_lifetime:\n\t\tqueue_free()\n\t\treturn\n\n\tvar overlapping_bodies: Array[Node3D] = get_overlapping_bodies()\n\tfor body in overlapping_bodies:\n\t\tif body is CharacterBody3D:\n\t\t\tif body.has_method(\"is_hunter\") and body.is_hunter():\n\t\t\t\tif body.has_method(\"absorb_shard\"):\n\t\t\t\t\tbody.absorb_shard(self)\n\t\t\t\t\tqueue_free()\n\t\t\t\t\treturn\n\nfunc get_shard_effect_force(target_position: Vector3, target_velocity: Vector3) -> Vector3:\n\tvar effect_vector: Vector3 = Vector3.ZERO\n\tmatch effect_type:\n\t\t0: # Repulsion\n\t\t\teffect_vector = (target_position - global_position).normalized() * effect_strength\n\t\t1: # Drag\n\t\t\teffect_vector = -target_velocity.normalized() * effect_strength\n\t\t2: # Gravity Shift\n\t\t\teffect_vector = gravity_shift_direction.normalized() * effect_strength\n\treturn effect_vector"
+  ],
+  "verdict": "From the crucible of self-loss, a fragmented world is born, where every desperate stride carves the very essence of being into a weapon and a wound.",
+  "impact": "This mechanic transforms the abstract concept of identity loss into a tangible, dynamic environmental hazard. Players will constantly face a visceral dilemma: push their limits for survival, knowing each desperate action visibly tears away their self, creating obstacles that both hinder and potentially aid them against the relentless Silence. It deepens the emotional weight of every sprint and every hit, making the internal struggle of forgetting a physical, interactive challenge that defines the very landscape of their desperate escape.",
+  "score": 95,
+  "inventedAt": "2026-09-27T07:23:07.779Z"
+}

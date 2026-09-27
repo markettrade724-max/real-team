@@ -1,0 +1,45 @@
+{
+  "name": "eidetic_devourer",
+  "label": "The Eidetic Devourer",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterial & ParticleProcessMaterial with custom Resources",
+  "poeticVision": "The player will feel the chilling weight of every shot fired. Each pull of the trigger isn't just expending ammo; it's a silent question: 'Is this memory worth losing to survive this moment?' The fleeting sense of power gained from sacrificing a precious piece of self will be intoxicating, yet tinged with the deep dread of irreversible self-erosion. They'll witness their own past, their own identity, literally dissolve into raw, destructive energy, forced to make agonizing, split-second choices between lethal power and enduring who they are.",
+  "usage": "This recipe implements the 'Eidetic Devourer' weapon. To use it:\n\n1.  **Create `memory_shard.gd`:** Create a new script file named `memory_shard.gd` extending `Resource` with the following content:\n    gdscript\n    class_name MemoryShard extends Resource\n\n    @export var shard_name: String = \"Unnamed Memory\"\n    @export var effect_type: String = \"Kinetic\"\n    @export var damage_modifier: float = 1.0\n    @export var shard_color: Color = Color.WHITE\n    @export var identity_cost: float = 0.05\n    \n    Create instances of this resource (e.g., `res://MemoryShards/FireShard.tres`) to represent different memory fragments.\n\n2.  **Create `identity_meter.gd`:** Create a new script file named `identity_meter.gd` extending `Resource` with the following content:\n    gdscript\n    class_name IdentityMeter extends Resource\n\n    signal identity_changed(new_value: float)\n\n    @export_range(0.0, 1.0) var current_identity: float = 1.0:\n    \tset(value):\n    \t\tvar clamped_value = clampf(value, 0.0, 1.0)\n    \t\tif current_identity != clamped_value:\n    \t\t\tcurrent_identity = clamped_value\n    \t\t\tidentity_changed.emit(current_identity)\n\n    func decrease_identity(amount: float):\n    \tcurrent_identity -= amount\n\n    func increase_identity(amount: float):\n    \tcurrent_identity += amount\n    \n    It's recommended to set up an instance of `IdentityMeter` as a global autoload singleton for easy access throughout your game.\n\n3.  **Create `eidetic_devourer.gdshader`:** Create a new shader file named `eidetic_devourer.gdshader` with the following GLSL code:\n    glsl\n    shader_type spatial;\n    render_mode unshaded;\n\n    uniform vec4 shard_color : source_color = vec4(1.0);\n    uniform float effect_intensity : hint_range(0.0, 1.0) = 0.0;\n\n    void fragment() {\n    \tALBEDO = shard_color.rgb * (1.0 + effect_intensity * 0.5);\n    \tEMISSION = ALBEDO * effect_intensity;\n    }\n    \n\n4.  **Create `player_identity_shader.gdshader`:** Create a new shader file named `player_identity_shader.gdshader` with the following GLSL code:\n    glsl\n    shader_type canvas_item;\n\n    uniform float identity_level : hint_range(0.0, 1.0) = 1.0;\n\n    void fragment() {\n    \tvec4 color = texture(TEXTURE, UV);\n    \tfloat luma = dot(color.rgb, vec3(0.299, 0.587, 0.114));\n    \tvec3 desaturated_color = mix(vec3(luma), color.rgb, identity_level);\n    \tCOLOR = vec4(desaturated_color, color.a);\n    \tCOLOR.rgb *= (0.5 + identity_level * 0.5);\n    }\n    \n    Apply this shader to a `ShaderMaterial` on a `CanvasLayer` (for UI effects) or a player character mesh, and connect to the `IdentityMeter.identity_changed` signal to update the `identity_level` uniform.\n\n5.  **Set up the `EideticDevourer` node:**\n    *   Create a `Node3D` in your scene and attach this `eidetic_devourer.gd` script to it.\n    *   Create a `MeshInstance3D` node as a child (or reference an existing one) to represent the weapon's visual model. Assign a mesh (e.g., a `BoxMesh`).\n    *   Create a new `ShaderMaterial` resource in the Godot editor. Assign `eidetic_devourer.gdshader` to its `Shader` property. Assign this `ShaderMaterial` to the `Material Override` or `Material` slot of your weapon's `MeshInstance3D`.\n    *   Assign this `ShaderMaterial` resource to the `weapon_material` export property of your `EideticDevourer` node.\n    *   Create a `Node3D` as a child of `EideticDevourer` to act as the `fire_point`. Position it where projectiles should originate.\n    *   Create a `PackedScene` for your projectile (e.g., a `RigidBody3D` with a `MeshInstance3D` and `CollisionShape3D`, and a script that handles damage/effects). Assign this `PackedScene` to the `projectile_scene` export property.\n\n6.  **Interaction:** Call `load_shard(some_memory_shard_instance)` to load a memory fragment, then call `fire()` to consume it and fire a projectile. The weapon's appearance will change, and your global `IdentityMeter` will decrease.",
+  "parameters": [
+    {
+      "name": "weapon_mesh",
+      "type": "MeshInstance3D",
+      "default": "null",
+      "description": "The MeshInstance3D node representing the weapon's visual model. Its material will be updated by the weapon_material."
+    },
+    {
+      "name": "projectile_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A PackedScene for the projectile fired by the weapon (e.g., a simple sphere with a script)."
+    },
+    {
+      "name": "fire_point",
+      "type": "Node3D",
+      "default": "null",
+      "description": "A Node3D representing the origin and direction of fired projectiles."
+    },
+    {
+      "name": "weapon_material",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "The ShaderMaterial instance that uses 'eidetic_devourer.gdshader' to visually alter the weapon. This material should also be applied to the weapon_mesh."
+    }
+  ],
+  "dependencies": [
+    "memory_shard.gd",
+    "identity_meter.gd",
+    "eidetic_devourer.gdshader",
+    "player_identity_shader.gdshader",
+    "A PackedScene for the projectile (e.g., a RigidBody3D with MeshInstance3D and CollisionShape3D)."
+  ],
+  "verdict": "A weapon forged from the soul's own fragments, it offers power at the price of self, turning every desperate shot into a haunting echo of what once was.",
+  "impact": "This mechanic will fundamentally alter the player's relationship with combat and their own progression. Every decision to fire a powerful shot becomes a moral and existential dilemma, forcing players to constantly weigh immediate survival against the gradual erosion of their character's very essence. It transforms resource management into a deeply personal and agonizing choice, making each victory feel both earned and costly, imbuing every encounter with profound emotional weight.",
+  "score": 95,
+  "inventedAt": "2026-09-27T07:19:02.044Z"
+}

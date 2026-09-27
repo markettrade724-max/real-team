@@ -1,0 +1,48 @@
+{
+  "name": "mnemonic_spatial_desynchronization",
+  "label": "Synaptic Driftfield Acoustics",
+  "domain": "audio",
+  "godotFeature": "Audio Buses with custom effects and dynamic AudioStreamPlayer3D property manipulation",
+  "poeticVision": "The world itself loses its sonic anchors. As Lyra's memories fray, so too does her spatial hearing. Sounds of distant threats or crucial pathways lose their clarity, their direction, their sense of depth. A hunter's thrum might feel like it's coming from everywhere, nowhere, or just behind her, even if it's far ahead. The familiar echo of a forgotten place might suddenly feel utterly alien and flat, as if its spatial context has been erased. The player feels a profound, disorienting vulnerability, making every sonic cue a deceptive trap or an unreliable guide, amplifying the terror of the unseen and the cost of self-loss.",
+  "usage": "Attach this script to a Node in your scene (e.g., a global manager or a dedicated 'AudioDriftManager' node). Configure the 'reverb_bus_name' and 'reverb_effect_index' to target an existing AudioEffectReverb or AudioEffectDelay on one of your project's Audio Buses. Any AudioStreamPlayer3D node whose apparent position should drift must be registered with this manager using the 'register_affected_player()' method. To simulate Lyra's memory loss, dynamically decrease the 'memory_integrity' property (e.g., from 1.0 for perfect memory to 0.0 for complete loss). This will automatically intensify both the global audio effects and the spatial drift of registered AudioStreamPlayer3D nodes.",
+  "parameters": [
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Current state of Lyra's memory. 1.0 is perfect recall, 0.0 is complete memory loss. Affects both global audio effects and individual player drift."
+    },
+    {
+      "name": "drift_intensity_multiplier",
+      "type": "float",
+      "default": "5.0",
+      "description": "Maximum magnitude of the spatial drift for AudioStreamPlayer3D nodes when memory_integrity is 0.0."
+    },
+    {
+      "name": "drift_frequency",
+      "type": "float",
+      "default": "0.75",
+      "description": "Speed at which the apparent position of affected AudioStreamPlayer3D nodes shifts."
+    },
+    {
+      "name": "reverb_bus_name",
+      "type": "String",
+      "default": "Master",
+      "description": "Name of the audio bus containing the AudioEffectReverb or AudioEffectDelay to be modulated."
+    },
+    {
+      "name": "reverb_effect_index",
+      "type": "int",
+      "default": "0",
+      "description": "Index of the AudioEffect (Reverb or Delay) on the specified audio bus to be modulated."
+    }
+  ],
+  "dependencies": [
+    "AudioStreamPlayer3D",
+    "AudioBus (with AudioEffectReverb or AudioEffectDelay)"
+  ],
+  "verdict": "A symphony of self-loss, this mechanic transforms the very air into a disorienting echo of Lyra's fading mind, making every sound a treacherous whisper of forgotten truths.",
+  "impact": "The player will experience a profound and constant sense of auditory disorientation, directly correlating with Lyra's deteriorating memory. Sounds, typically reliable for threat detection and navigation, will become deceptive, shifting in perceived origin, depth, and clarity. This amplifies the terror of the unseen, forcing players to adapt to an unreliable sensory landscape, making every encounter with the Silence's hunters a more desperate and disorienting struggle. The abstract grief of self-loss is made tangible as the world itself loses its sonic anchors, deepening the emotional and survival stakes.",
+  "score": 92,
+  "inventedAt": "2026-09-27T07:29:39.684Z"
+}

@@ -1,0 +1,45 @@
+{
+  "name": "mnemic_dissonance_stalker_ai",
+  "label": "Mnemic Dissonance Stalker",
+  "domain": "ai",
+  "godotFeature": "InputMap manipulation and Control node dynamic modification",
+  "poeticVision": "The sickening lurch as your own body betrays you, your fingers forgetting the commands they've known since birth. An enemy that doesn't just damage your health, but your very capacity to act, making you fight yourself as much as them, deepening the terror of self-loss and the desperate scramble to regain control.",
+  "usage": "Attach this script to your Mnemic Dissonance Stalker enemy (e.g., a CharacterBody3D). When the Stalker successfully attacks the player, call the `apply_disorientation(player_node: Node)` method, passing a reference to the player's root node. The player node should contain the HUD elements as children (potentially nested). Configure the `affected_input_actions` array in the Inspector with the names of the InputMap actions you want to scramble (e.g., \"move_forward\", \"jump\"). Populate the `affected_hud_paths` array with NodePaths to the Control nodes within the player's scene that represent HUD elements (e.g., `NodePath(\"UI/HealthBar\")`, `NodePath(\"UI/ObjectiveMarker\")`). The script will automatically handle the duration, scrambling, and restoration of controls and HUD elements.",
+  "parameters": [
+    {
+      "name": "disorientation_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration in seconds for which the player's controls and HUD will be disoriented."
+    },
+    {
+      "name": "hud_drift_intensity",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the intensity of the random drifting and flickering effect on HUD elements (0.1 = subtle, 1.0 = extreme)."
+    },
+    {
+      "name": "affected_input_actions",
+      "type": "Array[String]",
+      "default": "[\"move_forward\", \"move_backward\", \"strafe_left\", \"strafe_right\", \"jump\", \"attack\"]",
+      "description": "A list of InputMap action names whose events will be randomly remapped during disorientation."
+    },
+    {
+      "name": "affected_hud_paths",
+      "type": "Array[NodePath]",
+      "default": "[]",
+      "description": "An array of NodePaths pointing to the Control nodes within the player's scene that should be disoriented."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (or any Node3D for the Stalker)",
+    "Timer",
+    "CanvasLayer",
+    "Control (for HUD elements)",
+    "InputMap (Godot singleton)"
+  ],
+  "verdict": "A chilling whisper of self-betrayal, this mechanic forces the player to fight the ghost in their own machine, making every step a desperate plea for forgotten control.",
+  "impact": "This invention will force players into a visceral struggle against their own failing senses and muscle memory, deepening the thematic terror of self-loss and making every encounter with the Stalker a desperate fight for mental and physical coherence. It transforms abstract identity loss into a concrete, frustrating, yet profoundly engaging gameplay challenge, provided the disorientation is tuned to be challenging rather than merely annoying.",
+  "score": 85,
+  "inventedAt": "2026-09-27T07:28:27.605Z"
+}
