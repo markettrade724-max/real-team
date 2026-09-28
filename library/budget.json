@@ -1,151 +1,60 @@
 {
-  "date": "2026-09-27",
-  "total": 20,
+  "date": "2026-09-28",
+  "total": 7,
   "limit": 20,
   "library": 0,
-  "agents": 20,
+  "agents": 7,
   "exhausted": false,
   "log": [
     {
-      "time": "07:16:01",
-      "caller": "inventor-agent",
+      "time": "07:51:12",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 1,
       "left": 19
     },
     {
-      "time": "07:16:18",
-      "caller": "inventor-agent",
-      "success": true,
+      "time": "07:51:29",
+      "caller": "screenplay-agent",
+      "success": false,
       "total": 2,
-      "left": 18
+      "left": 18,
+      "errorType": "503"
     },
     {
-      "time": "07:17:00",
-      "caller": "inventor-agent",
+      "time": "07:52:25",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 3,
       "left": 17
     },
     {
-      "time": "07:17:09",
-      "caller": "inventor-agent",
+      "time": "07:53:00",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 4,
       "left": 16
     },
     {
-      "time": "07:17:50",
-      "caller": "inventor-agent",
+      "time": "07:53:38",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 5,
       "left": 15
     },
     {
-      "time": "07:18:05",
-      "caller": "inventor-agent",
+      "time": "07:54:12",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 6,
       "left": 14
     },
     {
-      "time": "07:18:45",
-      "caller": "inventor-agent",
+      "time": "07:54:47",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 7,
       "left": 13
-    },
-    {
-      "time": "07:19:02",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 8,
-      "left": 12
-    },
-    {
-      "time": "07:19:15",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 9,
-      "left": 11
-    },
-    {
-      "time": "07:20:02",
-      "caller": "inventor-agent",
-      "success": false,
-      "total": 10,
-      "left": 10,
-      "errorType": "json_truncated"
-    },
-    {
-      "time": "07:20:19",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 11,
-      "left": 9
-    },
-    {
-      "time": "07:20:33",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 12,
-      "left": 8
-    },
-    {
-      "time": "07:20:46",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 13,
-      "left": 7
-    },
-    {
-      "time": "07:21:36",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 14,
-      "left": 6
-    },
-    {
-      "time": "07:21:51",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 15,
-      "left": 5
-    },
-    {
-      "time": "07:22:54",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 16,
-      "left": 4
-    },
-    {
-      "time": "07:23:07",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 17,
-      "left": 3
-    },
-    {
-      "time": "07:23:21",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 18,
-      "left": 2
-    },
-    {
-      "time": "07:24:16",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 19,
-      "left": 1
-    },
-    {
-      "time": "07:24:28",
-      "caller": "inventor-agent",
-      "success": true,
-      "total": 20,
-      "left": 0
     }
   ]
 }
