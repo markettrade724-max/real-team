@@ -7,14 +7,14 @@ const BULLET = preload("res://bullet.tscn")
 @export var bullet_damage: float = 10.0
 @export var bullet_lifetime: float = 5.0
 
-@export var muzzle_point: Marker3D # Changed to exported node reference
-
 var _can_shoot: bool = true
 var _cooldown_timer: Timer
+var _muzzle_point: Marker3D
 
 func _ready():
-	if not muzzle_point: # Check the exported reference
-		push_error("Weapon requires a 'muzzle_point' Marker3D to be assigned in the inspector.")
+	_muzzle_point = get_node_or_null("muzzle_point")
+	if not _muzzle_point:
+		push_error("Weapon requires a 'muzzle_point' Marker3D child.")
 		set_process(false) # Disable processing if essential node is missing
 		return
 
@@ -25,7 +25,7 @@ func _ready():
 	_cooldown_timer.timeout.connect(_on_cooldown_timer_timeout)
 
 func shoot():
-	if _can_shoot and muzzle_point: # Use the exported reference
+	if _can_shoot and _muzzle_point:
 		_can_shoot = false
 		_cooldown_timer.start()
 
@@ -35,7 +35,7 @@ func shoot():
 		get_tree().get_root().add_child(bullet_instance)
 
 		# Set bullet's initial transform to muzzle point's global transform
-		bullet_instance.global_transform = muzzle_point.global_transform
+		bullet_instance.global_transform = _muzzle_point.global_transform
 
 		# Pass properties to the bullet instance
 		bullet_instance.speed = bullet_speed
@@ -43,7 +43,7 @@ func shoot():
 		bullet_instance.lifetime = bullet_lifetime
 		# The bullet's forward direction should be the muzzle point's forward direction
 		# In Godot's 3D, -Z is typically forward for nodes like cameras and markers.
-		bullet_instance.direction = -muzzle_point.global_transform.basis.z
+		bullet_instance.direction = -_muzzle_point.global_transform.basis.z
 
 func _on_cooldown_timer_timeout():
 	_can_shoot = true
