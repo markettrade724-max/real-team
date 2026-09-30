@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-09-29T11:00:35.645Z",
-  "current": null,
+  "updatedAt": "2026-09-30T11:04:45.366Z",
+  "current": {
+    "type": "episode",
+    "episode": 38,
+    "id": null,
+    "startedAt": "2026-09-30T10:50:37.891Z",
+    "updatedAt": "2026-09-30T11:04:45.366Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 38,
     "totalEpisodes": 38,
@@ -1078,6 +1085,35 @@
         "startedAt": "2026-09-28T11:20:43.737Z",
         "completedAt": "2026-09-28T15:04:37.980Z",
         "failReason": null
+      },
+      "38": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-09-30T10:52:36.127Z",
+            "title": "Known Path",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-09-30T10:53:37.145Z",
+            "title": "Known Path",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-09-30T10:54:08.618Z",
+            "title": "Known Path",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-09-30T10:50:37.891Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
