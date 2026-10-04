@@ -1,0 +1,38 @@
+{
+  "name": "cognitive_interface_erosion",
+  "label": "The Fading Command",
+  "domain": "ui",
+  "godotFeature": "Control nodes with ShaderMaterial, _gui_input handling, and ViewportTexture",
+  "poeticVision": "Feel the information that guides your survival literally fray and dissolve under the Silence's unseen assault, forcing desperate, split-second decisions not just in the world, but on the very interface you rely upon. Experience the terror of forgetting how to fight, how to heal, how to *be*, as critical commands bleed out of existence.",
+  "usage": "Attach this script to any Control node (e.g., TextureRect, Label) that represents a critical UI element. Assign a new ShaderMaterial to the Control node's 'Material' property, then load the 'cognitive_interface_erosion.gdshader' into the ShaderMaterial's 'Shader' property. Set a 'decay_texture' (e.g., a noise or grunge texture) in the ShaderMaterial's uniforms. Call 'start_decay()' on the script instance from your game logic (e.g., when the player takes damage or a memory-eroding event occurs) to initiate the visual degradation. The player must then rapidly click/tap the UI element 'stabilization_taps_required' times within 'stabilization_window_time' to reset the decay. Failure to stabilize will result in the UI element becoming fully decayed and non-interactive.",
+  "parameters": [
+    {
+      "name": "decay_rate",
+      "type": "float",
+      "default": "0.05",
+      "description": "The speed at which the UI element visually decays per second (0.0 to 1.0)."
+    },
+    {
+      "name": "stabilization_taps_required",
+      "type": "int",
+      "default": "3",
+      "description": "The number of rapid clicks/taps needed to stabilize the decaying UI element."
+    },
+    {
+      "name": "stabilization_window_time",
+      "type": "float",
+      "default": "0.5",
+      "description": "The time window (in seconds) within which the required taps must be performed to stabilize the UI."
+    }
+  ],
+  "dependencies": [
+    "Control node (e.g., TextureRect, Label, Panel)",
+    "ShaderMaterial resource",
+    "cognitive_interface_erosion.gdshader (for the visual decay effect)",
+    "Texture2D resource (for the 'decay_texture' uniform in the shader)"
+  ],
+  "verdict": "As the interface itself crumbles, the player's fight for survival becomes a desperate struggle against the very act of forgetting.",
+  "impact": "This mechanic transforms the user interface from a passive information display into an active, dynamic battlefield. Players will not only contend with external threats but also fight a constant, visceral battle against the decay of their own capabilities and knowledge. It forces desperate, split-second decisions not just in combat, but on the very tools they rely upon, making the act of 'remembering how to play' a core, high-stakes challenge that deepens the theme of identity loss and the terror of forgetting.",
+  "score": 95,
+  "inventedAt": "2026-10-04T07:44:10.254Z"
+}

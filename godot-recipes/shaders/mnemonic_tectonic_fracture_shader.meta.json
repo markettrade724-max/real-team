@@ -1,0 +1,63 @@
+{
+  "name": "mnemonic_tectonic_fracture_shader",
+  "label": "Memory Tectonic Fracture",
+  "domain": "shaders",
+  "godotFeature": "Geometry Shaders",
+  "poeticVision": "Feel the very fabric of memory-worlds disintegrate beneath your feet. As Lyra's identity wavers or the Silence closes in, the ground itself will visibly fracture, geometry tearing apart, revealing glimpses of the void or forgotten pasts within. Every unstable step is a race against the world crumbling around you, a palpable manifestation of Lyra's dissolving self and the encroaching nothingness.",
+  "usage": "This shader creates a 'Memory Tectonic Fracture' effect on 3D meshes. It dynamically displaces vertices to simulate crumbling and tearing geometry, with the intensity controlled by Lyra's 'identity_cohesion' and the 'hunter_proximity_factor'. The displaced areas will blend towards a 'void_color'.\n\nTo use this recipe:\n1.  Create a new `ShaderMaterial` resource in your Godot project.\n2.  Assign this GLSL code to the `Shader` property of the `ShaderMaterial`.\n3.  Apply this `ShaderMaterial` to any `MeshInstance3D` node (e.g., `CSGBox3D`, `PlaneMesh`, or an imported model) in your scene that represents the memory-world environment.\n4.  In a GDScript, retrieve the `ShaderMaterial` from the `MeshInstance3D` (e.g., `mesh_instance.get_active_material(0)`).\n5.  Dynamically update the `identity_cohesion` and `hunter_proximity_factor` uniform parameters of the material based on game logic:\n    *   `material.set_shader_parameter(\"identity_cohesion\", lyra_current_identity_strength)` (where `lyra_current_identity_strength` is a float from 0.0 to 1.0, 1.0 being fully cohesive).\n    *   `material.set_shader_parameter(\"hunter_proximity_factor\", current_hunter_threat_level)` (where `current_hunter_threat_level` is a float from 0.0 to 1.0, 1.0 being maximum hunter influence).\n\nNote: While the vision specified a 'Geometry Shader component' for vertex duplication/culling, Godot 4.6.2's `shader_type spatial;` does not directly expose a GLSL `geometry()` function for emitting new primitives. This shader achieves the visual effect of fracturing and revealing a 'void' by extensively displacing vertices in the `vertex()` function and blending colors in the `fragment()` function, which is the standard and most performant approach for such effects within Godot's spatial shader architecture.",
+  "parameters": [
+    {
+      "name": "albedo",
+      "type": "vec4",
+      "default": "vec4(1.0)",
+      "description": "Base color of the material."
+    },
+    {
+      "name": "texture_albedo",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Optional albedo texture for the material."
+    },
+    {
+      "name": "identity_cohesion",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the intensity of the fracture based on Lyra's identity. 1.0 means no fracture, 0.0 means maximum fracture. Lower values increase displacement."
+    },
+    {
+      "name": "hunter_proximity_factor",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the intensity of the fracture based on hunter proximity. 0.0 means no hunter influence, 1.0 means maximum influence. Higher values increase displacement."
+    },
+    {
+      "name": "fracture_intensity",
+      "type": "float",
+      "default": "0.5",
+      "description": "Overall scale factor for vertex displacement, controlling how far vertices move."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "10.0",
+      "description": "Frequency of the noise pattern used for displacement. Higher values create finer, more detailed fractures."
+    },
+    {
+      "name": "time_speed",
+      "type": "float",
+      "default": "0.5",
+      "description": "Speed at which the noise pattern animates, creating a dynamic, evolving fracture effect."
+    },
+    {
+      "name": "void_color",
+      "type": "vec4",
+      "default": "vec4(0.0, 0.0, 0.0, 1.0)",
+      "description": "Color that appears in the fractured areas, simulating the 'void' or forgotten past."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "The very ground beneath Lyra's feet becomes a mirror of her fading self, a desperate dance on the edge of oblivion.",
+  "impact": "This mechanic will fundamentally transform the player's perception of the game world, making Lyra's internal struggle and the external threat of the Silence physically manifest. Every step becomes a tense decision, forcing players to constantly adapt to a disintegrating environment, enhancing the feeling of urgency, loss, and the desperate fight for self. It elevates the abstract concept of memory loss into a tangible, interactive challenge, ensuring a deeply immersive and unforgettable experience.",
+  "score": 95,
+  "inventedAt": "2026-10-04T07:40:27.444Z"
+}

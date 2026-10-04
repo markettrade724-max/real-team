@@ -1,0 +1,42 @@
+{
+  "name": "mnemic_eidolon_mimic",
+  "label": "The Eidolon of Forgotten Self",
+  "domain": "ai",
+  "godotFeature": "Dynamic Mesh/Material/Shader Manipulation and GDScript AI",
+  "poeticVision": "The sickening realization of fighting an enemy that mirrors your own decaying identity. Every lost memory isn't just a personal void; it's a piece of the foe's arsenal, making it stronger, more insidious, and utterly familiar in its horror. You're not just fighting the Silence; you're fighting a grotesque reflection of what you've become.",
+  "usage": "To use this recipe:\n1.  Create a new `CharacterBody3D` node in your Godot scene (e.g., named 'Eidolon').\n2.  Add a `MeshInstance3D` child node to the 'Eidolon' node and name it exactly `MeshInstance3D`. Assign a mesh (e.g., `CapsuleMesh`, `BoxMesh`) to it.\n3.  Attach this `mnemic_eidolon_mimic.gd` script to the 'Eidolon' `CharacterBody3D` node.\n4.  In the Inspector for the 'Eidolon' node, set the `Player Node Path` export variable to the NodePath of your player character (e.g., `../Player`).\n5.  Set the `Base Albedo Color` for the Eidolon's default appearance.\n6.  Set the `Dissolve Threshold` (0.0-1.0) to control how much memory loss is needed before the dissolve effect becomes prominent.\n7.  Assign a `Noise Texture` (e.g., a Perlin noise texture) to the corresponding export variable. This texture is crucial for the visual dissolve effect.\n8.  Ensure your player character node has a public method `get_lost_memory_count()` that returns an `int` representing the number of memory fragments Lyra has lost. This script will query that method to determine the Eidolon's strength and appearance.",
+  "parameters": [
+    {
+      "name": "player_node_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "The NodePath to the player character node in the scene. The player node must have a `get_lost_memory_count()` method."
+    },
+    {
+      "name": "base_albedo_color",
+      "type": "Color",
+      "default": "Color.WHITE",
+      "description": "The base color of the Eidolon when no memories are lost. This color will be mixed with a reddish glow as memory loss increases."
+    },
+    {
+      "name": "dissolve_threshold",
+      "type": "float",
+      "default": "0.5",
+      "description": "A value between 0.0 and 1.0 that controls the starting point of the dissolve effect. A higher value means the Eidolon starts dissolving with less memory loss."
+    },
+    {
+      "name": "noise_texture",
+      "type": "Texture2D",
+      "default": "null",
+      "description": "A 2D texture (e.g., a Perlin noise texture) used to create a randomized dissolve pattern. Essential for the visual effect."
+    }
+  ],
+  "dependencies": [
+    "A `MeshInstance3D` child node named 'MeshInstance3D' attached to the Eidolon.",
+    "A player node in the scene with a `get_lost_memory_count()` method that returns an integer."
+  ],
+  "verdict": "A haunting echo of self-loss, this foe transforms Lyra's fading identity into a relentless, accelerating terror.",
+  "impact": "This invention profoundly deepens the player's emotional connection to Lyra's struggle. Every lost memory no longer just weakens Lyra; it visibly and tangibly empowers a relentless hunter, transforming the abstract grief of self-loss into a concrete, escalating threat. The player will feel a sickening dread as their own failures manifest as the enemy's strength, making each encounter a desperate fight not just for survival, but for the very essence of who Lyra is.",
+  "score": 85,
+  "inventedAt": "2026-10-04T07:41:36.327Z"
+}

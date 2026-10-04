@@ -1,0 +1,56 @@
+{
+  "name": "chronal_resonance_lapse",
+  "label": "Chronal Resonance Lapse",
+  "domain": "Time & Memory",
+  "godotFeature": "_process(delta) / _physics_process(delta) manipulation & ShaderMaterial & AnimationPlayer",
+  "poeticVision": "The harrowing sensation of your own personal timeline lurching forward, a sudden internal 'fast-forward' caused by retrieving a potent memory fragment. You gain clarity, but for a critical moment, you become a spectral blur, out of sync with the world, leaving you acutely vulnerable to the Silence that hunts the ripples of your temporal instability.",
+  "usage": "Attach this `chronal_resonance_lapse.gd` script to Lyra's `CharacterBody3D` node. Configure the `mesh_instance_path` and `animation_player_path` exports to point to the respective nodes within Lyra's scene. Ensure the `MeshInstance3D` specified has a `ShaderMaterial` assigned to its first material slot (index 0). This `ShaderMaterial` must use the following GLSL shader code, saved as `chronal_resonance_lapse.gdshader`:\n\nglsl\nshader_type spatial;\nrender_mode blend_mix, depth_draw_opaque, cull_back;\n\nuniform float lapse_intensity : hint_range(0.0, 1.0) = 0.0;\nuniform float desaturation_amount : hint_range(0.0, 1.0) = 0.8;\nuniform vec4 lapse_tint_color : source_color = vec4(0.6, 0.8, 1.0, 0.5); // Blueish tint, semi-transparent\n\nvoid fragment() {\n\tvec4 albedo_tex = texture(ALBEDO_TEXTURE, UV);\n\tvec3 base_color = albedo_tex.rgb;\n\tfloat alpha = albedo_tex.a;\n\n\tif (lapse_intensity > 0.0) {\n\t\t// Desaturation\n\t\tfloat luma = dot(base_color, vec3(0.2126, 0.7152, 0.0722));\n\t\tbase_color = mix(base_color, vec3(luma), desaturation_amount * lapse_intensity);\n\n\t\t// Tint and transparency\n\t\tbase_color = mix(base_color, lapse_tint_color.rgb, lapse_intensity);\n\t\talpha = mix(alpha, lapse_tint_color.a, lapse_intensity);\n\n\t\t// Simple 'ghosting' effect by slightly distorting UVs or adding noise\n\t\t// This is a basic approximation; true motion trails/ghosting often require multiple renders or post-processing.\n\t\tvec2 distorted_uv = UV + sin(TIME * 5.0 + UV.x * 10.0) * 0.005 * lapse_intensity;\n\t\tvec4 distorted_albedo = texture(ALBEDO_TEXTURE, distorted_uv);\n\t\tbase_color = mix(base_color, distorted_albedo.rgb, lapse_intensity * 0.2); // Blend a bit of distorted texture\n\t}\n\n\tALBEDO = base_color;\n\tALPHA = alpha;\n}\n\n\nTo trigger the lapse, call `start_lapse()` on the `ChronalResonanceLapse` node (e.g., when Lyra retrieves a memory fragment). The `lapse_started` signal can be connected to the Silence AI to trigger specific attack patterns, leveraging Lyra's increased vulnerability (which can be handled by Lyra's damage system checking `is_lapsing()` or using `vulnerability_multiplier`). Lyra's movement logic within `_physics_process` must use the `current_delta` variable to achieve the subjective temporal acceleration.",
+  "parameters": [
+    {
+      "name": "lapse_duration",
+      "type": "float",
+      "default": "1.5",
+      "description": "The duration, in seconds, for which Lyra experiences the chronal resonance lapse."
+    },
+    {
+      "name": "lapse_speed_multiplier",
+      "type": "float",
+      "default": "2.0",
+      "description": "The multiplier applied to Lyra's internal delta time during the lapse, making her move and animate faster relative to the world."
+    },
+    {
+      "name": "vulnerability_multiplier",
+      "type": "float",
+      "default": "2.0",
+      "description": "A multiplier indicating how much more vulnerable Lyra is to damage during the lapse. This value is for external game systems to interpret."
+    },
+    {
+      "name": "lapse_shader_intensity",
+      "type": "float",
+      "default": "1.0",
+      "description": "The intensity of the visual shader effects (desaturation, tint, ghosting) during the lapse, ranging from 0.0 (no effect) to 1.0 (full effect)."
+    },
+    {
+      "name": "mesh_instance_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "NodePath to Lyra's MeshInstance3D node, which should have the 'chronal_resonance_lapse.gdshader' applied."
+    },
+    {
+      "name": "animation_player_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "NodePath to Lyra's AnimationPlayer node, whose speed will be scaled during the lapse."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (Lyra's root node)",
+    "MeshInstance3D (child of Lyra, for visual effects)",
+    "AnimationPlayer (child of Lyra, for animation speed control)",
+    "chronal_resonance_lapse.gdshader (custom shader resource)"
+  ],
+  "verdict": "A brilliant temporal paradox, where the clarity of memory is paid for in moments of perilous, accelerated vulnerability, perfectly weaving narrative and challenge.",
+  "impact": "This mechanic transforms memory retrieval from a simple narrative beat into a high-stakes, adrenaline-fueled gameplay challenge. Players will constantly weigh the urgency of gaining clarity against the immediate, harrowing vulnerability it imposes, forcing tactical decision-making and precise execution to survive the Silence's relentless pursuit, deeply integrating the themes of self-loss and survival into every action.",
+  "score": 95,
+  "inventedAt": "2026-10-04T07:36:21.670Z"
+}

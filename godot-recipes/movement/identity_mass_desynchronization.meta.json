@@ -1,0 +1,78 @@
+{
+  "name": "identity_mass_desynchronization",
+  "label": "Echoes of the Unbound Self",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D/RigidBody3D properties (mass, friction, gravity_scale) and custom physics calculations via _physics_process",
+  "poeticVision": "The player will feel the profound instability of a crumbling self. As Lyra loses memories, her very physical presence wavers; her mass fluctuates, making her movements unpredictable. A lost memory might cause her to become unnervingly light, sending her careening with unexpected force from minor impacts, or making it impossible to gain purchase on slippery surfaces. Conversely, recovering a memory temporarily grounds her, restoring a sense of physical coherence and stability. This constant re-calibration of her own body's physics forces the player into a desperate, adaptive struggle, where the grief of self-loss is not just emotional but viscerally physical.",
+  "usage": "Attach this script to Lyra's CharacterBody3D node. The 'identity_integrity' property will dynamically adjust her physical responsiveness. Call 'lose_memory(amount)' when Lyra loses a memory fragment (e.g., due to damage or failing a challenge). Call 'recover_memory(amount)' when Lyra successfully retrieves a memory fragment; this will also grant a temporary physical stability boost. Use 'apply_external_force(force_vector)' to simulate knockback or environmental pushes, which will be more pronounced when Lyra's identity integrity is low.",
+  "parameters": [
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Current state of Lyra's identity, ranging from 0.0 (no self) to 1.0 (full self). This value directly influences her physical properties like mass resistance and friction."
+    },
+    {
+      "name": "BASE_MOVEMENT_SPEED",
+      "type": "float",
+      "default": "8.0",
+      "description": "The base maximum speed Lyra can achieve when moving."
+    },
+    {
+      "name": "BASE_ACCELERATION_RATE",
+      "type": "float",
+      "default": "15.0",
+      "description": "The base rate at which Lyra accelerates to her maximum movement speed."
+    },
+    {
+      "name": "BASE_DECELERATION_RATE",
+      "type": "float",
+      "default": "20.0",
+      "description": "The base rate at which Lyra decelerates when no movement input is given, simulating friction."
+    },
+    {
+      "name": "MIN_MASS_RESISTANCE_FACTOR",
+      "type": "float",
+      "default": "0.2",
+      "description": "The minimum multiplier for Lyra's resistance to changes in velocity. A lower value makes her feel 'lighter' and more susceptible to external forces and less responsive to input."
+    },
+    {
+      "name": "MAX_MASS_RESISTANCE_FACTOR",
+      "type": "float",
+      "default": "1.0",
+      "description": "The maximum (normal) multiplier for Lyra's resistance to changes in velocity."
+    },
+    {
+      "name": "MIN_FRICTION_COEFFICIENT",
+      "type": "float",
+      "default": "0.1",
+      "description": "The minimum multiplier for Lyra's effective friction. A lower value makes her feel 'slippery' and harder to stop or change direction."
+    },
+    {
+      "name": "MAX_FRICTION_COEFFICIENT",
+      "type": "float",
+      "default": "1.0",
+      "description": "The maximum (normal) multiplier for Lyra's effective friction."
+    },
+    {
+      "name": "RECOVERY_BOOST_STRENGTH",
+      "type": "float",
+      "default": "0.5",
+      "description": "An additional strength multiplier applied to mass resistance and friction coefficients during the temporary boost after recovering a memory."
+    },
+    {
+      "name": "RECOVERY_BOOST_DURATION",
+      "type": "float",
+      "default": "2.0",
+      "description": "The duration in seconds for the temporary physical stability boost granted after Lyra recovers a memory."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "Input Map entries: 'move_left', 'move_right', 'move_forward', 'move_backward'"
+  ],
+  "verdict": "The self unravels not just in mind, but in the very fabric of being, forcing a desperate dance with a body that forgets its own weight.",
+  "impact": "This mechanic will fundamentally alter the player's interaction with the game world, transforming the abstract concept of identity loss into a visceral, ever-changing physical challenge. Players will constantly adapt to Lyra's fluctuating mass and friction, making every movement, jump, and combat encounter unpredictable and demanding. The grief of self-loss will be felt not just emotionally, but through the very instability of their character's body, creating a deeply immersive and unforgettable struggle for control and coherence.",
+  "score": 95,
+  "inventedAt": "2026-10-04T07:39:01.714Z"
+}

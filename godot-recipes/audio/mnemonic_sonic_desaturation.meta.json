@@ -1,0 +1,27 @@
+{
+  "name": "mnemonic_sonic_desaturation",
+  "label": "Mnemonic Sonic Desaturation",
+  "domain": "audio",
+  "godotFeature": "Godot 4.6.2 Audio Bus system with dynamic AudioEffect manipulation (e.g., EQ, PitchShift, Volume), AudioStreamPlayer for layered playback, and dynamic crossfading/mixing of AudioStream assets.",
+  "poeticVision": "Feel the very fabric of sound dissolve and fray as Lyra's identity erodes. Key melodic lines, rhythmic anchors, or specific environmental frequencies that once defined a coherent soundscape will individually desaturate, fragment, or vanish entirely. Each sonic loss is a chilling echo of a forgotten truth, a piece of Lyra's self that has dissolved. When a memory is recovered, a specific musical motif or a lost environmental sound snaps back, creating a fleeting, poignant moment of sonic wholeness amidst the chaos, only for the threat of desaturation to return. The player doesn't just hear distortion, but the *absence* of specific sonic memories.",
+  "usage": "Attach this script to a global autoload singleton (e.g., 'AudioManager') or any persistent Node in your scene. Configure your Godot Project Settings -> Audio -> Buses to include the bus names specified in 'memory_audio_states' (e.g., 'Music_Layer_A', 'SFX_Memory_Echo'). Each of these custom buses MUST have an 'AudioEffectEQ' added as its first effect (index 0). Your game's AudioStreamPlayer nodes should output to these specific buses. To trigger a memory desaturation, call 'AudioManager.desaturate_memory(\"childhood_melody\")'. To restore it, call 'AudioManager.restore_memory(\"childhood_melody\")'. The script will smoothly interpolate the volume and EQ gain of the associated audio bus, creating the effect of sonic desaturation or restoration.",
+  "parameters": [
+    {
+      "name": "transition_speed_db_per_sec",
+      "type": "float",
+      "default": "10.0",
+      "description": "The speed (in dB per second) at which audio bus volume transitions between states."
+    },
+    {
+      "name": "transition_speed_eq_per_sec",
+      "type": "float",
+      "default": "10.0",
+      "description": "The speed (in dB per second) at which the EQ band gain transitions between states."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A symphony of self-loss, this invention masterfully weaves the unraveling of identity into the very soundscape, making silence a chilling echo of a forgotten soul.",
+  "impact": "This will profoundly deepen the player's emotional connection to Lyra's struggle, transforming the abstract concept of memory loss into a visceral, auditory experience where the very fabric of the world's soundscape reflects her eroding identity, making every recovered memory a poignant sonic return.",
+  "score": 90,
+  "inventedAt": "2026-10-04T07:42:51.000Z"
+}

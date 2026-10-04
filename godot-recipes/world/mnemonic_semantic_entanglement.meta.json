@@ -1,0 +1,36 @@
+{
+  "name": "mnemonic_semantic_entanglement",
+  "label": "The Semantic Blight",
+  "domain": "world",
+  "godotFeature": "GDScript for procedural generation logic, ShaderMaterial for visual data blending, and NavigationMesh for pathing ambiguity.",
+  "poeticVision": "Players will experience the visceral confusion of a world actively losing its meaning. The familiar becomes alien, paths become riddles, and the very fabric of reality warps not just in form, but in purpose. Every step is a question, every landmark a lie, forcing Lyra to question not just where she is, but what anything truly is, reflecting her own dissolving identity in the environment itself. The fear isn't just of collapse, but of disorientation and existential illegibility.",
+  "usage": "This `SemanticBlightGenerator` GDScript class, combined with the `SemanticBlightShader.gdshader` and `MemoryFragmentResource.gd` custom resource, allows for dynamically altering the visual and structural semantics of 3D world objects. It reflects Lyra's dissolving identity by making the environment increasingly disorienting.\n\n**Setup Steps:**\n1.  **Create `SemanticBlightShader.gdshader`:** Save the following GLSL code into a file named `SemanticBlightShader.gdshader` in your project's `res://` directory:\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back;\n\n    uniform sampler2D albedo_texture_a : source_color;\n    uniform sampler2D normal_texture_a : hint_normal;\n    uniform sampler2D roughness_texture_a : hint_white;\n\n    uniform sampler2D albedo_texture_b : source_color;\n    uniform sampler2D normal_texture_b : hint_normal;\n    uniform sampler2D roughness_texture_b : hint_white;\n\n    uniform float blend_factor : hint_range(0.0, 1.0) = 0.0;\n\n    void fragment() {\n    \tvec4 albedo_a = texture(albedo_texture_a, UV);\n    \tvec4 albedo_b = texture(albedo_texture_b, UV);\n    \tALBEDO = mix(albedo_a.rgb, albedo_b.rgb, blend_factor);\n\n    \tvec3 normal_a = texture(normal_texture_a, UV).rgb;\n    \tvec3 normal_b = texture(normal_texture_b, UV).rgb;\n    \tNORMAL_MAP = mix(normal_a, normal_b, blend_factor);\n    \tNORMAL_MAP_ENABLED = true;\n\n    \tfloat roughness_a = texture(roughness_texture_a, UV).r;\n    \tfloat roughness_b = texture(roughness_texture_b, UV).r;\n    \tROUGHNESS = mix(roughness_a, roughness_b, blend_factor);\n    }\n    \n2.  **Create `MemoryFragmentResource.gd`:** Create a new GDScript file named `MemoryFragmentResource.gd` with the following content:\n    gdscript\n    class_name MemoryFragmentResource extends Resource\n\n    @export var albedo_texture: Texture2D\n    @export var normal_texture: Texture2D\n    @export var roughness_texture: Texture2D\n    # Add other PBR maps as needed, e.g., metallic_texture, ao_texture\n    \n3.  **Create Memory Fragment Resources:** In the Godot editor, right-click in the FileSystem dock -> New -> New Resource... -> Select `MemoryFragmentResource`. Create several instances of this resource (e.g., `memory_fragment_wall.tres`, `memory_fragment_floor.tres`, `memory_fragment_door.tres`). Assign distinct `Texture2D` assets (albedo, normal, roughness maps) to each resource, representing different 'memory' visual styles.\n4.  **Instantiate `SemanticBlightGenerator`:** In your game's main script or a level manager, create an instance of `SemanticBlightGenerator`:\n    gdscript\n    var blight_generator = SemanticBlightGenerator.new()\n    \n5.  **Set Blight Intensity:** Update the blight intensity based on game state (e.g., Lyra's identity erosion):\n    gdscript\n    blight_generator.set_blight_intensity(lyra_identity_loss_percentage) # Value between 0.0 and 1.0\n    \n6.  **Apply Blight to Nodes:** Call `apply_semantic_blight` on target `MeshInstance3D` or `CSGCombiner3D` nodes, passing an array of your created `MemoryFragmentResource` instances. This should be done dynamically as Lyra moves through memory-worlds or as the blight intensifies.\n    gdscript\n    # Example for a MeshInstance3D\n    var target_mesh = get_node(\"Path/To/MeshInstance3D\")\n    var fragments = [\n        load(\"res://memory_fragment_wall.tres\"),\n        load(\"res://memory_fragment_floor.tres\"),\n        load(\"res://memory_fragment_door.tres\")\n    ]\n    blight_generator.apply_semantic_blight(target_mesh, fragments)\n\n    # Example for a CSGCombiner3D\n    var target_csg = get_node(\"Path/To/CSGCombiner3D\")\n    blight_generator.apply_semantic_blight(target_csg, fragments)\n    \n\n**Behavior:**\n*   `MeshInstance3D` nodes will have their materials replaced with a `ShaderMaterial` that blends textures from two random `MemoryFragmentResource` instances, with the blend factor controlled by `_blight_intensity`.\n*   `CSGCombiner3D` nodes will have new `CSGBox3D`, `CSGSphere3D`, or `CSGCylinder3D` children added to them. These new shapes will also have blended materials and randomized operations (union/subtraction) and positions, creating structurally confusing geometry.\n*   At higher blight intensities (`> 0.3`), additional `CSGBox3D` obstacles will be spawned near the `target_node`. These are intended to create misleading paths or blockages, simulating corruption of `NavigationMesh` generation if the environment is later baked into a navmesh. These dynamically added nodes will be owned by their `parent_node` for proper scene management during runtime.",
+  "parameters": [
+    {
+      "name": "blight_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the intensity of semantic corruption, from 0.0 (no blight) to 1.0 (full blight). Affects material blending and complexity of added geometry."
+    },
+    {
+      "name": "target_node",
+      "type": "Node3D",
+      "default": "null",
+      "description": "The target 3D node (MeshInstance3D or CSGCombiner3D) to apply the semantic blight to."
+    },
+    {
+      "name": "memory_fragments",
+      "type": "Array[Resource]",
+      "default": "[]",
+      "description": "An array of MemoryFragmentResource objects, each containing PBR textures for blending."
+    }
+  ],
+  "dependencies": [
+    "res://SemanticBlightShader.gdshader",
+    "res://MemoryFragmentResource.gd"
+  ],
+  "verdict": "The world itself becomes a fractured mirror, reflecting Lyra's fading self in a dance of beautiful, terrifying illegibility.",
+  "impact": "The Semantic Blight will fundamentally transform the player's perception of the game world, turning familiar environments into treacherous, ever-shifting puzzles. It will deepen the emotional impact of Lyra's identity loss by mirroring her internal struggle with a visually and structurally disorienting external reality, forcing constant adaptation, critical thinking, and a profound sense of existential unease. Every step becomes a desperate act of deciphering a world that actively resists legibility, making survival a battle against both physical threats and the erosion of meaning itself.",
+  "score": 95,
+  "inventedAt": "2026-10-04T07:46:15.402Z"
+}

@@ -1,0 +1,44 @@
+{
+  "name": "mnemic_forge_gauntlets",
+  "label": "Mnemic Forging Gauntlets",
+  "domain": "weapons",
+  "godotFeature": "Dynamic ShaderMaterial parameters, CollisionShape3D manipulation, GDScript for procedural logic, AnimationPlayer",
+  "poeticVision": "The desperate agony of choosing which piece of your very soul to surrender for an immediate, brutal advantage. Feel the ephemeral power of a fading memory coalesce into a volatile weapon, only to shatter into oblivion moments later, taking a piece of your past with it. Every shot is a personal loss, every shield a forgotten embrace.",
+  "usage": "Attach this `mnemic_forge_gauntlets.gd` script to a `Node3D` representing Lyra's gauntlets. Configure the `projectile_scene`, `shield_scene`, `forging_animation_player_path`, and `memory_effect_shader` in the Inspector. When Lyra needs to forge an effect, call the `forge_memory_effect(memory_fragment: Dictionary)` method on this node, passing a dictionary representing the memory to be sacrificed. The gauntlets will instantiate a temporary physical effect (projectile or shield), apply dynamic visual properties via the shader, play a forging animation, and emit a `memory_purged` signal. An inventory or identity manager should connect to the `memory_purged` signal to permanently remove the corresponding memory fragment from Lyra's identity data.",
+  "parameters": [
+    {
+      "name": "projectile_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A `PackedScene` resource that serves as the base for all forged projectiles. It must contain a `MeshInstance3D` child (e.g., named 'MeshInstance3D') and a `CollisionShape3D` child (e.g., named 'CollisionShape3D')."
+    },
+    {
+      "name": "shield_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A `PackedScene` resource that serves as the base for all forged shields. It must contain a `MeshInstance3D` child (e.g., named 'MeshInstance3D') and a `CollisionShape3D` child (e.g., named 'CollisionShape3D')."
+    },
+    {
+      "name": "forging_animation_player_path",
+      "type": "NodePath",
+      "default": "\"\"",
+      "description": "The `NodePath` to an `AnimationPlayer` node that will play an animation named 'forge' when an effect is being created."
+    },
+    {
+      "name": "memory_effect_shader",
+      "type": "Shader",
+      "default": "null",
+      "description": "The `Shader` resource (e.g., a `*.gdshader` file) used to visually represent the forged memory effects. It is expected to have the following `uniform` parameters: `albedo_color` (Color), `emission_strength` (float), `distortion_intensity` (float), and `time_factor` (float)."
+    }
+  ],
+  "dependencies": [
+    "An `AnimationPlayer` node (referenced by `forging_animation_player_path`) with an animation named 'forge'.",
+    "A `PackedScene` for `projectile_scene` containing a `MeshInstance3D` and `CollisionShape3D` child.",
+    "A `PackedScene` for `shield_scene` containing a `MeshInstance3D` and `CollisionShape3D` child.",
+    "A `Shader` resource (e.g., `res://shaders/memory_effect_shader.gdshader`) with uniforms: `albedo_color`, `emission_strength`, `distortion_intensity`, `time_factor`."
+  ],
+  "verdict": "A brilliant fusion of narrative agony and tactical gameplay, transforming the very essence of self into a desperate, fleeting weapon against oblivion.",
+  "impact": "This invention will fundamentally transform combat and resource management, forcing players into agonizing, split-second decisions about which fragments of Lyra's identity to sacrifice for survival. It elevates memory shards from mere collectibles to volatile, temporary tools, deepening the emotional connection to Lyra's self-loss and making every engagement a personal, unforgettable struggle against forgetting.",
+  "score": 92,
+  "inventedAt": "2026-10-04T07:47:26.611Z"
+}

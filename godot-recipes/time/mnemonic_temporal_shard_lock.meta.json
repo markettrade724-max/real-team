@@ -1,0 +1,57 @@
+{
+  "name": "mnemonic_temporal_shard_lock",
+  "label": "Mnemonic Temporal Shard-Lock",
+  "domain": "time",
+  "godotFeature": "Godot's Input Event Queue, Timer nodes, and ShaderMaterial for global post-processing effects.",
+  "poeticVision": "The player feels the suffocating pressure of an internal clock, where every micro-hesitation isn't just a delay, but an active dissolution of Lyra's reality. The world around her doesn't just wait; it actively crumbles, tears, and blurs into fragmented unreality if the player fails to commit to an action with desperate urgency. This forces a primal, instinctual rhythm of constant decision-making, where pure reaction is the only shield against the mind's own entropy and the Silence's creeping grasp.",
+  "usage": "This script manages the 'Mnemonic Temporal Shard-Lock' mechanic, punishing player indecision with visual distortions and memory loss. To use it:\n\n1.  **Create the Shader File:** Save the following GLSL code as `res://shaders/memory_distortion.gdshader` (or any path you prefer):\n\n    glsl\n    shader_type canvas_item;\n\n    uniform float intensity : hint_range(0.0, 1.0) = 0.0;\n    uniform float distortion_speed = 5.0;\n    uniform float distortion_scale = 10.0;\n    uniform float desaturation_factor = 0.5;\n\n    void fragment() {\n    \tvec2 uv = SCREEN_UV;\n    \t\n    \t// Simple noise-based distortion\n    \tvec2 offset = vec2(\n    \t\tsin(uv.x * distortion_scale + TIME * distortion_speed) * cos(uv.y * distortion_scale * 0.5 + TIME * distortion_speed * 0.7),\n    \t\tcos(uv.y * distortion_scale + TIME * distortion_speed * 0.8) * sin(uv.x * distortion_scale * 0.6 + TIME * distortion_speed * 0.9)\n    \t);\n    \t\n    \tuv += offset * intensity * 0.02; // Apply distortion based on intensity\n    \t\n    \tvec4 color = texture(SCREEN_TEXTURE, uv);\n    \t\n    \t// Desaturation effect\n    \tfloat luma = dot(color.rgb, vec3(0.299, 0.587, 0.114));\n    \tvec3 desaturated_color = mix(color.rgb, vec3(luma), intensity * desaturation_factor);\n    \t\n    \tCOLOR = vec4(desaturated_color, color.a);\n    }\n    \n\n2.  **Set up the Visual Effect Node:**\n    *   Add a `CanvasLayer` node to your scene (e.g., as a child of your main scene root). Set its `Layer` property to a high value (e.g., 128) to ensure it renders on top.\n    *   As a child of the `CanvasLayer`, add a `ColorRect` node. Set its `Layout` to `Full Rect` (or manually adjust its `size` to cover the entire viewport).\n    *   In the `ColorRect`'s Inspector, under `CanvasItem > Material`, create a `New ShaderMaterial`. Assign the `memory_distortion.gdshader` file you created in step 1 to this `ShaderMaterial`.\n\n3.  **Attach the GDScript:**\n    *   Add a new `Node` to your scene (e.g., named `ShardLockManager`).\n    *   Attach the `mnemonic_temporal_shard_lock.gd` script to this `ShardLockManager` node.\n\n4.  **Configure the Script in the Inspector:**\n    *   **`Shader Node Path`**: Drag the `ColorRect` node (from step 2) into this field in the Inspector. This tells the script which node's material to control.\n    *   **`Critical Actions`**: Populate this array with the names of your game's critical input actions (e.g., `\"move_forward\"`, `\"attack\"`, `\"interact\"`). These are the actions the player *must* perform regularly to avoid indecision.\n    *   Adjust `Action Timer Duration`, `Indecision Memory Loss`, `Shader Intensity Factor`, and `Shader Decay Speed` to fine-tune the mechanic's difficulty and visual impact.\n\n5.  **Integrate with Game Logic:**\n    *   Connect to the `memory_integrity_changed` signal from other game systems (e.g., Lyra's health/memory bar UI, game over conditions) to react to Lyra's identity dissolving.\n    *   Connect to the `indecision_triggered` signal to potentially empower Silence hunters, dissolve nearby memory fragments, or trigger other in-game consequences as described in the 'Universe Soul'.\n\nThis setup ensures that when the player fails to perform a critical action within the `action_timer_duration`, the screen will visually distort, and Lyra's `_memory_integrity` will decrease, reflecting the constant pressure of forgetting.",
+  "parameters": [
+    {
+      "name": "action_timer_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "The maximum time (in seconds) the player can go without performing any critical action before indecision is triggered. Adjusts dynamically in editor."
+    },
+    {
+      "name": "indecision_memory_loss",
+      "type": "float",
+      "default": "0.05",
+      "description": "The amount of memory integrity (0.0 to 1.0) Lyra loses each time indecision is triggered."
+    },
+    {
+      "name": "shader_intensity_factor",
+      "type": "float",
+      "default": "0.1",
+      "description": "How much the visual distortion shader's intensity increases each time indecision is triggered."
+    },
+    {
+      "name": "shader_decay_speed",
+      "type": "float",
+      "default": "2.0",
+      "description": "The speed at which the visual distortion shader's intensity fades back to zero when no indecision is occurring (units per second)."
+    },
+    {
+      "name": "shader_node_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "The NodePath to the CanvasItem (e.g., ColorRect) that has the ShaderMaterial applied for the visual distortion effect."
+    },
+    {
+      "name": "critical_actions",
+      "type": "PackedStringArray",
+      "default": "[\"move_forward\", \"attack\", \"interact\"]",
+      "description": "An array of input action names (defined in Project Settings -> Input Map) that the player must regularly perform to avoid triggering indecision."
+    }
+  ],
+  "dependencies": [
+    "CanvasLayer",
+    "ColorRect",
+    "ShaderMaterial",
+    "Input Map actions (e.g., 'move_forward', 'attack', 'interact')",
+    "res://shaders/memory_distortion.gdshader (or custom path)"
+  ],
+  "verdict": "A relentless internal clock, this invention perfectly embodies the terror of fading identity, forcing desperate action against the encroaching void.",
+  "impact": "This mechanic will immerse the player in Lyra's desperate struggle against forgetting, transforming every moment of hesitation into a tangible loss of self. It forces a relentless, instinctual gameplay rhythm, where the internal clock is as dangerous as any external hunter. Players will constantly feel the suffocating pressure of their own mind dissolving, making every action a fight for survival and identity, creating a uniquely stressful and deeply thematic experience.",
+  "score": 92,
+  "inventedAt": "2026-10-04T07:37:37.911Z"
+}

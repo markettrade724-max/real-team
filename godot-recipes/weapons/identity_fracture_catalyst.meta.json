@@ -1,0 +1,39 @@
+{
+  "name": "identity_fracture_catalyst",
+  "label": "The Identity Fracture Catalyst",
+  "domain": "weapons",
+  "godotFeature": "Custom Resource & Signal System, Particle Systems & Shaders",
+  "poeticVision": "The player feels the terrible weight of each attack, knowing every trigger pull rips a piece of Lyra's very being away. It's an agonizing choice: gain momentary strength, but irrevocably lose a memory, a skill, a part of who she is. Every 'victory' carved out by this weapon is paid for with self-loss, intensifying the 'grief of self-loss' and the desperate race against internal dissolution.",
+  "usage": "This script defines the core logic for the 'Identity Fracture Catalyst' weapon. To use it:\n\n1.  **Create `memory_fragment.gd`:** Save the following as `res://memory_fragment.gd`:\n\tgdscript\n\t# memory_fragment.gd\n\tclass_name MemoryFragment extends Resource\n\n\t@export var fragment_id: String = \"\"\n\t@export var emotion_type: String = \"Neutral\" # e.g., \"Anger\", \"Sorrow\", \"Joy\"\n\t@export var associated_skill_potential: String = \"None\" # e.g., \"Dash\", \"Shield\", \"Heal\"\n\t@export var visual_theme: String = \"Default\" # e.g., \"RedGlow\", \"BlueMist\", \"GreenSpark\"\n\t@export var damage_modifier: float = 1.0\n\t@export var identity_wound_type: String = \"MinorSkillLoss\" # e.g., \"MinorSkillLoss\", \"MajorStatDebuff\", \"NarrativePathClosure\"\n\t@export var wound_description: String = \"A piece of self is lost.\"\n\t\n\tCreate instances of this resource (e.g., `res://fragments/anger_shard.tres`) via the Godot editor (Right-click in FileSystem -> New -> Resource -> MemoryFragment).\n\n2.  **Create `catalyst_effect.gdshader`:** Save the following as `res://shaders/catalyst_effect.gdshader`:\n\tglsl\n\t// catalyst_effect.gdshader\n\tshader_type spatial;\n\trender_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n\tuniform sampler2D albedo_texture : source_color;\n\tuniform vec4 albedo_color : source_color = vec4(1.0);\n\tuniform float metallic : hint_range(0,1) = 0.0;\n\tuniform float roughness : hint_range(0,1) = 1.0;\n\tuniform sampler2D normal_texture : hint_normal;\n\tuniform float normal_scale : hint_range(-16,16) = 1.0;\n\n\tuniform vec4 emotion_color : source_color = vec4(1.0);\n\tuniform float intensity : hint_range(0.0, 1.0) = 0.0;\n\n\tvoid fragment() {\n\t\tvec4 albedo_tex = texture(albedo_texture, UV);\n\t\tALBEDO = (albedo_color.rgb * albedo_tex.rgb) + (emotion_color.rgb * intensity);\n\t\tMETALLIC = metallic;\n\t\tROUGHNESS = roughness;\n\t\tNORMAL_MAP = texture(normal_texture, UV).rgb;\n\t\tNORMAL_MAP_DEPTH = normal_scale;\n\t\tEMISSION = emotion_color.rgb * intensity * 2.0; // Make it glow\n\t}\n\t\n\n3.  **Create `particles_effect.gdshader`:** Save the following as `res://shaders/particles_effect.gdshader`:\n\tglsl\n\t// particles_effect.gdshader\n\tshader_type particles;\n\n\tuniform vec4 emission_color : source_color = vec4(1.0);\n\tuniform float speed_scale : hint_range(0.1, 5.0) = 1.0;\n\n\tvoid start() {\n\t\tVELOCITY = normalize(VELOCITY) * 5.0 * speed_scale;\n\t\tCOLOR = emission_color;\n\t}\n\n\tvoid process() {\n\t\tCOLOR.a = 1.0 - (LIFETIME / TOTAL_LIFETIME); // Fade out\n\t\tVELOCITY *= 0.99; // Simple drag\n\t}\n\t\n\n4.  **Scene Setup:**\n    *   Add a `Node3D` to your scene (e.g., as a child of Lyra's character). Attach `identity_fracture_catalyst.gd` to it.\n    *   Add a `MeshInstance3D` as a child of the catalyst node (this is your weapon's visual model). Create a new `ShaderMaterial` for its `Material Override` (or a surface material) and assign `catalyst_effect.gdshader` to it. Assign this `ShaderMaterial` to the `weapon_material` property of the `IdentityFractureCatalyst` script.\n    *   Add a `GPUParticles3D` node as a child of the catalyst node. Create a new `ShaderMaterial` for its `Process Material` and assign `particles_effect.gdshader` to it. Assign this `GPUParticles3D` node to the `particles` property of the `IdentityFractureCatalyst` script.\n\n5.  **Identity Management:**\n    *   Create a central `LyraIdentityManager` script (e.g., on Lyra's root node). Connect to the `memory_fragment_consumed` signal from the `IdentityFractureCatalyst` instance:\n\t\tgdscript\n\t\t# Example LyraIdentityManager.gd\n\t\textends Node\n\t\tfunc _ready():\n\t\t\t# Assuming 'Catalyst' is the name of your IdentityFractureCatalyst node\n\t\t\tvar catalyst_node = get_node(\"Path/To/Catalyst\") \n\t\t\tif catalyst_node:\n\t\t\t\tcatalyst_node.memory_fragment_consumed.connect(_on_memory_fragment_consumed)\n\t\t\telse:\n\t\t\t\tpush_warning(\"LyraIdentityManager: Catalyst node not found.\")\n\n\t\tfunc _on_memory_fragment_consumed(fragment_data: Dictionary, wound_type: String):\n\t\t\tprint(\"Memory fragment consumed: \", fragment_data.fragment_id)\n\t\t\tprint(\"Identity wound inflicted: \", wound_type, \" - \", fragment_data.wound_description)\n\t\t\t# Implement logic here to apply the identity wound:\n\t\t\t# e.g., remove a skill, apply a debuff, close a narrative path.\n\t\t\tmatch wound_type:\n\t\t\t\t\"MinorSkillLoss\":\n\t\t\t\t\t_lose_skill(fragment_data.associated_skill_potential)\n\t\t\t\t\"MajorStatDebuff\":\n\t\t\t\t\t_apply_stat_debuff(\"strength\", -0.1)\n\t\t\t\t\"NarrativePathClosure\":\n\t\t\t\t\t_close_narrative_path(fragment_data.fragment_id)\n\n\t\tfunc _lose_skill(skill_name: String):\n\t\t\tprint(\"Lost skill: \", skill_name)\n\t\t\t# Your game's skill removal logic\n\t\tfunc _apply_stat_debuff(stat: String, amount: float):\n\t\t\tprint(\"Applied debuff to \", stat, \": \", amount)\n\t\t\t# Your game's stat modification logic\n\t\tfunc _close_narrative_path(path_id: String):\n\t\t\tprint(\"Closed narrative path: \", path_id)\n\t\t\t# Your game's narrative state modification logic\n\t\t\n\n6.  **Gameplay Loop:**\n    *   When Lyra picks up a memory fragment, call `catalyst_instance.equip_fragment(fragment_resource)`.\n    *   When the player triggers the weapon, call `catalyst_instance.activate_catalyst()` to deal damage and inflict the identity wound.",
+  "parameters": [
+    {
+      "name": "base_damage",
+      "type": "float",
+      "default": "10.0",
+      "description": "Base damage dealt by the catalyst before fragment modifiers."
+    },
+    {
+      "name": "particles",
+      "type": "GPUParticles3D",
+      "default": "null",
+      "description": "Reference to the GPUParticles3D node for activation effects. Assign in the editor."
+    },
+    {
+      "name": "weapon_material",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "Reference to the ShaderMaterial applied to the weapon's mesh. Assign in the editor."
+    }
+  ],
+  "dependencies": [
+    "memory_fragment.gd",
+    "shaders/catalyst_effect.gdshader",
+    "shaders/particles_effect.gdshader",
+    "GPUParticles3D (node)",
+    "MeshInstance3D (node)"
+  ],
+  "verdict": "A weapon born of desperation, it carves victories from the very essence of self, turning every triumph into a poignant elegy for what Lyra once was.",
+  "impact": "This invention transforms combat from a simple damage exchange into a profound, agonizing dilemma. Every attack becomes a conscious sacrifice of Lyra's very self, forcing players to constantly weigh immediate survival against the irreversible erosion of identity. It deepens the 'grief of self-loss' by making it an active, player-driven mechanic, ensuring that every victory feels earned but also deeply costly, intensifying the game's core themes of memory, identity, and desperate survival.",
+  "score": 92,
+  "inventedAt": "2026-10-04T07:35:12.993Z"
+}

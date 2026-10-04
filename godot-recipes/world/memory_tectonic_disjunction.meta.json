@@ -1,0 +1,77 @@
+{
+  "name": "memory_tectonic_disjunction",
+  "label": "Memory Tectonic Disjunction",
+  "domain": "world",
+  "godotFeature": "Dynamic Mesh Generation (ArrayMesh, SurfaceTool), PhysicsBody3D, NavigationRegion3D, ShaderMaterial",
+  "poeticVision": "Feeling the very ground beneath your feet actively betray you, not just crumbling, but *forgetting* its form and function. It's the constant, visceral dread of reality itself dissolving into chasms or reforming into treacherous new paths, demanding split-second adaptation as familiar surfaces become unstable. Every step is a gamble against the world's amnesia, a harrowing reminder that Lyra's own identity is equally fragile and transient.",
+  "usage": "Attach this `memory_tectonic_disjunction.gd` script to a `Node3D` in your scene. In the Godot editor, assign a `BoxMesh` (or similar) to the `base_tile_mesh` property and create a new `ShaderMaterial` (using the `memory_erosion_shader.gdshader` code provided) for the `erosion_shader` property. Ensure your player character is in the 'player' group and any Silence hunters are in the 'hunters' group. The script will automatically generate the grid, manage tile coherence, update visuals and collisions, and dynamically add/remove navigation obstacles. Call the `_on_memory_shard_recovered(world_pos: Vector3)` method when Lyra recovers a memory shard, passing the shard's world position to reinforce nearby ground. Call `anchor_ground(world_pos: Vector3, cost: int)` when Lyra uses an ability to stabilize ground, passing the target world position and the ability's cost.",
+  "parameters": [
+    {
+      "name": "grid_size",
+      "type": "Vector2i",
+      "default": "Vector2i(20, 20)",
+      "description": "The dimensions (width, depth) of the tile grid in number of tiles."
+    },
+    {
+      "name": "tile_size",
+      "type": "float",
+      "default": "2.0",
+      "description": "The world-space size of each individual tile (e.g., 2.0 units for a 2x2 tile)."
+    },
+    {
+      "name": "initial_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "The starting memory coherence value for all tiles (1.0 is fully coherent, 0.0 is completely eroded)."
+    },
+    {
+      "name": "coherence_decay_rate",
+      "type": "float",
+      "default": "0.05",
+      "description": "The rate at which tiles naturally lose memory coherence per second."
+    },
+    {
+      "name": "hunter_decay_multiplier",
+      "type": "float",
+      "default": "2.0",
+      "description": "A multiplier applied to the decay rate when a Silence hunter is in proximity to a tile."
+    },
+    {
+      "name": "shard_reinforce_amount",
+      "type": "float",
+      "default": "0.3",
+      "description": "The amount of coherence restored to tiles when Lyra recovers a memory shard."
+    },
+    {
+      "name": "min_coherence_for_passable",
+      "type": "float",
+      "default": "0.2",
+      "description": "The minimum coherence value a tile must have to be considered passable for navigation and collision."
+    },
+    {
+      "name": "erosion_shader",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "The ShaderMaterial used to visually distort and fade tiles based on their coherence."
+    },
+    {
+      "name": "base_tile_mesh",
+      "type": "Mesh",
+      "default": "null",
+      "description": "The base Mesh (e.g., a BoxMesh) that will be used to create the ArrayMesh for each tile. Its vertices will be physically modified."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D",
+    "CollisionShape3D",
+    "BoxShape3D",
+    "NavigationRegion3D",
+    "NavigationServer3D",
+    "ArrayMesh",
+    "memory_erosion_shader.gdshader"
+  ],
+  "verdict": "The ground itself becomes a treacherous echo of a fading mind, forcing Lyra to rebuild her path as she reclaims her very self.",
+  "impact": "The player will experience constant environmental pressure, where the very path forward is unreliable and actively hostile. Every step becomes a calculated risk, forcing rapid decision-making and resource management (memory shards) to literally rebuild the world beneath their feet. This creates a profound sense of urgency and vulnerability, directly mirroring Lyra's internal struggle with identity loss. The world's amnesia becomes a tangible, deadly threat, making traversal a core, unforgettable challenge.",
+  "score": 92,
+  "inventedAt": "2026-10-04T07:33:44.113Z"
+}
