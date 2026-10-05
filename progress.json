@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-10-04T13:04:18.140Z",
-  "current": null,
+  "updatedAt": "2026-10-05T12:10:45.603Z",
+  "current": {
+    "type": "episode",
+    "episode": 39,
+    "id": null,
+    "startedAt": "2026-10-05T11:55:51.311Z",
+    "updatedAt": "2026-10-05T12:10:45.603Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 39,
     "totalEpisodes": 39,
@@ -1107,6 +1114,35 @@
         "startedAt": "2026-09-30T10:50:37.891Z",
         "completedAt": "2026-09-30T13:27:50.185Z",
         "failReason": null
+      },
+      "39": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-10-05T11:58:04.578Z",
+            "title": "The Price of Holding On",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-10-05T11:59:10.669Z",
+            "title": "The Price of Holding On",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-10-05T12:00:00.923Z",
+            "title": "The Price of Holding On",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-10-05T11:55:51.311Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
