@@ -30,19 +30,6 @@ signal player_health_changed(new_health: int, max_health: int) # New signal for 
 
 func _ready() -> void:
 	add_to_group("player")
-	
-	# Verify required input actions are defined
-	var required_actions = ["fire", "jump", "move_left", "move_right", "move_forward", "move_backward"]
-	var all_actions_present = true
-	for action in required_actions:
-		if not InputMap.has_action(action):
-			push_error("Input action '%s' is not defined in Project Settings -> Input Map. Player movement/actions will not work." % action)
-			all_actions_present = false
-	
-	# If critical actions are missing, consider disabling input processing for the player
-	# if not all_actions_present:
-	# 	set_process_input(false) # This might be too aggressive, just reporting is often enough.
-
 	# Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # REMOVED: Mouse mode is now managed by main_scene.gd
 	current_health = max_health
 	emit_signal("player_health_changed", current_health, max_health) # Initial health update for HUD

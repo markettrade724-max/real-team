@@ -38,14 +38,6 @@ var _victory_label: Label
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	# Verify required input actions are defined
-	var required_actions_main = ["ui_cancel", "ui_accept"]
-	for action in required_actions_main:
-		if not InputMap.has_action(action):
-			push_error("Input action '%s' is not defined in Project Settings -> Input Map. Pause/Restart functionality will not work." % action)
-			# Optionally, disable relevant UI elements or game states here if critical.
-			# For now, just a warning.
-
 	# Get references to labels using exported NodePaths
 	_score_label = get_node_or_null(hud_score_label_path)
 	if not _score_label: push_warning("HUD ScoreLabel not found at path: %s. Score display will not work." % hud_score_label_path)
