@@ -30,7 +30,7 @@ signal player_health_changed(new_health: int, max_health: int) # New signal for 
 
 func _ready() -> void:
 	add_to_group("player")
-	# Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # REMOVED: Mouse mode is now managed by main_scene.gd
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	current_health = max_health
 	emit_signal("player_health_changed", current_health, max_health) # Initial health update for HUD
 	

@@ -103,8 +103,7 @@ func _set_game_state(new_state: GameState):
 	if victory_layer: victory_layer.hide() # New: Hide victory layer
 	
 	get_tree().paused = false # Default to not paused, states will override if needed
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE) # Default to visible for UI states
-
+	
 	# Removed the disconnect/reconnect logic for child_entered_tree from here.
 	# It is now connected once in _ready() and remains connected.
 
@@ -119,24 +118,20 @@ func _set_game_state(new_state: GameState):
 	        # This is still needed for enemies that exist at scene load, before _ready() finishes.
 	        for enemy in get_tree().get_nodes_in_group("enemy"):
 	            _connect_enemy_signals(enemy)
-	        Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # Capture mouse for gameplay
 	        
 	    GameState.PAUSED:
 	        get_tree().paused = true
 	        if pause_menu_layer: pause_menu_layer.show()
-	        Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE) # Release mouse for pause menu
 	        
 	    GameState.GAME_OVER:
 	        get_tree().paused = true # Pause the game on Game Over
 	        if game_over_layer: game_over_layer.show() # Show Game Over screen
 	        _update_game_over_display()
-	        Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE) # Release mouse for game over screen
 	        
 	    GameState.VICTORY: # New: Victory state handling
 	        get_tree().paused = true # Pause the game on Victory
 	        if victory_layer: victory_layer.show() # Show Victory screen
 	        _update_victory_display()
-	        Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE) # Release mouse for victory screen
 
 func _spawn_player_if_needed():
 	# Spawn player if not already present or if returning from main menu

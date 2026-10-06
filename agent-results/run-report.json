@@ -1,22 +1,22 @@
 {
-  "runId": "2026-10-05T1536",
-  "mode": "screenplay-production",
+  "runId": "2026-10-06T0815",
+  "mode": "game-fix",
   "success": true,
-  "timestamp": "2026-10-05T15:41:52.319Z",
-  "totalDuration": "326.5s",
+  "timestamp": "2026-10-06T08:17:27.465Z",
+  "totalDuration": "100.0s",
   "budget": {
-    "total": 12,
+    "total": 3,
     "limit": 40,
-    "left": 28,
+    "left": 37,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 12,
+        "total": 3,
         "limit": 20,
-        "left": 8,
+        "left": 17,
         "exhausted": false,
         "library": 0,
-        "agents": 12
+        "agents": 3
       },
       {
         "key": "KEY_2",
@@ -44,55 +44,15 @@
     "gamesDone": 1
   },
   "agents": {
-    "screenplay": {
+    "gamefix": {
       "success": true,
-      "duration": "—",
-      "error": null
-    },
-    "voice": {
-      "success": true,
-      "duration": "903ms",
-      "error": null
-    },
-    "scene": {
-      "success": true,
-      "duration": "2ms",
-      "error": null
-    },
-    "visual": {
-      "success": true,
-      "duration": "4ms",
-      "error": null
-    },
-    "subtitle": {
-      "success": true,
-      "duration": "19ms",
-      "error": null
-    },
-    "music": {
-      "success": true,
-      "duration": "6ms",
-      "error": null
-    },
-    "edit": {
-      "success": true,
-      "duration": "278.9s",
-      "error": null
-    },
-    "trailer": {
-      "success": true,
-      "duration": "40.1s",
-      "error": null
-    },
-    "upload": {
-      "success": true,
-      "duration": "6.5s",
+      "duration": "96.9s",
       "error": null
     }
   },
   "summary": {
-    "total": 9,
-    "passed": 9,
+    "total": 1,
+    "passed": 1,
     "failed": 0
   }
 }

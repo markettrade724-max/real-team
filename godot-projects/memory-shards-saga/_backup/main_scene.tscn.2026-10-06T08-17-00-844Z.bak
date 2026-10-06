@@ -39,14 +39,15 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -100.0
-offset_top = -12.0
+offset_top = -20.0
 offset_right = 100.0
-offset_bottom = 12.0
+offset_bottom = 20.0
 text = "PAUSED"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HUD" type="CanvasLayer" parent="UI"]
+visible = false # Script will show this when in gameplay
 
 [node name="ScoreLabel" type="Label" parent="UI/HUD"]
 anchors_preset = 0
@@ -74,9 +75,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
-offset_top = -30.0
+offset_top = -50.0
 offset_right = 150.0
-offset_bottom = 30.0
+offset_bottom = 50.0
 text = "GAME OVER\nFinal Score: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -91,9 +92,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
-offset_top = -30.0
+offset_top = -50.0
 offset_right = 150.0
-offset_bottom = 30.0
+offset_bottom = 50.0
 text = "VICTORY!\nFinal Score: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
