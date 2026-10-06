@@ -27,7 +27,7 @@ enum GameState {
 
 var current_state: GameState = GameState.GAMEPLAY # Changed: Start directly in gameplay
 var _player_instance: CharacterBody3D # To hold the spawned player
-var score: int = 0 # New: Score variable, incremented when an enemy dies
+var score: int = 0 # New: Score variable
 
 # References to UI Labels
 var _score_label: Label
@@ -184,7 +184,7 @@ func _spawn_player_if_needed():
 
 func _on_player_died():
 	print("Game Over! Player died.")
-	_set_game_state(GameState.GAME_OVER) # Lose condition: set game state to GAME_OVER
+	_set_game_state(GameState.GAME_OVER)
 
 func _on_player_health_changed(new_health: int, max_health: int):
 	# Update a UI element on the hud_layer with player health
@@ -195,16 +195,16 @@ func _on_player_health_changed(new_health: int, max_health: int):
 # New: Score related functions
 func _update_score_display():
 	if _score_label:
-		_score_label.text = "Score: %d" % score # Update score label
+		_score_label.text = "Score: %d" % score
 
 # This function should be connected to an enemy's 'died' signal.
 # Example: enemy_instance.died.connect(_on_enemy_died)
 func _on_enemy_died(points: int = 10):
-	score += points # Increment score
+	score += points
 	_update_score_display()
 	# The enemy should remove itself from the "enemy" group or queue_free() itself
 	# so that get_tree().get_nodes_in_group("enemy").size() updates correctly for the win condition.
-	_check_win_condition() # Check for win condition after an enemy dies
+	_check_win_condition()
 	print("Enemy died! Score: %d" % score)
 
 func _check_win_condition():
@@ -212,13 +212,13 @@ func _check_win_condition():
 	var remaining_enemies = get_tree().get_nodes_in_group("enemy").size()
 	print("Remaining enemies: %d" % remaining_enemies)
 	if remaining_enemies == 0:
-		_set_game_state(GameState.VICTORY) # Win condition: set game state to VICTORY
+		_set_game_state(GameState.VICTORY)
 
 # New: Game Over and Victory display functions
 func _update_game_over_display():
 	if _game_over_label:
-		_game_over_label.text = "GAME OVER\nFinal Score: %d" % score # Update game over label
+		_game_over_label.text = "GAME OVER\nFinal Score: %d" % score
 
 func _update_victory_display():
 	if _victory_label:
-		_victory_label.text = "VICTORY!\nFinal Score: %d" % score # Update victory label
+		_victory_label.text = "VICTORY!\nFinal Score: %d" % score
