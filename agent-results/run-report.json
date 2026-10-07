@@ -1,22 +1,22 @@
 {
-  "runId": "2026-10-07T1126",
+  "runId": "2026-10-07T1415",
   "mode": "screenplay-production",
   "success": false,
-  "timestamp": "2026-10-07T11:34:52.247Z",
-  "totalDuration": "527.5s",
+  "timestamp": "2026-10-07T14:32:34.596Z",
+  "totalDuration": "1025.4s",
   "budget": {
-    "total": 12,
+    "total": 17,
     "limit": 40,
-    "left": 28,
+    "left": 23,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 12,
+        "total": 17,
         "limit": 20,
-        "left": 8,
+        "left": 3,
         "exhausted": false,
         "library": 0,
-        "agents": 12
+        "agents": 17
       },
       {
         "key": "KEY_2",
@@ -45,14 +45,44 @@
   },
   "agents": {
     "screenplay": {
+      "success": true,
+      "duration": "—",
+      "error": null
+    },
+    "voice": {
+      "success": true,
+      "duration": "12.7s",
+      "error": null
+    },
+    "scene": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "visual": {
+      "success": true,
+      "duration": "18.2s",
+      "error": null
+    },
+    "subtitle": {
+      "success": true,
+      "duration": "12ms",
+      "error": null
+    },
+    "music": {
+      "success": true,
+      "duration": "6ms",
+      "error": null
+    },
+    "production": {
       "success": false,
       "duration": "—",
-      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
+      "error": "Timeout after 600s"
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 0,
+    "total": 7,
+    "passed": 6,
     "failed": 1
   }
 }
