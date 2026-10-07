@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-10-05T15:41:52.310Z",
-  "current": null,
+  "updatedAt": "2026-10-07T11:34:52.243Z",
+  "current": {
+    "type": "episode",
+    "episode": 40,
+    "id": null,
+    "startedAt": "2026-10-07T11:26:04.746Z",
+    "updatedAt": "2026-10-07T11:34:52.243Z",
+    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+  },
   "series": {
     "nextEpisode": 40,
     "totalEpisodes": 40,
@@ -1136,6 +1143,26 @@
         "startedAt": "2026-10-05T11:55:51.311Z",
         "completedAt": "2026-10-05T15:41:52.310Z",
         "failReason": null
+      },
+      "40": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone"
+        ],
+        "pendingSteps": [
+          "scenes",
+          "dialogue"
+        ],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-10-07T11:32:35.008Z",
+            "title": "Fractured Resonance",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-10-07T11:26:04.746Z",
+        "completedAt": null,
+        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
       }
     }
   },
