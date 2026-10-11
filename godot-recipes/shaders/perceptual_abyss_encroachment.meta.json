@@ -1,0 +1,67 @@
+{
+  "name": "perceptual_abyss_encroachment",
+  "label": "Perceptual Abyss Encroachment",
+  "domain": "shaders",
+  "godotFeature": "Godot 4.6.2 ShaderMaterial (spatial and post-process), Viewport, world-space coordinates, noise textures",
+  "poeticVision": "The player feels their world actively, physically shrinking around them, devoured by an invisible void as their identity falters or the Silence closes in. It's a creeping claustrophobia, a tangible loss of reality at the edges of their perception, making every step into the remaining 'safe' space feel desperate. The environment isn't just deteriorating; it's being aggressively unmade *around* Lyra, manifesting the existential threat of forgetting.",
+  "usage": "1.  Create a `ShaderMaterial` resource in Godot.\n2.  Assign this `.gdshader` file to the `Shader` property of the `ShaderMaterial`.\n3.  Apply this `ShaderMaterial` to the `Material` property of `MeshInstance3D` nodes (or other `GeometryInstance3D` derived nodes like `CSGBox3D`) that should be affected by the perceptual abyss.\n4.  Ensure a `NoiseTexture` resource is assigned to the `noise_texture` uniform in the `ShaderMaterial` properties (or via script).\n5.  In a controlling GDScript (e.g., attached to Lyra's player character or a game manager), update the shader uniforms dynamically:\n    *   `material.set_shader_parameter(\"abyss_center_world_pos\", lyra_node.global_transform.origin)`: Pass Lyra's current world position.\n    *   `material.set_shader_parameter(\"identity_integrity\", current_identity_value)`: Pass a float representing Lyra's identity integrity (0.0 to 1.0). This value will directly control the size of the 'safe' zone around Lyra.\n    *   Adjust `base_safe_radius`, `abyss_falloff`, `abyss_color`, `noise_scale`, and `noise_intensity` either in the editor or via script to fine-tune the visual effect.",
+  "parameters": [
+    {
+      "name": "abyss_center_world_pos",
+      "type": "vec3",
+      "default": "vec3(0.0)",
+      "description": "World-space position of the center of the 'safe' zone (typically Lyra's position). The abyss expands outwards from this point as identity falters."
+    },
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "A value from 0.0 (fully eroded, no identity) to 1.0 (full integrity, no erosion). Controls the size of the safe zone around the abyss_center_world_pos."
+    },
+    {
+      "name": "base_safe_radius",
+      "type": "float",
+      "default": "20.0",
+      "description": "The maximum radius of the safe zone when identity_integrity is 1.0. The actual safe radius scales with identity_integrity."
+    },
+    {
+      "name": "abyss_falloff",
+      "type": "float",
+      "default": "5.0",
+      "description": "The world-space width of the transition zone where the environment smoothly fades into the abyss."
+    },
+    {
+      "name": "abyss_color",
+      "type": "vec4",
+      "default": "vec4(0.0, 0.0, 0.1, 1.0)",
+      "description": "The color of the void that devours the environment. This color is blended with the original material's albedo."
+    },
+    {
+      "name": "noise_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "A grayscale noise texture (e.g., Perlin, Simplex) to create an organic, uneven erosion frontier instead of a perfect circle."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "0.1",
+      "description": "Scales the UV coordinates for sampling the noise texture, controlling the 'size' or frequency of the noise patterns on the erosion edge."
+    },
+    {
+      "name": "noise_intensity",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls how much the noise texture distorts the erosion edge. Higher values create a more jagged and irregular abyss boundary."
+    }
+  ],
+  "dependencies": [
+    "ShaderMaterial",
+    "MeshInstance3D",
+    "NoiseTexture"
+  ],
+  "verdict": "The world itself weeps as memory fades, a tangible void consuming the very ground beneath Lyra's desperate feet.",
+  "impact": "This invention will fundamentally transform the player's perception of danger and identity loss. The world itself becomes a dynamic, hostile entity, constantly shrinking and dissolving around Lyra, creating a pervasive sense of claustrophobia and urgency. Every step outside the shrinking safe zone is a tangible risk, making the fight for memory a literal struggle for ground. It ensures the existential threat of forgetting is always visually present and physically oppressive, forcing players into a relentless, desperate race against the void.",
+  "score": 92,
+  "inventedAt": "2026-10-11T08:04:36.510Z"
+}

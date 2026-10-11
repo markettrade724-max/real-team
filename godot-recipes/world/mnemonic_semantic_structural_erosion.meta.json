@@ -1,0 +1,32 @@
+{
+  "name": "mnemonic_semantic_structural_erosion",
+  "label": "Semantic Structural Erosion",
+  "domain": "world",
+  "godotFeature": "CSGPolygon3D, NavigationServer3D",
+  "poeticVision": "The player feels the very ground beneath Lyra's feet not merely crumbling, but actively re-forming into alien, hostile geometry as her semantic understanding of the world dissolves. Witnessing cherished memory-structures contort into impassable barriers or treacherous traps, the world becomes a terrifying, live monument to her own self-destruction, each structural shift a visceral reminder of what truly defines her slipping away.",
+  "usage": "Attach this script to a central manager node in your scene. Define memory categories and their associated erosion rules in `_initialize_erosion_rules`. Register `CSGCombiner3D` nodes that represent memory structures using `register_erosion_target(category, csg_combiner_node)`. When Lyra loses a memory, emit the `memory_lost` signal (or call `trigger_erosion_event`) with the relevant `memory_category` and an optional specific `CSGCombiner3D` node to be affected. The system will dynamically add/subtract `CSGPolygon3D` children to the combiner, altering the geometry, and then trigger a re-bake of the associated `NavigationRegion3D` to update AI pathing.",
+  "parameters": [
+    {
+      "name": "memory_category",
+      "type": "String",
+      "default": "null",
+      "description": "The semantic category of the memory lost (e.g., 'trust', 'home'). This determines which erosion rule is applied."
+    },
+    {
+      "name": "erosion_target_node",
+      "type": "CSGCombiner3D",
+      "default": "null",
+      "description": "The specific CSGCombiner3D node representing the memory structure to be eroded. If null, all registered targets for the given category will be affected."
+    }
+  ],
+  "dependencies": [
+    "CSGCombiner3D",
+    "CSGPolygon3D",
+    "NavigationRegion3D",
+    "NavigationServer3D"
+  ],
+  "verdict": "The world itself weeps and contorts, a living monument to Lyra's unraveling self, making every step a desperate fight against oblivion.",
+  "impact": "This mechanic fundamentally transforms the player's interaction with the environment. It's not just a backdrop; the world itself becomes an active antagonist, a physical manifestation of Lyra's internal struggle. Every lost memory doesn't just reduce a stat; it literally reshapes the battlefield, creating new obstacles, opening treacherous paths, or sealing off escape routes. This creates a constant, visceral tension where the player is fighting not only external hunters but also the very ground beneath their feet, which is actively betraying Lyra as her identity unravels. It makes the abstract concept of 'forgetting' a tangible, terrifying force, perfectly aligning with the universe's core themes of survival and self-loss.",
+  "score": 95,
+  "inventedAt": "2026-10-11T08:11:39.454Z"
+}

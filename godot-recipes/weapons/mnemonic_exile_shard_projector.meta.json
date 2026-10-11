@@ -1,0 +1,50 @@
+{
+  "name": "mnemonic_exile_shard_projector",
+  "label": "Exile Shard Projector",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterials (Custom Shaders), PhysicsServer3D",
+  "poeticVision": "Feel the gut-wrenching decision to weaponize a precious, fading fragment of your own past. Watch in a blend of horror and grim satisfaction as an enemy convulses, momentarily ensnared by the distorted echo of your memory, slowing their pursuit, but knowing that piece of 'you' is now corrupted and lost forever.",
+  "usage": "This 'ExileShardProjector' script is attached to a Node3D (e.g., a weapon node or a child of the player character). It requires a 'MemoryShardProjectile.tscn' scene (a RigidBody3D with a MeshInstance3D child) and a 'MemoryShard' resource definition. The 'MemoryDistortionShader.gdshader' is used by the enemy's material when debuffed.\n\n1.  **Create `memory_shard.gd`:**\n    gdscript\n    # filename: memory_shard.gd\n    class_name MemoryShard extends Resource\n    @export var shard_id: String = \"\"\n    @export var shard_data: Dictionary = {}\n    \n2.  **Create `memory_shard_projectile.gd`:**\n    gdscript\n    # filename: memory_shard_projectile.gd\n    class_name MemoryShardProjectile extends RigidBody3D\n    @export var explosion_effect_scene: PackedScene # Optional: for visual impact\n    var shard_resource: MemoryShard\n    var damage_amount: float\n    var debuff_duration: float\n\n    func _ready() -> void:\n    \tbody_entered.connect(_on_body_entered)\n    \t# Optional: Add a timer to queue_free if it doesn't hit anything after a while\n    \tset_as_top_level(true) # Ensures projectile is not parented to the player after launch\n\n    func _on_body_entered(body: Node3D) -> void:\n    \tif body.has_method(\"take_damage\"):\n    \t\tbody.take_damage(damage_amount)\n    \tif body.has_method(\"apply_memory_debuff\"):\n    \t\tbody.apply_memory_debuff(shard_resource.shard_data, debuff_duration)\n\n    \t# Optional: Instantiate explosion effect\n    \t# if explosion_effect_scene:\n    \t# \tvar effect = explosion_effect_scene.instantiate()\n    \t# \tget_tree().root.add_child(effect)\n    \t# \teffect.global_transform.origin = global_transform.origin\n\n    \tqueue_free()\n    \n3.  **Create `memory_shard_projectile.tscn`:**\n    *   Create a new scene, add a `RigidBody3D` as root.\n    *   Attach `memory_shard_projectile.gd` to it.\n    *   Add a `MeshInstance3D` (e.g., a SphereMesh) and a `CollisionShape3D` (e.g., a SphereShape) as children.\n    *   Save this scene to `res://memory_shard_projectile.tscn` (or update `projectile_scene_path` in `ExileShardProjector`).\n4.  **Create `memory_distortion_shader.gdshader`:**\n    glsl\n    # filename: memory_distortion_shader.gdshader\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform float time;\n    uniform vec4 shard_color : source_color = vec4(0.8, 0.2, 0.9, 1.0);\n    uniform float distortion_strength : hint_range(0.0, 0.2) = 0.05;\n    uniform float flicker_intensity : hint_range(0.0, 1.0) = 0.5;\n    uniform float flicker_speed : hint_range(1.0, 20.0) = 10.0;\n\n    void vertex() {\n    \tvec3 offset = sin(VERTEX.xyz * 10.0 + time * flicker_speed) * distortion_strength;\n    \tVERTEX += offset;\n    }\n\n    void fragment() {\n    \tvec2 distorted_uv = UV + sin(UV * 15.0 + time * flicker_speed) * distortion_strength * 0.5;\n    \tvec4 original_albedo = texture(TEXTURE, distorted_uv);\n    \tfloat flicker = sin(time * flicker_speed) * 0.5 + 0.5;\n    \tALBEDO = mix(original_albedo.rgb, shard_color.rgb, flicker * flicker_intensity);\n    \tALPHA = original_albedo.a;\n    }\n    \n5.  **Integrate with Enemy:** Your enemy script (e.g., `enemy_base.gd`) should have `take_damage(amount: float)` and `apply_memory_debuff(shard_data: Dictionary, duration: float)` methods. The `apply_memory_debuff` method would:\n    *   Reduce enemy speed/apply confusion.\n    *   Create a new `ShaderMaterial` using `memory_distortion_shader.gdshader`.\n    *   Set shader uniforms like `shard_color` (perhaps based on `shard_data` if you want unique colors per memory type) and `time` (using `_process(delta)`).\n    *   Apply this `ShaderMaterial` to the enemy's `MeshInstance3D`.\n    *   Use a `Timer` to revert the material and debuff after `duration`.\n6.  **Player Usage:** From your player script, call `projector_node.fire_shard(current_memory_shard_resource)` when the player uses the weapon. Remember to remove `current_memory_shard_resource` from the player's inventory after calling `fire_shard` to reflect its consumption.",
+  "parameters": [
+    {
+      "name": "projectile_scene_path",
+      "type": "String",
+      "default": "res://memory_shard_projectile.tscn",
+      "description": "Path to the PackedScene for the MemoryShardProjectile."
+    },
+    {
+      "name": "projectile_speed",
+      "type": "float",
+      "default": "50.0",
+      "description": "The initial speed at which the memory shard projectile is launched."
+    },
+    {
+      "name": "projectile_damage",
+      "type": "float",
+      "default": "25.0",
+      "description": "The amount of physical damage the projectile deals on impact."
+    },
+    {
+      "name": "debuff_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration (in seconds) for which the memory distortion debuff is applied to the enemy."
+    },
+    {
+      "name": "muzzle_node_path",
+      "type": "NodePath",
+      "default": "Muzzle",
+      "description": "The NodePath to a child Node3D that represents the projectile's launch point (muzzle). If not found, the projector's own transform is used."
+    }
+  ],
+  "dependencies": [
+    "memory_shard.gd (Resource)",
+    "memory_shard_projectile.gd (RigidBody3D script)",
+    "memory_shard_projectile.tscn (PackedScene)",
+    "memory_distortion_shader.gdshader (ShaderMaterial)"
+  ],
+  "verdict": "A desperate weapon born of self-sacrifice, it carves survival from the very essence of who you are, leaving an indelible scar on memory's fragile canvas.",
+  "impact": "The player will constantly weigh immediate survival against the permanent erosion of their identity, transforming every combat encounter into a profound, personal struggle against self-loss. This mechanic forces a deep, emotional connection to resource management, making every 'shot' a gut-wrenching decision.",
+  "score": 85,
+  "inventedAt": "2026-10-11T08:12:39.146Z"
+}

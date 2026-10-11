@@ -1,0 +1,47 @@
+{
+  "name": "mnemonic_echo_reversion",
+  "label": "Mnemonic Echo-Reversion",
+  "domain": "time",
+  "godotFeature": "Physics engine (Area3D, collision detection, rigid bodies), Scene Instancing/Manipulation, GDScript",
+  "poeticVision": "The player feels a constant, agonizing dilemma. Each recovered memory isn't just a mental fragment; it's a physical ripple that unwrites recent reality. A dangerous gift that might bring back a collapsed floor, re-activate a forgotten trap, or even briefly manifest a 'ghost' of a past hunter. The thrill of reclaiming self is immediately coupled with the terror of a suddenly reset, dangerous environment, forcing lightning-fast adaptation. It's the ultimate trade-off: to remember is to re-live the danger.",
+  "usage": "Attach this script to an Area3D node in your scene. Configure its 'reversion_radius', 'ghost_duration', and assign a 'ghost_enemy_scene' PackedScene in the Inspector. Ensure the Area3D has a CollisionShape3D child to define its interaction volume. The player character (Lyra) must be in the 'player' group. Any environmental props, enemies, or traps intended to be affected by the reversion must be added to the 'revertible_prop', 'revertible_enemy', or 'revertible_trap' groups respectively. Trap nodes should implement 'get_is_active()' and 'set_is_active(bool)' methods to allow their state to be reverted.",
+  "parameters": [
+    {
+      "name": "reversion_radius",
+      "type": "float",
+      "default": "10.0",
+      "description": "The radius around the MemoryShard within which nodes will be affected by the reversion event."
+    },
+    {
+      "name": "ghost_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "The lifetime in seconds for any instantiated ghost enemies."
+    },
+    {
+      "name": "ghost_enemy_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A PackedScene representing the ghost enemy to be instantiated when a 'revertible_enemy' is no longer present."
+    },
+    {
+      "name": "is_one_time_use",
+      "type": "bool",
+      "default": "true",
+      "description": "If true, the MemoryShard will only trigger the reversion event once and then deactivate."
+    }
+  ],
+  "dependencies": [
+    "Area3D (node this script is attached to)",
+    "CollisionShape3D (child of the Area3D)",
+    "PackedScene (for ghost_enemy_scene)",
+    "Nodes in 'player' group (for Lyra)",
+    "Nodes in 'revertible_prop' group (e.g., StaticBody3D, MeshInstance3D)",
+    "Nodes in 'revertible_enemy' group (e.g., CharacterBody3D)",
+    "Nodes in 'revertible_trap' group (custom nodes implementing get_is_active/set_is_active)"
+  ],
+  "verdict": "To remember is to re-enter the maelstrom, each fragment of self a dangerous echo rippling through the fragile present.",
+  "impact": "This mechanic transforms memory recovery from a simple objective into a high-stakes, tactical decision. Players will constantly be on edge, weighing the desperate need to reclaim their identity against the immediate, unpredictable dangers unleashed by each memory. It creates a unique rhythm of desperate pursuit, momentary relief, and sudden, terrifying environmental shifts, forcing constant adaptation and reinforcing the game's core themes of survival and self-discovery.",
+  "score": 95,
+  "inventedAt": "2026-10-11T08:02:46.058Z"
+}

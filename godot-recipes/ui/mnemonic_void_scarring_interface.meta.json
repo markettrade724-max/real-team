@@ -1,0 +1,39 @@
+{
+  "name": "mnemonic_void_scarring_interface",
+  "label": "The Interface of Forgotten Truths",
+  "domain": "ui",
+  "godotFeature": "Control Node Manipulation & ShaderMaterial",
+  "poeticVision": "Players will experience a visceral sense of creeping disorientation and vulnerability as the very interface they rely on begins to 'forget'. Essential information – health segments, ammo counts, crucial objective markers – doesn't just distort, but functionally disappears, leaving 'void scars' where critical knowledge once was. This forces players to rely on instinct and environmental cues, making them truly feel Lyra's internal struggle with memory loss and the relentless erasure by the Silence, transforming the UI from a tool into a persistent reminder of their dissolving self.",
+  "usage": "Attach this script to a CanvasLayer node in your scene. Register any Control-derived UI elements (e.g., ProgressBar, Label, TextureRect) that you want to be vulnerable to 'scarring' by calling `register_vulnerable_ui_element(your_ui_node)`. During gameplay, call `apply_scarring(current_degradation_score)` to potentially scar UI elements based on Lyra's identity degradation. To restore a scarred UI element, call `recover_memory_fragment(original_ui_node)`. The script dynamically creates a TextureRect with an embedded shader to represent the 'void scar' over the hidden UI element.",
+  "parameters": [
+    {
+      "name": "degradation_threshold",
+      "type": "float",
+      "default": "0.5",
+      "description": "The degradation score threshold above which UI elements start to be scarred. A higher score (above this threshold) increases the chance of scarring."
+    },
+    {
+      "name": "time_factor",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the speed of the void scar's internal animation (shader uniform)."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.05",
+      "description": "Controls the intensity of the visual distortion within the void scar (shader uniform)."
+    },
+    {
+      "name": "void_color",
+      "type": "Color",
+      "default": "Color(0.05, 0.0, 0.1, 0.9)",
+      "description": "The base color of the void scar, including its alpha transparency (shader uniform)."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A brilliant descent into the void, where the interface itself becomes a haunting echo of a dissolving mind, forcing instinct to reclaim what memory has lost.",
+  "impact": "This system will transform the player's interaction with the game, making the UI a dynamic, unreliable entity that mirrors Lyra's internal struggle. Players will viscerally feel the erosion of self, forcing them to adapt to a constantly shifting reality where crucial information is a luxury, not a given. It elevates the core theme of memory loss from narrative to a tangible, functional gameplay challenge, deepening immersion and fostering a unique sense of vulnerability and desperation.",
+  "score": 95,
+  "inventedAt": "2026-10-11T08:09:21.857Z"
+}

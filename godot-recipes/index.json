@@ -1,5 +1,421 @@
 [
   {
+    "name": "mnemonic_exile_shard_projector",
+    "label": "Exile Shard Projector",
+    "domain": "weapons",
+    "godotFeature": "ShaderMaterials (Custom Shaders), PhysicsServer3D",
+    "poeticVision": "Feel the gut-wrenching decision to weaponize a precious, fading fragment of your own past. Watch in a blend of horror and grim satisfaction as an enemy convulses, momentarily ensnared by the distorted echo of your memory, slowing their pursuit, but knowing that piece of 'you' is now corrupted and lost forever.",
+    "usage": "This 'ExileShardProjector' script is attached to a Node3D (e.g., a weapon node or a child of the player character). It requires a 'MemoryShardProjectile.tscn' scene (a RigidBody3D with a MeshInstance3D child) and a 'MemoryShard' resource definition. The 'MemoryDistortionShader.gdshader' is used by the enemy's material when debuffed.\n\n1.  **Create `memory_shard.gd`:**\n    gdscript\n    # filename: memory_shard.gd\n    class_name MemoryShard extends Resource\n    @export var shard_id: String = \"\"\n    @export var shard_data: Dictionary = {}\n    \n2.  **Create `memory_shard_projectile.gd`:**\n    gdscript\n    # filename: memory_shard_projectile.gd\n    class_name MemoryShardProjectile extends RigidBody3D\n    @export var explosion_effect_scene: PackedScene # Optional: for visual impact\n    var shard_resource: MemoryShard\n    var damage_amount: float\n    var debuff_duration: float\n\n    func _ready() -> void:\n    \tbody_entered.connect(_on_body_entered)\n    \t# Optional: Add a timer to queue_free if it doesn't hit anything after a while\n    \tset_as_top_level(true) # Ensures projectile is not parented to the player after launch\n\n    func _on_body_entered(body: Node3D) -> void:\n    \tif body.has_method(\"take_damage\"):\n    \t\tbody.take_damage(damage_amount)\n    \tif body.has_method(\"apply_memory_debuff\"):\n    \t\tbody.apply_memory_debuff(shard_resource.shard_data, debuff_duration)\n\n    \t# Optional: Instantiate explosion effect\n    \t# if explosion_effect_scene:\n    \t# \tvar effect = explosion_effect_scene.instantiate()\n    \t# \tget_tree().root.add_child(effect)\n    \t# \teffect.global_transform.origin = global_transform.origin\n\n    \tqueue_free()\n    \n3.  **Create `memory_shard_projectile.tscn`:**\n    *   Create a new scene, add a `RigidBody3D` as root.\n    *   Attach `memory_shard_projectile.gd` to it.\n    *   Add a `MeshInstance3D` (e.g., a SphereMesh) and a `CollisionShape3D` (e.g., a SphereShape) as children.\n    *   Save this scene to `res://memory_shard_projectile.tscn` (or update `projectile_scene_path` in `ExileShardProjector`).\n4.  **Create `memory_distortion_shader.gdshader`:**\n    glsl\n    # filename: memory_distortion_shader.gdshader\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform float time;\n    uniform vec4 shard_color : source_color = vec4(0.8, 0.2, 0.9, 1.0);\n    uniform float distortion_strength : hint_range(0.0, 0.2) = 0.05;\n    uniform float flicker_intensity : hint_range(0.0, 1.0) = 0.5;\n    uniform float flicker_speed : hint_range(1.0, 20.0) = 10.0;\n\n    void vertex() {\n    \tvec3 offset = sin(VERTEX.xyz * 10.0 + time * flicker_speed) * distortion_strength;\n    \tVERTEX += offset;\n    }\n\n    void fragment() {\n    \tvec2 distorted_uv = UV + sin(UV * 15.0 + time * flicker_speed) * distortion_strength * 0.5;\n    \tvec4 original_albedo = texture(TEXTURE, distorted_uv);\n    \tfloat flicker = sin(time * flicker_speed) * 0.5 + 0.5;\n    \tALBEDO = mix(original_albedo.rgb, shard_color.rgb, flicker * flicker_intensity);\n    \tALPHA = original_albedo.a;\n    }\n    \n5.  **Integrate with Enemy:** Your enemy script (e.g., `enemy_base.gd`) should have `take_damage(amount: float)` and `apply_memory_debuff(shard_data: Dictionary, duration: float)` methods. The `apply_memory_debuff` method would:\n    *   Reduce enemy speed/apply confusion.\n    *   Create a new `ShaderMaterial` using `memory_distortion_shader.gdshader`.\n    *   Set shader uniforms like `shard_color` (perhaps based on `shard_data` if you want unique colors per memory type) and `time` (using `_process(delta)`).\n    *   Apply this `ShaderMaterial` to the enemy's `MeshInstance3D`.\n    *   Use a `Timer` to revert the material and debuff after `duration`.\n6.  **Player Usage:** From your player script, call `projector_node.fire_shard(current_memory_shard_resource)` when the player uses the weapon. Remember to remove `current_memory_shard_resource` from the player's inventory after calling `fire_shard` to reflect its consumption.",
+    "parameters": [
+      {
+        "name": "projectile_scene_path",
+        "type": "String",
+        "default": "res://memory_shard_projectile.tscn",
+        "description": "Path to the PackedScene for the MemoryShardProjectile."
+      },
+      {
+        "name": "projectile_speed",
+        "type": "float",
+        "default": "50.0",
+        "description": "The initial speed at which the memory shard projectile is launched."
+      },
+      {
+        "name": "projectile_damage",
+        "type": "float",
+        "default": "25.0",
+        "description": "The amount of physical damage the projectile deals on impact."
+      },
+      {
+        "name": "debuff_duration",
+        "type": "float",
+        "default": "3.0",
+        "description": "The duration (in seconds) for which the memory distortion debuff is applied to the enemy."
+      },
+      {
+        "name": "muzzle_node_path",
+        "type": "NodePath",
+        "default": "Muzzle",
+        "description": "The NodePath to a child Node3D that represents the projectile's launch point (muzzle). If not found, the projector's own transform is used."
+      }
+    ],
+    "dependencies": [
+      "memory_shard.gd (Resource)",
+      "memory_shard_projectile.gd (RigidBody3D script)",
+      "memory_shard_projectile.tscn (PackedScene)",
+      "memory_distortion_shader.gdshader (ShaderMaterial)"
+    ],
+    "verdict": "A desperate weapon born of self-sacrifice, it carves survival from the very essence of who you are, leaving an indelible scar on memory's fragile canvas.",
+    "impact": "The player will constantly weigh immediate survival against the permanent erosion of their identity, transforming every combat encounter into a profound, personal struggle against self-loss. This mechanic forces a deep, emotional connection to resource management, making every 'shot' a gut-wrenching decision.",
+    "score": 85,
+    "inventedAt": "2026-10-11T08:12:39.146Z"
+  },
+  {
+    "name": "mnemonic_semantic_structural_erosion",
+    "label": "Semantic Structural Erosion",
+    "domain": "world",
+    "godotFeature": "CSGPolygon3D, NavigationServer3D",
+    "poeticVision": "The player feels the very ground beneath Lyra's feet not merely crumbling, but actively re-forming into alien, hostile geometry as her semantic understanding of the world dissolves. Witnessing cherished memory-structures contort into impassable barriers or treacherous traps, the world becomes a terrifying, live monument to her own self-destruction, each structural shift a visceral reminder of what truly defines her slipping away.",
+    "usage": "Attach this script to a central manager node in your scene. Define memory categories and their associated erosion rules in `_initialize_erosion_rules`. Register `CSGCombiner3D` nodes that represent memory structures using `register_erosion_target(category, csg_combiner_node)`. When Lyra loses a memory, emit the `memory_lost` signal (or call `trigger_erosion_event`) with the relevant `memory_category` and an optional specific `CSGCombiner3D` node to be affected. The system will dynamically add/subtract `CSGPolygon3D` children to the combiner, altering the geometry, and then trigger a re-bake of the associated `NavigationRegion3D` to update AI pathing.",
+    "parameters": [
+      {
+        "name": "memory_category",
+        "type": "String",
+        "default": "null",
+        "description": "The semantic category of the memory lost (e.g., 'trust', 'home'). This determines which erosion rule is applied."
+      },
+      {
+        "name": "erosion_target_node",
+        "type": "CSGCombiner3D",
+        "default": "null",
+        "description": "The specific CSGCombiner3D node representing the memory structure to be eroded. If null, all registered targets for the given category will be affected."
+      }
+    ],
+    "dependencies": [
+      "CSGCombiner3D",
+      "CSGPolygon3D",
+      "NavigationRegion3D",
+      "NavigationServer3D"
+    ],
+    "verdict": "The world itself weeps and contorts, a living monument to Lyra's unraveling self, making every step a desperate fight against oblivion.",
+    "impact": "This mechanic fundamentally transforms the player's interaction with the environment. It's not just a backdrop; the world itself becomes an active antagonist, a physical manifestation of Lyra's internal struggle. Every lost memory doesn't just reduce a stat; it literally reshapes the battlefield, creating new obstacles, opening treacherous paths, or sealing off escape routes. This creates a constant, visceral tension where the player is fighting not only external hunters but also the very ground beneath their feet, which is actively betraying Lyra as her identity unravels. It makes the abstract concept of 'forgetting' a tangible, terrifying force, perfectly aligning with the universe's core themes of survival and self-loss.",
+    "score": 95,
+    "inventedAt": "2026-10-11T08:11:39.454Z"
+  },
+  {
+    "name": "mnemonic_void_scarring_interface",
+    "label": "The Interface of Forgotten Truths",
+    "domain": "ui",
+    "godotFeature": "Control Node Manipulation & ShaderMaterial",
+    "poeticVision": "Players will experience a visceral sense of creeping disorientation and vulnerability as the very interface they rely on begins to 'forget'. Essential information – health segments, ammo counts, crucial objective markers – doesn't just distort, but functionally disappears, leaving 'void scars' where critical knowledge once was. This forces players to rely on instinct and environmental cues, making them truly feel Lyra's internal struggle with memory loss and the relentless erasure by the Silence, transforming the UI from a tool into a persistent reminder of their dissolving self.",
+    "usage": "Attach this script to a CanvasLayer node in your scene. Register any Control-derived UI elements (e.g., ProgressBar, Label, TextureRect) that you want to be vulnerable to 'scarring' by calling `register_vulnerable_ui_element(your_ui_node)`. During gameplay, call `apply_scarring(current_degradation_score)` to potentially scar UI elements based on Lyra's identity degradation. To restore a scarred UI element, call `recover_memory_fragment(original_ui_node)`. The script dynamically creates a TextureRect with an embedded shader to represent the 'void scar' over the hidden UI element.",
+    "parameters": [
+      {
+        "name": "degradation_threshold",
+        "type": "float",
+        "default": "0.5",
+        "description": "The degradation score threshold above which UI elements start to be scarred. A higher score (above this threshold) increases the chance of scarring."
+      },
+      {
+        "name": "time_factor",
+        "type": "float",
+        "default": "0.5",
+        "description": "Controls the speed of the void scar's internal animation (shader uniform)."
+      },
+      {
+        "name": "distortion_strength",
+        "type": "float",
+        "default": "0.05",
+        "description": "Controls the intensity of the visual distortion within the void scar (shader uniform)."
+      },
+      {
+        "name": "void_color",
+        "type": "Color",
+        "default": "Color(0.05, 0.0, 0.1, 0.9)",
+        "description": "The base color of the void scar, including its alpha transparency (shader uniform)."
+      }
+    ],
+    "dependencies": [],
+    "verdict": "A brilliant descent into the void, where the interface itself becomes a haunting echo of a dissolving mind, forcing instinct to reclaim what memory has lost.",
+    "impact": "This system will transform the player's interaction with the game, making the UI a dynamic, unreliable entity that mirrors Lyra's internal struggle. Players will viscerally feel the erosion of self, forcing them to adapt to a constantly shifting reality where crucial information is a luxury, not a given. It elevates the core theme of memory loss from narrative to a tangible, functional gameplay challenge, deepening immersion and fostering a unique sense of vulnerability and desperation.",
+    "score": 95,
+    "inventedAt": "2026-10-11T08:09:21.857Z"
+  },
+  {
+    "name": "mnemonic_sunder_hum",
+    "label": "The Sunder-Hum of Memory",
+    "domain": "audio",
+    "godotFeature": "AudioStreamPlayer3D & AudioServer with dynamic AudioEffect management",
+    "poeticVision": "The terrifying visceral experience of hearing your own mind unravel, a low, agonizing hum that signifies not just a loss, but a *tearing apart* of who you are. This personal, painful sound is also a beacon, pulling the Silence's hunters directly to the source of your decay, forcing a desperate choice between self-preservation and identity.",
+    "usage": "Attach this `MnemonicSunderHum.gd` script to a `Node3D` in your scene. Assign a looping `AudioStream` (e.g., a subtle drone or hum sound) to the `base_hum_stream` property in the Inspector. This node will then emit a 3D sound representing a memory fragment.\n\nTo simulate memory decay, dynamically update the `memory_decay_progress` property (from 0.0 to 1.0). As `memory_decay_progress` increases, the hum's volume will increase, and its sound will become more distorted and dissonant through dynamically applied audio effects.\n\nAI hunters can query the `get_sunder_hum_intensity()` method to get a float value (0.0 to 1.0) representing the current intensity of the hum, which directly correlates to their tracking accuracy. A higher intensity means easier tracking.\n\nPlayers can call `muffle_hum()` to temporarily reduce the hum's volume, making it harder for hunters to track, but at the cost of accelerating the memory's decay. Alternatively, `bloom_hum()` can be called to temporarily amplify the hum, creating a sonic decoy, also with a minor decay cost.\n\nEach instance of `MnemonicSunderHum` creates and manages its own dedicated audio bus and effects, ensuring independent control and preventing conflicts with other audio sources.",
+    "parameters": [
+      {
+        "name": "memory_decay_progress",
+        "type": "float",
+        "default": "0.0",
+        "description": "The current decay state of the memory fragment (0.0 = intact, 1.0 = fully decayed). Drives the hum's intensity and effect modulation."
+      },
+      {
+        "name": "base_hum_stream",
+        "type": "AudioStream",
+        "default": "null",
+        "description": "The base audio stream (e.g., a looping drone) that will be modulated to create the sunder-hum effect."
+      },
+      {
+        "name": "max_hum_volume_db",
+        "type": "float",
+        "default": "0.0",
+        "description": "The maximum volume (in dB) the hum can reach when memory_decay_progress is 1.0."
+      },
+      {
+        "name": "min_hum_volume_db",
+        "type": "float",
+        "default": "-24.0",
+        "description": "The minimum volume (in dB) the hum will have when memory_decay_progress is 0.0."
+      }
+    ],
+    "dependencies": [
+      "AudioStreamPlayer3D",
+      "AudioStream",
+      "AudioEffectDistortion",
+      "AudioEffectPitchShift",
+      "Tween"
+    ],
+    "verdict": "The Sunder-Hum transforms the silent agony of forgetting into a terrifying, tactical symphony of self-destruction, echoing Lyra's desperate fight for every fading fragment of who she is.",
+    "impact": "This mechanic transforms the abstract concept of memory loss into a constant, agonizing auditory presence. Players will not only hear their identity unravel but will be forced into desperate, high-stakes choices: risk attracting hunters by letting the hum intensify, or sacrifice more memory for a moment of silence. It creates a profound, visceral connection between internal decay and external threat, making every moment a desperate fight for self-preservation and identity.",
+    "score": 95,
+    "inventedAt": "2026-10-11T08:06:50.054Z"
+  },
+  {
+    "name": "identity_vulnerability_exploiter_ai",
+    "label": "The Grief-Forger",
+    "domain": "ai",
+    "godotFeature": "GDScript for complex state management, VisualServer for dynamic environment manipulation, NavigationServer3D for contextual trap placement",
+    "poeticVision": "The relentless dread of knowing your most precious, buried memories are being dredged up, twisted, and weaponized against you. Every chase becomes an agonizing test of self, where the enemy doesn't just attack your body, but the fragile remnants of your soul, forcing you to fight not just for your life, but for the integrity of your very being.",
+    "usage": "This GriefForgerAI node should be added to your main game scene. It requires a reference to Lyra's CharacterBody3D node via 'lyra_node_path'. 'trap_scene' and 'deception_effect_scene' should be PackedScenes for pre-configured trap and visual deception effects (e.g., a crumbling floor, a distorted memory image). To update Lyra's memory vulnerability map, other game systems (e.g., a MemoryManager, or Lyra's own script) should call the 'update_vulnerability_map' method. Example:\n  grief_forger_ai.update_vulnerability_map({\n      \"recently_lost\": [\"first_kiss\"],\n      \"currently_pursued\": [\"childhood_home\"],\n      \"emotional_triggers\": {\n          \"childhood_home\": {\"vulnerability\": 0.9, \"type\": \"nostalgia_trap\"},\n          \"first_kiss\": {\"vulnerability\": 0.7, \"type\": \"regret_illusion\"}\n      }\n  })\n\nThe AI will then periodically evaluate this map and deploy visual deceptions (by instantiating scenes with specific materials/shaders) and environmental traps (using NavigationServer3D for pathfinding hints) to exploit Lyra's most vulnerable memories.",
+    "parameters": [
+      {
+        "name": "lyra_node_path",
+        "type": "NodePath",
+        "default": "",
+        "description": "NodePath to Lyra's CharacterBody3D node in the scene."
+      },
+      {
+        "name": "trap_scene",
+        "type": "PackedScene",
+        "default": null,
+        "description": "PackedScene for a generic environmental trap (e.g., a collapsing floor, a physical manifestation of a memory)."
+      },
+      {
+        "name": "deception_effect_scene",
+        "type": "PackedScene",
+        "default": null,
+        "description": "PackedScene for a visual deception effect (e.g., a distorted memory echo, an illusionary obstacle)."
+      }
+    ],
+    "dependencies": [
+      "Lyra (CharacterBody3D)",
+      "MemoryFragment (Node3D with 'get_memory_id' method, in group 'memory_fragments')",
+      "PackedScene for traps",
+      "PackedScene for deception effects"
+    ],
+    "verdict": "The Silence, through the Grief-Forger, turns Lyra's own fractured past into a relentless, soul-shattering present.",
+    "impact": "The Grief-Forger transforms the pursuit into a deeply personal and psychologically harrowing experience. Players will not only fear the physical attacks of the Silence but also the agonizing realization that their own lost memories are being twisted into the very weapons used against them. Every trap and deception will serve as a cruel reminder of what Lyra has lost, forcing players to confront their grief and vulnerability while fighting for survival, making each encounter a test of both skill and emotional resilience.",
+    "score": 92,
+    "inventedAt": "2026-10-11T08:05:44.437Z"
+  },
+  {
+    "name": "perceptual_abyss_encroachment",
+    "label": "Perceptual Abyss Encroachment",
+    "domain": "shaders",
+    "godotFeature": "Godot 4.6.2 ShaderMaterial (spatial and post-process), Viewport, world-space coordinates, noise textures",
+    "poeticVision": "The player feels their world actively, physically shrinking around them, devoured by an invisible void as their identity falters or the Silence closes in. It's a creeping claustrophobia, a tangible loss of reality at the edges of their perception, making every step into the remaining 'safe' space feel desperate. The environment isn't just deteriorating; it's being aggressively unmade *around* Lyra, manifesting the existential threat of forgetting.",
+    "usage": "1.  Create a `ShaderMaterial` resource in Godot.\n2.  Assign this `.gdshader` file to the `Shader` property of the `ShaderMaterial`.\n3.  Apply this `ShaderMaterial` to the `Material` property of `MeshInstance3D` nodes (or other `GeometryInstance3D` derived nodes like `CSGBox3D`) that should be affected by the perceptual abyss.\n4.  Ensure a `NoiseTexture` resource is assigned to the `noise_texture` uniform in the `ShaderMaterial` properties (or via script).\n5.  In a controlling GDScript (e.g., attached to Lyra's player character or a game manager), update the shader uniforms dynamically:\n    *   `material.set_shader_parameter(\"abyss_center_world_pos\", lyra_node.global_transform.origin)`: Pass Lyra's current world position.\n    *   `material.set_shader_parameter(\"identity_integrity\", current_identity_value)`: Pass a float representing Lyra's identity integrity (0.0 to 1.0). This value will directly control the size of the 'safe' zone around Lyra.\n    *   Adjust `base_safe_radius`, `abyss_falloff`, `abyss_color`, `noise_scale`, and `noise_intensity` either in the editor or via script to fine-tune the visual effect.",
+    "parameters": [
+      {
+        "name": "abyss_center_world_pos",
+        "type": "vec3",
+        "default": "vec3(0.0)",
+        "description": "World-space position of the center of the 'safe' zone (typically Lyra's position). The abyss expands outwards from this point as identity falters."
+      },
+      {
+        "name": "identity_integrity",
+        "type": "float",
+        "default": "1.0",
+        "description": "A value from 0.0 (fully eroded, no identity) to 1.0 (full integrity, no erosion). Controls the size of the safe zone around the abyss_center_world_pos."
+      },
+      {
+        "name": "base_safe_radius",
+        "type": "float",
+        "default": "20.0",
+        "description": "The maximum radius of the safe zone when identity_integrity is 1.0. The actual safe radius scales with identity_integrity."
+      },
+      {
+        "name": "abyss_falloff",
+        "type": "float",
+        "default": "5.0",
+        "description": "The world-space width of the transition zone where the environment smoothly fades into the abyss."
+      },
+      {
+        "name": "abyss_color",
+        "type": "vec4",
+        "default": "vec4(0.0, 0.0, 0.1, 1.0)",
+        "description": "The color of the void that devours the environment. This color is blended with the original material's albedo."
+      },
+      {
+        "name": "noise_texture",
+        "type": "sampler2D",
+        "default": "null",
+        "description": "A grayscale noise texture (e.g., Perlin, Simplex) to create an organic, uneven erosion frontier instead of a perfect circle."
+      },
+      {
+        "name": "noise_scale",
+        "type": "float",
+        "default": "0.1",
+        "description": "Scales the UV coordinates for sampling the noise texture, controlling the 'size' or frequency of the noise patterns on the erosion edge."
+      },
+      {
+        "name": "noise_intensity",
+        "type": "float",
+        "default": "0.5",
+        "description": "Controls how much the noise texture distorts the erosion edge. Higher values create a more jagged and irregular abyss boundary."
+      }
+    ],
+    "dependencies": [
+      "ShaderMaterial",
+      "MeshInstance3D",
+      "NoiseTexture"
+    ],
+    "verdict": "The world itself weeps as memory fades, a tangible void consuming the very ground beneath Lyra's desperate feet.",
+    "impact": "This invention will fundamentally transform the player's perception of danger and identity loss. The world itself becomes a dynamic, hostile entity, constantly shrinking and dissolving around Lyra, creating a pervasive sense of claustrophobia and urgency. Every step outside the shrinking safe zone is a tangible risk, making the fight for memory a literal struggle for ground. It ensures the existential threat of forgetting is always visually present and physically oppressive, forcing players into a relentless, desperate race against the void.",
+    "score": 92,
+    "inventedAt": "2026-10-11T08:04:36.510Z"
+  },
+  {
+    "name": "mnemonic_reality_suture",
+    "label": "Memory-Threaded Path",
+    "domain": "movement",
+    "godotFeature": "Godot's PhysicsServer and runtime manipulation of collision shapes/transforms for StaticBody3D/RigidBody3D instances. Specifically, storing and projecting ephemeral past states of environmental geometry as temporary physics interactors.",
+    "poeticVision": "The player will feel the desperate, calculated risk of a temporal ghost walk. Each leap across a crumbling chasm becomes a gamble with their fading self, relying on the fleeting echo of a forgotten path. It's the sensation of threading through historical architecture, knowing the foundation beneath them is only a memory, fragile and prone to attracting the attention of hungry hunters.",
+    "usage": "1. Add a `MemoryRealitySuture` node to your 3D scene, perhaps as a child of Lyra's player controller or a dedicated level manager.\n2. Before a destructible or temporary environmental `PhysicsBody3D` (e.g., a crumbling bridge, a vanished wall) is altered or destroyed, call `capture_snapshot(body: PhysicsBody3D)` on the `MemoryRealitySuture` instance, passing the target body. This stores its `Transform3D` and `CollisionShape3D` data.\n3. When Lyra needs to activate the \"Memory-Threaded Path\" ability, her player controller or an interaction script calls `project_suture(target_body_path: NodePath)` on the `MemoryRealitySuture` instance, using the `NodePath` of the previously captured body.\n4. The `MemoryRealitySuture` node will emit the `memory_fragment_consumed` signal. Lyra's controller should listen to this signal to deduct a memory fragment from her inventory.\n5. The `MemoryRealitySuture` node will also emit the `temporal_echo_generated` signal, providing the location of the newly formed suture. The Silence's AI system should listen to this signal to track Lyra's movements and intensify its pursuit.\n6. The projected temporary object will automatically despawn after the `suture_duration`.",
+    "parameters": [
+      {
+        "name": "suture_duration",
+        "type": "float",
+        "default": "5.0",
+        "description": "How long the sutured memory object persists in seconds before automatically despawning."
+      },
+      {
+        "name": "suture_material",
+        "type": "StandardMaterial3D",
+        "default": "null",
+        "description": "The visual material applied to the temporary sutured objects. If null, a semi-transparent cyan material is generated by default."
+      },
+      {
+        "name": "suture_mesh",
+        "type": "Mesh",
+        "default": "null",
+        "description": "The visual mesh used for the temporary sutured objects. If null, a small BoxMesh is generated by default."
+      }
+    ],
+    "dependencies": [
+      "Node3D",
+      "PhysicsBody3D",
+      "StaticBody3D",
+      "CollisionShape3D",
+      "MeshInstance3D",
+      "Timer",
+      "StandardMaterial3D",
+      "BoxMesh"
+    ],
+    "verdict": "A desperate bridge woven from fading self, each step a fragile echo calling the hungry void closer.",
+    "impact": "The player will constantly weigh the cost of using a memory fragment against the immediate need for survival. Each temporary platform becomes a tangible representation of their fading self, a desperate gamble that leaves them vulnerable to the Silence. This creates a unique blend of platforming, resource management, and stealth/combat, where every action has a profound thematic and mechanical consequence, forcing urgent, calculated risks.",
+    "score": 85,
+    "inventedAt": "2026-10-11T08:03:37.806Z"
+  },
+  {
+    "name": "mnemonic_echo_reversion",
+    "label": "Mnemonic Echo-Reversion",
+    "domain": "time",
+    "godotFeature": "Physics engine (Area3D, collision detection, rigid bodies), Scene Instancing/Manipulation, GDScript",
+    "poeticVision": "The player feels a constant, agonizing dilemma. Each recovered memory isn't just a mental fragment; it's a physical ripple that unwrites recent reality. A dangerous gift that might bring back a collapsed floor, re-activate a forgotten trap, or even briefly manifest a 'ghost' of a past hunter. The thrill of reclaiming self is immediately coupled with the terror of a suddenly reset, dangerous environment, forcing lightning-fast adaptation. It's the ultimate trade-off: to remember is to re-live the danger.",
+    "usage": "Attach this script to an Area3D node in your scene. Configure its 'reversion_radius', 'ghost_duration', and assign a 'ghost_enemy_scene' PackedScene in the Inspector. Ensure the Area3D has a CollisionShape3D child to define its interaction volume. The player character (Lyra) must be in the 'player' group. Any environmental props, enemies, or traps intended to be affected by the reversion must be added to the 'revertible_prop', 'revertible_enemy', or 'revertible_trap' groups respectively. Trap nodes should implement 'get_is_active()' and 'set_is_active(bool)' methods to allow their state to be reverted.",
+    "parameters": [
+      {
+        "name": "reversion_radius",
+        "type": "float",
+        "default": "10.0",
+        "description": "The radius around the MemoryShard within which nodes will be affected by the reversion event."
+      },
+      {
+        "name": "ghost_duration",
+        "type": "float",
+        "default": "5.0",
+        "description": "The lifetime in seconds for any instantiated ghost enemies."
+      },
+      {
+        "name": "ghost_enemy_scene",
+        "type": "PackedScene",
+        "default": "null",
+        "description": "A PackedScene representing the ghost enemy to be instantiated when a 'revertible_enemy' is no longer present."
+      },
+      {
+        "name": "is_one_time_use",
+        "type": "bool",
+        "default": "true",
+        "description": "If true, the MemoryShard will only trigger the reversion event once and then deactivate."
+      }
+    ],
+    "dependencies": [
+      "Area3D (node this script is attached to)",
+      "CollisionShape3D (child of the Area3D)",
+      "PackedScene (for ghost_enemy_scene)",
+      "Nodes in 'player' group (for Lyra)",
+      "Nodes in 'revertible_prop' group (e.g., StaticBody3D, MeshInstance3D)",
+      "Nodes in 'revertible_enemy' group (e.g., CharacterBody3D)",
+      "Nodes in 'revertible_trap' group (custom nodes implementing get_is_active/set_is_active)"
+    ],
+    "verdict": "To remember is to re-enter the maelstrom, each fragment of self a dangerous echo rippling through the fragile present.",
+    "impact": "This mechanic transforms memory recovery from a simple objective into a high-stakes, tactical decision. Players will constantly be on edge, weighing the desperate need to reclaim their identity against the immediate, unpredictable dangers unleashed by each memory. It creates a unique rhythm of desperate pursuit, momentary relief, and sudden, terrifying environmental shifts, forcing constant adaptation and reinforcing the game's core themes of survival and self-discovery.",
+    "score": 95,
+    "inventedAt": "2026-10-11T08:02:46.058Z"
+  },
+  {
+    "name": "mnemonic_chrono_weave_reconstruction",
+    "label": "Mnemonic Chrono-Weave Reconstruction",
+    "domain": "time_memory",
+    "godotFeature": "SubViewport, MeshInstance3D, Tween, ShaderMaterial",
+    "poeticVision": "The player will feel a desperate, almost surgical urgency as they attempt to mend the fabric of reality itself, piece by fragile piece, while the Silence's whispers claw at their mind and its physical manifestations tear at their body. Each successful weave is a fleeting victory against inevitable decay, a momentary pulse of coherence in a universe unraveling. Failure means facing the immediate, brutal consequences of a collapsing timeline.",
+    "usage": "Attach this `mnemonic_chrono_weave_reconstruction.gd` script to a `Node3D` in your scene. This node will manage the memory reconstruction UI and logic.\n\n1.  **Scene Setup**: Add a `Node3D` to your scene and attach this script.\n2.  **Exported Parameters**: In the Inspector, configure the following:\n    *   `Time Limit Seconds`: Set the duration the player has to complete the weave.\n    *   `Lyra Shader Material`: Assign a `ShaderMaterial` that is applied to Lyra's character model. This script will dynamically set its shader code if not already present and manipulate its `identity_fray_strength` and `chrono_shield_strength` uniform parameters.\n    *   `Fragment Mesh Template`: Provide a default `Mesh` (e.g., `SphereMesh`, `BoxMesh`) for memory fragments.\n    *   `Fragment Material Template`: Provide a default `Material` (e.g., `StandardMaterial3D`) for memory fragments.\n    *   `Fragment Highlight Color`: Define the color fragments will change to when selected.\n3.  **Initiating a Weave**: Call the `start_weave(chasm_data: Dictionary)` method from your game manager or level script when Lyra encounters a 'Memory Chasm'. The `chasm_data` dictionary should contain:\n    *   `\"correct_sequence\"`: An `Array[String]` representing the correct temporal order of fragment signatures (e.g., `[\"event_A\", \"event_B\", \"event_C\"]`).\n    *   `\"fragments\"`: An `Array[Dictionary]` where each dictionary describes a fragment to spawn. Each fragment dictionary can have:\n        *   `\"id\"`: An optional integer ID.\n        *   `\"mesh\"`: An optional `Mesh` override for this specific fragment.\n        *   `\"material\"`: An optional `Material` override for this specific fragment.\n        *   `\"temporal_signature\"`: A `String` that uniquely identifies this fragment's place in the sequence (e.g., `\"event_A\"`).\n    Example `chasm_data`:\n    gdscript\n    var chasm_data = {\n        \"correct_sequence\": [\"childhood_toy\", \"first_lesson\", \"star_map_discovery\"],\n        \"fragments\": [\n            {\"id\": 0, \"temporal_signature\": \"first_lesson\", \"mesh\": preload(\"res://meshes/lesson_fragment.obj\")},\n            {\"id\": 1, \"temporal_signature\": \"star_map_discovery\", \"mesh\": preload(\"res://meshes/map_fragment.obj\")},\n            {\"id\": 2, \"temporal_signature\": \"childhood_toy\", \"mesh\": preload(\"res://meshes/toy_fragment.obj\")}\n        ]\n    }\n    $MnemonicChronoWeaveReconstruction.start_weave(chasm_data)\n    \n4.  **Player Interaction**: The player interacts by clicking on the holographic fragments displayed in the `SubViewportContainer`. The script handles raycasting within the `SubViewport` to detect selections.\n5.  **Reacting to Outcomes**: Connect to the emitted signals to integrate with other game systems:\n    *   `weave_successful(effect_type: String)`: Emitted when the player correctly sequences fragments. `effect_type` will be `\"environment_mend\"`.\n    *   `weave_failed(consequence_type: String)`: Emitted on incorrect sequence or time out. `consequence_type` will be `\"incorrect_sequence\"` or `\"time_out\"`.\n    *   `identity_frayed()`: Emitted specifically when a weave fails, indicating a loss of Lyra's identity, which can trigger further game consequences (e.g., stat debuffs, narrative changes).",
+    "parameters": [
+      {
+        "name": "time_limit_seconds",
+        "type": "float",
+        "default": "15.0",
+        "description": "The maximum time (in seconds) the player has to complete the memory weave."
+      },
+      {
+        "name": "lyra_shader_material",
+        "type": "ShaderMaterial",
+        "default": "null",
+        "description": "Reference to the ShaderMaterial applied to Lyra's character model. Used to apply identity fraying or chrono-shield effects."
+      },
+      {
+        "name": "fragment_mesh_template",
+        "type": "Mesh",
+        "default": "null",
+        "description": "The default Mesh resource to use for memory fragments if not specified in chasm data."
+      },
+      {
+        "name": "fragment_material_template",
+        "type": "Material",
+        "default": "null",
+        "description": "The default Material resource to use for memory fragments if not specified in chasm data."
+      },
+      {
+        "name": "fragment_highlight_color",
+        "type": "Color",
+        "default": "Color(0.5, 0.5, 1.0)",
+        "description": "The color applied to a fragment's material when it is selected by the player."
+      }
+    ],
+    "dependencies": [
+      "Node3D",
+      "SubViewportContainer",
+      "SubViewport",
+      "Camera3D",
+      "MeshInstance3D",
+      "ShaderMaterial",
+      "StandardMaterial3D",
+      "Tween",
+      "PhysicsRayQueryParameters3D",
+      "InputEventMouseButton"
+    ],
+    "verdict": "A surgical strike of genius, weaving the fragile threads of memory into a desperate, unforgettable dance against the encroaching void.",
+    "impact": "This system will immerse players in Lyra's desperate struggle for identity, making every memory reconstruction a tense, personal battle against time and oblivion. The immediate visual feedback on Lyra's body through shader effects will forge a deep connection between player action and character state, transforming abstract memory loss into a visceral, unforgettable experience of self-preservation.",
+    "score": 95,
+    "inventedAt": "2026-10-11T08:00:04.272Z"
+  },
+  {
     "name": "mnemic_forge_gauntlets",
     "label": "Mnemic Forging Gauntlets",
     "domain": "weapons",

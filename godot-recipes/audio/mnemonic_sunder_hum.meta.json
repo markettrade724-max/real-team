@@ -1,0 +1,45 @@
+{
+  "name": "mnemonic_sunder_hum",
+  "label": "The Sunder-Hum of Memory",
+  "domain": "audio",
+  "godotFeature": "AudioStreamPlayer3D & AudioServer with dynamic AudioEffect management",
+  "poeticVision": "The terrifying visceral experience of hearing your own mind unravel, a low, agonizing hum that signifies not just a loss, but a *tearing apart* of who you are. This personal, painful sound is also a beacon, pulling the Silence's hunters directly to the source of your decay, forcing a desperate choice between self-preservation and identity.",
+  "usage": "Attach this `MnemonicSunderHum.gd` script to a `Node3D` in your scene. Assign a looping `AudioStream` (e.g., a subtle drone or hum sound) to the `base_hum_stream` property in the Inspector. This node will then emit a 3D sound representing a memory fragment.\n\nTo simulate memory decay, dynamically update the `memory_decay_progress` property (from 0.0 to 1.0). As `memory_decay_progress` increases, the hum's volume will increase, and its sound will become more distorted and dissonant through dynamically applied audio effects.\n\nAI hunters can query the `get_sunder_hum_intensity()` method to get a float value (0.0 to 1.0) representing the current intensity of the hum, which directly correlates to their tracking accuracy. A higher intensity means easier tracking.\n\nPlayers can call `muffle_hum()` to temporarily reduce the hum's volume, making it harder for hunters to track, but at the cost of accelerating the memory's decay. Alternatively, `bloom_hum()` can be called to temporarily amplify the hum, creating a sonic decoy, also with a minor decay cost.\n\nEach instance of `MnemonicSunderHum` creates and manages its own dedicated audio bus and effects, ensuring independent control and preventing conflicts with other audio sources.",
+  "parameters": [
+    {
+      "name": "memory_decay_progress",
+      "type": "float",
+      "default": "0.0",
+      "description": "The current decay state of the memory fragment (0.0 = intact, 1.0 = fully decayed). Drives the hum's intensity and effect modulation."
+    },
+    {
+      "name": "base_hum_stream",
+      "type": "AudioStream",
+      "default": "null",
+      "description": "The base audio stream (e.g., a looping drone) that will be modulated to create the sunder-hum effect."
+    },
+    {
+      "name": "max_hum_volume_db",
+      "type": "float",
+      "default": "0.0",
+      "description": "The maximum volume (in dB) the hum can reach when memory_decay_progress is 1.0."
+    },
+    {
+      "name": "min_hum_volume_db",
+      "type": "float",
+      "default": "-24.0",
+      "description": "The minimum volume (in dB) the hum will have when memory_decay_progress is 0.0."
+    }
+  ],
+  "dependencies": [
+    "AudioStreamPlayer3D",
+    "AudioStream",
+    "AudioEffectDistortion",
+    "AudioEffectPitchShift",
+    "Tween"
+  ],
+  "verdict": "The Sunder-Hum transforms the silent agony of forgetting into a terrifying, tactical symphony of self-destruction, echoing Lyra's desperate fight for every fading fragment of who she is.",
+  "impact": "This mechanic transforms the abstract concept of memory loss into a constant, agonizing auditory presence. Players will not only hear their identity unravel but will be forced into desperate, high-stakes choices: risk attracting hunters by letting the hum intensify, or sacrifice more memory for a moment of silence. It creates a profound, visceral connection between internal decay and external threat, making every moment a desperate fight for self-preservation and identity.",
+  "score": 95,
+  "inventedAt": "2026-10-11T08:06:50.054Z"
+}

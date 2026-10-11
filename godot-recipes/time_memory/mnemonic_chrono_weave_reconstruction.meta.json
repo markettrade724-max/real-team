@@ -1,0 +1,56 @@
+{
+  "name": "mnemonic_chrono_weave_reconstruction",
+  "label": "Mnemonic Chrono-Weave Reconstruction",
+  "domain": "time_memory",
+  "godotFeature": "SubViewport, MeshInstance3D, Tween, ShaderMaterial",
+  "poeticVision": "The player will feel a desperate, almost surgical urgency as they attempt to mend the fabric of reality itself, piece by fragile piece, while the Silence's whispers claw at their mind and its physical manifestations tear at their body. Each successful weave is a fleeting victory against inevitable decay, a momentary pulse of coherence in a universe unraveling. Failure means facing the immediate, brutal consequences of a collapsing timeline.",
+  "usage": "Attach this `mnemonic_chrono_weave_reconstruction.gd` script to a `Node3D` in your scene. This node will manage the memory reconstruction UI and logic.\n\n1.  **Scene Setup**: Add a `Node3D` to your scene and attach this script.\n2.  **Exported Parameters**: In the Inspector, configure the following:\n    *   `Time Limit Seconds`: Set the duration the player has to complete the weave.\n    *   `Lyra Shader Material`: Assign a `ShaderMaterial` that is applied to Lyra's character model. This script will dynamically set its shader code if not already present and manipulate its `identity_fray_strength` and `chrono_shield_strength` uniform parameters.\n    *   `Fragment Mesh Template`: Provide a default `Mesh` (e.g., `SphereMesh`, `BoxMesh`) for memory fragments.\n    *   `Fragment Material Template`: Provide a default `Material` (e.g., `StandardMaterial3D`) for memory fragments.\n    *   `Fragment Highlight Color`: Define the color fragments will change to when selected.\n3.  **Initiating a Weave**: Call the `start_weave(chasm_data: Dictionary)` method from your game manager or level script when Lyra encounters a 'Memory Chasm'. The `chasm_data` dictionary should contain:\n    *   `\"correct_sequence\"`: An `Array[String]` representing the correct temporal order of fragment signatures (e.g., `[\"event_A\", \"event_B\", \"event_C\"]`).\n    *   `\"fragments\"`: An `Array[Dictionary]` where each dictionary describes a fragment to spawn. Each fragment dictionary can have:\n        *   `\"id\"`: An optional integer ID.\n        *   `\"mesh\"`: An optional `Mesh` override for this specific fragment.\n        *   `\"material\"`: An optional `Material` override for this specific fragment.\n        *   `\"temporal_signature\"`: A `String` that uniquely identifies this fragment's place in the sequence (e.g., `\"event_A\"`).\n    Example `chasm_data`:\n    gdscript\n    var chasm_data = {\n        \"correct_sequence\": [\"childhood_toy\", \"first_lesson\", \"star_map_discovery\"],\n        \"fragments\": [\n            {\"id\": 0, \"temporal_signature\": \"first_lesson\", \"mesh\": preload(\"res://meshes/lesson_fragment.obj\")},\n            {\"id\": 1, \"temporal_signature\": \"star_map_discovery\", \"mesh\": preload(\"res://meshes/map_fragment.obj\")},\n            {\"id\": 2, \"temporal_signature\": \"childhood_toy\", \"mesh\": preload(\"res://meshes/toy_fragment.obj\")}\n        ]\n    }\n    $MnemonicChronoWeaveReconstruction.start_weave(chasm_data)\n    \n4.  **Player Interaction**: The player interacts by clicking on the holographic fragments displayed in the `SubViewportContainer`. The script handles raycasting within the `SubViewport` to detect selections.\n5.  **Reacting to Outcomes**: Connect to the emitted signals to integrate with other game systems:\n    *   `weave_successful(effect_type: String)`: Emitted when the player correctly sequences fragments. `effect_type` will be `\"environment_mend\"`.\n    *   `weave_failed(consequence_type: String)`: Emitted on incorrect sequence or time out. `consequence_type` will be `\"incorrect_sequence\"` or `\"time_out\"`.\n    *   `identity_frayed()`: Emitted specifically when a weave fails, indicating a loss of Lyra's identity, which can trigger further game consequences (e.g., stat debuffs, narrative changes).",
+  "parameters": [
+    {
+      "name": "time_limit_seconds",
+      "type": "float",
+      "default": "15.0",
+      "description": "The maximum time (in seconds) the player has to complete the memory weave."
+    },
+    {
+      "name": "lyra_shader_material",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "Reference to the ShaderMaterial applied to Lyra's character model. Used to apply identity fraying or chrono-shield effects."
+    },
+    {
+      "name": "fragment_mesh_template",
+      "type": "Mesh",
+      "default": "null",
+      "description": "The default Mesh resource to use for memory fragments if not specified in chasm data."
+    },
+    {
+      "name": "fragment_material_template",
+      "type": "Material",
+      "default": "null",
+      "description": "The default Material resource to use for memory fragments if not specified in chasm data."
+    },
+    {
+      "name": "fragment_highlight_color",
+      "type": "Color",
+      "default": "Color(0.5, 0.5, 1.0)",
+      "description": "The color applied to a fragment's material when it is selected by the player."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "SubViewportContainer",
+    "SubViewport",
+    "Camera3D",
+    "MeshInstance3D",
+    "ShaderMaterial",
+    "StandardMaterial3D",
+    "Tween",
+    "PhysicsRayQueryParameters3D",
+    "InputEventMouseButton"
+  ],
+  "verdict": "A surgical strike of genius, weaving the fragile threads of memory into a desperate, unforgettable dance against the encroaching void.",
+  "impact": "This system will immerse players in Lyra's desperate struggle for identity, making every memory reconstruction a tense, personal battle against time and oblivion. The immediate visual feedback on Lyra's body through shader effects will forge a deep connection between player action and character state, transforming abstract memory loss into a visceral, unforgettable experience of self-preservation.",
+  "score": 95,
+  "inventedAt": "2026-10-11T08:00:04.272Z"
+}
