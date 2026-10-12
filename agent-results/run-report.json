@@ -1,22 +1,22 @@
 {
-  "runId": "2026-10-12T1234",
+  "runId": "2026-10-12T1632",
   "mode": "screenplay-production",
-  "success": true,
-  "timestamp": "2026-10-12T12:39:05.158Z",
-  "totalDuration": "281.0s",
+  "success": false,
+  "timestamp": "2026-10-12T16:46:03.335Z",
+  "totalDuration": "816.0s",
   "budget": {
-    "total": 0,
+    "total": 6,
     "limit": 40,
-    "left": 40,
+    "left": 34,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 0,
+        "total": 6,
         "limit": 20,
-        "left": 20,
+        "left": 14,
         "exhausted": false,
         "library": 0,
-        "agents": 0
+        "agents": 6
       },
       {
         "key": "KEY_2",
@@ -51,48 +51,38 @@
     },
     "voice": {
       "success": true,
-      "duration": "847ms",
+      "duration": "17.7s",
       "error": null
     },
     "scene": {
       "success": true,
-      "duration": "2ms",
+      "duration": "1ms",
       "error": null
     },
     "visual": {
       "success": true,
-      "duration": "4ms",
+      "duration": "15.6s",
       "error": null
     },
     "subtitle": {
       "success": true,
-      "duration": "18ms",
+      "duration": "14ms",
       "error": null
     },
     "music": {
       "success": true,
-      "duration": "9ms",
+      "duration": "5ms",
       "error": null
     },
-    "edit": {
-      "success": true,
-      "duration": "232.3s",
-      "error": null
-    },
-    "trailer": {
-      "success": true,
-      "duration": "42.1s",
-      "error": null
-    },
-    "upload": {
-      "success": true,
-      "duration": "5.6s",
-      "error": null
+    "production": {
+      "success": false,
+      "duration": "—",
+      "error": "Timeout after 600s"
     }
   },
   "summary": {
-    "total": 9,
-    "passed": 9,
-    "failed": 0
+    "total": 7,
+    "passed": 6,
+    "failed": 1
   }
 }
