@@ -128,18 +128,18 @@ func _set_game_state(new_state: GameState):
 	        for enemy in get_tree().get_nodes_in_group("enemy"):
 	            _connect_enemy_signals(enemy)
 	        Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # Capture mouse for gameplay
-	        
+	        	
 	    GameState.PAUSED:
 	        get_tree().paused = true
 	        if pause_menu_layer: pause_menu_layer.show()
 	        Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE) # Release mouse for pause menu
-	        
+	        	
 	    GameState.GAME_OVER:
 	        get_tree().paused = true # Pause the game on Game Over
 	        if game_over_layer: game_over_layer.show() # Show Game Over screen
 	        _update_game_over_display()
 	        Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE) # Release mouse for game over screen
-	        
+	        	
 	    GameState.VICTORY: # New: Victory state handling
 	        get_tree().paused = true # Pause the game on Victory
 	        if victory_layer: victory_layer.show() # Show Victory screen
@@ -191,11 +191,15 @@ func _on_player_health_changed(new_health: int, max_health: int):
 	print("HUD: Player Health: %d/%d" % [new_health, max_health])
 	if _health_label:
 	    _health_label.text = "HP: %d/%d" % [new_health, max_health]
+	    # IMPORTANT: Ensure this Label node (and its parent CanvasLayer) is visible
+	    # and styled (e.g., white text on a dark background) in the editor for readability.
 
 # New: Score related functions
 func _update_score_display():
 	if _score_label:
 		_score_label.text = "Score: %d" % score # Update score label
+		# IMPORTANT: Ensure this Label node (and its parent CanvasLayer) is visible
+		# and styled (e.g., white text on a dark background) in the editor for readability.
 
 # This function should be connected to an enemy's 'died' signal.
 # Example: enemy_instance.died.connect(_on_enemy_died)
@@ -218,7 +222,11 @@ func _check_win_condition():
 func _update_game_over_display():
 	if _game_over_label:
 		_game_over_label.text = "GAME OVER\nFinal Score: %d" % score # Update game over label
+		# IMPORTANT: Ensure this Label node (and its parent CanvasLayer) is visible
+		# and styled (e.g., white text on a dark background) in the editor for readability.
 
 func _update_victory_display():
 	if _victory_label:
 		_victory_label.text = "VICTORY!\nFinal Score: %d" % score # Update victory label
+		# IMPORTANT: Ensure this Label node (and its parent CanvasLayer) is visible
+		# and styled (e.g., white text on a dark background) in the editor for readability.
