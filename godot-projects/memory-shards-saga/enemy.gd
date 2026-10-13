@@ -111,7 +111,7 @@ func _attack() -> void:
 	
 	# Assuming the player has a 'take_damage' method
 	if _player.has_method("take_damage"):
-		_player.take_damage(attack_damage)
+		_player.take_damage(int(attack_damage)) # Cast to int to match player's take_damage method
 	else:
 		push_warning("Player does not have a 'take_damage' method.")
 

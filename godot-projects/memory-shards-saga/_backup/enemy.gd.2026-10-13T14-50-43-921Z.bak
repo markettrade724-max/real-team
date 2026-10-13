@@ -1,0 +1,157 @@
+extends CharacterBody3D
+
+@export var speed: float = 3.0
+@export var attack_range: float = 1.5
+@export var attack_damage: float = 10.0
+@export var attack_cooldown: float = 2.0
+@export var health: float = 100.0
+@export var score_value: int = 10 # New: Points awarded when this enemy dies
+@export var navigation_agent_node_path: NodePath
+# @export var player_node_path: NodePath # Removed, will find by group
+
+var _navigation_agent: NavigationAgent3D
+# @onready var _player: CharacterBody3D = get_node(player_node_path) if has_node(player_node_path) else null # Removed
+var _player: CharacterBody3D # Will be set in _ready or _physics_process
+
+var _current_health: float
+var _can_attack: bool = true
+var _is_dead: bool = false
+
+signal died(points: int) # New: Signal emitted when the enemy dies
+
+# Timer for attack cooldown
+var _attack_timer: Timer
+
+func _ready() -> void:
+	add_to_group("enemy")
+	_current_health = health
+	
+	# Setup collision layers and masks
+	set_collision_layer_value(2, true) # This enemy is on layer 2
+	# Enemy collides with:
+	# Layer 1 (e.g., Player)
+	set_collision_mask_value(1, true)
+	# Layer 2 (e.g., Other Enemies, for collision avoidance or interaction)
+	set_collision_mask_value(2, true)
+	# Layer 4 (e.g., Bullets)
+	set_collision_mask_value(4, true)
+	
+	# Setup attack timer
+	_attack_timer = Timer.new()
+	_attack_timer.wait_time = attack_cooldown
+	_attack_timer.one_shot = true
+	_attack_timer.autostart = false
+	add_child(_attack_timer)
+	_attack_timer.timeout.connect(_on_attack_timer_timeout)
+	
+	# Ensure navigation agent is ready and valid
+	if navigation_agent_node_path and has_node(navigation_agent_node_path):
+		_navigation_agent = get_node(navigation_agent_node_path)
+		_navigation_agent.path_desired_distance = 0.5
+		_navigation_agent.target_desired_distance = 0.5
+	else:
+		push_warning("NavigationAgent3D not found or path invalid at: %s" % navigation_agent_node_path)
+
+	# Find player by group. Player must add itself to "player" group.
+	# This assumes there's only one player.
+	var players_in_scene = get_tree().get_nodes_in_group("player")
+	if players_in_scene.size() > 0:
+		_player = players_in_scene[0]
+	else:
+		push_warning("Player node not found in 'player' group. Enemy will not move or attack.")
+
+func _physics_process(delta: float) -> void:
+	# Re-check for player in case it spawns later than enemy
+	if not is_instance_valid(_player):
+		var players_in_scene = get_tree().get_nodes_in_group("player")
+		if players_in_scene.size() > 0:
+			_player = players_in_scene[0]
+		else:
+			velocity = Vector3.ZERO
+			move_and_slide()
+			return # No player, so don't proceed with movement/attack
+
+	if _is_dead: # Moved this check after player validation
+		velocity = Vector3.ZERO
+		move_and_slide()
+		return
+
+	var target_position = _player.global_position
+	var distance_to_player = global_position.distance_to(target_position)
+
+	if distance_to_player <= attack_range:
+		# Stop movement when in attack range
+		velocity = Vector3.ZERO
+		if _can_attack:
+			_attack()
+	else:
+		# Move towards player
+		if _navigation_agent: # Check if navigation agent is valid before using
+			_navigation_agent.target_position = target_position
+			var next_path_position = _navigation_agent.get_next_path_position()
+			var direction = (next_path_position - global_position).normalized()
+			velocity = direction * speed
+		else:
+			# Fallback: simple direct movement if no navigation agent
+			var direction = (target_position - global_position).normalized()
+			velocity = direction * speed
+
+	move_and_slide()
+
+func _attack() -> void:
+	if _is_dead or not is_instance_valid(_player):
+		return
+
+	_can_attack = false
+	_attack_timer.start()
+
+	# --- Feedback for attack ---
+	# Example: Play attack animation, sound effect, or particle effect
+	# print("Enemy attacks player for %s damage!" % attack_damage)
+	
+	# Assuming the player has a 'take_damage' method
+	if _player.has_method("take_damage"):
+		_player.take_damage(attack_damage)
+	else:
+		push_warning("Player does not have a 'take_damage' method.")
+
+func take_damage(amount: float) -> void:
+	if _is_dead:
+		return
+
+	_current_health -= amount
+	# --- Feedback for damage taken ---
+	# Example: Play hit animation, sound effect, flash material
+	# print("Enemy took %s damage. Current health: %s" % [amount, _current_health])
+
+	if _current_health <= 0:
+		die()
+
+func die() -> void:
+	if _is_dead:
+		return
+
+	_is_dead = true
+	
+	emit_signal("died", score_value) # Emit the new 'died' signal with score value
+	remove_from_group("enemy") # New: Remove enemy from group for win condition check
+
+	# --- Feedback for death ---
+	# Example: Play death animation, sound effect, drop loot
+	# print("Enemy died!")
+
+	# Disconnect from navigation agent to prevent further pathfinding
+	if _navigation_agent:
+		_navigation_agent.target_position = global_position # Stop pathfinding
+
+	# Disable collision to prevent interaction after death
+	set_collision_layer(0)
+	set_collision_mask(0)
+	
+	# Queue free after a short delay to allow death animation/effects to play.
+	await get_tree().create_timer(0.5).timeout # Added delay
+	if is_inside_tree():
+		queue_free()
+
+func _on_attack_timer_timeout() -> void:
+	_can_attack = true
