@@ -1,17 +1,10 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-10-12T16:46:03.327Z",
-  "current": {
-    "type": "episode",
-    "episode": 41,
-    "id": null,
-    "startedAt": "2026-10-12T16:32:27.371Z",
-    "updatedAt": "2026-10-12T16:46:03.327Z",
-    "failReason": "production-failed: Timeout after 600s"
-  },
+  "updatedAt": "2026-10-14T09:55:53.451Z",
+  "current": null,
   "series": {
-    "nextEpisode": 41,
-    "totalEpisodes": 41,
+    "nextEpisode": 42,
+    "totalEpisodes": 42,
     "episodes": {
       "1": {
         "status": "complete",
@@ -1174,7 +1167,7 @@
         "failReason": null
       },
       "41": {
-        "status": "failed",
+        "status": "complete",
         "completedSteps": [
           "backbone",
           "scenes",
@@ -1199,8 +1192,8 @@
           }
         },
         "startedAt": "2026-10-12T16:32:27.371Z",
-        "completedAt": null,
-        "failReason": "production-failed: Timeout after 600s"
+        "completedAt": "2026-10-14T09:55:53.451Z",
+        "failReason": null
       }
     }
   },
