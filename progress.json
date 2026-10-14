@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-10-14T09:55:53.451Z",
-  "current": null,
+  "updatedAt": "2026-10-14T12:54:56.876Z",
+  "current": {
+    "type": "episode",
+    "episode": 42,
+    "id": null,
+    "startedAt": "2026-10-14T12:41:04.158Z",
+    "updatedAt": "2026-10-14T12:54:56.876Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 42,
     "totalEpisodes": 42,
@@ -1194,6 +1201,35 @@
         "startedAt": "2026-10-12T16:32:27.371Z",
         "completedAt": "2026-10-14T09:55:53.451Z",
         "failReason": null
+      },
+      "42": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-10-14T12:42:24.383Z",
+            "title": "The Echo of a Promise",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-10-14T12:43:44.411Z",
+            "title": "The Echo of a Promise",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-10-14T12:44:20.212Z",
+            "title": "The Echo of a Promise",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-10-14T12:41:04.158Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
