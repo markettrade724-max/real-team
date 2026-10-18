@@ -1,0 +1,38 @@
+{
+  "name": "auditory_semantic_corruption",
+  "label": "Auditory Semantic Corruption",
+  "domain": "audio",
+  "godotFeature": "AudioServer, custom AudioEffect, AudioStreamGenerator",
+  "poeticVision": "The player's reality is audibly hijacked. Normal environmental sounds, Lyra's own breathing, even urgent dialogue become subtly or overtly corrupted. A distant drip might morph into a distorted whisper of a forgotten memory, a creaking door might be overlaid with the grinding sound of the Silence consuming data, or Lyra's own gasp might be replaced by a fragment of someone else's fear. This creates a profound sense of auditory paranoia, questioning the very fabric of perception, and directly experiencing the Silence's invasive mental assault and Lyra's disintegrating identity. Every sound becomes a potential trap or a lost clue, blurring the line between external threat and internal decay.",
+  "usage": "Attach this script to a Node in your scene (e.g., a global singleton). Set the 'target_bus_name' export variable to the AudioBus you wish to corrupt (e.g., \"Master\", \"SFX\", or a custom bus where all relevant game audio is routed). Adjust 'corruption_sound_volume_db' for the base volume of the generated overlay sounds. Dynamically change the 'corruption_intensity' property (from 0.0 for no corruption to 1.0 for full corruption) in your game logic based on Lyra's memory integrity, proximity to the Silence, or other game state. This will apply distortion and pitch shift effects to the target bus and control the presence and characteristics of the procedurally generated overlay sounds, creating a pervasive sense of auditory paranoia.",
+  "parameters": [
+    {
+      "name": "corruption_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the overall level of auditory corruption, from 0.0 (none) to 1.0 (full). Affects bus effects and generated sound presence."
+    },
+    {
+      "name": "target_bus_name",
+      "type": "String",
+      "default": "\"Master\"",
+      "description": "The name of the AudioBus to apply corruption effects to and route generated sounds through."
+    },
+    {
+      "name": "corruption_sound_volume_db",
+      "type": "float",
+      "default": "-15.0",
+      "description": "Base volume (in dB) for the procedurally generated corruption overlay sounds."
+    }
+  ],
+  "dependencies": [
+    "AudioStreamPlayer",
+    "AudioStreamGenerator",
+    "AudioEffectDistortion",
+    "AudioEffectPitchShift"
+  ],
+  "verdict": "The very air will whisper of forgotten truths and encroaching oblivion, making every sound a fragile echo of a self undone.",
+  "impact": "This mechanic will profoundly immerse the player in Lyra's deteriorating mental state, transforming the game's soundscape from a mere backdrop into an active, hostile, and unreliable element. It will heighten paranoia, make every sound a potential source of dread or a fleeting clue, and constantly reinforce the theme of identity loss, forcing the player to question their own perception alongside Lyra's.",
+  "score": 95,
+  "inventedAt": "2026-10-18T06:48:53.577Z"
+}

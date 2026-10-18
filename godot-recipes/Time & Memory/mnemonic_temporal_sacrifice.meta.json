@@ -1,0 +1,57 @@
+{
+  "name": "mnemonic_temporal_sacrifice",
+  "label": "Echo of Self-Erasure",
+  "domain": "Time & Memory",
+  "godotFeature": "GDScript State Snapshots & Shaders",
+  "poeticVision": "Feel the desperate pang of knowing that every escape from death costs a piece of who you are. The relief of survival is immediately tainted by the hollow ache of a freshly severed memory, a fragment of your identity sacrificed to the relentless clock. You gain precious seconds of life, but lose the very reason you're fighting.",
+  "usage": "Attach this script to a global manager node (e.g., 'GameManager' or 'World'). Configure the 'player_node_path' to point to your player character, and set 'memory_fragment_group' and 'hunter_group' to the names of the Node groups containing your memory fragments and hunter enemies, respectively. Ensure these nodes are added to their corresponding groups. Set 'ui_shatter_target_path' to a Control node in your UI that visually represents a memory fragment; this node will have the shatter effect applied to its material. Call 'add_collected_memory_fragment(fragment_node.get_path())' whenever Lyra collects a memory fragment. When the player activates the 'Echo of Self-Erasure' ability (e.g., via an input action), call 'activate_self_erasure()' to rewind the game state and sacrifice a collected memory.",
+  "parameters": [
+    {
+      "name": "buffer_size",
+      "type": "int",
+      "default": "5",
+      "description": "The number of past game states (frames) to store in the cyclic buffer for rewinding. A larger buffer allows rewinding further back but uses more memory."
+    },
+    {
+      "name": "rewind_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The duration, in seconds, for the visual shatter effect and the implied state transition."
+    },
+    {
+      "name": "memory_fragment_group",
+      "type": "StringName",
+      "default": "\"memory_fragments\"",
+      "description": "The name of the Node group containing all memory fragment entities in the scene. These nodes should be Node3D."
+    },
+    {
+      "name": "hunter_group",
+      "type": "StringName",
+      "default": "\"hunters\"",
+      "description": "The name of the Node group containing all hunter enemy entities in the scene. These nodes should be CharacterBody3D."
+    },
+    {
+      "name": "player_node_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "The NodePath to the player character (e.g., '/root/World/Player'). The player node is assumed to be a Node3D."
+    },
+    {
+      "name": "ui_shatter_target_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "The NodePath to a Control node in the UI that will display the memory shattering effect. This node should represent a collected memory fragment visually."
+    }
+  ],
+  "dependencies": [
+    "Player node (Node3D)",
+    "MemoryFragment nodes (Node3D, in 'memory_fragments' group, with optional 'is_collected' property)",
+    "Hunter nodes (CharacterBody3D, in 'hunters' group)",
+    "A Control node in the UI for 'ui_shatter_target_path'",
+    "Godot's Tween system"
+  ],
+  "verdict": "A desperate bargain with oblivion, where every breath saved shatters a piece of the self Lyra fights to remember.",
+  "impact": "This mechanic will force players into agonizing choices, making every escape a bittersweet victory. It will deepen the emotional connection to Lyra's struggle, as players directly experience the cost of survival on her identity, transforming abstract concepts of memory loss into tangible, painful gameplay decisions. The constant tension between immediate survival and long-term self-preservation will be a core, unforgettable emotional driver.",
+  "score": 92,
+  "inventedAt": "2026-10-18T06:56:32.912Z"
+}

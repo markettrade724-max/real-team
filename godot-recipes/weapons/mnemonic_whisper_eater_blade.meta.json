@@ -1,0 +1,69 @@
+{
+  "name": "mnemonic_whisper_eater_blade",
+  "label": "Whisper-Eater Blade",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterial & Physics Server",
+  "poeticVision": "The desperate chill of self-cannibalization. Every strike against the Silence with this blade is a blow against yourself, a deliberate sacrifice of a cherished memory fragment for a fleeting edge in survival. You wield not just steel, but the very essence of your past, knowing each successful hit saves you now but erodes who you once were. The victory is bitter, the cost immediate and profoundly personal.",
+  "usage": "Attach this `WhisperEaterBlade.gd` script to an `Area3D` node that represents the blade's hitbox. Ensure the `Area3D` has a `CollisionShape3D` child. The player's animation system should call the `set_attacking(true)` method at the start of a melee attack animation frame where the blade is meant to deal damage and consume memories, and `set_attacking(false)` when the attack frame ends or after a successful hit/consumption to prevent multiple triggers. \n\nOther game systems (e.g., a `PlayerStats` singleton for buffs, and an `IdentitySystem` singleton for memory degradation) should connect to the `memory_consumed` signal. The `PlayerStats` system would apply the temporary combat buffs (speed, damage, shield) based on the `buff_data` dictionary, managing their duration. The `IdentitySystem` would use the `identity_cost_key` to degrade a specific piece of Lyra's identity, triggering visual changes via global `ShaderMaterial` parameters or `PhysicsServer3D` manipulations as described in the vision.",
+  "parameters": [
+    {
+      "name": "blade_damage",
+      "type": "float",
+      "default": "15.0",
+      "description": "Base damage dealt by the blade on hitting an enemy."
+    },
+    {
+      "name": "buff_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "Duration of the temporary combat buff in seconds after consuming a memory."
+    },
+    {
+      "name": "buff_speed_multiplier",
+      "type": "float",
+      "default": "0.1",
+      "description": "Multiplier applied to the consumed memory's value to determine the speed buff amount."
+    },
+    {
+      "name": "buff_damage_multiplier",
+      "type": "float",
+      "default": "0.2",
+      "description": "Multiplier applied to the consumed memory's value to determine the damage buff amount."
+    },
+    {
+      "name": "buff_shield_strength_multiplier",
+      "type": "float",
+      "default": "0.5",
+      "description": "Multiplier applied to the consumed memory's value to determine the shield strength buff amount."
+    },
+    {
+      "name": "fragment_detection_radius",
+      "type": "float",
+      "default": "2.0",
+      "description": "The spherical radius around the blade within which `MemoryFragment` nodes are detected for consumption upon hitting an enemy."
+    },
+    {
+      "name": "memory_fragment_group",
+      "type": "String",
+      "default": "memory_fragments",
+      "description": "The name of the Node Group that all `MemoryFragment` nodes should belong to for detection."
+    },
+    {
+      "name": "enemy_group",
+      "type": "String",
+      "default": "enemies",
+      "description": "The name of the Node Group that all enemy entities should belong to for damage detection."
+    }
+  ],
+  "dependencies": [
+    "An `Area3D` node with a `CollisionShape3D` child (the blade's hitbox).",
+    "A custom script for `MemoryFragment` nodes (e.g., `memory_fragment.gd`) that extends `Node3D` and implements:\n\t- `func consume() -> void`: Triggers visual consumption (e.g., shader animation, `queue_free()`).\n\t- `func get_memory_value() -> float`: Returns the fragment's numerical value for buff calculation.\n\t- `func get_identity_data_key() -> String`: Returns a unique string identifying the memory for identity degradation.\n\t- These nodes must be added to the `memory_fragments` group.",
+    "Enemy nodes that are in the `enemies` group and have a `func take_damage(amount: float) -> void` method.",
+    "A `PlayerStats` system (e.g., an Autoload singleton) to receive and apply combat buffs from the `memory_consumed` signal.",
+    "An `IdentitySystem` (e.g., an Autoload singleton) to receive the `identity_cost_key` from the `memory_consumed` signal and manage Lyra's identity degradation, potentially updating global `ShaderMaterial` parameters or interacting with the `PhysicsServer3D`."
+  ],
+  "verdict": "A brilliant, agonizing paradox, this blade carves survival from the very essence of self, leaving a trail of bitter victories and forgotten echoes.",
+  "impact": "This blade transforms combat into a desperate negotiation with one's own past, forcing players to make agonizing choices between immediate survival and the erosion of their very identity, deepening the game's core themes of self-loss and the relentless pursuit of the Silence. It elevates every encounter from a mere physical challenge to a profound, personal sacrifice.",
+  "score": 95,
+  "inventedAt": "2026-10-18T06:52:33.205Z"
+}

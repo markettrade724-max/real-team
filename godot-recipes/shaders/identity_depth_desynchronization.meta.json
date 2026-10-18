@@ -1,0 +1,51 @@
+{
+  "name": "identity_depth_desynchronization",
+  "label": "The Shimmering Chasm of Self",
+  "domain": "shaders",
+  "godotFeature": "Spatial Shaders with Depth Texture & Vertex Manipulation",
+  "poeticVision": "The world around Lyra shimmers with an unsettling inconsistency, objects subtly stretching, contracting, and shifting their perceived depth as her identity fragments. Distances become unreliable, making precise jumps treacherous and incoming threats seem closer or farther than they truly are. It's not just visual noise; it's a direct assault on her spatial reasoning, reflecting the internal chasm of her dissolving self, forcing her to rely on instinct over sight, as the very ground beneath her feet feels like it's unstable.",
+  "usage": "Attach this `.gdshader` file to a `ShaderMaterial` resource on any `MeshInstance3D` node in your scene. To control the distortion, adjust the `identity_coherence` uniform parameter via a script. A value of `1.0` means no distortion (full coherence), while `0.0` means maximum distortion (no coherence). You can also tweak `distortion_strength`, `distortion_frequency`, `distortion_speed`, and the `distance_fade_start`/`end` parameters in the Inspector to fine-tune the visual effect.",
+  "parameters": [
+    {
+      "name": "identity_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the overall intensity of the distortion. 1.0 is no distortion (full identity), 0.0 is maximum distortion (identity completely fragmented)."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.05",
+      "description": "The maximum displacement distance for vertices, controlling how 'strong' the visual warping is."
+    },
+    {
+      "name": "distortion_frequency",
+      "type": "float",
+      "default": "5.0",
+      "description": "Determines the scale of the noise pattern, affecting how 'wavy' or 'jagged' the distortion appears."
+    },
+    {
+      "name": "distortion_speed",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the animation speed of the shimmering and warping effect over time."
+    },
+    {
+      "name": "distance_fade_start",
+      "type": "float",
+      "default": "10.0",
+      "description": "The distance from the camera at which the distortion effect begins to intensify."
+    },
+    {
+      "name": "distance_fade_end",
+      "type": "float",
+      "default": "50.0",
+      "description": "The distance from the camera at which the distortion effect reaches its maximum intensity."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "The world itself becomes a treacherous mirror, reflecting Lyra's fracturing self in every unreliable step and shimmering threat.",
+  "impact": "This mechanic will profoundly alter player perception and decision-making, transforming every movement and combat encounter into a struggle against a dissolving reality, forcing a deeper empathetic connection to Lyra's internal state. It elevates the core themes of identity loss and desperate survival from narrative to visceral gameplay, making every jump a gamble and every threat an existential challenge.",
+  "score": 95,
+  "inventedAt": "2026-10-18T06:46:56.672Z"
+}

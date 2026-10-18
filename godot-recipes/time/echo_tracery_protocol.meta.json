@@ -1,0 +1,49 @@
+{
+  "name": "echo_tracery_protocol",
+  "label": "Phantom Trace Protocol",
+  "domain": "time",
+  "godotFeature": "SceneTree.duplicate_node(), NavigationAgent3D, AnimationPlayer.playback_speed, custom _process scaling",
+  "poeticVision": "The player feels the cold dread of knowing their very act of escaping immediate danger has left a temporal beacon for the Silence. Every tactical temporal shift becomes a gamble, trading fleeting safety for an increased, self-inflicted vulnerability, twisting relief into a constant, haunting dread as the past literally comes back to guide Lyra's hunters. It's the ultimate paradox of self-preservation: you leave fragments of yourself to escape, and those fragments become the Silence's bloodhounds.",
+  "usage": "This 'PhantomTraceProtocol' script defines the behavior and visual representation of a 'Phantom Trace' left behind by Lyra. To use it:\n\n1.  **Lyra's Temporal Ability (e.g., a dash or rewind):** When Lyra uses a temporal ability, her character script should create an instance of this 'PhantomTraceProtocol' scene (or duplicate her current visual node and attach this script).\n    Example (in Lyra's script):\n    gdscript\n    @export var phantom_trace_scene: PackedScene # Assign a scene with this script attached\n\n    func _on_temporal_ability_activated():\n    \tvar trace_instance = phantom_trace_scene.instantiate() as Node3D\n    \tget_tree().current_scene.add_child(trace_instance)\n    \ttrace_instance.global_transform = global_transform # Position at Lyra's original location\n    \t# Optionally set unique properties\n    \ttrace_instance.temporal_signature = \"Lyra_Trace_\" + str(Time.get_ticks_msec())\n    \t# If Lyra's model is complex, you might duplicate her MeshInstance3D and assign the shader material\n    \t# var duplicated_mesh = $MeshInstance3D.duplicate()\n    \t# trace_instance.get_node(\"MeshInstance3D\").mesh = duplicated_mesh.mesh\n    \t# trace_instance.get_node(\"MeshInstance3D\").set_surface_override_material(0, duplicated_mesh.get_surface_override_material(0)) # If Lyra has a base material\n    \n\n2.  **Silence Hunter AI:** Silence hunters (e.g., `CharacterBody3D` with `NavigationAgent3D`) should have an `Area3D` to detect `PhantomTrace` nodes. When a hunter's `Area3D` detects a `PhantomTrace`:\n    *   The hunter's `NavigationAgent3D` should set its `target_position` to the `PhantomTrace`'s `global_position`.\n    *   Once the hunter reaches the trace (e.g., `global_position.distance_to(trace.global_position) < detection_threshold`), it should call `trace.devour()`.\n    *   Upon `devour()`, the `devoured` signal is emitted. A game manager or the hunter itself can listen to this signal to apply effects (e.g., `Silence_Hunter.apply_buff()`, `GameManager.reveal_lyra_vicinity(trace_position)`).\n\n3.  **Scene Setup:** Ensure the `PhantomTraceProtocol.gd` script is attached to a `Node3D` scene (e.g., named `PhantomTrace.tscn`) that Lyra can instantiate. This scene should ideally have a `MeshInstance3D` child (even if just a placeholder, as the script will add a `CapsuleMesh` if none exists) and an `Area3D` child (the script will add a `CollisionShape3D` to it).\n\nThis setup ensures that every temporal shift Lyra makes leaves a physical, trackable beacon for the Silence, creating a constant tension between immediate escape and long-term vulnerability.",
+  "parameters": [
+    {
+      "name": "lifespan",
+      "type": "float",
+      "default": "5.0",
+      "description": "Duration before the trace naturally despawns if not devoured."
+    },
+    {
+      "name": "temporal_signature",
+      "type": "String",
+      "default": "default_signature",
+      "description": "A unique identifier for this trace, useful for hunters to prioritize or for Lyra to track."
+    },
+    {
+      "name": "base_trace_color",
+      "type": "Color",
+      "default": "Color(0.2, 0.8, 1.0, 0.6)",
+      "description": "The base color and transparency of the phantom trace, applied by the embedded shader."
+    },
+    {
+      "name": "glitch_intensity",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the visual distortion and flicker intensity of the trace's embedded shader effect."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "MeshInstance3D",
+    "Area3D",
+    "CollisionShape3D",
+    "SphereShape3D",
+    "CapsuleMesh",
+    "Timer",
+    "Shader",
+    "ShaderMaterial"
+  ],
+  "verdict": "A brilliant paradox, this protocol transforms Lyra's desperate escapes into self-inflicted beacons, weaving the haunting dread of her past into the very fabric of her relentless pursuit.",
+  "impact": "This mechanic will infuse every escape with a profound sense of dread and strategic weight, transforming moments of relief into anxious calculations of future vulnerability. Players will constantly grapple with the paradox of self-preservation, where every step away from danger leaves a haunting echo that draws the Silence closer, deepening the emotional core of identity loss and relentless pursuit.",
+  "score": 95,
+  "inventedAt": "2026-10-18T06:45:09.916Z"
+}

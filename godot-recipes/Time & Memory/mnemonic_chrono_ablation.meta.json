@@ -1,0 +1,81 @@
+{
+  "name": "mnemonic_chrono_ablation",
+  "label": "Echo-Scar Ablation",
+  "domain": "Time & Memory",
+  "godotFeature": "Shaders & Tween",
+  "poeticVision": "A desperate bargain: Lyra can steal moments from the past, briefly rewinding small segments of local time to escape a hunter or avoid a collapse. But each stolen moment rips a visible thread from her own mind, physically scarring her perception of reality and making her forget a piece of herself. The power saves her body, but corrodes her soul, leaving behind ghostly echoes and permanent visual distortions in the world, reminding her of what she lost.",
+  "usage": "Attach this script to a global manager node or Lyra's player node. When Lyra uses the 'Echo-Scar Ablation' ability, call the `activate_ablation(lyra.global_position)` method. This will:\n1.  Scan for `RigidBody3D` nodes within `ablation_radius` of `lyra.global_position`.\n2.  Rewind their position and rotation to their state at the moment of activation over `rewind_duration`.\n3.  Trigger a visual dissolution effect on a `TextureRect` in Lyra's HUD (specified by `memory_fragment_path`), representing memory loss.\n4.  Instantiate a permanent `MeshInstance3D` (a plane with a screen-space distortion shader) at the ablation point, creating a visual 'scar' in the environment.\n\nTo set up:\n-   Create a `TextureRect` in your HUD scene to represent a memory fragment. Set its `NodePath` to the `memory_fragment_path` export variable on this script.\n-   Adjust `ablation_radius`, `rewind_duration`, and `scar_mesh_scale` in the Inspector.\n-   The physics `collision_mask` in `_capture_physics_states` should be configured to target the specific layers of physics bodies you want to be affected by the rewind.\n-   Shader parameters (e.g., `dissolve_amount`, `scar_intensity`, `glitch_speed`, `glitch_amount`) can be adjusted by getting the `_memory_dissolve_material` or `_environmental_scar_material` and calling `set_shader_parameter(\"uniform_name\", value)` at runtime, or by modifying the `const` shader strings directly.",
+  "parameters": [
+    {
+      "name": "ablation_radius",
+      "type": "float",
+      "default": "5.0",
+      "description": "The radius within which physics bodies are affected by the time rewind."
+    },
+    {
+      "name": "rewind_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The duration (in seconds) over which affected physics bodies rewind to their initial state."
+    },
+    {
+      "name": "memory_fragment_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "The NodePath to a TextureRect node in the HUD that visually represents a memory fragment and will dissolve upon ability use."
+    },
+    {
+      "name": "scar_mesh_scale",
+      "type": "float",
+      "default": "1.0",
+      "description": "A multiplier for the size of the permanent environmental scar mesh."
+    },
+    {
+      "name": "dissolve_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Shader uniform for the memory dissolution effect. Ranges from 0.0 (fully opaque) to 1.0 (fully dissolved). Controlled by the script."
+    },
+    {
+      "name": "noise_texture",
+      "type": "sampler2D",
+      "default": "hint_default_white",
+      "description": "Shader uniform for the memory dissolution effect. An optional texture to provide a more organic dissolve pattern."
+    },
+    {
+      "name": "scar_intensity",
+      "type": "float",
+      "default": "0.7",
+      "description": "Shader uniform for the environmental scar effect. Controls the overall visibility, desaturation, and glitch intensity of the scar."
+    },
+    {
+      "name": "glitch_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Shader uniform for the environmental scar effect. Controls the speed of the glitch animation."
+    },
+    {
+      "name": "glitch_amount",
+      "type": "float",
+      "default": "0.02",
+      "description": "Shader uniform for the environmental scar effect. Controls the magnitude of the glitch distortion."
+    }
+  ],
+  "dependencies": [
+    "Node",
+    "RigidBody3D",
+    "TextureRect",
+    "MeshInstance3D",
+    "PlaneMesh",
+    "ShaderMaterial",
+    "Shader",
+    "Tween",
+    "PhysicsShapeQueryParameters3D",
+    "SphereShape3D",
+    "PackedScene"
+  ],
+  "verdict": "A desperate bargain etched into the very fabric of reality, where survival costs the soul and every escape leaves an indelible scar on the world and self.",
+  "impact": "This mechanic forces players into agonizing choices, making every escape a poignant sacrifice. The accumulating visual scars will serve as a constant, haunting reminder of Lyra's fading identity, deepening the player's emotional connection to her struggle and the universe's central theme of self-loss. It transforms tactical survival into a profound narrative of self-erosion.",
+  "score": 95,
+  "inventedAt": "2026-10-18T06:54:06.164Z"
+}

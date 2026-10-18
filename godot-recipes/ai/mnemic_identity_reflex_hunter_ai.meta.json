@@ -1,0 +1,68 @@
+{
+  "name": "mnemic_identity_reflex_hunter_ai",
+  "label": "Echo-Adaptive Predator",
+  "domain": "ai",
+  "godotFeature": "GDScript/C# for advanced AI state management, Signals for real-time memory-state feedback, and Procedural Generation (e.g., Grammars) for dynamic environment adaptation.",
+  "poeticVision": "The chilling realization that the hunters of the Silence mirror your own internal disarray. They don't just pursue you; they observe the very fabric of your fading self, adapting their tactics, manifesting as distortions of what you've lost, turning your memory gaps into their strategic advantages. You will feel a profound, existential terror as your own dissolving identity becomes the blueprint for your demise.",
+  "usage": "1.  Attach this `mnemic_identity_reflex_hunter_ai.gd` script to a `CharacterBody3D` node in your scene.\n2.  Ensure your player character (Lyra) is added to the \"player\" group (Node -> Groups tab).\n3.  Your player character script must emit a signal named `identity_profile_updated` whenever Lyra's memory fragments, losses, or dominant emotional state changes. This signal should pass a `Dictionary` with keys like `\"lost_memories\"` (Array of Strings), `\"active_fragments\"` (Array of Strings), and `\"dominant_emotion\"` (String).\n    Example Player Signal Emission:\n    `signal identity_profile_updated(profile: Dictionary)`\n    `func _on_memory_lost(memory_name: String):`\n    `\t_lyra_identity_profile[\"lost_memories\"].append(memory_name)`\n    `\tidentity_profile_updated.emit(_lyra_identity_profile)`\n4.  Create an `EnvironmentManager` or `ProceduralGenerator` node in your scene and connect to the `hunter_adapted_environment` signal emitted by this AI script. This external system will then handle the actual procedural generation of environmental changes (e.g., creating labyrinthine sections) based on the `adaptation_type` and `target_position` provided by the signal.\n    Example EnvironmentManager connection:\n    `func _ready():`\n    `\tvar hunter = get_node(\"Path/To/Hunter\") # Or find via group`\n    `\tif hunter:`\n    `\t\thunter.hunter_adapted_environment.connect(_on_hunter_adapted_environment)`\n    `func _on_hunter_adapted_environment(adaptation_type: String, target_position: Vector3):`\n    `\tif adaptation_type == \"labyrinth\":`\n    `\t\t# Trigger your procedural labyrinth generation logic near target_position`\n    `\t\tprint(\"Generating labyrinth near: \", target_position)`\n5.  Adjust the exported parameters in the Inspector for `move_speed`, `acceleration`, `rotation_speed`, `attack_range`, and `attack_cooldown` to fine-tune the hunter's base behavior.",
+  "parameters": [
+    {
+      "name": "move_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Base movement speed of the hunter."
+    },
+    {
+      "name": "acceleration",
+      "type": "float",
+      "default": "10.0",
+      "description": "Rate at which the hunter accelerates to its target speed."
+    },
+    {
+      "name": "rotation_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "Speed at which the hunter rotates to face its target."
+    },
+    {
+      "name": "attack_range",
+      "type": "float",
+      "default": "2.0",
+      "description": "The maximum distance from the player at which the hunter can initiate an attack."
+    },
+    {
+      "name": "attack_cooldown",
+      "type": "float",
+      "default": "1.5",
+      "description": "The time in seconds between consecutive attacks."
+    },
+    {
+      "name": "spatial_memory_loss_weight",
+      "type": "float",
+      "default": "0.7",
+      "description": "Conceptual weight indicating the importance of Lyra's spatial memory loss for environmental adaptation. (Currently used as a direct condition, not a weighted value in this simplified script)."
+    },
+    {
+      "name": "kinetic_memory_loss_weight",
+      "type": "float",
+      "default": "0.5",
+      "description": "Conceptual weight indicating the importance of Lyra's kinetic memory loss for movement/attack adaptation. (Currently used as a direct condition)."
+    },
+    {
+      "name": "shield_memory_active_weight",
+      "type": "float",
+      "default": "0.3",
+      "description": "Conceptual weight indicating the importance of Lyra's active shield memory for movement/attack adaptation. (Currently used as a direct condition)."
+    }
+  ],
+  "dependencies": [
+    "A `CharacterBody3D` node as the base for the hunter.",
+    "A player node (Lyra) that is part of the \"player\" group.",
+    "The player node must emit an `identity_profile_updated(profile: Dictionary)` signal.",
+    "An external system (e.g., `EnvironmentManager` or `ProceduralGenerator`) to listen for the `hunter_adapted_environment(adaptation_type, target_position)` signal and handle environmental procedural generation."
+  ],
+  "verdict": "The Echo-Adaptive Predator is a chilling mirror, reflecting Lyra's dissolving self into a relentless, evolving nightmare that turns her deepest fears into its sharpest weapons.",
+  "impact": "This mechanic transforms the Silence's hunters from mere obstacles into a profound, personal terror. Players will experience a chilling realization that their own fading identity is not just a narrative element but a dynamic blueprint for their demise. Every lost memory will not only weaken Lyra but actively empower and reshape her pursuers and even the environment itself, creating an unparalleled sense of vulnerability and existential dread. The game will become a relentless, psychological cat-and-mouse where the 'mouse' is slowly providing the 'cat' with the very tools to catch it.",
+  "score": 95,
+  "inventedAt": "2026-10-18T06:47:56.088Z"
+}

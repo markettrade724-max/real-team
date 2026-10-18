@@ -1,0 +1,56 @@
+{
+  "name": "mnemonic_velocity_erosion",
+  "label": "Mnemonic Velocity Erosion",
+  "domain": "movement",
+  "godotFeature": "MeshDataTool/SurfaceTool for dynamic mesh modification via PhysicsServer3D queries",
+  "poeticVision": "The desperate thrill of outrunning hunters is instantly tinged with the profound dread of self-destruction. Every stride shatters the world underfoot, not just visually, but physically, leaving a wake of increasingly hostile, fragmented terrain. The player feels the crushing weight of their own destructive impact, knowing that speed is survival, but survival costs memory, literally tearing away the very foundations of self and environment. It's a race against the Silence outside, and a race against your own eroding self from within.",
+  "usage": "Attach this script to a Node3D in your scene. Assign the player's CharacterBody3D node to the 'lyra_node' export variable in the Inspector. Ensure your memory terrain pieces are structured as StaticBody3D nodes, each containing a MeshInstance3D (with an ArrayMesh resource) and a CollisionShape3D as direct children. Set the 'memory_substrate_layer' export variable to match the physics layer your terrain StaticBody3D nodes are on. When Lyra moves above the 'erosion_speed_threshold', the terrain beneath her within 'erosion_radius' will dynamically lower its vertices, and its collision shape will be regenerated to match the new geometry.",
+  "parameters": [
+    {
+      "name": "lyra_node",
+      "type": "CharacterBody3D",
+      "default": "null",
+      "description": "Reference to the player character (Lyra) whose speed triggers erosion."
+    },
+    {
+      "name": "erosion_speed_threshold",
+      "type": "float",
+      "default": "10.0",
+      "description": "Minimum speed Lyra must reach to trigger terrain erosion."
+    },
+    {
+      "name": "erosion_radius",
+      "type": "float",
+      "default": "1.5",
+      "description": "Radius around Lyra within which terrain vertices will be affected by erosion."
+    },
+    {
+      "name": "erosion_depth",
+      "type": "float",
+      "default": "0.5",
+      "description": "Maximum vertical distance by which terrain vertices are lowered during erosion."
+    },
+    {
+      "name": "erosion_cooldown",
+      "type": "float",
+      "default": "0.1",
+      "description": "Time in seconds between successive erosion events to prevent excessive updates."
+    },
+    {
+      "name": "memory_substrate_layer",
+      "type": "int",
+      "default": "1",
+      "description": "Physics layer mask used to identify 'memory-substrate' terrain objects that can be eroded."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (for Lyra)",
+    "StaticBody3D (for terrain pieces)",
+    "MeshInstance3D (child of StaticBody3D, with ArrayMesh)",
+    "CollisionShape3D (child of StaticBody3D)"
+  ],
+  "verdict": "Every desperate stride carves a deeper wound into the fabric of memory, making the path forward a testament to the self-eroding cost of survival.",
+  "impact": "This mechanic transforms the very act of movement from a simple traversal into a profound, self-destructive choice. Players will constantly weigh the need for speed against the cost of literally eroding their past, creating a unique tension where survival means sacrificing identity. It makes the environment a dynamic, responsive representation of Lyra's internal struggle, forcing players to confront the paradox of fighting to remember while actively destroying the remnants of memory.",
+  "score": 95,
+  "inventedAt": "2026-10-18T06:46:03.961Z"
+}

@@ -1,0 +1,55 @@
+{
+  "name": "semantic_terrain_flux",
+  "label": "Echoing Labyrinth of Forgotten Meaning",
+  "domain": "world",
+  "godotFeature": "ProceduralMeshGeneration, NavigationMesh updates, MultiMeshInstance3D",
+  "poeticVision": "Feel the ground beneath your feet betray you, not by crumbling, but by re-writing its own history. Every step carves a new path through a dreamscape that forgets itself moment by moment. The familiar becomes alien, the safe becomes a trap, as the very architecture of memory shifts its meaning, forcing a desperate intuition to guide you where logic fails. You are racing against not just collapse, but against the world transforming into a foreign, hostile entity that was once intimately yours.",
+  "usage": "Attach this script to a Node3D in your Godot 4.6.2 scene. The script will automatically generate a procedural terrain mesh and a corresponding navigation mesh upon _ready. Adjust the 'identity_coherence' and 'silence_proximity' export variables in the editor or via code to dynamically change the terrain's structure, introducing more coherent paths or hostile obstacles. Call the 'regenerate_terrain()' method to force a re-generation of the environment and navigation mesh at runtime, for example, when Lyra's identity state changes or the Silence's presence intensifies.",
+  "parameters": [
+    {
+      "name": "identity_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the coherence of the memory-world. Higher values result in more stable, traversable paths. Lower values introduce more gaps and instability."
+    },
+    {
+      "name": "silence_proximity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Indicates the closeness of the Silence. Higher values introduce more hostile obstacles and spikes, making traversal difficult."
+    },
+    {
+      "name": "terrain_size",
+      "type": "int",
+      "default": "64",
+      "description": "The number of cells along one axis of the square terrain grid."
+    },
+    {
+      "name": "cell_size",
+      "type": "float",
+      "default": "2.0",
+      "description": "The size of each grid cell in world units."
+    },
+    {
+      "name": "height_scale",
+      "type": "float",
+      "default": "10.0",
+      "description": "Maximum vertical displacement for terrain features."
+    },
+    {
+      "name": "detail_frequency",
+      "type": "float",
+      "default": "0.1",
+      "description": "Frequency for the underlying noise, influencing the overall detail and waviness of the terrain."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (created by script)",
+    "NavigationRegion3D (created by script)",
+    "FastNoiseLite (resource created by script)"
+  ],
+  "verdict": "The world itself becomes a treacherous echo of Lyra's fading self, a labyrinth where the ground remembers less than she does.",
+  "impact": "This mechanic ensures that the very ground Lyra walks on is a constant, dynamic reflection of her internal struggle and external peril. It transforms the environment from a static backdrop into an active antagonist, forcing players into a perpetual state of adaptation and urgency. Every step becomes a gamble, every path a fleeting truth, deepening the sense of self-loss and the relentless pursuit by the Silence.",
+  "score": 88,
+  "inventedAt": "2026-10-18T06:51:39.842Z"
+}

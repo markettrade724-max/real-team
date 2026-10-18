@@ -1,0 +1,41 @@
+{
+  "name": "mnemic_will_not_comply_interface",
+  "label": "Mnemic Will-Not-Comply Interface",
+  "domain": "ui",
+  "godotFeature": "Control node _gui_input event handling & Tween for UI element manipulation",
+  "poeticVision": "The player feels a chilling loss of agency as the very interface rebels. Buttons refuse to highlight, text shimmers into illegibility before selection, and crucial choices drift away from the cursor, forcing desperate, repeated attempts to command Lyra's deteriorating mind. It's not just a visual distortion, but a direct, frustrating battle against the dissolution of Lyra's will, making every UI interaction a struggle for cognitive coherence against an actively hostile interface.",
+  "usage": "To use this interface, save the GDScript as `mnemic_will_not_comply_interface.gd` and the GLSL shader (provided separately) as `mnemic_will_not_comply_interface.gdshader` in the same directory. Then, in your Godot UI scene:\n\n1.  **Create a new `Control` node** (e.g., a `Panel`, `Button`, or a generic `Control`).\n2.  **Attach `mnemic_will_not_comply_interface.gd`** to this `Control` node.\n3.  **Add a `Label` node as a child** to this `MnemicControl` to display text, or if using a `Button`, the script will automatically find its internal `Label`.\n4.  **Adjust the `identity_integrity_score`** property on the `MnemicControl` instance in the Inspector. A score of `1.0` means perfect clarity and responsiveness, while a score closer to `0.0` will cause the UI element's text to become illegible, require multiple clicks, and drift erratically upon failed interaction attempts.\n5.  **Connect signals** (e.g., `pressed` for a `Button` child) to your game logic. The `MnemicControl` script will only allow the input event to pass through and trigger these signals if the required interaction conditions (e.g., enough clicks) are met.",
+  "parameters": [
+    {
+      "name": "identity_integrity_score",
+      "type": "float",
+      "default": "1.0",
+      "description": "A value from 0.0 to 1.0 representing Lyra's current mental integrity. 1.0 is perfect, 0.0 is completely lost. Lower values increase UI difficulty."
+    },
+    {
+      "name": "drift_strength",
+      "type": "float",
+      "default": "50.0",
+      "description": "The maximum pixel distance the UI element can drift from its original position when an input fails."
+    },
+    {
+      "name": "drift_duration",
+      "type": "float",
+      "default": "0.2",
+      "description": "The duration (in seconds) of a single drift animation."
+    },
+    {
+      "name": "max_required_inputs",
+      "type": "int",
+      "default": "3",
+      "description": "The maximum number of clicks required to register an input when identity integrity is at 0.0. Scales down to 1 click at 1.0 integrity."
+    }
+  ],
+  "dependencies": [
+    "mnemic_will_not_comply_interface.gdshader"
+  ],
+  "verdict": "A brilliant subversion of player agency, transforming the interface into a tangible antagonist that forces a desperate, unforgettable struggle against the erosion of self.",
+  "impact": "This mechanic will profoundly deepen player immersion by transforming the user interface from a passive tool into an active, hostile force. Players will viscerally experience Lyra's cognitive decline and loss of agency, making every menu interaction a desperate struggle against forgetting. This constant, frustrating battle for control will reinforce the game's core themes of self-loss and the urgency of survival, creating a unique and unforgettable emotional connection to Lyra's plight.",
+  "score": 90,
+  "inventedAt": "2026-10-18T06:49:51.072Z"
+}

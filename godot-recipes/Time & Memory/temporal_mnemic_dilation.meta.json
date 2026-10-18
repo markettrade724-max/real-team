@@ -1,0 +1,41 @@
+{
+  "name": "temporal_mnemic_dilation",
+  "label": "Echo's Slowed Pulse",
+  "domain": "Time & Memory",
+  "godotFeature": "Engine.time_scale, ShaderMaterial, Tween",
+  "poeticVision": "The player feels a sudden, desperate clarity as time itself unravels around them, allowing for a split-second decision in a life-or-death situation. Yet, this stolen time comes at the immediate, agonizing cost of a cherished memory fragment dissolving into shimmering dust, forcing a brutal trade-off between survival and self.",
+  "usage": "1. Create a new Node (e.g., a `Node` or `Node2D`) in your scene and attach this `temporal_mnemic_dilation.gd` script to it. This node will manage the time dilation effect.\n2. Create a new `Shader` resource in your project (e.g., right-click in FileSystem -> New -> Shader) and name it `memory_degrade.gdshader`. Paste the following GLSL code into it:\n\nglsl\n// filename: memory_degrade.gdshader\nshader_type canvas_item;\n\nuniform sampler2D texture : source_color;\nuniform float degrade_amount : hint_range(0.0, 1.0) = 0.0;\nuniform sampler2D noise_texture : hint_default_white; // A simple noise texture for dissolve effect\n\nvoid fragment() {\n\tvec4 base_color = texture(texture, UV);\n\t\n\tvec4 noise_sample = texture(noise_texture, UV * 4.0);\n\t\n\tfloat final_alpha = base_color.a;\n\t\n\tif (noise_sample.r < degrade_amount) {\n\t\tfinal_alpha = 0.0;\n\t} else {\n\t\tfloat edge_fade_width = 0.1;\n\t\tfinal_alpha *= smoothstep(degrade_amount, degrade_amount + edge_fade_width, noise_sample.r);\n\t}\n\t\n\tCOLOR = vec4(base_color.rgb, final_alpha);\n}\n\n\n3. For any `MemoryFragment` you want to be sacrificable (e.g., a `Sprite2D` or `TextureRect` node), set its `material` property in the Inspector to a new `ShaderMaterial`.\n4. In the `ShaderMaterial`, assign the `memory_degrade.gdshader` to the `Shader` property.\n5. (Optional but recommended) Assign a `Texture2D` (e.g., a Perlin noise texture) to the `noise_texture` uniform within the `ShaderMaterial`'s `Shader Parameters` section for a more organic, shimmering dissolve effect. If no noise texture is provided, the dissolve will be a simple linear fade based on the `degrade_amount`.\n6. To activate the \"Echo's Slowed Pulse\" effect, call the `activate_pulse()` method on the `temporal_mnemic_dilation.gd` node, passing the `CanvasItem` node of the memory fragment you wish to sacrifice. For example: `get_node(\"TemporalMnemicDilationNode\").activate_pulse(my_memory_fragment_node)`.\n\tThe `memory_fragment` will visually degrade and then be automatically freed after its `memory_fade_duration`.",
+  "parameters": [
+    {
+      "name": "slow_time_scale",
+      "type": "float",
+      "default": "0.2",
+      "description": "The time scale value during the slowed pulse (e.g., 0.2 means 20% normal speed)."
+    },
+    {
+      "name": "slow_duration",
+      "type": "float",
+      "default": "2.0",
+      "description": "How long time remains slowed before returning to normal speed."
+    },
+    {
+      "name": "time_scale_tween_speed",
+      "type": "float",
+      "default": "0.3",
+      "description": "The duration (in seconds) for the time scale transition (both when slowing down and speeding up)."
+    },
+    {
+      "name": "memory_fade_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "The duration (in seconds) over which the sacrificed memory fragment visually degrades and fades out."
+    }
+  ],
+  "dependencies": [
+    "memory_degrade.gdshader"
+  ],
+  "verdict": "A desperate clarity bought with the very essence of self, this pulse is the agonizing echo of survival's brutal price.",
+  "impact": "This mechanic profoundly deepens the player's engagement with the core theme of identity loss. Every use forces a visceral, agonizing choice between immediate survival and the erosion of self, transforming a tactical decision into a moment of profound existential dread and desperate sacrifice. It ensures that the 'grief of self-loss' is not just narrative but a tangible, painful gameplay cost, making each encounter with the Silence a personal battle against oblivion.",
+  "score": 92,
+  "inventedAt": "2026-10-18T06:57:36.778Z"
+}
