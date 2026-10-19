@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-10-19T10:28:33.271Z",
-  "current": null,
+  "updatedAt": "2026-10-19T14:37:50.756Z",
+  "current": {
+    "type": "episode",
+    "episode": 43,
+    "id": null,
+    "startedAt": "2026-10-19T14:23:59.857Z",
+    "updatedAt": "2026-10-19T14:37:50.755Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 43,
     "totalEpisodes": 43,
@@ -1223,6 +1230,35 @@
         "startedAt": "2026-10-14T12:41:04.158Z",
         "completedAt": "2026-10-19T10:28:33.271Z",
         "failReason": null
+      },
+      "43": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-10-19T14:25:26.214Z",
+            "title": "The Hoarder's Fall",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-10-19T14:26:37.069Z",
+            "title": "The Hoarder's Fall",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-10-19T14:27:11.560Z",
+            "title": "The Hoarder's Fall",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-10-19T14:23:59.857Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
