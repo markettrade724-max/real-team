@@ -1,17 +1,10 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-10-18T11:58:26.701Z",
-  "current": {
-    "type": "episode",
-    "episode": 42,
-    "id": null,
-    "startedAt": "2026-10-14T12:41:04.158Z",
-    "updatedAt": "2026-10-18T11:58:26.701Z",
-    "failReason": "inventor-no-quota"
-  },
+  "updatedAt": "2026-10-19T10:28:33.271Z",
+  "current": null,
   "series": {
-    "nextEpisode": 42,
-    "totalEpisodes": 42,
+    "nextEpisode": 43,
+    "totalEpisodes": 43,
     "episodes": {
       "1": {
         "status": "complete",
@@ -1203,7 +1196,7 @@
         "failReason": null
       },
       "42": {
-        "status": "failed",
+        "status": "complete",
         "completedSteps": [
           "backbone",
           "scenes",
@@ -1228,8 +1221,8 @@
           }
         },
         "startedAt": "2026-10-14T12:41:04.158Z",
-        "completedAt": null,
-        "failReason": "inventor-no-quota"
+        "completedAt": "2026-10-19T10:28:33.271Z",
+        "failReason": null
       }
     }
   },
