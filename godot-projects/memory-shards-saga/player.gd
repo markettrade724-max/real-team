@@ -112,12 +112,12 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
-func take_damage(amount: int) -> void: # Changed type to int
+func take_damage(amount: float) -> void: # Changed type to float
 	if current_health <= 0:
 	    return # Already dead, prevent further damage processing
 
-	current_health -= amount # Removed int() cast
-	print("Player took %d damage. Current health: %d" % [amount, current_health])
+	current_health -= amount
+	print("Player took %f damage. Current health: %d" % [amount, current_health]) # Changed %d to %f for amount
 	emit_signal("player_health_changed", current_health, max_health) # Update health UI
 
 	if current_health <= 0:
