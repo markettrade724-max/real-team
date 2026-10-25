@@ -1,0 +1,73 @@
+{
+  "name": "mnemonic_lumen_semantic_erosion",
+  "label": "The Light's Betrayal",
+  "domain": "shaders",
+  "godotFeature": "ShaderMaterial with custom light interaction in fragment()",
+  "poeticVision": "Feel the very light you rely on to navigate betray your senses. As Lyra's memories fray, the world around her isn't just crumbling; it's actively misrepresenting itself. Surfaces shimmer with the ghost impressions of forgotten objects, shadows stretch into impossible geometries that hint at lost narratives, and colors bleed with the emotional resonance of erased truths. The player experiences visual information less as objective reality and more as a desperate, fragmented attempt by Lyra's mind to reconstruct a coherent world, always just a step behind the Silence's erasure. Every beam of light becomes a precarious, unreliable thread, weaving together a reality that is constantly on the verge of visual collapse, forcing split-second decisions based on deceptive cues amidst the adrenaline of survival and the grief of self-loss.",
+  "usage": "Apply this `ShaderMaterial` to any `MeshInstance3D` in your scene. To control the distortion, update the `memory_integrity` uniform from a GDScript. A value of 1.0 means no distortion (memory intact), while 0.0 means full distortion (memory corrupted). For example, from a GDScript attached to Lyra or a game manager:\n\ngdscript\n# Assuming 'mesh_instance' is your MeshInstance3D node\n# and its material is a ShaderMaterial using this shader.\nvar shader_material = mesh_instance.get_active_material() as ShaderMaterial\nif shader_material:\n\tshader_material.set_shader_parameter(\"memory_integrity\", current_lyra_memory_state) # current_lyra_memory_state is a float between 0.0 and 1.0\n\n\nEnsure you provide `albedo_texture`, `normal_texture`, and `memory_noise_texture` (a seamless noise texture works best) in the ShaderMaterial's parameters.",
+  "parameters": [
+    {
+      "name": "memory_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the overall level of visual distortion. 1.0 is no distortion (memory intact), 0.0 is full distortion (memory corrupted)."
+    },
+    {
+      "name": "albedo_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The base color texture of the material."
+    },
+    {
+      "name": "normal_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The normal map texture for surface details."
+    },
+    {
+      "name": "memory_noise_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "A seamless noise texture (e.g., Perlin, Simplex) used for various distortion effects like UV shifts and normal corruption."
+    },
+    {
+      "name": "memory_bleed_color",
+      "type": "vec4",
+      "default": "rgba(0.5, 0.0, 0.5, 1.0)",
+      "description": "The color that 'bleeds' into the light, representing a past memory state. Use a distinct, unsettling color."
+    },
+    {
+      "name": "bleed_intensity",
+      "type": "float",
+      "default": "0.5",
+      "description": "The strength of the 'temporal light bleeding' effect. Higher values make the memory_bleed_color more prominent in lit areas."
+    },
+    {
+      "name": "normal_distortion_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "The intensity of the normal map distortion, making surfaces appear warped or unstable."
+    },
+    {
+      "name": "shadow_corruption_threshold",
+      "type": "float",
+      "default": "0.1",
+      "description": "A normalized light ratio. Areas with total light contribution below this threshold will experience 'shadow semantic corruption'."
+    },
+    {
+      "name": "shadow_corruption_intensity",
+      "type": "float",
+      "default": "0.5",
+      "description": "The strength of the 'shadow semantic corruption' effect. Higher values result in more pronounced noise and color shifts in shadowed areas."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (node)",
+    "ShaderMaterial (resource)",
+    "Texture2D (for albedo, normal, and noise maps)"
+  ],
+  "verdict": "The very fabric of perception unravels, transforming light from a beacon into a betrayer, mirroring the soul's desperate fight against its own fading truth.",
+  "impact": "This invention fundamentally alters the player's perception of reality within the game. Light, usually a guide, becomes a deceptive force, forcing players to constantly question their senses and make critical decisions amidst visual chaos. It deepens the psychological tension of Lyra's memory loss, making the environment itself a manifestation of her internal struggle and the Silence's insidious erasure, transforming every visual cue into a precarious thread of truth.",
+  "score": 92,
+  "inventedAt": "2026-10-25T07:13:39.310Z"
+}

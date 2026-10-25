@@ -1,0 +1,38 @@
+{
+  "name": "pre_collapse_echo_sight",
+  "label": "Pre-Collapse Echo-sight",
+  "domain": "Time & Memory",
+  "godotFeature": "ViewportTexture, ShaderMaterial, Physics Engine (for predictive simulation)",
+  "poeticVision": "The player grasps a memory shard, and for a fleeting, terrifying moment, the world around them shimmers and shifts into a spectral overlay. They see not the present, but a harrowing fraction of a second into the future: a collapsing walkway underfoot, an enemy's sudden lunge, a trap springing from the shadows. It’s not just a warning; it’s a temporal echo of imminent physical decay, a terrifying certainty that the world, or the Silence, is about to strike exactly as seen. This forces an immediate, desperate reaction based on a vision of impending doom, fusing the act of remembering with the panic of pre-emptive survival. The feeling is a constant, anticipatory dread, like seeing your own death just moments before it happens, giving you only a sliver of time to pivot and defy it.",
+  "usage": "This script manages the 'Pre-Collapse Echo-sight' visual effect. To use it:\n1.  Save the GDScript code as `pre_collapse_echo_sight.gd`.\n2.  Save the GLSL shader code as `pre_collapse_echo_sight.gdshader`.\n3.  Create a new `ShaderMaterial` resource in your Godot project.\n4.  Load `pre_collapse_echo_sight.gdshader` into the `Shader` property of this new `ShaderMaterial`.\n5.  In your main scene, add a `CanvasLayer` node (e.g., as a child of your main `Node3D` or `Node2D` root).\n6.  Attach the `pre_collapse_echo_sight.gd` script to this `CanvasLayer` node.\n7.  In the Inspector for the `CanvasLayer` (with the script attached), assign the `ShaderMaterial` you created in step 3 to the `Echo Shader` property.\n8.  To activate the echo-sight effect, call the `activate_echo_sight()` method on the `CanvasLayer` node from your player script or game manager (e.g., when Lyra grasps a memory shard).\n9.  The `predicted_danger_world_pos` in `activate_echo_sight()` is a placeholder. In a real game, you would dynamically calculate the world position of the imminent danger (e.g., a collapsing platform, an enemy's lunge target) and pass it to the shader for visualization.",
+  "parameters": [
+    {
+      "name": "echo_effect_duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The duration (in seconds) for which the visual echo-sight effect remains active on screen."
+    },
+    {
+      "name": "prediction_time_offset",
+      "type": "float",
+      "default": "0.75",
+      "description": "A conceptual time offset (in seconds) into the future that the echo-sight 'predicts'. Used by the GDScript for calculating `predicted_danger_world_pos`."
+    },
+    {
+      "name": "echo_shader",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "The ShaderMaterial resource that applies the visual distortion and danger visualization. This must be assigned in the Inspector."
+    }
+  ],
+  "dependencies": [
+    "SubViewport (created dynamically)",
+    "Camera3D (created dynamically, assumes a 3D game)",
+    "TextureRect (created dynamically)",
+    "ShaderMaterial (assigned via Inspector)"
+  ],
+  "verdict": "A terrifying whisper from the future, this echo-sight binds the agony of self-loss to the adrenaline of survival, forcing Lyra to dance with death to remember who she is.",
+  "impact": "This mechanic would profoundly deepen the player's connection to Lyra's struggle, transforming every memory recovery into a terrifying gamble that offers a fleeting, dreadful glimpse of impending doom, forcing split-second, high-stakes decisions that blur the line between self-preservation and the desperate fight to reclaim identity. It ensures constant tension and reinforces the core theme of survival amidst self-loss.",
+  "score": 95,
+  "inventedAt": "2026-10-25T07:05:30.664Z"
+}

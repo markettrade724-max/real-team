@@ -1,0 +1,57 @@
+{
+  "name": "mnemonic_semantic_warp_ai",
+  "label": "The Semantic Warp Strider",
+  "domain": "ai",
+  "godotFeature": "NavigationServer3D, Shader",
+  "poeticVision": "The chilling dread of losing your bearings not just mentally, but physically. The path ahead dissolves, walls flicker and re-form into traps, and the ground beneath you feels like liquid memory. Every desperate jump, every frantic sprint, is against an enemy that weaponizes your very spatial understanding, forcing you to question reality with each collapsing step. You're not fighting an enemy in an environment; you're fighting an enemy that *is* the environment's unraveling.",
+  "usage": "Attach this script to an Area3D node. Add a CollisionShape3D child to the Area3D to define its influence radius. Ensure your player node is in the 'player' group. Add any MeshInstance3D nodes you want to be visually warped to the 'warp_target_mesh' group. Add any NavigationRegion3D nodes you want to be dynamically disabled/enabled to the 'warp_target_nav' group. The AI will activate when the player enters its Area3D, applying visual distortion and potentially disabling navigation paths within its 'warp_radius'.",
+  "parameters": [
+    {
+      "name": "warp_radius",
+      "type": "float",
+      "default": "20.0",
+      "description": "The radius around the Area3D within which environmental elements will be affected by the warp."
+    },
+    {
+      "name": "warp_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "The duration (in seconds) for which the warp effect will be active before automatically reverting."
+    },
+    {
+      "name": "distortion_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "The intensity of the vertex distortion effect on affected meshes (0.0 to 1.0)."
+    },
+    {
+      "name": "flicker_speed",
+      "type": "float",
+      "default": "10.0",
+      "description": "The speed of the flickering transparency effect on affected meshes."
+    },
+    {
+      "name": "time_factor",
+      "type": "float",
+      "default": "1.0",
+      "description": "A multiplier for the shader's internal TIME variable, affecting the speed of distortion and flicker."
+    },
+    {
+      "name": "navmesh_disable_chance",
+      "type": "float",
+      "default": "0.5",
+      "description": "The probability (0.0 to 1.0) that an affected NavigationRegion3D will be disabled when the warp effect starts."
+    }
+  ],
+  "dependencies": [
+    "Area3D (script attached to)",
+    "CollisionShape3D (child of Area3D)",
+    "MeshInstance3D (nodes in 'warp_target_mesh' group)",
+    "NavigationRegion3D (nodes in 'warp_target_nav' group)",
+    "Player node (in 'player' group)"
+  ],
+  "verdict": "A masterstroke of environmental terror, it weaves the very fabric of memory into a weapon, forcing Lyra to outrun not just hunters, but the dissolution of her own reality.",
+  "impact": "This invention will plunge the player into a constant state of spatial uncertainty and existential dread. Every step will be a gamble as familiar paths dissolve and re-form, forcing quick adaptation and resourcefulness. It transforms the environment from a static backdrop into an active, unpredictable antagonist, making every escape a desperate fight against the unraveling fabric of reality itself, directly embodying Lyra's internal struggle with her fading identity. The random disabling of navigation meshes adds a crucial layer of unpredictable challenge, ensuring no two encounters feel exactly the same.",
+  "score": 95,
+  "inventedAt": "2026-10-25T07:14:48.343Z"
+}

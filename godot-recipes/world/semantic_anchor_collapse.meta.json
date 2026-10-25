@@ -1,0 +1,38 @@
+{
+  "name": "semantic_anchor_collapse",
+  "label": "Anchors of Forgotten Truth",
+  "domain": "world",
+  "godotFeature": "ArrayMesh, MeshDataTool, NavigationServer3D",
+  "poeticVision": "Feel the ground crumble not from age, but from the void of your own forgetting. Every lost memory tears a structural wound in the world, twisting familiar paths into impassable chasms, or revealing hidden dangers where safety once stood. The very architecture shifts, reflecting the internal agony of self-loss, turning the struggle for identity into a desperate, physical recalculation of space and survival.",
+  "usage": "Attach this script to a Node3D in your Godot 4.6.2 scene. As a child of this Node3D, add a MeshInstance3D with an ArrayMesh assigned to its 'Mesh' property. Optionally, add a CollisionShape3D as another child to have its collision updated, and ensure a NavigationRegion3D exists as an ancestor for navigation mesh updates. Set the 'memory_ID' property in the inspector to a unique string. When the global 'MemoryManager' singleton (which should be set up as an Autoload) emits the 'memory_lost' signal with a matching 'memory_ID', this Node3D's mesh will procedurally deform, its collision shape will update, and the relevant navigation mesh will be re-baked, reflecting the loss of that memory fragment in the physical environment.",
+  "parameters": [
+    {
+      "name": "memory_ID",
+      "type": "String",
+      "default": "",
+      "description": "A unique identifier for the memory fragment associated with this piece of geometry. When this ID is lost, the geometry deforms."
+    },
+    {
+      "name": "memory_type",
+      "type": "String",
+      "default": "default",
+      "description": "A semantic type for the memory (e.g., 'path', 'structure', 'barrier'). Can be used to influence specific deformation patterns (currently uses a generic collapse)."
+    },
+    {
+      "name": "collapse_strength",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the intensity and extent of the procedural collapse deformation."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (child node, required)",
+    "CollisionShape3D (child node, optional, for collision updates)",
+    "NavigationRegion3D (ancestor node, optional, for navigation mesh updates)",
+    "MemoryManager (Autoload singleton, required for memory loss events)"
+  ],
+  "verdict": "The world itself weeps with Lyra's fading self, transforming familiar paths into treacherous echoes of her unraveling mind.",
+  "impact": "This invention profoundly changes the player experience by making the environment a direct, dynamic reflection of Lyra's internal state. Losing a memory isn't just a narrative beat; it's a physical catastrophe that reshapes the battlefield, forcing immediate adaptation, creating new dangers, and constantly reinforcing the urgency of her quest. It turns the abstract concept of forgetting into a tangible, deadly threat, making every step a desperate recalculation of space and survival. The world becomes an active participant in Lyra's struggle, mirroring her internal agony with external, physical collapse.",
+  "score": 85,
+  "inventedAt": "2026-10-25T07:19:11.000Z"
+}

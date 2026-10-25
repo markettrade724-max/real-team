@@ -1,0 +1,51 @@
+{
+  "name": "synaptic_input_reverberation",
+  "label": "Echoed Will",
+  "domain": "time",
+  "godotFeature": "Custom input handling via _input, _process, and _physics_process callbacks, event queue manipulation.",
+  "poeticVision": "The player will feel a profound, chilling loss of agency, as their commands ripple through Lyra's fading mind like echoes, delayed and dislocated. It's the sensation of their very will becoming a fractured memory, making Lyra's body respond to inputs from the immediate past rather than the present. This creates a horrifying disconnect: the struggle isn't just external against the Silence, but internal, against Lyra's own disintegrating self, manifested as a betrayal of muscle and synapse. Every jump, every dodge, every attack becomes a desperate gamble against a body that remembers yesterday's command more clearly than today's.",
+  "usage": "Attach this script to a CharacterBody3D node in your scene. It will override the default input handling for movement and actions, introducing a delay based on the 'identity_integrity' property. To use, ensure your Project Settings -> Input Map has actions defined for 'move_forward', 'move_backward', 'move_left', 'move_right', 'jump', and 'attack'. Other game systems should modify the 'identity_integrity' property (e.g., from 1.0 for full integrity down to 0.0 for complete loss) to dynamically adjust the input delay, simulating Lyra's fading mind. For example, losing a memory fragment or taking damage from a Silence hunter could decrease 'identity_integrity'.",
+  "parameters": [
+    {
+      "name": "max_buffer_size",
+      "type": "int",
+      "default": "200",
+      "description": "Maximum number of input events to store in the buffer. A larger buffer allows for longer delays but consumes more memory."
+    },
+    {
+      "name": "max_possible_delay",
+      "type": "float",
+      "default": "1.0",
+      "description": "Maximum possible input delay in seconds when Lyra's identity integrity is at 0.0. This value defines the upper bound of the 'echoed will' effect."
+    },
+    {
+      "name": "identity_integrity",
+      "type": "float",
+      "default": "1.0",
+      "description": "Current integrity of Lyra's identity (0.0 to 1.0). A value of 1.0 means no delay, while 0.0 means maximum delay. This property should be dynamically updated by game logic."
+    },
+    {
+      "name": "move_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The base movement speed of the character when an echoed movement input is processed."
+    },
+    {
+      "name": "jump_strength",
+      "type": "float",
+      "default": "10.0",
+      "description": "The vertical velocity applied to the character when an echoed jump input is processed and the character is on the floor."
+    },
+    {
+      "name": "gravity",
+      "type": "float",
+      "default": "9.8",
+      "description": "The gravitational force applied to the character, affecting vertical movement."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A chilling echo of a fading mind, this mechanic transforms the player's will into a desperate struggle against Lyra's own unraveling self, making every action a poignant battle for identity and survival.",
+  "impact": "This mechanic will fundamentally alter the player's perception of control, transforming every input into a conscious battle against Lyra's deteriorating mind. It forces players to anticipate and adapt to a delayed reality, making them viscerally experience the profound loss of agency and the internal struggle against a dissolving identity. The external threats of the Silence are amplified by the internal betrayal of Lyra's own body, creating a uniquely tense and emotionally resonant gameplay loop.",
+  "score": 92,
+  "inventedAt": "2026-10-25T07:08:00.765Z"
+}

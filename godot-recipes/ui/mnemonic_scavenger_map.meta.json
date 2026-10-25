@@ -1,0 +1,44 @@
+{
+  "name": "mnemonic_scavenger_map",
+  "label": "The Silence's Consumption Map",
+  "domain": "ui",
+  "godotFeature": "ShaderMaterial on Control nodes with ViewportTexture and procedural UV modification",
+  "poeticVision": "Feel the horrifying urgency as the very map you rely on visibly degrades and gets 'eaten' by tendrils of the Silence, live, during a chase. You lose not just position, but the *meaning* of landmarks, the *directionality* of your escape. It's a race against not just physical hunters, but against the map itself dissolving into incomprehensible static, blurring the line between navigating a memory and succumbing to its loss.",
+  "usage": "To use this invention:\n1.  Create a new `TextureRect` node in your Godot scene.\n2.  Attach the `mnemonic_scavenger_map.gd` script to this `TextureRect` node.\n3.  Create a new `Shader` resource (File -> New Resource -> Shader) and save it as `mnemonic_scavenger_map.gdshader` in your project. Copy the GLSL code provided below into this file.\n4.  In the Inspector for your `TextureRect` node, under the `Script Variables` section, set the `Shader Path` property to `res://mnemonic_scavenger_map.gdshader`.\n5.  The script will automatically create a `ViewportContainer` and a `Viewport` (named `MapViewport`) as children of the `TextureRect`.\n6.  Place all your map rendering elements (e.g., `TileMap`, `Sprite2D`s, `Path2D` for routes, etc.) as children of the `MapViewport` node. This `Viewport` will render your map, and its output will be fed to the shader.\n7.  Control the `degradation_amount` property of the `mnemonic_scavenger_map.gd` script from your game logic (e.g., based on player health, proximity to Silence, or memory loss events) to dynamically degrade the map.\n8.  Adjust `degradation_origin` to specify where the 'eating' effect starts (e.g., player's current position on the map, converted to UV coordinates).\n\n**GLSL Shader Code (`mnemonic_scavenger_map.gdshader`):**\nglsl\nshader_type canvas_item;\n\nuniform sampler2D map_texture;\nuniform float degradation_amount : hint_range(0.0, 1.0) = 0.0;\nuniform vec2 degradation_origin = vec2(0.5, 0.5); // UV coordinates for the center of degradation\nuniform float time = 0.0;\nuniform float noise_scale : hint_range(1.0, 50.0) = 10.0;\nuniform float displacement_strength : hint_range(0.0, 0.2) = 0.05;\nuniform float edge_feather : hint_range(0.0, 0.5) = 0.1;\n\n// Simple pseudo-random function\nfloat rand(vec2 co) {\n    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);\n}\n\n// 2D Noise function (simplified Perlin-like)\nfloat noise(vec2 p) {\n    vec2 ip = floor(p);\n    vec2 fp = fract(p);\n    fp = fp * fp * (3.0 - 2.0 * fp); // Smoothstep\n\n    float bl = rand(ip);\n    float br = rand(ip + vec2(1.0, 0.0));\n    float tl = rand(ip + vec2(0.0, 1.0));\n    float tr = rand(ip + vec2(1.0, 1.0));\n\n    float b = mix(bl, br, fp.x);\n    float t = mix(tl, tr, fp.x);\n    return mix(b, t, fp.y);\n}\n\nvoid fragment() {\n    vec2 uv = UV;\n\n    // Calculate distance from degradation origin\n    float dist = distance(uv, degradation_origin);\n\n    // Create a base degradation mask that expands from the origin\n    float base_mask = smoothstep(degradation_amount - edge_feather, degradation_amount, dist);\n\n    // Add procedural noise for organic tendril effect\n    vec2 noise_uv = uv * noise_scale + time * 0.1;\n    float noise_val = noise(noise_uv);\n    float tendril_mask = smoothstep(0.4, 0.6, noise_val); // Sharpen noise into tendrils\n\n    // Combine base mask with tendril mask. As degradation_amount increases, tendrils become more prominent.\n    float final_mask = mix(base_mask, 1.0 - tendril_mask, degradation_amount);\n\n    // Apply displacement based on noise, making degraded areas appear warped\n    vec2 displacement = vec2(noise(uv * noise_scale + time * 0.2), noise(uv * noise_scale + time * 0.3)) * 2.0 - 1.0;\n    displacement *= displacement_strength * degradation_amount;\n    uv += displacement;\n\n    // Sample the map texture with potentially displaced UVs\n    vec4 color = texture(map_texture, uv);\n\n    // Apply alpha masking for the 'eating' effect\n    COLOR = color;\n    COLOR.a *= final_mask; // Reduce alpha where degradation is high\n\n    // Optional: Add a subtle color shift or distortion to degraded areas for visual feedback\n    if (final_mask < 0.5) {\n        COLOR.rgb *= vec3(1.0, 0.9, 0.8); // Slight desaturation/color shift\n        COLOR.rgb += vec3(0.05, 0.02, 0.0); // Subtle reddish tint\n    }\n}\n",
+  "parameters": [
+    {
+      "name": "shader_path",
+      "type": "String",
+      "default": "res://mnemonic_scavenger_map.gdshader",
+      "description": "Path to the GLSL shader file (`.gdshader`) that defines the map degradation effect."
+    },
+    {
+      "name": "degradation_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "The current level of map degradation, ranging from 0.0 (no degradation) to 1.0 (fully consumed). This value should be updated by game logic."
+    },
+    {
+      "name": "degradation_origin",
+      "type": "Vector2",
+      "default": "Vector2(0.5, 0.5)",
+      "description": "The UV coordinate (0,0 to 1,1) on the map where the degradation effect originates. This can be set to follow the player or a specific threat."
+    },
+    {
+      "name": "degradation_speed",
+      "type": "float",
+      "default": "0.1",
+      "description": "An optional rate at which `degradation_amount` increases per second. This is for demonstration or simple auto-degradation; typically, `degradation_amount` is controlled externally."
+    }
+  ],
+  "dependencies": [
+    "ViewportContainer",
+    "Viewport",
+    "ShaderMaterial",
+    "Shader"
+  ],
+  "verdict": "A brilliant fusion of UI and narrative, this invention transforms a mere map into a living, dying testament to Lyra's fading self, making every lost landmark a shard of her soul.",
+  "impact": "This mechanic will fundamentally alter how players perceive and interact with the game world. Navigation, typically a static utility, becomes a dynamic, high-stakes challenge. It will amplify the feeling of existential dread and urgency, forcing players to internalize memory fragments and spatial awareness as their external aids literally dissolve. The map's degradation will serve as a constant, visceral reminder of Lyra's fading identity, making every chase not just a fight for physical survival but a desperate struggle against mental erasure.",
+  "score": 95,
+  "inventedAt": "2026-10-25T07:17:36.747Z"
+}

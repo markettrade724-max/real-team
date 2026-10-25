@@ -1,0 +1,41 @@
+{
+  "name": "mnemonic_kinetic_graft",
+  "label": "Mnemonic Kinetic Graft",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D physics manipulation, custom _physics_process overrides",
+  "poeticVision": "The player experiences Lyra's movement as a constantly shifting landscape of physical laws. Each memory shard she interacts with temporarily rewrites her kinetic capabilities, forcing her to instantly adapt to a new form of locomotion – plummeting, gliding, pushing through, or becoming briefly unshakable. This creates a desperate, exhilarating dance of constantly re-learning how to survive, where mastery means exploiting momentary distortions in reality. The grief of identity loss is palpable, as even her most fundamental physical interactions become unstable, a reflection of her fracturing self.",
+  "usage": "Attach this script to a CharacterBody3D node representing Lyra. Configure the 'Base Movement' parameters in the Inspector. To activate a kinetic graft, call the `activate_kinetic_graft(profile_name: String)` method from another script (e.g., a MemoryShard script) when Lyra interacts with a memory shard. For instance, a MemoryShard node could emit a signal `memory_shard_collected(profile_id: String)` which Lyra's script connects to, then calls `activate_kinetic_graft(profile_id)` with the appropriate profile name (e.g., \"light_glide\"). The active graft will automatically deactivate after its specified duration.",
+  "parameters": [
+    {
+      "name": "base_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The base movement speed of Lyra when no kinetic graft is active or when a graft doesn't modify speed."
+    },
+    {
+      "name": "base_jump_velocity",
+      "type": "float",
+      "default": "4.5",
+      "description": "The base vertical velocity applied when Lyra jumps, modified by active grafts."
+    },
+    {
+      "name": "gravity",
+      "type": "float",
+      "default": "ProjectSettings.get_setting(\"physics/3d/default_gravity\")",
+      "description": "The gravitational force applied to Lyra, scaled by active grafts."
+    },
+    {
+      "name": "_kinetic_profiles",
+      "type": "Dictionary",
+      "default": "{ \"light_glide\": { ... }, \"heavy_impact\": { ... }, \"burst_jump\": { ... } }",
+      "description": "An internal dictionary defining various kinetic graft profiles. Each key is a profile name (String), and its value is a dictionary containing parameters: 'gravity_scale' (float, multiplier for base gravity), 'speed_multiplier' (float, multiplier for base speed), 'jump_force_multiplier' (float, multiplier for base jump velocity; 0.0 disables jump), 'duration' (float in seconds), and 'description' (String for internal reference)."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D"
+  ],
+  "verdict": "Lyra's very being becomes a canvas for memory's volatile brush, painting a desperate ballet of survival where every step is a fleeting echo of who she once was.",
+  "impact": "This mechanic fundamentally redefines player movement, transforming it from a static set of abilities into a dynamic, unpredictable challenge directly tied to Lyra's fracturing identity. Players will constantly adapt to new physical laws, turning every escape and traversal into a desperate, exhilarating dance of re-learning and exploiting momentary distortions, deepening the emotional connection to Lyra's struggle against forgetting.",
+  "score": 92,
+  "inventedAt": "2026-10-25T07:11:34.009Z"
+}

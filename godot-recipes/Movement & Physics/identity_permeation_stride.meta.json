@@ -1,0 +1,53 @@
+{
+  "name": "identity_permeation_stride",
+  "label": "Permeation Stride",
+  "domain": "Movement & Physics",
+  "godotFeature": "Dynamic Shape3D modification on CharacterBody3D",
+  "poeticVision": "Imagine running through a dream, but every step you take makes your own form less real. You pass through a veil of shattered memory, and for a terrifying moment, your limbs feel distant, your steps less sure, your very body flickering at the edges of reality. The world seems to pass *through* you, and you through it, but at a cost: each permeable stride siphons away another anchor of who you are, making you lighter, emptier, more ghost than survivor.",
+  "usage": "Attach this script to your player's CharacterBody3D node (e.g., 'Lyra'). Ensure the CharacterBody3D has a child CollisionShape3D with a CapsuleShape3D resource, and a child MeshInstance3D. The MeshInstance3D must have a ShaderMaterial applied to its mesh, using the 'permeation_stride_shader.gdshader' (provided separately) or a compatible shader that accepts a 'permeation_strength' uniform. Create Area3D nodes in your scene to define 'memory-permeation zones' and add them to the group specified by 'permeation_zone_group_name' (default: 'PermeationZone'). Lyra's collision layer/mask should be set to detect these Area3D nodes.",
+  "parameters": [
+    {
+      "name": "permeation_zone_group_name",
+      "type": "String",
+      "default": "PermeationZone",
+      "description": "The name of the group that Permeation Zone Area3D nodes belong to."
+    },
+    {
+      "name": "max_permeation_scale",
+      "type": "float",
+      "default": "0.5",
+      "description": "The maximum percentage reduction in Lyra's collision shape size (e.g., 0.5 means 50% reduction)."
+    },
+    {
+      "name": "permeation_speed_factor",
+      "type": "float",
+      "default": "0.1",
+      "description": "A multiplier determining how quickly Lyra's permeation strength increases based on her movement speed within a zone."
+    },
+    {
+      "name": "permeation_recovery_speed",
+      "type": "float",
+      "default": "0.5",
+      "description": "The speed at which permeation strength decreases when Lyra is not in a zone or is not moving."
+    },
+    {
+      "name": "permeation_identity_cost_rate",
+      "type": "float",
+      "default": "0.01",
+      "description": "The rate at which Lyra loses identity per second when at maximum permeation strength."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "CollisionShape3D",
+    "CapsuleShape3D",
+    "MeshInstance3D",
+    "ShaderMaterial",
+    "Area3D (in scene, grouped as 'PermeationZone')",
+    "permeation_stride_shader.gdshader (for visual effect)"
+  ],
+  "verdict": "A phantom's embrace of urgency, where every fading step etches deeper the cost of being.",
+  "impact": "Permeation Stride will fundamentally alter player traversal and decision-making. It transforms movement from a simple act into a constant, agonizing negotiation with self-preservation. Players will feel the tangible cost of every shortcut, every desperate dash through a memory-zone, as their very identity flickers and fades. This mechanic will deepen the game's core theme of self-loss, making it a direct, moment-to-moment gameplay consequence, forcing players to constantly ask: 'Is this memory worth losing a piece of myself?' It will create moments of intense internal conflict, amplifying the game's unique blend of adrenaline and grief.",
+  "score": 95,
+  "inventedAt": "2026-10-25T07:09:11.655Z"
+}

@@ -1,0 +1,42 @@
+{
+  "name": "anamnesis_sonic_scour",
+  "label": "Silence's Sonic Scour",
+  "domain": "audio",
+  "godotFeature": "AudioBus system with programmatic AudioEffectEQ and AudioEffectFilter modulation, leveraging AnimationPlayer or Tween for smooth transitions.",
+  "poeticVision": "Experience the terrifying process of forgetting not as chaotic noise, but as a chilling, precise *absence*. Each cherished memory Lyra clutches contributes a vital, distinct layer to her personal ambient score. As the Silence's hunters draw near, or a memory fragment slips away, the game doesn't just add distortion; it surgically *eradicates* the specific frequencies and melodic motifs tied to that memory. The player feels their internal soundscape thinning, growing progressively hollow and incomplete, a creeping vacuum where vibrant life once resonated. It’s the profound dread of hearing your own identity being systematically unmade, leaving behind only the unnerving, sterile hum of an imposed, malignant quiet.",
+  "usage": "This script manages the 'Silence's Sonic Scour' effect by dynamically adjusting the gain of specific frequency bands on an AudioEffectEQ, simulating the loss or threat of Lyra's memories. To use this recipe:\n\n1.  **Configure AudioBus**: In Godot's Project Settings -> Audio -> Buses, create a new AudioBus (e.g., named 'MemoryResonance'). All ambient sounds or music layers representing Lyra's memories should be routed through this bus.\n2.  **Add AudioEffectEQ**: On the 'MemoryResonance' AudioBus, add an 'AudioEffectEQ' effect. Configure it with multiple bands (e.g., 5-10 bands), each centered at a distinct frequency (e.g., 200Hz, 500Hz, 1kHz, 2kHz, 5kHz, etc.). These bands will represent the unique sonic signatures of different memories.\n3.  **Attach Script**: Attach this `anamnesis_sonic_scour.gd` script to a global singleton (e.g., an Autoload named `AnamnesisManager`) or a persistent node in your scene.\n4.  **Configure Script Parameters**: In the Inspector for the attached script, ensure `memory_bus_name` matches your AudioBus name ('MemoryResonance' by default) and `eq_effect_index` is the correct index of the AudioEffectEQ on that bus (usually 0 if it's the first effect).\n5.  **Register Memories**: At game startup or when a memory's sonic signature is established, call `register_memory_band(memory_id: String, band_index: int, initial_gain_db: float = 0.0)` for each memory. For example:\n    gdscript\n    # In your game manager or Lyra's memory system:\n    AnamnesisManager.register_memory_band(\"childhood_home\", 0, 0.0) # Memory \"childhood_home\" uses EQ band 0, starting at 0dB gain.\n    AnamnesisManager.register_memory_band(\"first_love\", 1, 0.0)    # Memory \"first_love\" uses EQ band 1.\n    \n6.  **Trigger Effects**: Call the appropriate functions based on game events:\n    *   **`lose_memory(memory_id: String)`**: When Lyra permanently loses a memory, its associated frequency band's gain will smoothly reduce to `max_gain_reduction_db`.\n        gdscript\n        AnamnesisManager.lose_memory(\"childhood_home\")\n        \n    *   **`recover_memory(memory_id: String)`**: If Lyra recovers a lost memory, its band's gain will smoothly return to its `initial_gain_db`.\n        gdscript\n        AnamnesisManager.recover_memory(\"childhood_home\")\n        \n    *   **`threaten_memory(memory_id: String, intensity: float = 0.5)`**: When the Silence's hunters are near or a memory is in immediate danger, its band's gain will temporarily reduce based on the `intensity` (0.0 for no threat, 1.0 for full threat/loss).\n        gdscript\n        # Hunters are getting closer to the \"first_love\" memory\n        AnamnesisManager.threaten_memory(\"first_love\", 0.7)\n        \nThis system will create a dynamic, thinning soundscape that directly reflects Lyra's internal struggle with memory loss.",
+  "parameters": [
+    {
+      "name": "memory_bus_name",
+      "type": "String",
+      "default": "MemoryResonance",
+      "description": "The name of the AudioBus dedicated to memory resonance. Ensure this bus exists in Project Settings -> Audio -> Buses."
+    },
+    {
+      "name": "eq_effect_index",
+      "type": "int",
+      "default": "0",
+      "description": "The index of the AudioEffectEQ on the specified memory_bus_name. This effect will be modulated by the script."
+    },
+    {
+      "name": "tween_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "The duration (in seconds) for the smooth gain transitions when memories are lost, recovered, or threatened."
+    },
+    {
+      "name": "max_gain_reduction_db",
+      "type": "float",
+      "default": "-24.0",
+      "description": "The maximum decibel reduction applied to a memory's frequency band when that memory is fully lost. A negative value."
+    }
+  ],
+  "dependencies": [
+    "AudioBus (named 'MemoryResonance' by default, configurable)",
+    "AudioEffectEQ (must be present on the specified AudioBus at the given index)"
+  ],
+  "verdict": "Through the chilling silence of absence, Lyra's fading self becomes a symphony unmade, a haunting echo of what was.",
+  "impact": "This invention will make the abstract concept of memory loss viscerally real. Players won't just see a UI element or a debuff; they will *hear* their identity unraveling, making every lost memory a profound, unsettling experience that directly impacts their perception of the game world and their character's state. It transforms forgetting into an active, terrifying auditory process, deepening the emotional stakes of survival and self-preservation.",
+  "score": 92,
+  "inventedAt": "2026-10-25T07:16:05.931Z"
+}
