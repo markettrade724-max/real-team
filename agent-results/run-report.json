@@ -1,31 +1,31 @@
 {
-  "runId": "2026-10-25T1222",
-  "mode": "inventor",
-  "success": false,
-  "timestamp": "2026-10-25T12:22:38.795Z",
-  "totalDuration": "13ms",
+  "runId": "2026-10-26T0711",
+  "mode": "screenplay-production",
+  "success": true,
+  "timestamp": "2026-10-26T07:12:07.104Z",
+  "totalDuration": "56.1s",
   "budget": {
-    "total": 38,
+    "total": 0,
     "limit": 40,
-    "left": 2,
+    "left": 40,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 20,
+        "total": 0,
         "limit": 20,
-        "left": 0,
+        "left": 20,
         "exhausted": false,
         "library": 0,
-        "agents": 20
+        "agents": 0
       },
       {
         "key": "KEY_2",
-        "total": 18,
+        "total": 0,
         "limit": 20,
-        "left": 2,
+        "left": 20,
         "exhausted": false,
         "library": 0,
-        "agents": 18
+        "agents": 0
       }
     ]
   },
@@ -35,18 +35,64 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 40,
-    "next": 44
+    "episodes": 41,
+    "next": 45
   },
   "progress": {
-    "nextEpisode": 44,
-    "totalEpisodes": 44,
+    "nextEpisode": 45,
+    "totalEpisodes": 45,
     "gamesDone": 1
   },
-  "agents": {},
+  "agents": {
+    "screenplay": {
+      "success": true,
+      "duration": "—",
+      "error": null
+    },
+    "voice": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "scene": {
+      "success": true,
+      "duration": "3ms",
+      "error": null
+    },
+    "visual": {
+      "success": true,
+      "duration": "3ms",
+      "error": null
+    },
+    "subtitle": {
+      "success": true,
+      "duration": "0ms",
+      "error": null
+    },
+    "music": {
+      "success": true,
+      "duration": "6ms",
+      "error": null
+    },
+    "edit": {
+      "success": true,
+      "duration": "2.4s",
+      "error": null
+    },
+    "trailer": {
+      "success": true,
+      "duration": "43.9s",
+      "error": null
+    },
+    "upload": {
+      "success": true,
+      "duration": "9.7s",
+      "error": null
+    }
+  },
   "summary": {
-    "total": 0,
-    "passed": 0,
+    "total": 9,
+    "passed": 9,
     "failed": 0
   }
 }
