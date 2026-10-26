@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-10-26T10:44:35.792Z",
-  "current": null,
+  "updatedAt": "2026-10-26T14:10:04.715Z",
+  "current": {
+    "type": "episode",
+    "episode": 45,
+    "id": null,
+    "startedAt": "2026-10-26T13:56:26.633Z",
+    "updatedAt": "2026-10-26T14:10:04.715Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 45,
     "totalEpisodes": 45,
@@ -1281,6 +1288,35 @@
         "startedAt": "2026-10-21T12:45:05.836Z",
         "completedAt": "2026-10-26T10:44:35.792Z",
         "failReason": null
+      },
+      "45": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-10-26T13:57:44.272Z",
+            "title": "The Echo of a Broken Vow",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-10-26T13:58:52.246Z",
+            "title": "The Echo of a Broken Vow",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-10-26T13:59:28.739Z",
+            "title": "The Echo of a Broken Vow",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-10-26T13:56:26.633Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
