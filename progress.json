@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-10-28T10:59:06.178Z",
-  "current": null,
+  "updatedAt": "2026-10-28T14:06:30.776Z",
+  "current": {
+    "type": "episode",
+    "episode": 46,
+    "id": null,
+    "startedAt": "2026-10-28T13:52:04.767Z",
+    "updatedAt": "2026-10-28T14:06:30.776Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 46,
     "totalEpisodes": 46,
@@ -1310,6 +1317,35 @@
         "startedAt": "2026-10-26T13:56:26.633Z",
         "completedAt": "2026-10-28T10:59:06.178Z",
         "failReason": null
+      },
+      "46": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-10-28T13:53:26.855Z",
+            "title": "The Weight of Laughter",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-10-28T13:55:01.247Z",
+            "title": "The Weight of Laughter",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-10-28T13:55:47.444Z",
+            "title": "The Weight of Laughter",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-10-28T13:52:04.767Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
