@@ -1,22 +1,22 @@
 {
-  "runId": "2026-10-27T1300",
-  "mode": "game-fix",
-  "success": false,
-  "timestamp": "2026-10-27T13:01:20.549Z",
-  "totalDuration": "34.2s",
+  "runId": "2026-10-28T0739",
+  "mode": "screenplay-production",
+  "success": true,
+  "timestamp": "2026-10-28T07:39:41.800Z",
+  "totalDuration": "24.6s",
   "budget": {
-    "total": 8,
+    "total": 0,
     "limit": 40,
-    "left": 32,
+    "left": 40,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 8,
+        "total": 0,
         "limit": 20,
-        "left": 12,
+        "left": 20,
         "exhausted": false,
         "library": 0,
-        "agents": 8
+        "agents": 0
       },
       {
         "key": "KEY_2",
@@ -35,24 +35,64 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 41,
-    "next": 45
+    "episodes": 42,
+    "next": 46
   },
   "progress": {
-    "nextEpisode": 45,
-    "totalEpisodes": 45,
+    "nextEpisode": 46,
+    "totalEpisodes": 46,
     "gamesDone": 1
   },
   "agents": {
-    "gamefix": {
-      "success": false,
-      "duration": "34.1s",
-      "error": "Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"message\":\"This model is currently experien"
+    "screenplay": {
+      "success": true,
+      "duration": "—",
+      "error": null
+    },
+    "voice": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "scene": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "visual": {
+      "success": true,
+      "duration": "2ms",
+      "error": null
+    },
+    "subtitle": {
+      "success": true,
+      "duration": "0ms",
+      "error": null
+    },
+    "music": {
+      "success": true,
+      "duration": "5ms",
+      "error": null
+    },
+    "edit": {
+      "success": true,
+      "duration": "1.7s",
+      "error": null
+    },
+    "trailer": {
+      "success": true,
+      "duration": "19.4s",
+      "error": null
+    },
+    "upload": {
+      "success": true,
+      "duration": "3.6s",
+      "error": null
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 0,
-    "failed": 1
+    "total": 9,
+    "passed": 9,
+    "failed": 0
   }
 }
