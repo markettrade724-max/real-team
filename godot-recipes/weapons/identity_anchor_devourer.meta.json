@@ -1,0 +1,48 @@
+{
+  "name": "identity_anchor_devourer",
+  "label": "Identity Anchor Devourer",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterial & GPUParticles3D",
+  "poeticVision": "The harrowing choice of sacrificing a piece of Lyra's self, transforming a cherished or vital memory into a desperate weapon. Players will feel the profound anguish of strategic self-immolation, the fleeting power of a memory-fueled attack, and the chilling void left by a fragment of identity that is gone forever, all while desperately clinging to survival against the encroaching Silence.",
+  "usage": "The code-agent should attach this script to a Node3D in Lyra's scene, representing the 'Identity Anchor Devourer' weapon. It needs to set the 'ingestion_port_path' to a child Node3D that visually marks where memories are consumed. The 'projectile_particles_scene' should be a PackedScene containing a pre-configured GPUParticles3D node, which will be instantiated and emitted. A 'noise_texture_path' pointing to a grayscale noise texture (e.g., 'res://default_noise.png') is required for the dissolution shader. When the player decides to sacrifice a memory, the code-agent calls the 'consume_memory(memory_fragment: MemoryFragment)' function, passing a custom 'MemoryFragment' resource instance. This will trigger the visual dissolution of the memory, emit a particle projectile, and simulate the identity cost and combat effects.",
+  "parameters": [
+    {
+      "name": "ingestion_port_path",
+      "type": "NodePath",
+      "default": "",
+      "description": "The NodePath to a child Node3D that serves as the visual ingestion point for memory fragments."
+    },
+    {
+      "name": "projectile_particles_scene",
+      "type": "PackedScene",
+      "default": null,
+      "description": "A PackedScene containing a pre-configured GPUParticles3D node, which will be instantiated and emitted as a projectile."
+    },
+    {
+      "name": "noise_texture_path",
+      "type": "String",
+      "default": "res://default_noise.png",
+      "description": "The file path to a grayscale noise texture (e.g., a Perlin noise texture) used by the dissolution shader for an organic dissolve effect."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "MemoryFragment (custom Resource defined in this script)",
+    "PackedScene",
+    "MeshInstance3D",
+    "ShaderMaterial",
+    "Shader",
+    "Texture2D",
+    "ImageTexture",
+    "GPUParticles3D",
+    "ParticleProcessMaterial",
+    "Tween",
+    "StandardMaterial3D",
+    "Transform3D",
+    "Color"
+  ],
+  "verdict": "A desperate act of self-immolation, this invention carves the anguish of memory loss into the very fabric of survival, making every choice a haunting echo of Lyra's fading self.",
+  "impact": "This invention fundamentally deepens the player's connection to Lyra's struggle, transforming resource management into a profound act of self-sacrifice. Every use of this ability will be a visceral reminder of Lyra's dissolving identity, forcing players to weigh immediate survival against the irreversible loss of who she is, creating moments of intense emotional and strategic tension. It directly embodies the core themes of grief, self-loss, and desperate survival.",
+  "score": 92,
+  "inventedAt": "2026-11-01T08:20:19.285Z"
+}

@@ -1,0 +1,51 @@
+{
+  "name": "mnemic_curator_reclaimer_ai",
+  "label": "The Silence's Archivist",
+  "domain": "ai",
+  "godotFeature": "PhysicsServer3D, NavigationServer3D",
+  "poeticVision": "Players will feel a chilling dread as their precious memory fragments, vital to their identity, are not just pursued, but systematically dismantled and re-ordered by an entity that believes it is preserving them. It's the horror of watching your past cleaned away, not destroyed, but rendered unrecognizable and functionally useless to you, leaving a hollow space where a meaningful connection once was. It's a desperate race against a librarian trying to re-shelve your very soul into an alien, sterile order.",
+  "usage": "The `MnemicCuratorReclaimerAI` script should be attached to a `CharacterBody3D` node representing the Archivist. This node requires a `NavigationAgent3D` child and an `Area3D` child named \"DetectionArea\" for sensing memory fragments and Lyra. Memory fragments must be `PhysicsBody3D` nodes (e.g., `RigidBody3D`) and added to the group specified by `_memory_fragment_group` (default: \"memory_fragments\"). Lyra's player character (a `CharacterBody3D` node, assumed to be named \"Lyra\" or set externally) must expose two methods: `get_held_fragment()` (which returns the `PhysicsBody3D` node of the fragment she currently holds, or `null` if none) and `release_held_fragment(fragment_node)` (which removes the fragment from her possession). The `_cleansed_material` parameter should be assigned a `ShaderMaterial` that applies the desired \"dismantled and re-ordered\" visual effect to fragments, such as desaturation, transparency, or distortion, making them appear sterile and unusable. For example, a simple GLSL shader could desaturate the fragment's texture and increase its transparency.",
+  "parameters": [
+    {
+      "name": "_movement_speed",
+      "type": "float",
+      "default": "3.0",
+      "description": "Speed of the Archivist when moving towards a target."
+    },
+    {
+      "name": "_reclamation_range",
+      "type": "float",
+      "default": "1.5",
+      "description": "Distance at which the Archivist starts cleansing a fragment."
+    },
+    {
+      "name": "_cleansing_duration",
+      "type": "float",
+      "default": "2.0",
+      "description": "Time required to cleanse a fragment."
+    },
+    {
+      "name": "_memory_fragment_group",
+      "type": "String",
+      "default": "memory_fragments",
+      "description": "The name of the group that all memory fragment nodes belong to."
+    },
+    {
+      "name": "_cleansed_material",
+      "type": "Material",
+      "default": "null",
+      "description": "A custom shader material applied to fragments once they are cleansed by the Archivist."
+    }
+  ],
+  "dependencies": [
+    "NavigationAgent3D (child node of Archivist)",
+    "Area3D (child node of Archivist, named 'DetectionArea')",
+    "MeshInstance3D (for visual representation of memory fragments)",
+    "PhysicsBody33D (for memory fragment nodes, e.g., RigidBody3D)",
+    "Lyra's CharacterBody3D node (with 'get_held_fragment()' and 'release_held_fragment()' methods)"
+  ],
+  "verdict": "A chilling librarian of oblivion, the Archivist transforms the fight for memory into a desperate, personal struggle against the systematic erasure of self, leaving players haunted by the sterile order of their own dissolving past.",
+  "impact": "The Archivist introduces a profound, psychological threat that goes beyond mere physical damage. Players will constantly weigh the risk of holding precious memory fragments against the Archivist's insidious ability to \"cleanse\" them, rendering them unrecognizable and useless. This creates a unique form of dread and urgency, forcing players to make desperate choices to protect their very identity, deepening the game's core themes of self-loss and the fight against forgetting.",
+  "score": 88,
+  "inventedAt": "2026-11-01T08:30:08.244Z"
+}

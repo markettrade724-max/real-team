@@ -1,5 +1,311 @@
 [
   {
+    "name": "mnemonic_echo_betrayal",
+    "label": "Mnemonic Echo Betrayal",
+    "domain": "audio",
+    "godotFeature": "AudioServer, AudioBus, AudioEffect (e.g., Granular, PitchShift, Distortion), AudioStreamGeneratorPlayer, AudioStreamPlayer3D",
+    "poeticVision": "The chilling revelation that your own fading memories don't just disappear, but actively re-form into distorted, localized sonic traps or beacons, drawing the Silence closer. It's the sound of your personal history turning against you, an auditory betrayal from within your own mind, forcing you to fight the very echoes of your past.",
+    "usage": "Attach this `MnemonicEchoBetrayalSystem` script to a Node in your scene (e.g., a singleton or a manager node). When a memory degrades or is targeted by the Silence, call the `corrupt_memory_echo` function, providing a unique `memory_id`, the `original_sound` (e.g., an AudioStreamOggVorbis or AudioStreamWAV resource), the `location` in the 3D world where the echo should manifest, and a `degradation_level` (0.0 to 1.0) to control the intensity of the audio effects. The system will create a spatial 3D audio source at the specified location, playing the corrupted sound. The Silence's AI can then detect these `AudioStreamPlayer3D` nodes by their position and the unique sound signature on the 'MnemonicEchoBus' to track Lyra or identify areas of memory corruption.",
+    "parameters": [
+      {
+        "name": "memory_id",
+        "type": "String",
+        "default": "null",
+        "description": "A unique identifier for the memory being corrupted. Used to manage individual echoes."
+      },
+      {
+        "name": "original_sound",
+        "type": "AudioStream",
+        "default": "null",
+        "description": "The original, uncorrupted sound associated with the memory. This stream will be processed by the echo effects."
+      },
+      {
+        "name": "location",
+        "type": "Vector3",
+        "default": "Vector3(0,0,0)",
+        "description": "The 3D world position where the corrupted memory echo will be emitted."
+      },
+      {
+        "name": "degradation_level",
+        "type": "float",
+        "default": "0.5",
+        "description": "A value between 0.0 and 1.0 indicating how degraded the memory is. Higher values result in more intense and distorted audio effects."
+      }
+    ],
+    "dependencies": [
+      "Node",
+      "AudioStreamPlayer3D",
+      "AudioStream",
+      "AudioEffectGranular",
+      "AudioEffectPitchShift",
+      "AudioEffectDistortion"
+    ],
+    "verdict": "The whispers of a fading past become a siren's call to oblivion, turning Lyra's very identity into a weapon for the encroaching Silence.",
+    "impact": "This mechanic would profoundly deepen the player's connection to Lyra's struggle. Every lost memory isn't just a narrative beat; it becomes a tangible, localized threat that actively works against her, forcing difficult choices: risk exposure to recover a fading echo, or abandon it to avoid the Silence. It transforms the abstract concept of memory loss into a dynamic, auditory, and spatial challenge, making the internal conflict external and urgent. The escalating distortion of the echoes would create a constant, growing sense of dread and urgency, making the player feel the 'grief of self-loss' and 'adrenaline of survival' simultaneously, while also providing clear, learnable feedback on the state of her identity.",
+    "score": 95,
+    "inventedAt": "2026-11-01T08:30:57.265Z"
+  },
+  {
+    "name": "mnemic_curator_reclaimer_ai",
+    "label": "The Silence's Archivist",
+    "domain": "ai",
+    "godotFeature": "PhysicsServer3D, NavigationServer3D",
+    "poeticVision": "Players will feel a chilling dread as their precious memory fragments, vital to their identity, are not just pursued, but systematically dismantled and re-ordered by an entity that believes it is preserving them. It's the horror of watching your past cleaned away, not destroyed, but rendered unrecognizable and functionally useless to you, leaving a hollow space where a meaningful connection once was. It's a desperate race against a librarian trying to re-shelve your very soul into an alien, sterile order.",
+    "usage": "The `MnemicCuratorReclaimerAI` script should be attached to a `CharacterBody3D` node representing the Archivist. This node requires a `NavigationAgent3D` child and an `Area3D` child named \"DetectionArea\" for sensing memory fragments and Lyra. Memory fragments must be `PhysicsBody3D` nodes (e.g., `RigidBody3D`) and added to the group specified by `_memory_fragment_group` (default: \"memory_fragments\"). Lyra's player character (a `CharacterBody3D` node, assumed to be named \"Lyra\" or set externally) must expose two methods: `get_held_fragment()` (which returns the `PhysicsBody3D` node of the fragment she currently holds, or `null` if none) and `release_held_fragment(fragment_node)` (which removes the fragment from her possession). The `_cleansed_material` parameter should be assigned a `ShaderMaterial` that applies the desired \"dismantled and re-ordered\" visual effect to fragments, such as desaturation, transparency, or distortion, making them appear sterile and unusable. For example, a simple GLSL shader could desaturate the fragment's texture and increase its transparency.",
+    "parameters": [
+      {
+        "name": "_movement_speed",
+        "type": "float",
+        "default": "3.0",
+        "description": "Speed of the Archivist when moving towards a target."
+      },
+      {
+        "name": "_reclamation_range",
+        "type": "float",
+        "default": "1.5",
+        "description": "Distance at which the Archivist starts cleansing a fragment."
+      },
+      {
+        "name": "_cleansing_duration",
+        "type": "float",
+        "default": "2.0",
+        "description": "Time required to cleanse a fragment."
+      },
+      {
+        "name": "_memory_fragment_group",
+        "type": "String",
+        "default": "memory_fragments",
+        "description": "The name of the group that all memory fragment nodes belong to."
+      },
+      {
+        "name": "_cleansed_material",
+        "type": "Material",
+        "default": "null",
+        "description": "A custom shader material applied to fragments once they are cleansed by the Archivist."
+      }
+    ],
+    "dependencies": [
+      "NavigationAgent3D (child node of Archivist)",
+      "Area3D (child node of Archivist, named 'DetectionArea')",
+      "MeshInstance3D (for visual representation of memory fragments)",
+      "PhysicsBody33D (for memory fragment nodes, e.g., RigidBody3D)",
+      "Lyra's CharacterBody3D node (with 'get_held_fragment()' and 'release_held_fragment()' methods)"
+    ],
+    "verdict": "A chilling librarian of oblivion, the Archivist transforms the fight for memory into a desperate, personal struggle against the systematic erasure of self, leaving players haunted by the sterile order of their own dissolving past.",
+    "impact": "The Archivist introduces a profound, psychological threat that goes beyond mere physical damage. Players will constantly weigh the risk of holding precious memory fragments against the Archivist's insidious ability to \"cleanse\" them, rendering them unrecognizable and useless. This creates a unique form of dread and urgency, forcing players to make desperate choices to protect their very identity, deepening the game's core themes of self-loss and the fight against forgetting.",
+    "score": 88,
+    "inventedAt": "2026-11-01T08:30:08.244Z"
+  },
+  {
+    "name": "mnemonic_afterimage_dissociation",
+    "label": "Fractured Chronal Perception",
+    "domain": "shaders",
+    "godotFeature": "Custom Post-Processing Shaders utilizing SCREEN_TEXTURE and multiple ViewportTexture (render targets) to store and blend historical frame data.",
+    "poeticVision": "As Lyra's grasp on her own past unravels, the present becomes a canvas overwritten by phantom echoes. The world shimmers with ghost images of itself from moments ago – a wall you just passed still flickers faintly, an enemy's previous position blooms like a spectral afterimage, the very path ahead seems to split into parallel, slightly desynchronized realities. This isn't just visual noise; it's the agony of a mind losing its temporal anchor, making every step, every shot, a desperate gamble against a reality that refuses to stay still.",
+    "usage": "To use this shader, create a CanvasLayer node in your scene, set its 'Layer' property to a value higher than your main game content (e.g., 100). Add a TextureRect as a child of the CanvasLayer, set its 'Layout' to 'Full Rect' to cover the entire screen. Create a new ShaderMaterial for the TextureRect, assign this .gdshader file to it. In a GDScript, you will need to manage a queue of Viewport nodes to capture historical frames:\n1.  Create several Viewport nodes (e.g., 3 for history_frame_0, 1, 2). Set their 'render_target_update_mode' to 'UPDATE_ALWAYS' and 'render_target_v_flip' to 'true'.\n2.  Attach a Camera2D to each Viewport, mirroring the main game camera's position and zoom.\n3.  In your main game script's _process(delta) function:\n    a.  Update the 'time_elapsed' uniform of the shader material: `material.set_shader_parameter(\"time_elapsed\", get_tree().get_root().get_node(\"MainScene\").get_node(\"Player\").get_node(\"Camera2D\").get_viewport().get_total_delta_time())` (adjust path).\n    b.  Update 'memory_cohesion' and 'silence_proximity' based on game state.\n    c.  Periodically (e.g., every few frames or seconds, depending on desired effect), capture the main viewport's texture and assign it to the oldest history_frame_X uniform, then shift the other history frames (e.g., `history_frame_2 = history_frame_1`, `history_frame_1 = history_frame_0`, `history_frame_0 = new_capture_from_main_viewport`). You can get a Viewport's texture using `viewport.get_texture()`.\n4.  Assign the `ViewportTexture` resources from your history Viewports to the corresponding `history_frame_0`, `history_frame_1`, `history_frame_2` uniforms of the ShaderMaterial.",
+    "parameters": [
+      {
+        "name": "memory_cohesion",
+        "type": "float",
+        "default": "1.0",
+        "description": "Represents Lyra's mental clarity. 1.0 means full cohesion (minimal effect), 0.0 means no cohesion (maximum effect)."
+      },
+      {
+        "name": "silence_proximity",
+        "type": "float",
+        "default": "0.0",
+        "description": "Represents how close the Silence's influence is. 0.0 means far (minimal effect), 1.0 means very close (maximum effect)."
+      },
+      {
+        "name": "blend_strength_base",
+        "type": "float",
+        "default": "0.1",
+        "description": "The base opacity for historical frames when the effect is active. Controls how strongly past frames blend in."
+      },
+      {
+        "name": "offset_intensity",
+        "type": "float",
+        "default": "0.01",
+        "description": "Controls the maximum UV offset applied to historical frames, simulating temporal drift."
+      },
+      {
+        "name": "distortion_intensity",
+        "type": "float",
+        "default": "0.005",
+        "description": "Controls the strength of the distortion applied to historical frames, making them appear warped."
+      },
+      {
+        "name": "color_shift_intensity",
+        "type": "float",
+        "default": "0.05",
+        "description": "Controls the maximum color shift applied to historical frames, adding to the disorienting effect."
+      },
+      {
+        "name": "time_elapsed",
+        "type": "float",
+        "default": "0.0",
+        "description": "A continuously increasing time value (e.g., `Time.get_ticks_msec() / 1000.0`) used for animating the distortion and color shift patterns."
+      }
+    ],
+    "dependencies": [
+      "Viewport nodes",
+      "ViewportTexture resources",
+      "CanvasLayer node",
+      "TextureRect node"
+    ],
+    "verdict": "Lyra's unraveling mind becomes the player's fractured vision, turning every desperate step into a battle against a reality that refuses to hold still.",
+    "impact": "This invention will profoundly alter the player's perception of reality within the game, transforming the abstract concept of memory loss into a tangible, disorienting, and challenging visual experience. It will force players to adapt to a constantly shifting visual landscape, making every action a deliberate struggle against a dissolving self and an encroaching external threat. The dynamic nature of the effect, tied to Lyra's memory cohesion and the Silence's proximity, ensures that the visual distortion is not merely aesthetic but a direct, real-time reflection of the narrative stakes, deepening immersion and amplifying the core themes of survival and self-preservation.",
+    "score": 95,
+    "inventedAt": "2026-11-01T08:24:35.785Z"
+  },
+  {
+    "name": "mnemonic_entanglement_momentum",
+    "label": "Mnemonic Entanglement Momentum",
+    "domain": "movement",
+    "godotFeature": "CharacterBody3D, PhysicsServer3D, Area3D, ShaderMaterial",
+    "poeticVision": "Feel the profound shift as echoes of your past literally rewrite your present physics. Every recovered memory isn't just a truth, it's a gravitational anchor, a burst of ephemeral lightness, or a dizzying surge of uncontrollable momentum. You'll run from the Silence, not knowing if the next shard will make you heavy as lead or light as air, forcing an urgent, instinctual adaptation to a body that's constantly becoming and un-becoming itself.",
+    "usage": "Attach this script to a Node in your scene (e.g., a GameManager or directly to your player's root node). Configure the 'player_body_path' to point to your CharacterBody3D node and 'player_mesh_path' to point to the MeshInstance3D node that represents the player's visual model. Create a new ShaderMaterial resource, assign the 'mnemonic_entanglement_momentum.gdshader' to it, and then assign this ShaderMaterial resource to the 'default_shader_material' property in the inspector. To trigger the effect, call the 'absorb_memory_shard(shard_data: Dictionary)' function from your game logic (e.g., when the player collects a memory shard). The 'shard_data' dictionary should contain a 'semantic_weight' key with a string value like 'burden', 'freedom', 'chaos', or 'neutral'. The script will dynamically adjust the player's gravity_scale and apply a visual shader effect for the 'effect_duration' time, then restore original values. Note that while 'mass' and 'damping' parameters are set via PhysicsServer3D.body_set_param as requested, CharacterBody3D is kinematic, so these specific parameters might not directly influence its movement without custom _physics_process logic that explicitly reads and applies them.",
+    "parameters": [
+      {
+        "name": "player_body_path",
+        "type": "NodePath",
+        "default": null,
+        "description": "NodePath to the CharacterBody3D node representing the player."
+      },
+      {
+        "name": "player_mesh_path",
+        "type": "NodePath",
+        "default": null,
+        "description": "NodePath to the MeshInstance3D node that displays the player's visual model."
+      },
+      {
+        "name": "effect_duration",
+        "type": "float",
+        "default": "3.0",
+        "description": "The duration in seconds for which the physics and shader effects will be active."
+      },
+      {
+        "name": "default_shader_material",
+        "type": "ShaderMaterial",
+        "default": null,
+        "description": "A ShaderMaterial resource that uses 'mnemonic_entanglement_momentum.gdshader'. This is used as a template for applying effects and as a fallback for restoring."
+      }
+    ],
+    "dependencies": [
+      "CharacterBody3D",
+      "MeshInstance3D",
+      "Timer",
+      "ShaderMaterial",
+      "mnemonic_entanglement_momentum.gdshader"
+    ],
+    "verdict": "This invention brilliantly fuses Lyra's internal struggle with her physical reality, making every recovered memory a volatile, unpredictable force that demands immediate, desperate adaptation.",
+    "impact": "This mechanic will profoundly alter the player's moment-to-moment experience, transforming every memory recovery into a high-stakes gamble. Players will be forced into constant, urgent adaptation as their physical capabilities unpredictably shift, amplifying the feeling of a dissolving identity and the desperate struggle for survival against the relentless Silence. The visceral visual feedback will reinforce these shifts, creating a deep connection between Lyra's internal state and her external struggle for survival.",
+    "score": 88,
+    "inventedAt": "2026-11-01T08:23:06.253Z"
+  },
+  {
+    "name": "kinesic_amnesia_glyphs",
+    "label": "Whispers of Forgotten Movement",
+    "domain": "time",
+    "godotFeature": "AnimationTree, GDScript (input parsing, dynamic animation blending, signal handling)",
+    "poeticVision": "Imagine Lyra, mid-leap across a collapsing memory, her body suddenly forgetting the precise sequence of muscle contractions for a perfect landing. A ghost of the *correct* movement flickers at the edge of your vision — a spectral echo of mastery. You feel the frantic effort to recall, your fingers twitching on the controller, trying to force her muscles into the forgotten pattern. Each stumble, each almost-fall, is a chilling reminder: your very ability to *move* is tied to your identity, and forgetting is taking away your physical competence. It's the silent scream of a body betraying its self, forcing you to re-learn, mid-chase, what you once knew instinctively.",
+    "usage": "Attach this `kinesic_amnesia_manager.gd` script to a Node in your scene (e.g., as a child of your Player node, or as an Autoload singleton). Configure the `animation_tree_path` export variable to point to your player's AnimationTree node. Ensure your Godot Project Settings Input Map defines the `input_actions` (e.g., 'ui_up', 'ui_down', 'ui_left', 'ui_right').\n\nYour player's movement controller script should call `kinesic_amnesia_manager.attempt_complex_movement(\"action_name\")` before executing any complex movement (e.g., a high jump, a specific dodge). If this function returns `true`, the movement should be interrupted, and the manager will handle the amnesia event, blending the animation to a 'decayed' state.\n\nA separate UI script should connect to the `challenge_started`, `challenge_input_required`, and `challenge_completed` signals to display the input challenge to the player and react to its outcome. The `AnimationTree` should have a `BlendSpace1D` with a parameter (e.g., `parameters/KinesicBlend/blend_position`) that blends between a 'mastered' animation (value 0.0) and a 'decayed' or 'stumble' animation (value 1.0) for the affected movement.",
+    "parameters": [
+      {
+        "name": "animation_tree_path",
+        "type": "NodePath",
+        "default": null,
+        "description": "The NodePath to the AnimationTree node that controls Lyra's animations. This is used to dynamically blend between 'mastered' and 'decayed' movement animations."
+      },
+      {
+        "name": "amnesia_threshold",
+        "type": "float",
+        "default": "0.3",
+        "description": "The minimum 'amnesia_chance' (derived from _kinesic_memory_index) required for an amnesia event to potentially trigger. A higher value makes amnesia more likely at higher memory indices."
+      },
+      {
+        "name": "challenge_duration",
+        "type": "float",
+        "default": "2.0",
+        "description": "The time in seconds the player has to complete the input sequence challenge before it automatically fails."
+      },
+      {
+        "name": "min_challenge_length",
+        "type": "int",
+        "default": "3",
+        "description": "The minimum number of input actions in a procedurally generated challenge sequence."
+      },
+      {
+        "name": "max_challenge_length",
+        "type": "int",
+        "default": "5",
+        "description": "The maximum number of input actions in a procedurally generated challenge sequence."
+      },
+      {
+        "name": "input_actions",
+        "type": "Array[String]",
+        "default": "[\"ui_up\", \"ui_down\", \"ui_left\", \"ui_right\"]",
+        "description": "A list of Godot InputMap action names that can be used as inputs in the challenge sequence. These actions must be defined in your Project Settings -> Input Map."
+      }
+    ],
+    "dependencies": [
+      "AnimationTree",
+      "Godot InputMap (for defined input_actions)"
+    ],
+    "verdict": "In the frantic dance of forgetting, Lyra's body becomes a battleground where muscle memory is the last, desperate whisper of who she once was.",
+    "impact": "This mechanic will profoundly deepen the player's connection to Lyra's struggle, transforming abstract identity loss into a tangible, moment-to-moment fight for physical competence. Every stumble becomes a chilling reminder of her fading self, forcing players to viscerally experience the 'grief of self-loss' as they frantically re-learn basic movements under the relentless pressure of the Silence. It elevates the core theme of identity erosion from narrative to direct, urgent gameplay.",
+    "score": 95,
+    "inventedAt": "2026-11-01T08:21:18.748Z"
+  },
+  {
+    "name": "identity_anchor_devourer",
+    "label": "Identity Anchor Devourer",
+    "domain": "weapons",
+    "godotFeature": "ShaderMaterial & GPUParticles3D",
+    "poeticVision": "The harrowing choice of sacrificing a piece of Lyra's self, transforming a cherished or vital memory into a desperate weapon. Players will feel the profound anguish of strategic self-immolation, the fleeting power of a memory-fueled attack, and the chilling void left by a fragment of identity that is gone forever, all while desperately clinging to survival against the encroaching Silence.",
+    "usage": "The code-agent should attach this script to a Node3D in Lyra's scene, representing the 'Identity Anchor Devourer' weapon. It needs to set the 'ingestion_port_path' to a child Node3D that visually marks where memories are consumed. The 'projectile_particles_scene' should be a PackedScene containing a pre-configured GPUParticles3D node, which will be instantiated and emitted. A 'noise_texture_path' pointing to a grayscale noise texture (e.g., 'res://default_noise.png') is required for the dissolution shader. When the player decides to sacrifice a memory, the code-agent calls the 'consume_memory(memory_fragment: MemoryFragment)' function, passing a custom 'MemoryFragment' resource instance. This will trigger the visual dissolution of the memory, emit a particle projectile, and simulate the identity cost and combat effects.",
+    "parameters": [
+      {
+        "name": "ingestion_port_path",
+        "type": "NodePath",
+        "default": "",
+        "description": "The NodePath to a child Node3D that serves as the visual ingestion point for memory fragments."
+      },
+      {
+        "name": "projectile_particles_scene",
+        "type": "PackedScene",
+        "default": null,
+        "description": "A PackedScene containing a pre-configured GPUParticles3D node, which will be instantiated and emitted as a projectile."
+      },
+      {
+        "name": "noise_texture_path",
+        "type": "String",
+        "default": "res://default_noise.png",
+        "description": "The file path to a grayscale noise texture (e.g., a Perlin noise texture) used by the dissolution shader for an organic dissolve effect."
+      }
+    ],
+    "dependencies": [
+      "Node3D",
+      "MemoryFragment (custom Resource defined in this script)",
+      "PackedScene",
+      "MeshInstance3D",
+      "ShaderMaterial",
+      "Shader",
+      "Texture2D",
+      "ImageTexture",
+      "GPUParticles3D",
+      "ParticleProcessMaterial",
+      "Tween",
+      "StandardMaterial3D",
+      "Transform3D",
+      "Color"
+    ],
+    "verdict": "A desperate act of self-immolation, this invention carves the anguish of memory loss into the very fabric of survival, making every choice a haunting echo of Lyra's fading self.",
+    "impact": "This invention fundamentally deepens the player's connection to Lyra's struggle, transforming resource management into a profound act of self-sacrifice. Every use of this ability will be a visceral reminder of Lyra's dissolving identity, forcing players to weigh immediate survival against the irreversible loss of who she is, creating moments of intense emotional and strategic tension. It directly embodies the core themes of grief, self-loss, and desperate survival.",
+    "score": 92,
+    "inventedAt": "2026-11-01T08:20:19.285Z"
+  },
+  {
     "name": "semantic_anchor_collapse",
     "label": "Anchors of Forgotten Truth",
     "domain": "world",

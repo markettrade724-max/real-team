@@ -1,0 +1,62 @@
+{
+  "name": "mnemonic_afterimage_dissociation",
+  "label": "Fractured Chronal Perception",
+  "domain": "shaders",
+  "godotFeature": "Custom Post-Processing Shaders utilizing SCREEN_TEXTURE and multiple ViewportTexture (render targets) to store and blend historical frame data.",
+  "poeticVision": "As Lyra's grasp on her own past unravels, the present becomes a canvas overwritten by phantom echoes. The world shimmers with ghost images of itself from moments ago – a wall you just passed still flickers faintly, an enemy's previous position blooms like a spectral afterimage, the very path ahead seems to split into parallel, slightly desynchronized realities. This isn't just visual noise; it's the agony of a mind losing its temporal anchor, making every step, every shot, a desperate gamble against a reality that refuses to stay still.",
+  "usage": "To use this shader, create a CanvasLayer node in your scene, set its 'Layer' property to a value higher than your main game content (e.g., 100). Add a TextureRect as a child of the CanvasLayer, set its 'Layout' to 'Full Rect' to cover the entire screen. Create a new ShaderMaterial for the TextureRect, assign this .gdshader file to it. In a GDScript, you will need to manage a queue of Viewport nodes to capture historical frames:\n1.  Create several Viewport nodes (e.g., 3 for history_frame_0, 1, 2). Set their 'render_target_update_mode' to 'UPDATE_ALWAYS' and 'render_target_v_flip' to 'true'.\n2.  Attach a Camera2D to each Viewport, mirroring the main game camera's position and zoom.\n3.  In your main game script's _process(delta) function:\n    a.  Update the 'time_elapsed' uniform of the shader material: `material.set_shader_parameter(\"time_elapsed\", get_tree().get_root().get_node(\"MainScene\").get_node(\"Player\").get_node(\"Camera2D\").get_viewport().get_total_delta_time())` (adjust path).\n    b.  Update 'memory_cohesion' and 'silence_proximity' based on game state.\n    c.  Periodically (e.g., every few frames or seconds, depending on desired effect), capture the main viewport's texture and assign it to the oldest history_frame_X uniform, then shift the other history frames (e.g., `history_frame_2 = history_frame_1`, `history_frame_1 = history_frame_0`, `history_frame_0 = new_capture_from_main_viewport`). You can get a Viewport's texture using `viewport.get_texture()`.\n4.  Assign the `ViewportTexture` resources from your history Viewports to the corresponding `history_frame_0`, `history_frame_1`, `history_frame_2` uniforms of the ShaderMaterial.",
+  "parameters": [
+    {
+      "name": "memory_cohesion",
+      "type": "float",
+      "default": "1.0",
+      "description": "Represents Lyra's mental clarity. 1.0 means full cohesion (minimal effect), 0.0 means no cohesion (maximum effect)."
+    },
+    {
+      "name": "silence_proximity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Represents how close the Silence's influence is. 0.0 means far (minimal effect), 1.0 means very close (maximum effect)."
+    },
+    {
+      "name": "blend_strength_base",
+      "type": "float",
+      "default": "0.1",
+      "description": "The base opacity for historical frames when the effect is active. Controls how strongly past frames blend in."
+    },
+    {
+      "name": "offset_intensity",
+      "type": "float",
+      "default": "0.01",
+      "description": "Controls the maximum UV offset applied to historical frames, simulating temporal drift."
+    },
+    {
+      "name": "distortion_intensity",
+      "type": "float",
+      "default": "0.005",
+      "description": "Controls the strength of the distortion applied to historical frames, making them appear warped."
+    },
+    {
+      "name": "color_shift_intensity",
+      "type": "float",
+      "default": "0.05",
+      "description": "Controls the maximum color shift applied to historical frames, adding to the disorienting effect."
+    },
+    {
+      "name": "time_elapsed",
+      "type": "float",
+      "default": "0.0",
+      "description": "A continuously increasing time value (e.g., `Time.get_ticks_msec() / 1000.0`) used for animating the distortion and color shift patterns."
+    }
+  ],
+  "dependencies": [
+    "Viewport nodes",
+    "ViewportTexture resources",
+    "CanvasLayer node",
+    "TextureRect node"
+  ],
+  "verdict": "Lyra's unraveling mind becomes the player's fractured vision, turning every desperate step into a battle against a reality that refuses to hold still.",
+  "impact": "This invention will profoundly alter the player's perception of reality within the game, transforming the abstract concept of memory loss into a tangible, disorienting, and challenging visual experience. It will force players to adapt to a constantly shifting visual landscape, making every action a deliberate struggle against a dissolving self and an encroaching external threat. The dynamic nature of the effect, tied to Lyra's memory cohesion and the Silence's proximity, ensures that the visual distortion is not merely aesthetic but a direct, real-time reflection of the narrative stakes, deepening immersion and amplifying the core themes of survival and self-preservation.",
+  "score": 95,
+  "inventedAt": "2026-11-01T08:24:35.785Z"
+}

@@ -1,0 +1,45 @@
+{
+  "name": "mnemonic_entanglement_momentum",
+  "label": "Mnemonic Entanglement Momentum",
+  "domain": "movement",
+  "godotFeature": "CharacterBody3D, PhysicsServer3D, Area3D, ShaderMaterial",
+  "poeticVision": "Feel the profound shift as echoes of your past literally rewrite your present physics. Every recovered memory isn't just a truth, it's a gravitational anchor, a burst of ephemeral lightness, or a dizzying surge of uncontrollable momentum. You'll run from the Silence, not knowing if the next shard will make you heavy as lead or light as air, forcing an urgent, instinctual adaptation to a body that's constantly becoming and un-becoming itself.",
+  "usage": "Attach this script to a Node in your scene (e.g., a GameManager or directly to your player's root node). Configure the 'player_body_path' to point to your CharacterBody3D node and 'player_mesh_path' to point to the MeshInstance3D node that represents the player's visual model. Create a new ShaderMaterial resource, assign the 'mnemonic_entanglement_momentum.gdshader' to it, and then assign this ShaderMaterial resource to the 'default_shader_material' property in the inspector. To trigger the effect, call the 'absorb_memory_shard(shard_data: Dictionary)' function from your game logic (e.g., when the player collects a memory shard). The 'shard_data' dictionary should contain a 'semantic_weight' key with a string value like 'burden', 'freedom', 'chaos', or 'neutral'. The script will dynamically adjust the player's gravity_scale and apply a visual shader effect for the 'effect_duration' time, then restore original values. Note that while 'mass' and 'damping' parameters are set via PhysicsServer3D.body_set_param as requested, CharacterBody3D is kinematic, so these specific parameters might not directly influence its movement without custom _physics_process logic that explicitly reads and applies them.",
+  "parameters": [
+    {
+      "name": "player_body_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "NodePath to the CharacterBody3D node representing the player."
+    },
+    {
+      "name": "player_mesh_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "NodePath to the MeshInstance3D node that displays the player's visual model."
+    },
+    {
+      "name": "effect_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "The duration in seconds for which the physics and shader effects will be active."
+    },
+    {
+      "name": "default_shader_material",
+      "type": "ShaderMaterial",
+      "default": null,
+      "description": "A ShaderMaterial resource that uses 'mnemonic_entanglement_momentum.gdshader'. This is used as a template for applying effects and as a fallback for restoring."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D",
+    "MeshInstance3D",
+    "Timer",
+    "ShaderMaterial",
+    "mnemonic_entanglement_momentum.gdshader"
+  ],
+  "verdict": "This invention brilliantly fuses Lyra's internal struggle with her physical reality, making every recovered memory a volatile, unpredictable force that demands immediate, desperate adaptation.",
+  "impact": "This mechanic will profoundly alter the player's moment-to-moment experience, transforming every memory recovery into a high-stakes gamble. Players will be forced into constant, urgent adaptation as their physical capabilities unpredictably shift, amplifying the feeling of a dissolving identity and the desperate struggle for survival against the relentless Silence. The visceral visual feedback will reinforce these shifts, creating a deep connection between Lyra's internal state and her external struggle for survival.",
+  "score": 88,
+  "inventedAt": "2026-11-01T08:23:06.253Z"
+}

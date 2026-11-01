@@ -1,0 +1,54 @@
+{
+  "name": "kinesic_amnesia_glyphs",
+  "label": "Whispers of Forgotten Movement",
+  "domain": "time",
+  "godotFeature": "AnimationTree, GDScript (input parsing, dynamic animation blending, signal handling)",
+  "poeticVision": "Imagine Lyra, mid-leap across a collapsing memory, her body suddenly forgetting the precise sequence of muscle contractions for a perfect landing. A ghost of the *correct* movement flickers at the edge of your vision — a spectral echo of mastery. You feel the frantic effort to recall, your fingers twitching on the controller, trying to force her muscles into the forgotten pattern. Each stumble, each almost-fall, is a chilling reminder: your very ability to *move* is tied to your identity, and forgetting is taking away your physical competence. It's the silent scream of a body betraying its self, forcing you to re-learn, mid-chase, what you once knew instinctively.",
+  "usage": "Attach this `kinesic_amnesia_manager.gd` script to a Node in your scene (e.g., as a child of your Player node, or as an Autoload singleton). Configure the `animation_tree_path` export variable to point to your player's AnimationTree node. Ensure your Godot Project Settings Input Map defines the `input_actions` (e.g., 'ui_up', 'ui_down', 'ui_left', 'ui_right').\n\nYour player's movement controller script should call `kinesic_amnesia_manager.attempt_complex_movement(\"action_name\")` before executing any complex movement (e.g., a high jump, a specific dodge). If this function returns `true`, the movement should be interrupted, and the manager will handle the amnesia event, blending the animation to a 'decayed' state.\n\nA separate UI script should connect to the `challenge_started`, `challenge_input_required`, and `challenge_completed` signals to display the input challenge to the player and react to its outcome. The `AnimationTree` should have a `BlendSpace1D` with a parameter (e.g., `parameters/KinesicBlend/blend_position`) that blends between a 'mastered' animation (value 0.0) and a 'decayed' or 'stumble' animation (value 1.0) for the affected movement.",
+  "parameters": [
+    {
+      "name": "animation_tree_path",
+      "type": "NodePath",
+      "default": null,
+      "description": "The NodePath to the AnimationTree node that controls Lyra's animations. This is used to dynamically blend between 'mastered' and 'decayed' movement animations."
+    },
+    {
+      "name": "amnesia_threshold",
+      "type": "float",
+      "default": "0.3",
+      "description": "The minimum 'amnesia_chance' (derived from _kinesic_memory_index) required for an amnesia event to potentially trigger. A higher value makes amnesia more likely at higher memory indices."
+    },
+    {
+      "name": "challenge_duration",
+      "type": "float",
+      "default": "2.0",
+      "description": "The time in seconds the player has to complete the input sequence challenge before it automatically fails."
+    },
+    {
+      "name": "min_challenge_length",
+      "type": "int",
+      "default": "3",
+      "description": "The minimum number of input actions in a procedurally generated challenge sequence."
+    },
+    {
+      "name": "max_challenge_length",
+      "type": "int",
+      "default": "5",
+      "description": "The maximum number of input actions in a procedurally generated challenge sequence."
+    },
+    {
+      "name": "input_actions",
+      "type": "Array[String]",
+      "default": "[\"ui_up\", \"ui_down\", \"ui_left\", \"ui_right\"]",
+      "description": "A list of Godot InputMap action names that can be used as inputs in the challenge sequence. These actions must be defined in your Project Settings -> Input Map."
+    }
+  ],
+  "dependencies": [
+    "AnimationTree",
+    "Godot InputMap (for defined input_actions)"
+  ],
+  "verdict": "In the frantic dance of forgetting, Lyra's body becomes a battleground where muscle memory is the last, desperate whisper of who she once was.",
+  "impact": "This mechanic will profoundly deepen the player's connection to Lyra's struggle, transforming abstract identity loss into a tangible, moment-to-moment fight for physical competence. Every stumble becomes a chilling reminder of her fading self, forcing players to viscerally experience the 'grief of self-loss' as they frantically re-learn basic movements under the relentless pressure of the Silence. It elevates the core theme of identity erosion from narrative to direct, urgent gameplay.",
+  "score": 95,
+  "inventedAt": "2026-11-01T08:21:18.748Z"
+}

@@ -1,0 +1,46 @@
+{
+  "name": "mnemonic_echo_betrayal",
+  "label": "Mnemonic Echo Betrayal",
+  "domain": "audio",
+  "godotFeature": "AudioServer, AudioBus, AudioEffect (e.g., Granular, PitchShift, Distortion), AudioStreamGeneratorPlayer, AudioStreamPlayer3D",
+  "poeticVision": "The chilling revelation that your own fading memories don't just disappear, but actively re-form into distorted, localized sonic traps or beacons, drawing the Silence closer. It's the sound of your personal history turning against you, an auditory betrayal from within your own mind, forcing you to fight the very echoes of your past.",
+  "usage": "Attach this `MnemonicEchoBetrayalSystem` script to a Node in your scene (e.g., a singleton or a manager node). When a memory degrades or is targeted by the Silence, call the `corrupt_memory_echo` function, providing a unique `memory_id`, the `original_sound` (e.g., an AudioStreamOggVorbis or AudioStreamWAV resource), the `location` in the 3D world where the echo should manifest, and a `degradation_level` (0.0 to 1.0) to control the intensity of the audio effects. The system will create a spatial 3D audio source at the specified location, playing the corrupted sound. The Silence's AI can then detect these `AudioStreamPlayer3D` nodes by their position and the unique sound signature on the 'MnemonicEchoBus' to track Lyra or identify areas of memory corruption.",
+  "parameters": [
+    {
+      "name": "memory_id",
+      "type": "String",
+      "default": "null",
+      "description": "A unique identifier for the memory being corrupted. Used to manage individual echoes."
+    },
+    {
+      "name": "original_sound",
+      "type": "AudioStream",
+      "default": "null",
+      "description": "The original, uncorrupted sound associated with the memory. This stream will be processed by the echo effects."
+    },
+    {
+      "name": "location",
+      "type": "Vector3",
+      "default": "Vector3(0,0,0)",
+      "description": "The 3D world position where the corrupted memory echo will be emitted."
+    },
+    {
+      "name": "degradation_level",
+      "type": "float",
+      "default": "0.5",
+      "description": "A value between 0.0 and 1.0 indicating how degraded the memory is. Higher values result in more intense and distorted audio effects."
+    }
+  ],
+  "dependencies": [
+    "Node",
+    "AudioStreamPlayer3D",
+    "AudioStream",
+    "AudioEffectGranular",
+    "AudioEffectPitchShift",
+    "AudioEffectDistortion"
+  ],
+  "verdict": "The whispers of a fading past become a siren's call to oblivion, turning Lyra's very identity into a weapon for the encroaching Silence.",
+  "impact": "This mechanic would profoundly deepen the player's connection to Lyra's struggle. Every lost memory isn't just a narrative beat; it becomes a tangible, localized threat that actively works against her, forcing difficult choices: risk exposure to recover a fading echo, or abandon it to avoid the Silence. It transforms the abstract concept of memory loss into a dynamic, auditory, and spatial challenge, making the internal conflict external and urgent. The escalating distortion of the echoes would create a constant, growing sense of dread and urgency, making the player feel the 'grief of self-loss' and 'adrenaline of survival' simultaneously, while also providing clear, learnable feedback on the state of her identity.",
+  "score": 95,
+  "inventedAt": "2026-11-01T08:30:57.265Z"
+}
