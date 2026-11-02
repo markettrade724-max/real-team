@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-11-02T13:02:38.419Z",
-  "current": null,
+  "updatedAt": "2026-11-02T17:05:58.466Z",
+  "current": {
+    "type": "episode",
+    "episode": 47,
+    "id": null,
+    "startedAt": "2026-11-02T16:52:19.977Z",
+    "updatedAt": "2026-11-02T17:05:58.466Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 47,
     "totalEpisodes": 47,
@@ -1339,6 +1346,35 @@
         "startedAt": "2026-10-28T13:52:04.767Z",
         "completedAt": "2026-11-02T13:02:38.419Z",
         "failReason": null
+      },
+      "47": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-11-02T16:53:37.196Z",
+            "title": "Fractured Resonance",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-11-02T16:54:49.184Z",
+            "title": "Fractured Resonance",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-11-02T16:55:21.702Z",
+            "title": "Fractured Resonance",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-11-02T16:52:19.977Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
