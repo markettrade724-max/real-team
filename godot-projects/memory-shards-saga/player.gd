@@ -11,7 +11,7 @@ extends CharacterBody3D
 @export var mouse_sensitivity: float = 0.002
 
 @export var max_health: int = 100
-var current_health: int
+var current_health: float # Changed from int to float for consistency with take_damage
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -45,7 +45,7 @@ func _ready() -> void:
 
 	# Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # REMOVED: Mouse mode is now managed by main_scene.gd
 	current_health = max_health
-	emit_signal("player_health_changed", current_health, max_health) # Initial health update for HUD
+	emit_signal("player_health_changed", int(current_health), max_health) # Initial health update for HUD, cast to int for signal
 	
 	# Explicitly set collision layers and masks for clarity and robustness
 	set_collision_layer_value(1, true) # Player is on layer 1
@@ -112,13 +112,13 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
-func take_damage(amount: float) -> void: # Changed type to float
+func take_damage(amount: float) -> void:
 	if current_health <= 0:
 	    return # Already dead, prevent further damage processing
 
 	current_health -= amount
-	print("Player took %f damage. Current health: %d" % [amount, current_health]) # Changed %d to %f for amount
-	emit_signal("player_health_changed", current_health, max_health) # Update health UI
+	print("Player took %f damage. Current health: %f" % [amount, current_health]) # Changed %d to %f for current_health
+	emit_signal("player_health_changed", int(current_health), max_health) # Update health UI, cast to int for signal
 
 	if current_health <= 0:
 	    current_health = 0
@@ -134,7 +134,7 @@ func die() -> void:
 
 # New methods to allow other scripts to query player health
 func get_current_health() -> int:
-	return current_health
+	return int(current_health) # Cast to int for return type
 
 func get_max_health() -> int:
 	return max_health
