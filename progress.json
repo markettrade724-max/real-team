@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-11-04T12:44:02.415Z",
-  "current": null,
+  "updatedAt": "2026-11-04T15:24:58.105Z",
+  "current": {
+    "type": "episode",
+    "episode": 48,
+    "id": null,
+    "startedAt": "2026-11-04T15:10:39.955Z",
+    "updatedAt": "2026-11-04T15:24:58.105Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 48,
     "totalEpisodes": 48,
@@ -1368,6 +1375,35 @@
         "startedAt": "2026-11-02T16:52:19.977Z",
         "completedAt": "2026-11-04T12:44:02.415Z",
         "failReason": null
+      },
+      "48": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-11-04T15:12:09.895Z",
+            "title": "The Echo's Compass",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-11-04T15:13:40.723Z",
+            "title": "The Echo's Compass",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-11-04T15:14:20.317Z",
+            "title": "The Echo's Compass",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-11-04T15:10:39.955Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
