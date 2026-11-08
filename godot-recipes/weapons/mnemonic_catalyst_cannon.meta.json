@@ -1,0 +1,43 @@
+{
+  "name": "mnemonic_catalyst_cannon",
+  "label": "Self-Sustainer's Sacrifice",
+  "domain": "weapons",
+  "godotFeature": "ShaderMaterial, VisualServer, ParticleSystem, Resource System, GDScript, AnimationPlayer",
+  "poeticVision": "Feel the agonizing weight of choice in every trigger pull. The rush of desperate power as a cherished memory burns away, leaving an echo of who you were, but ensuring you survive *this* moment. It's the constant tug-of-war between physical survival and the slow, inevitable erosion of self, forcing you to ask: What part of me am I willing to sacrifice to see tomorrow?",
+  "usage": "To use this recipe:\n1.  Create a new GDScript file named `memory_shard.gd` and paste the following code into it:\n    gdscript\n    class_name MemoryShard extends Resource\n\n    @export var id: String = \"\"\n    @export var memory_name: String = \"Unknown Memory\"\n    @export var effect_strength: float = 1.0 # e.g., damage multiplier, shield strength\n    @export var visual_color: Color = Color.WHITE # For shader effect on weapon and particles\n    @export var particle_texture: Texture2D # For particle system\n    @export var narrative_tag: String = \"\" # For narrative consequences\n    \n2.  Create a new Shader file named `mnemonic_catalyst_cannon.gdshader` and paste the following GLSL code into it:\n    glsl\n    shader_type spatial;\n    render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\n    uniform vec4 albedo_color : source_color = vec4(1.0);\n    uniform float glow_intensity : hint_range(0.0, 10.0) = 0.0;\n    uniform sampler2D texture_albedo : source_color;\n\n    void fragment() {\n    \tvec4 albedo_tex = texture(texture_albedo, UV);\n    \tALBEDO = albedo_color.rgb * albedo_tex.rgb;\n    \tALPHA = albedo_color.a * albedo_tex.a;\n    \t\n    \tEMISSION = albedo_color.rgb * glow_intensity;\n    }\n    \n3.  (Optional, for particle effects) Create a new Shader file named `particle_dissipation.gdshader` and paste the following GLSL code into it. This shader should be used for the `process_material` of your `GPUParticles3D` node:\n    glsl\n    shader_type particles;\n\n    uniform vec4 color_tint : source_color = vec4(1.0);\n    uniform sampler2D texture_albedo : source_color;\n\n    void start() {\n    \tCOLOR = color_tint;\n    \tVELOCITY *= 0.5; // Example initial velocity\n    }\n\n    void process() {\n    \tCOLOR.a = 1.0 - CUSTOM_DATA.x; // Fade out over lifetime\n    \tALBEDO = texture(texture_albedo, UV).rgb;\n    }\n    \n4.  In your Godot project, create a new `ShaderMaterial` resource (e.g., `res://materials/weapon_shader_mat.tres`) and assign `mnemonic_catalyst_cannon.gdshader` to its `Shader` property.\n5.  (Optional) Create another `ShaderMaterial` resource (e.g., `res://materials/particle_shader_mat.tres`) and assign `particle_dissipation.gdshader` to its `Shader` property.\n6.  In your 3D scene, create a `Node3D` (e.g., `WeaponRoot`).\n7.  Add a `MeshInstance3D` as a child of `WeaponRoot` (e.g., `WeaponMesh`). Assign a mesh (e.g., a `BoxMesh` or imported weapon model) to it. This will be the visual representation of the cannon.\n8.  Add a `GPUParticles3D` node as a child of `WeaponRoot` (e.g., `ShardParticles`). Assign the `particle_shader_mat.tres` (or a `ParticleProcessMaterial`) to its `Process Material` property. Configure its `Draw Passes` to use a `QuadMesh` or similar.\n9.  Add an `AnimationPlayer` node as a child of `WeaponRoot` (e.g., `WeaponAnimator`). Create an animation named `fire_animation` that animates the weapon's recoil or glow.\n10. Attach the `mnemonic_catalyst_cannon.gd` script to the `WeaponRoot` node.\n11. In the Inspector for `WeaponRoot`, assign the `weapon_mesh` property to your `WeaponMesh` node, `particle_system` to `ShardParticles`, `animation_player` to `WeaponAnimator`, and `base_shader_material` to your `weapon_shader_mat.tres`.\n12. To use the weapon, create instances of `MemoryShard` resources (e.g., `res://data/memory_courage.tres`). Configure their `id`, `memory_name`, `effect_strength`, `visual_color`, and `particle_texture`.\n13. In your game logic (e.g., a player script), get a reference to the `MnemonicCatalystCannon` and call `add_memory_shard(my_shard_resource)` to add memories. Then, call `fire_weapon(index)` to consume a memory and fire the weapon. Listen to the `memory_consumed` and `identity_lost` signals for game state and narrative updates.",
+  "parameters": [
+    {
+      "name": "weapon_mesh",
+      "type": "NodePath",
+      "default": "null",
+      "description": "Path to the MeshInstance3D node representing the weapon's visual model."
+    },
+    {
+      "name": "particle_system",
+      "type": "NodePath",
+      "default": "null",
+      "description": "Path to the GPUParticles3D node used for dissipating memory shards."
+    },
+    {
+      "name": "animation_player",
+      "type": "NodePath",
+      "default": "null",
+      "description": "Path to the AnimationPlayer node for weapon firing animations (requires 'fire_animation')."
+    },
+    {
+      "name": "base_shader_material",
+      "type": "Resource",
+      "default": "null",
+      "description": "The ShaderMaterial resource that uses 'mnemonic_catalyst_cannon.gdshader'. It will be duplicated and modified at runtime."
+    }
+  ],
+  "dependencies": [
+    "memory_shard.gd",
+    "mnemonic_catalyst_cannon.gdshader",
+    "particle_dissipation.gdshader (optional, for particle system's process_material)"
+  ],
+  "verdict": "A brilliant, agonizing mechanism that weaves the very fabric of identity into the desperate struggle for survival, ensuring every victory is etched with the bittersweet taste of self-loss.",
+  "impact": "This invention transforms every combat encounter into a harrowing ethical dilemma, forcing players to confront the true cost of survival as they literally burn away their past to secure their future, making each trigger pull a moment of profound personal sacrifice. It deepens the emotional stakes of every action, ensuring that the player's identity is not just a narrative element, but a tangible, depletable resource.",
+  "score": 95,
+  "inventedAt": "2026-11-08T08:17:05.523Z"
+}

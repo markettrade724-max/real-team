@@ -1,0 +1,42 @@
+{
+  "name": "mnemonic_shard_burst_leap",
+  "label": "Mnemonic Shardburst Leap",
+  "domain": "movement",
+  "godotFeature": "Godot Physics 3D (CharacterBody3D), GDScript for state management and dynamic property alteration, custom procedural generation system for environmental changes",
+  "poeticVision": "The desperate lunge of a mind tearing itself apart to escape. Players will feel the visceral cost of survival as they physically sacrifice a piece of who they are, momentarily becoming a blur of anguish and speed, knowing that each escape pushes them further into the void of self. It's a feeling of empowering self-destruction, a tragic sprint, where the player actively chooses which part of their fading self to burn away for a fleeting chance at survival.",
+  "usage": "Attach this script to your player's CharacterBody3D node. The `activate_shardburst_leap` function should be called from your player input handler, passing the `memory_id` of the memory shard the player chooses to sacrifice. For example, `if Input.is_action_just_pressed(\"leap_ability\"): activate_shardburst_leap(\"childhood_home\")`. The `MemoryManager` is provided as an inner class for standalone demonstration; in a full project, it should be implemented as a separate GDScript file and registered as an AutoLoad (singleton) in Project Settings -> AutoLoad. The `memory_lost` signal emitted by the `MemoryManager` can be connected to your procedural generation system or narrative manager to dynamically alter game elements based on the lost memory.",
+  "parameters": [
+    {
+      "name": "leap_strength",
+      "type": "float",
+      "default": "25.0",
+      "description": "The magnitude of the velocity boost applied during the leap."
+    },
+    {
+      "name": "leap_duration",
+      "type": "float",
+      "default": "0.3",
+      "description": "The duration in seconds for which the leap's velocity boost is active."
+    },
+    {
+      "name": "cooldown_time",
+      "type": "float",
+      "default": "1.5",
+      "description": "The time in seconds before the Mnemonic Shardburst Leap can be activated again after use."
+    },
+    {
+      "name": "memory_manager_path",
+      "type": "NodePath",
+      "default": "/root/MemoryManager",
+      "description": "The NodePath to the MemoryManager singleton. This manager handles the storage and consumption of memory shards."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (the node this script is attached to)",
+    "MemoryManager (an AutoLoad singleton, or the provided inner class for demonstration)"
+  ],
+  "verdict": "A desperate surge of self-destruction, where every fleeting escape carves a deeper void into the soul Lyra fights to reclaim.",
+  "impact": "This mechanic will force players into agonizing choices, making every escape a moment of profound loss. It transforms a simple movement ability into a narrative device, deepening the player's connection to Lyra's struggle against forgetting. The player will constantly weigh immediate survival against the slow erosion of identity, creating a unique blend of adrenaline and melancholic reflection.",
+  "score": 95,
+  "inventedAt": "2026-11-08T08:24:22.390Z"
+}

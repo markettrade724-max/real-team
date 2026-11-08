@@ -1,0 +1,66 @@
+{
+  "name": "cognitive_fracture_interface",
+  "label": "Cognitive Fracture Interface",
+  "domain": "ui",
+  "godotFeature": "ShaderMaterial, Control Nodes, AnimationPlayer, GDScript",
+  "poeticVision": "Imagine Lyra's HUD not as a stable window, but as a direct, fragile manifestation of her eroding mind. As the Silence closes in, or a critical memory is lost, the interface itself begins to fray—elements desaturate, glitch, and visually 'shatter' into abstract fragments that actively obscure vital information or shift their position on screen. A successful memory recovery doesn't perfectly restore it, but violently 'sutures' the UI back together, leaving visible scars and distortions that remind the player of Lyra's constant, near-fatal struggle against self-loss. Every piece of information Lyra grasps is hard-won, filtered through a dying consciousness.",
+  "usage": "This shader is designed to be applied to `Control` nodes within Lyra's HUD (e.g., a `Panel` covering the entire HUD, or individual elements like health bars, mini-maps, objective markers). A GDScript would manage the `ShaderMaterial`'s uniform parameters using `Tween` nodes to create dynamic visual effects. When Lyra's memory integrity decreases or she is in proximity to a threat, the GDScript would increase `fracture_intensity`, `desaturation_amount`, `distortion_amount`, `glitch_amount`, and `void_mask_strength` to simulate cognitive degradation. Upon successful memory recovery, these parameters would decrease, while `suture_strength` would briefly animate to a peak then settle at a persistent non-zero value, leaving a visible 'scar' on the UI element. The `suture_direction` and `suture_offset` can be randomized for each new scar to create unique visual distortions. Additionally, the GDScript would independently animate the `rect_position`, `rect_scale`, and `rect_rotation` of the `Control` nodes themselves to create physical 'shattering' and 'shifting' effects, complementing the shader's visual degradation.",
+  "parameters": [
+    {
+      "name": "fracture_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "Master control for overall degradation. Scales all other fracture effects."
+    },
+    {
+      "name": "desaturation_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Amount of color desaturation applied to the UI element."
+    },
+    {
+      "name": "distortion_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Intensity of visual distortion/wobble applied to the UI element."
+    },
+    {
+      "name": "glitch_amount",
+      "type": "float",
+      "default": "0.0",
+      "description": "Strength of pixelation and color channel shifting glitch effects."
+    },
+    {
+      "name": "void_mask_strength",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the visibility of 'void' areas that make parts of the UI transparent."
+    },
+    {
+      "name": "suture_strength",
+      "type": "float",
+      "default": "0.0",
+      "description": "Visibility and thickness of the 'suture' scar lines, representing permanent memory damage."
+    },
+    {
+      "name": "suture_direction",
+      "type": "vec2",
+      "default": "[1.0, 0.0]",
+      "description": "Normalized vector defining the direction of the main suture line (e.g., [1,0] for horizontal)."
+    },
+    {
+      "name": "suture_offset",
+      "type": "float",
+      "default": "0.0",
+      "description": "Offset along the suture_direction to position the scar line."
+    }
+  ],
+  "dependencies": [
+    "Control node",
+    "ShaderMaterial"
+  ],
+  "verdict": "The mind's unraveling becomes the player's gaze, a shattered window into a soul fighting to remember itself.",
+  "impact": "This invention will profoundly deepen the player's immersion by visually manifesting Lyra's eroding mind directly onto the HUD. It transforms the interface from a passive display into an active, fragile reflection of her identity, forcing players to confront the constant threat of self-loss. Information becomes a hard-won struggle, reinforcing the game's core themes of desperation and the high cost of memory. The 'sutured' scars will serve as a persistent, visceral reminder of every battle fought and every memory barely reclaimed, making the player feel Lyra's struggle on a moment-to-moment basis.",
+  "score": 95,
+  "inventedAt": "2026-11-08T08:13:26.847Z"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "mnemonic_causal_reframing",
+  "label": "Causal Memory Reforge",
+  "domain": "time",
+  "godotFeature": "PhysicsServer & SceneTree Manipulation with ShaderMaterial",
+  "poeticVision": "Feel the terrifying power and immediate consequence of rewriting history. Every recovered memory isn't a passive flashback, but a volatile tool capable of shattering your present reality into new forms. The adrenaline of survival collides with the intellectual dread of knowing your choices create new, unpredictable dangers, or fleeting, perilous opportunities. You are not just retrieving memories; you are actively reforging the very timeline, with the Silence hot on your heels through the shifting temporal ruins.",
+  "usage": "Attach this `CausalMemoryReforgeManager.gd` script to a `Node` in your main scene. In the editor, populate the `reforged_states` dictionary with `reforge_id` keys (e.g., \"crumbling_wall\") and nested dictionaries mapping \"weak\" or \"strong\" to `PackedScene`s of the desired reforged environment states. Assign a `ShaderMaterial` (using `causal_reforge_shader.gdshader`) to the `reforge_shader` property for visual transitions. \n\nTo use, ensure environment `Node3D`s that can be reforged have a `reforge_id` metadata (e.g., `target_node.set_meta(\"reforge_id\", \"crumbling_wall\")`). When Lyra activates a 'Causal Shard', call `CausalMemoryReforgeManager.reforge_environment(target_anchor_node, \"shard_type_identifier\", player_strength_input)`. The `target_anchor_node` will be replaced by the appropriate `PackedScene` from `reforged_states`, with a visual dissolve effect. The physics engine will automatically re-evaluate collisions for the new environment.",
+  "parameters": [
+    {
+      "name": "reforged_states",
+      "type": "Dictionary",
+      "default": "{}",
+      "description": "A dictionary mapping 'reforge_id' strings (from environment nodes' metadata) to another dictionary. The inner dictionary maps 'strength_level' strings ('weak', 'strong') to `PackedScene`s representing the reforged states. Example: {\"wall_01\": {\"weak\": preload(\"res://scenes/wall_01_weak.tscn\"), \"strong\": preload(\"res://scenes/wall_01_strong.tscn\")}}"
+    },
+    {
+      "name": "reforge_shader",
+      "type": "ShaderMaterial",
+      "default": "null",
+      "description": "The `ShaderMaterial` to use for the visual dissolve/blend effect during the reforge transition. This should typically use the `causal_reforge_shader.gdshader`."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (for visual representation of environment nodes)",
+    "CollisionShape3D (for physics of environment nodes, implicitly handled by scene swap)",
+    "PackedScene (for defining reforged environment states)",
+    "ShaderMaterial (for visual effects)",
+    "causal_reforge_shader.gdshader (the GLSL shader for visual transitions)"
+  ],
+  "verdict": "Lyra's fractured past becomes a volatile forge, twisting the present into perilous new realities where every memory shard is a desperate gamble for survival.",
+  "impact": "This mechanic transforms passive memory retrieval into an active, high-stakes environmental manipulation. Players will constantly weigh the risks and rewards of altering their surroundings, leading to dynamic gameplay where the environment itself becomes a fluid puzzle and a potential weapon or trap. It deepens the connection between Lyra's internal struggle (lost memories) and her external survival, making every memory shard a critical resource with tangible, immediate consequences. The constant tension of the Silence closing in will be amplified by the unpredictable shifts in the environment, forcing split-second decisions that redefine the very path of escape.",
+  "score": 92,
+  "inventedAt": "2026-11-08T08:23:08.732Z"
+}

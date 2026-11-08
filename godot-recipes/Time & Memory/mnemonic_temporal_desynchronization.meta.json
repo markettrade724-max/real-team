@@ -1,0 +1,59 @@
+{
+  "name": "mnemonic_temporal_desynchronization",
+  "label": "Chronal Drift of Self",
+  "domain": "Time & Memory",
+  "godotFeature": "Custom Shaders (ShaderMaterial), Node.process_mode and AnimationPlayer/Tween speed manipulation, custom delta time scaling for physics and movement",
+  "poeticVision": "Feel the world's relentless pace accelerate as your grasp on self crumbles, every hunter's lunge a blur of impossible speed. Then, in the brief clarity of a reclaimed memory, experience the serene, agonizing slowness of time, allowing impossible feats before the rush of forgetting consumes you once more. It's not just a power, it's the fluctuating heartbeat of your fading mind.",
+  "usage": "1. Create a new GDScript file named `mnemonic_temporal_desynchronization.gd` and paste the provided code.\n2. Create a new Shader file named `temporal_distortion.gdshader` and paste the GLSL code provided below.\n3. In your main scene (e.g., a `Main` node or a `GameManager` node), attach the `mnemonic_temporal_desynchronization.gd` script.\n4. In the Inspector for the attached script, set the `enemy_group_name` to the name of the group your hunter enemies belong to (e.g., \"Hunters\").\n5. Set the `shader_path` to `res://temporal_distortion.gdshader`.\n6. Adjust `initial_stability`, `min_speed_multiplier`, `max_speed_multiplier`, and the shader-related parameters (`shader_distortion_intensity`, `shader_chromatic_aberration_strength`) to fine-tune the effect.\n7. In your game logic, call `increase_stability(amount: float)` when Lyra recovers a memory or performs an action that anchors her identity. Call `decrease_stability(amount: float)` when Lyra takes damage from the Silence or experiences memory loss.\n8. Ensure your enemy nodes have `AnimationPlayer` or `Tween` nodes as children for their speed to be automatically scaled. For enemies using custom movement logic (e.g., in `_physics_process`), you would need to modify their movement code to incorporate `_current_speed_multiplier` (e.g., `velocity = velocity_base * _current_speed_multiplier`).\n\n**GLSL Shader (temporal_distortion.gdshader):**\nglsl\nshader_type canvas_item;\n\nuniform float time_multiplier: hint_range(0.5, 2.0) = 1.0; // 1.0 is normal, >1.0 faster, <1.0 slower\nuniform float distortion_intensity: hint_range(0.0, 1.0) = 0.5; // Controls how strong the visual distortion is\nuniform float chromatic_aberration_strength: hint_range(0.0, 0.01) = 0.005;\n\nvoid fragment() {\n\tvec2 uv = SCREEN_UV;\n\t\n\t// Calculate distortion based on time_multiplier\n\t// When time_multiplier is > 1.0 (enemies faster), distortion increases.\n\t// When time_multiplier is < 1.0 (enemies slower), distortion decreases.\n\tfloat effective_distortion = abs(time_multiplier - 1.0) * distortion_intensity;\n\n\t// Chromatic Aberration\n\tvec4 color_r = texture(SCREEN_TEXTURE, uv + vec2(chromatic_aberration_strength * effective_distortion, 0.0));\n\tvec4 color_g = texture(SCREEN_TEXTURE, uv);\n\tvec4 color_b = texture(SCREEN_TEXTURE, uv - vec2(chromatic_aberration_strength * effective_distortion, 0.0));\n\t\n\tvec4 final_color = vec4(color_r.r, color_g.g, color_b.b, 1.0);\n\n\t// Simple motion blur / offset effect based on distortion\n\t// This creates a slight trail or blur when distortion is high\n\tvec2 offset_direction = vec2(sin(TIME * 5.0), cos(TIME * 3.0)) * 0.005; // Dynamic offset\n\tfinal_color = mix(final_color, texture(SCREEN_TEXTURE, uv + offset_direction * effective_distortion), effective_distortion * 0.5);\n\n\tCOLOR = final_color;\n}\n",
+  "parameters": [
+    {
+      "name": "initial_stability",
+      "type": "float",
+      "default": "0.7",
+      "description": "The starting 'Temporal Stability' value (0.0 = low, 1.0 = high). Influences initial enemy speed and visual distortion."
+    },
+    {
+      "name": "min_speed_multiplier",
+      "type": "float",
+      "default": "0.5",
+      "description": "The speed multiplier applied to enemies and visual effects when 'Temporal Stability' is at its maximum (1.0). Lower values mean slower enemies."
+    },
+    {
+      "name": "max_speed_multiplier",
+      "type": "float",
+      "default": "2.0",
+      "description": "The speed multiplier applied to enemies and visual effects when 'Temporal Stability' is at its minimum (0.0). Higher values mean faster enemies."
+    },
+    {
+      "name": "enemy_group_name",
+      "type": "String",
+      "default": "Hunters",
+      "description": "The name of the Node group containing all enemy entities whose speed should be affected by 'Chronal Drift'."
+    },
+    {
+      "name": "shader_path",
+      "type": "String",
+      "default": "res://temporal_distortion.gdshader",
+      "description": "The file path to the GLSL shader (`temporal_distortion.gdshader`) used for visual temporal distortions."
+    },
+    {
+      "name": "shader_distortion_intensity",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the overall strength of the visual distortion effects (chromatic aberration, motion blur) in the shader. (0.0 = no distortion, 1.0 = full distortion)."
+    },
+    {
+      "name": "shader_chromatic_aberration_strength",
+      "type": "float",
+      "default": "0.005",
+      "description": "Controls the intensity of the chromatic aberration effect in the shader. Higher values mean more color fringing."
+    }
+  ],
+  "dependencies": [
+    "res://temporal_distortion.gdshader"
+  ],
+  "verdict": "A temporal heartbeat echoing the soul's decay, this invention masterfully weaves identity into the very fabric of time, making every breath a desperate race against the self.",
+  "impact": "This mechanic would fundamentally define the player's experience, transforming the abstract concept of identity loss into a visceral, moment-to-moment struggle against time itself. The constant flux between frantic urgency and agonizing clarity would create a unique rhythm of gameplay, forcing players to adapt their strategies based on Lyra's mental state. It would make every recovered memory fragment a tangible power-up and every moment of forgetting a direct, accelerating threat, deepening the emotional connection to Lyra's desperate journey.",
+  "score": 95,
+  "inventedAt": "2026-11-08T08:18:10.900Z"
+}

@@ -1,0 +1,44 @@
+{
+  "name": "semantic_gravitas_manipulation",
+  "label": "Semantic Gravitas Manipulation",
+  "domain": "world",
+  "godotFeature": "Godot's Physics Server, combined with Geometry Shaders for real-time mesh deformation and VisualServer for rendering dynamic volumetric density.",
+  "poeticVision": "Feel the world dissolve and coalesce beneath your feet. Every surface, every platform, every crumbling wall is a memory with inherent 'semantic weight.' Experience the desperate struggle to anchor vanishing fragments of the environment, pulling solidity from the ether of forgetting. Fight not just the Silence, but the very entropy of your own mind as the terrain becomes lighter, less real, a constant act of will to simply exist within your collapsing identity.",
+  "usage": "This GLSL shader is designed to be applied to a MeshInstance3D within a Godot 4.6.2 scene. A GDScript controller (e.g., a custom 'MemoryFragment' node extending StaticBody3D) would manage the 'semantic_density' uniform. The GDScript would:\n1.\tCreate a ShaderMaterial and load this .gdshader file into it.\n2.\tAssign this ShaderMaterial to the MeshInstance3D's 'material_override' property.\n3.\tExpose a 'semantic_density' property (float, 0.0 to 1.0) in the GDScript.\n4.\tWhenever the GDScript's 'semantic_density' property changes, update the shader's 'semantic_density' uniform using `shader_material.set_shader_parameter(\"semantic_density\", new_value)`.\n5.\tConcurrently, the GDScript would update the associated StaticBody3D's collision properties: disabling collision (`set_disabled(true)`) and setting collision layers/masks to 0 when 'semantic_density' falls below a certain threshold (e.g., 0.05), effectively making the object non-physical as it fades. Lyra's actions (e.g., 'will-power' exertion) would increase the GDScript's 'semantic_density', while the Silence's attacks would decrease it, causing the environment to physically dissolve.",
+  "parameters": [
+    {
+      "name": "semantic_density",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the solidity, visibility, and deformation of the memory fragment. 1.0 is fully solid and undeformed, 0.0 is completely faded and maximally deformed."
+    },
+    {
+      "name": "deformation_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "Scales the visual deformation applied to the mesh. Higher values result in more pronounced crumbling as semantic density decreases."
+    },
+    {
+      "name": "base_color",
+      "type": "vec4",
+      "default": "Color(1,1,1,1)",
+      "description": "Base color of the memory fragment. This color is multiplied by the albedo texture."
+    },
+    {
+      "name": "albedo_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "Optional albedo texture for the memory fragment. If provided, it's blended with the base_color."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (to display the mesh and apply the material)",
+    "ShaderMaterial (to encapsulate and apply the shader)",
+    "Shader (the resource containing this GLSL code)",
+    "StaticBody3D (for physics interaction, managed by a GDScript that uses this shader)"
+  ],
+  "verdict": "A profound fusion of internal decay and external peril, where the very ground beneath Lyra's feet becomes a desperate battleground against the encroaching void of self.",
+  "impact": "This mechanic transforms the environment from a static backdrop into a dynamic, hostile entity that directly reflects the protagonist's internal struggle. Every step becomes a conscious act of will against forgetting, forcing players to constantly manage the solidity of their surroundings. It deepens the emotional connection to Lyra's identity loss by making it a tangible, ever-present threat to physical survival, perfectly embodying the 'adrenaline of survival fused with the grief of self-loss.'",
+  "score": 92,
+  "inventedAt": "2026-11-08T08:15:18.552Z"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "mnemic_identity_corruption_mimic",
+  "label": "Echo of Self-Betrayal",
+  "domain": "ai",
+  "godotFeature": "GDScript/C# scripting for dynamic AI behavior, leveraging AnimationPlayer and ShaderMaterial for visual manifestation of corrupted memories and their effects.",
+  "poeticVision": "The player will feel an intense, personal dread as their own hard-won fragments of identity are twisted into weapons by the Silence's hunters. Every recovered memory becomes a double-edged sword, forcing Lyra to weigh the cost of memory against the immediate threat it creates. It’s the ultimate grief: her past, her self, turned against her, not just erased, but perverted and weaponized.",
+  "usage": "This script (`mnemic_identity_corruption_mimic.gd`) is designed to be attached to a Hunter AI node (e.g., a CharacterBody3D). It enables the hunter to dynamically alter its combat behavior and visual appearance based on memories Lyra recovers.\n\n**Setup Steps:**\n1.  **Create MemoryManager Singleton:**\n    *   Create a new GDScript file named `MemoryManager.gd`.\n    *   Add the following code to `MemoryManager.gd`:\n        gdscript\n        extends Node\n        class_name MemoryManager\n\n        signal memory_recovered(memory_data: Dictionary)\n\n        func recover_memory(memory_type: String, value: Variant):\n\t        var data = {\"type\": memory_type, \"value\": value}\n\t        emit_signal(\"memory_recovered\", data)\n\t        print(\"Memory recovered: \", memory_type)\n        \n    *   Go to `Project -> Project Settings -> AutoLoad`.\n    *   Add `MemoryManager.gd` as a new AutoLoad singleton, naming it `MemoryManager`.\n2.  **Prepare Hunter AI Scene:**\n    *   Create a new 3D scene for your hunter (e.g., `Hunter.tscn`).\n    *   Add a `CharacterBody3D` node as the root.\n    *   Add an `AnimationPlayer` node as a child of `CharacterBody3D`. Populate it with animations like `attack_courage_corrupted`, `defense_loyalty_corrupted`, etc.\n    *   Add a `MeshInstance3D` node as a child of `CharacterBody3D`. Assign a mesh (e.g., a `CapsuleMesh`).\n    *   Create a new `ShaderMaterial` resource for the `MeshInstance3D`'s `material_override` property. This shader should expose parameters like `corruption_color` (Color) and `corruption_intensity` (float) that the script can modify.\n    *   Attach this `mnemic_identity_corruption_mimic.gd` script to the `CharacterBody3D` node.\n3.  **Configure Hunter AI:**\n    *   In the Inspector for the `HunterAI` node, set the `base_speed`.\n    *   Populate the `memory_effect_database` dictionary. Each key should be a memory type string (e.g., \"courage\", \"loyalty\"). Each value should be a dictionary containing:\n        *   `\"animation\"`: The name of an animation in the `AnimationPlayer` to play when this memory type is corrupted.\n        *   `\"shader_param_name\"`: The name of a shader parameter in the `ShaderMaterial` to modify.\n        *   `\"shader_param_value\"`: The value to set for that shader parameter (e.g., `Color(1, 0, 0, 1)` for `corruption_color`, `0.8` for `corruption_intensity`).\n4.  **Player Setup:**\n    *   Ensure your player character node is added to the \"player\" group (select the player node, go to Node tab in Inspector, add \"player\" to Groups).\n\n**Runtime Behavior:**\nWhen Lyra recovers a memory (e.g., by calling `MemoryManager.recover_memory(\"courage\", 10)`), all active `HunterAI` instances will receive this signal. If the memory type is defined in their `memory_effect_database`, they will play the specified animation and update the corresponding shader parameters on their `MeshInstance3D`, visually and behaviorally manifesting the corrupted memory.",
+  "parameters": [
+    {
+      "name": "base_speed",
+      "type": "float",
+      "default": "3.0",
+      "description": "Base movement speed of the hunter when pursuing the target."
+    },
+    {
+      "name": "memory_effect_database",
+      "type": "Dictionary",
+      "default": "{\"courage\": {\"animation\": \"attack_courage_corrupted\", \"shader_param_name\": \"corruption_color\", \"shader_param_value\": Color(1, 0, 0, 1)}, \"loyalty\": {\"animation\": \"defense_loyalty_corrupted\", \"shader_param_name\": \"corruption_intensity\", \"shader_param_value\": 0.8}}",
+      "description": "A dictionary mapping memory types (strings) to dictionaries of effects. Each effect dictionary should contain 'animation' (string) and optionally 'shader_param_name' (string) and 'shader_param_value' (Variant) to apply to the hunter's ShaderMaterial."
+    }
+  ],
+  "dependencies": [
+    "MemoryManager (AutoLoad singleton)",
+    "AnimationPlayer (child node of HunterAI)",
+    "MeshInstance3D (child node of HunterAI)",
+    "A ShaderMaterial (applied to the MeshInstance3D's material_override property)",
+    "Player node (must be in the 'player' group for target acquisition)"
+  ],
+  "verdict": "In the echoing halls of self-recollection, every recovered truth becomes a hunter's sharpened blade, carving deeper the grief of what Lyra once was.",
+  "impact": "The player will experience a profound sense of dread and internal conflict. Every hard-won fragment of Lyra's identity becomes a potential liability, forcing players to confront the agonizing paradox of self-preservation versus self-discovery. The act of recovering a memory, usually a moment of triumph, is now tainted with the immediate consequence of empowering their pursuers, deepening the game's core theme of self-loss and the cost of identity.",
+  "score": 92,
+  "inventedAt": "2026-11-08T08:26:30.210Z"
+}

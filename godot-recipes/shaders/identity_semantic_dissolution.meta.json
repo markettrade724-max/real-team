@@ -1,0 +1,54 @@
+{
+  "name": "identity_semantic_dissolution",
+  "label": "Phantom Form Dissolution",
+  "domain": "shaders",
+  "godotFeature": "ShaderMaterial, SCREEN_TEXTURE, DEPTH_TEXTURE",
+  "poeticVision": "The terrifying realization that Lyra's deteriorating identity isn't just an internal struggle, but a literal unraveling of her world's forms. Hunters become indistinguishable from crumbling architecture, her own limbs flicker with unreality, and the crucial lines defining dangers and safe havens dissolve into an amorphous dread. The player feels the acute disorientation of losing the very ability to 'see' what is real, a profound visual analogue to forgetting herself.",
+  "usage": "To apply the 'Phantom Form Dissolution' effect:\n1.\tAdd a 'TextureRect' node to your scene, preferably as a child of your main 'CanvasLayer' or directly under the root 'Control' node if it's a 2D game, or in a 'SubViewportContainer' for 3D post-processing.\n2.\tSet the 'TextureRect's 'Layout' to 'Full Rect' (or use 'Anchors Preset -> Full Rect') to cover the entire screen.\n3.\tCreate a new 'ShaderMaterial' resource for the 'TextureRect's 'Material' property.\n4.\tLoad this '.gdshader' file into the 'Shader' slot of the 'ShaderMaterial'.\n5.\tIn the 'ShaderMaterial's parameters, assign a 'NoiseTexture' resource (e.g., a 'FastNoiseLite' resource wrapped in a 'NoiseTexture') to the 'noise_texture' uniform. This provides the chaotic patterns for the dissolution.\n6.\tAdjust the 'memory_erosion_strength' parameter to control the overall intensity of the effect. Higher values will make objects dissolve more aggressively. Experiment with 'edge_threshold', 'dissolution_spread', 'noise_scale', and 'time_speed' to fine-tune the visual style and animation of the unraveling.",
+  "parameters": [
+    {
+      "name": "memory_erosion_strength",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the overall intensity of the dissolution effect. A value of 0.0 means no dissolution, 1.0 means maximum dissolution."
+    },
+    {
+      "name": "edge_threshold",
+      "type": "float",
+      "default": "0.01",
+      "description": "Sensitivity for detecting depth edges. Lower values detect more subtle edges, making the effect apply to more surfaces. Higher values restrict it to sharper transitions."
+    },
+    {
+      "name": "dissolution_spread",
+      "type": "float",
+      "default": "0.01",
+      "description": "Maximum distance pixels are displaced from their original position along edges. Controls how 'blurry' or 'smudged' the dissolving edges appear."
+    },
+    {
+      "name": "noise_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "A grayscale noise texture (e.g., a FastNoiseLite resource wrapped in a NoiseTexture) used to introduce chaotic patterns for displacement and alpha fading. Required for the effect to work as intended."
+    },
+    {
+      "name": "noise_scale",
+      "type": "float",
+      "default": "2.0",
+      "description": "Scales the noise texture's UVs, affecting the granularity and size of the dissolution patterns. Higher values create finer, more detailed patterns."
+    },
+    {
+      "name": "time_speed",
+      "type": "float",
+      "default": "0.5",
+      "description": "Controls the speed at which the noise pattern animates over time, giving the dissolution a dynamic, flickering quality. Set to 0.0 for a static effect."
+    }
+  ],
+  "dependencies": [
+    "TextureRect",
+    "NoiseTexture (resource)"
+  ],
+  "verdict": "A brilliant unraveling of reality, this invention transmutes Lyra's internal decay into a terrifying, unforgettable visual symphony of self-loss.",
+  "impact": "This invention will profoundly immerse the player in Lyra's deteriorating mental state, transforming the very visual fabric of the game world into a mirror of her fading identity. Hunters will blend with the environment, safe paths will blur into danger, and the constant visual instability will amplify the core themes of self-loss and the desperate fight for memory, making every moment a visceral struggle against both external threats and internal dissolution.",
+  "score": 92,
+  "inventedAt": "2026-11-08T08:25:21.518Z"
+}
