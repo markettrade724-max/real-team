@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-11-09T13:32:06.265Z",
-  "current": null,
+  "updatedAt": "2026-11-09T17:27:24.601Z",
+  "current": {
+    "type": "episode",
+    "episode": 49,
+    "id": null,
+    "startedAt": "2026-11-09T17:12:38.643Z",
+    "updatedAt": "2026-11-09T17:27:24.601Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 49,
     "totalEpisodes": 49,
@@ -1397,6 +1404,35 @@
         "startedAt": "2026-11-04T15:10:39.955Z",
         "completedAt": "2026-11-09T13:32:06.265Z",
         "failReason": null
+      },
+      "49": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-11-09T17:14:18.079Z",
+            "title": "The Fading Core",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-11-09T17:16:05.207Z",
+            "title": "The Fading Core",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-11-09T17:16:40.478Z",
+            "title": "The Fading Core",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-11-09T17:12:38.643Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
