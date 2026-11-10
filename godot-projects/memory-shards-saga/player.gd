@@ -26,7 +26,7 @@ var camera: Camera3D
 var weapon: Node3D
 
 signal player_died
-signal player_health_changed(new_health: int, max_health: int) # New signal for HUD updates
+signal player_health_changed(new_health: float, max_health: int) # Changed new_health to float for consistency
 
 func _ready() -> void:
 	add_to_group("player")
@@ -45,7 +45,7 @@ func _ready() -> void:
 
 	# Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # REMOVED: Mouse mode is now managed by main_scene.gd
 	current_health = max_health
-	emit_signal("player_health_changed", int(current_health), max_health) # Initial health update for HUD, cast to int for signal
+	emit_signal("player_health_changed", current_health, max_health) # Initial health update for HUD
 	
 	# Explicitly set collision layers and masks for clarity and robustness
 	set_collision_layer_value(1, true) # Player is on layer 1
@@ -118,7 +118,7 @@ func take_damage(amount: float) -> void:
 
 	current_health -= amount
 	print("Player took %f damage. Current health: %f" % [amount, current_health]) # Changed %d to %f for current_health
-	emit_signal("player_health_changed", int(current_health), max_health) # Update health UI, cast to int for signal
+	emit_signal("player_health_changed", current_health, max_health) # Update health UI
 
 	if current_health <= 0:
 	    current_health = 0

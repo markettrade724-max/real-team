@@ -126,9 +126,7 @@ func _set_game_state(new_state: GameState):
 	        
 	        # The _on_child_entered_tree connection in _ready() handles connecting signals
 	        # for all enemies, whether they exist at scene load or are spawned dynamically.
-	        # This loop is therefore redundant.
-	        # for enemy in get_tree().get_nodes_in_group("enemy"):
-	        #    _connect_enemy_signals(enemy)
+	        # This loop is therefore redundant. (REMOVED)
 	        Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # Capture mouse for gameplay
 	        	
 	    GameState.PAUSED:
