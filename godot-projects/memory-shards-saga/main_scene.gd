@@ -61,6 +61,7 @@ func _ready():
 	
 	# Connect to child_entered_tree once in _ready to catch all dynamically spawned nodes.
 	# This ensures enemies spawned in any state (even paused) have their signals connected.
+	# It also catches nodes that are part of the scene at load time.
 	if not get_tree().child_entered_tree.is_connected(_on_child_entered_tree):
 		get_tree().child_entered_tree.connect(_on_child_entered_tree)
 
@@ -123,10 +124,11 @@ func _set_game_state(new_state: GameState):
 	        _spawn_player_if_needed()
 	        _update_score_display() # Initial score display
 	        
-	        # Connect signals for all existing enemies in the scene that are in the "enemy" group.
-	        # This is still needed for enemies that exist at scene load, before _ready() finishes.
-	        for enemy in get_tree().get_nodes_in_group("enemy"):
-	            _connect_enemy_signals(enemy)
+	        # The _on_child_entered_tree connection in _ready() handles connecting signals
+	        # for all enemies, whether they exist at scene load or are spawned dynamically.
+	        # This loop is therefore redundant.
+	        # for enemy in get_tree().get_nodes_in_group("enemy"):
+	        #    _connect_enemy_signals(enemy)
 	        Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # Capture mouse for gameplay
 	        	
 	    GameState.PAUSED:
