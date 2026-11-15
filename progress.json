@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-11-11T15:01:01.295Z",
+  "updatedAt": "2026-11-15T12:22:32.560Z",
   "current": {
     "type": "episode",
     "episode": 50,
     "id": null,
     "startedAt": "2026-11-11T14:57:30.325Z",
-    "updatedAt": "2026-11-11T15:01:01.295Z",
-    "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+    "updatedAt": "2026-11-15T12:22:32.560Z",
+    "failReason": "inventor-no-quota"
   },
   "series": {
     "nextEpisode": 50,
@@ -1457,7 +1457,7 @@
         },
         "startedAt": "2026-11-11T14:57:30.325Z",
         "completedAt": null,
-        "failReason": "screenplay-failed: Gemini API failed: got status: 503 Service Unavailable. {\"error\":{\"code\":503,\"me"
+        "failReason": "inventor-no-quota"
       }
     }
   },
