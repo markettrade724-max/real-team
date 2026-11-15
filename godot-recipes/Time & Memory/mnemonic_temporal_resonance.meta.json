@@ -1,0 +1,30 @@
+{
+  "name": "mnemonic_temporal_resonance",
+  "label": "Echoes of Fragmented Time",
+  "domain": "Time & Memory",
+  "godotFeature": "Area3D with Localized Delta Time Manipulation & Custom Physics/Animation Scaling",
+  "poeticVision": "The player feels an agonizing disjunction from reality as time itself distorts around them, speeding up to an impossible blur or crawling to a suffocating halt. Every step is a gamble, every hunter's lunge unpredictable, forcing desperate adaptation to a world that fights Lyra's internal discordance. It's the terror of losing control over the fundamental flow of existence, reflecting her own unraveling identity in the very fabric of time.",
+  "usage": "Attach this script to an Area3D node in your scene. Configure its 'time_scale_factor' to define the time distortion (e.g., 0.5 for slow-motion, 2.0 for fast-forward) and 'transition_speed' for smooth entry/exit. Any CharacterBody3D (or other PhysicsBody3D/Node3D) that needs to be affected by this time distortion must implement the following:\n1. A 'var current_time_distortion_factor: float = 1.0' and 'var target_time_distortion_factor: float = 1.0' property.\n2. A 'func set_time_distortion_factor(factor: float, speed: float):' method that sets 'target_time_distortion_factor = factor' and stores the 'speed'.\n3. In its '_physics_process(delta: float)' or '_process(delta: float)' method, update 'current_time_distortion_factor = lerp(current_time_distortion_factor, target_time_distortion_factor, delta * stored_speed)' and then use 'delta * current_time_distortion_factor' for all movement, physics calculations (e.g., velocity, gravity), and AnimationPlayer 'playback_speed'.\n4. For visual warping, apply a ShaderMaterial using 'time_warp_shader.gdshader' (see dependencies) to the affected object's MeshInstance3D. The 'set_time_distortion_factor' method on the affected object should also update the 'time_distortion_factor' uniform on its ShaderMaterial (e.g., 'mesh_instance.get_active_material(0).set_shader_parameter(\"time_distortion_factor\", current_time_distortion_factor)').",
+  "parameters": [
+    {
+      "name": "time_scale_factor",
+      "type": "float",
+      "default": "0.5",
+      "description": "The factor by which time is scaled within this zone. A value of 1.0 is normal time, <1.0 is slower, >1.0 is faster. Clamped between 0.01 and 10.0."
+    },
+    {
+      "name": "transition_speed",
+      "type": "float",
+      "default": "5.0",
+      "description": "The speed at which affected objects smoothly transition to the zone's time scale."
+    }
+  ],
+  "dependencies": [
+    "A CharacterBody3D (or any PhysicsBody3D/Node3D) script that implements the described interface for internal time scaling and shader uniform updates.",
+    "time_warp_shader.gdshader: A ShaderMaterial (spatial) for visual warping on affected objects. It should expose 'uniform float time_distortion_factor : hint_range(0.0, 3.0) = 1.0;' and use it to drive vertex and UV distortion. Example GLSL for 'time_warp_shader.gdshader':\nglsl\nshader_type spatial;\nrender_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;\n\nuniform float time_distortion_factor : hint_range(0.0, 3.0) = 1.0;\nuniform float distortion_strength : hint_range(0.0, 0.1) = 0.05;\nuniform float distortion_speed : hint_range(0.0, 10.0) = 1.0;\nuniform sampler2D albedo_texture : hint_albedo;\n\nvoid vertex() {\n\tfloat scaled_time = TIME * distortion_speed * time_distortion_factor;\n\tvec3 offset = vec3(\n\t\tsin(scaled_time * 1.5 + VERTEX.y * 5.0) * distortion_strength,\n\t\tcos(scaled_time * 2.0 + VERTEX.x * 5.0) * distortion_strength,\n\t\tsin(scaled_time * 2.5 + VERTEX.z * 5.0) * distortion_strength\n\t);\n\tVERTEX += offset;\n}\n\nvoid fragment() {\n\tvec2 distorted_uv = UV;\n\tfloat scaled_time = TIME * distortion_speed * time_distortion_factor;\n\tfloat current_distortion_effect = abs(time_distortion_factor - 1.0) * distortion_strength;\n\tdistorted_uv.x += sin(scaled_time * 3.0 + UV.y * 10.0) * current_distortion_effect * 0.5;\n\tdistorted_uv.y += cos(scaled_time * 4.0 + UV.x * 10.0) * current_distortion_effect * 0.5;\n\n\tALBEDO = texture(albedo_texture, distorted_uv).rgb;\n\tALPHA = texture(albedo_texture, distorted_uv).a;\n}\n"
+  ],
+  "verdict": "Time itself becomes a fractured mirror, reflecting Lyra's unraveling self in a desperate, disorienting dance of survival against the relentless tide of forgetting.",
+  "impact": "This invention will fundamentally reshape the player's perception of combat and traversal, transforming the environment into an active, unpredictable antagonist. Players will experience a profound sense of disjunction, where the very flow of time becomes a direct reflection of Lyra's internal chaos and memory loss. Every chase and encounter will demand desperate, on-the-fly adaptation, amplifying the adrenaline of survival and the existential dread of losing control, making each moment a high-stakes gamble against a reality that mirrors her unraveling identity.",
+  "score": 92,
+  "inventedAt": "2026-11-15T08:45:08.264Z"
+}

@@ -1,0 +1,51 @@
+{
+  "name": "causal_echo_desynchronization",
+  "label": "Ripple of Retrospective Action",
+  "domain": "Time & Memory",
+  "godotFeature": "GlobalShader & Callable.call_deferred for event pre-triggering",
+  "poeticVision": "Feel the world twist around you as your actions ripple into the present, arriving *before* you even commit. The ground cracks an instant before your foot lands. A hunter's attack, which you dodged, manifests as an echo of pain from *before* you moved. Your choices become a desperate gamble against a fragmented timeline, a terrifying dance where foresight is a curse and every action potentially creates new, paradoxically prior, dangers. This isn't just about forgetting; it's about your very sense of cause and effect unraveling, making the familiar alien and the predictable terrifyingly random. Survival means fighting not just hunters, but the fractured logic of your own mind.",
+  "usage": "This script manages the 'Ripple of Retrospective Action' effect. To use it:\n\n1.  **Create the Shader File:** Save the GLSL code provided below as `causal_echo_distortion.gdshader` in your project's `res://` directory.\n\n2.  **Create the GDScript File:** Save this GDScript code as `causal_echo_manager.gd` in your project's `res://` directory.\n\n3.  **Setup as Autoload (Singleton):**\n    *   Go to `Project` -> `Project Settings` -> `Autoload` tab.\n    *   Click the `+` icon, select `causal_echo_manager.gd`, and set its `Node Name` to `CausalEchoManager` (or any desired name).\n    *   Ensure `Enable` is checked. This makes the manager globally accessible.\n\n4.  **Apply the Global Shader:**\n    *   In your main scene (or any scene where you want the effect to appear), add a `CanvasLayer` node.\n    *   As a child of the `CanvasLayer`, add a `TextureRect` node.\n    *   Set the `TextureRect`'s `Layout` to `Full Rect` to make it cover the entire screen.\n    *   In the `TextureRect`'s Inspector, find the `Material` property. Create a `New ShaderMaterial`.\n    *   Assign the `CausalEchoManager.get_current_shader_material()` to this `ShaderMaterial`'s `shader` property *at runtime*. A simple way to do this is in your main scene's `_ready()` function:\n        gdscript\n        func _ready():\n        \t$CanvasLayer/TextureRect.material = CausalEchoManager.get_current_shader_material()\n        \n\n5.  **Triggering the Ripple Effect:**\n    *   From any script, call `CausalEchoManager.activate_ripple()` to start the effect. You can optionally pass `duration`, `intensity`, `speed`, and `pre_trigger_offset` parameters to override the defaults.\n        gdscript\n        # Example: Activate ripple for 5 seconds, high intensity, fast speed, 0.3s pre-trigger\n        CausalEchoManager.activate_ripple(5.0, 0.8, 3.0, 0.3)\n        \n\n6.  **Scheduling Pre-Triggered Cues:**\n    *   When a game object (e.g., a hunter, a crumbling floor) is about to perform an action that has a visual or auditory cue, it should use `CausalEchoManager.schedule_pre_triggered_cue()`.\n    *   Pass a `Callable` (e.g., `func(): play_sound()`) and the `actual_event_delay` (how many seconds until the *actual* game logic event happens).\n        gdscript\n        # Example: A hunter is about to attack in 0.5 seconds. Play its growl earlier.\n        func _on_hunter_about_to_attack():\n        \tvar actual_attack_delay = 0.5 # seconds until the hunter's physical attack\n        \tCausalEchoManager.schedule_pre_triggered_cue(Callable(self, \"_play_hunter_growl\"), actual_attack_delay)\n        \t# Schedule the actual attack logic to happen after 'actual_attack_delay'\n        \tget_tree().create_timer(actual_attack_delay).timeout.connect(Callable(self, \"_perform_hunter_attack\"))\n\n        func _play_hunter_growl():\n        \t# Play the growl sound or show a visual warning\n        \tprint(\"Hunter growl (pre-triggered)!\")\n\n        func _perform_hunter_attack():\n        \t# Execute the actual attack logic\n        \tprint(\"Hunter performs actual attack!\")\n        \n\nThis setup ensures the visual distortion is applied globally and allows game objects to easily schedule their cues to appear *before* their corresponding game logic events, creating the perception of fractured causality.",
+  "parameters": [
+    {
+      "name": "ripple_shader_path",
+      "type": "String",
+      "default": "res://causal_echo_distortion.gdshader",
+      "description": "Path to the GLSL shader file for the ripple effect."
+    },
+    {
+      "name": "default_ripple_duration",
+      "type": "float",
+      "default": "3.0",
+      "description": "Default duration (in seconds) for the ripple effect if not specified when activating."
+    },
+    {
+      "name": "default_ripple_intensity",
+      "type": "float",
+      "default": "0.5",
+      "description": "Default visual intensity of the ripple distortion if not specified when activating."
+    },
+    {
+      "name": "default_ripple_speed",
+      "type": "float",
+      "default": "2.0",
+      "description": "Default speed of the ripple animation if not specified when activating."
+    },
+    {
+      "name": "default_pre_trigger_offset",
+      "type": "float",
+      "default": "0.2",
+      "description": "Default time offset (in seconds) by which visual/auditory cues are pre-triggered before their actual event."
+    }
+  ],
+  "dependencies": [
+    "Node",
+    "Timer",
+    "ShaderMaterial",
+    "Shader",
+    "Callable"
+  ],
+  "verdict": "In the fractured dance of memory and time, Lyra will learn that the future's shadow can wound before the present's blade, transforming foresight into a terrifying curse.",
+  "impact": "This invention will fundamentally alter the player's perception of time, causality, and danger. Every action, every dodge, every environmental interaction will be preceded by unsettling echoes, forcing players to react not just to the present, but to a distorted future that is already bleeding into their reality. It will amplify the sense of Lyra's unraveling mind, making the environment itself an insidious antagonist and turning survival into a constant, cognitively demanding battle against temporal paradoxes. The 'echo of pain from before you moved' is a stroke of genius that directly ties the temporal distortion to Lyra's physical and mental state, creating an unforgettable and deeply unsettling experience.",
+  "score": 92,
+  "inventedAt": "2026-11-15T08:42:47.214Z"
+}

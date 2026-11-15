@@ -1,0 +1,43 @@
+{
+  "name": "echo_kinetic_suture",
+  "label": "Echo-Kinetic Suture",
+  "domain": "Time & Memory",
+  "godotFeature": "PhysicsServer, Tween, ShaderMaterial",
+  "poeticVision": "You will feel the phantom weight of what is slipping away, forced to physically grapple with a memory caught in a temporal unraveling. Each desperate, timed interaction is a fight against the void, a visceral affirmation of self against the relentless decay.",
+  "usage": "Attach this 'echo_kinetic_suture.gd' script to a CharacterBody3D node in your 3D scene. This node represents a memory fragment that Lyra must stabilize. Ensure the CharacterBody3D has a MeshInstance3D child, which will be visually affected by the decay. The script will automatically apply a ShaderMaterial to the MeshInstance3D for visual fading and dissolving (using the embedded shader or a custom one). To interact with these fragments, Lyra (or her player character script) should have an Area3D node (e.g., named 'SuturePulseArea') that detects overlapping EchoKineticSuture nodes. When Lyra activates her 'suture pulse' ability, her script should iterate through the detected EchoKineticSuture nodes and call their 'stabilize(suture_amount, suture_direction)' method. The 'suture_amount' determines how much the memory's decay is reduced per interaction, and 'suture_direction' can be used to simulate Lyra physically pushing or holding the fragment, influencing its velocity.",
+  "parameters": [
+    {
+      "name": "decay_duration",
+      "type": "float",
+      "default": "10.0",
+      "description": "Time in seconds for the memory fragment to fully decay if not stabilized. A shorter duration means a more urgent interaction."
+    },
+    {
+      "name": "decay_velocity_strength",
+      "type": "float",
+      "default": "0.5",
+      "description": "Multiplier for the physical movement (velocity) induced by the memory's inherent decay, making it harder to 'hold' or 'grapple' with."
+    },
+    {
+      "name": "decay_angular_velocity_strength",
+      "type": "float",
+      "default": "0.5",
+      "description": "Multiplier for the physical rotation induced by the memory's inherent decay, making it visually and physically unstable."
+    },
+    {
+      "name": "suture_threshold",
+      "type": "float",
+      "default": "0.1",
+      "description": "The internal decay_strength value (0.0 to 1.0) below which the memory is considered successfully sutured and saved. Lower values require more stabilization effort."
+    }
+  ],
+  "dependencies": [
+    "CharacterBody3D (base node)",
+    "MeshInstance3D (child node)",
+    "ShaderMaterial (applied to MeshInstance3D, can use the embedded shader or a separate '.gdshader' file)"
+  ],
+  "verdict": "A brilliant fusion of physical interaction and existential dread, this invention makes the fight against forgetting a desperate, tangible grapple for the soul.",
+  "impact": "This mechanic transforms the abstract threat of memory loss into a tangible, physical struggle. Players will not merely witness decay but actively fight against it, experiencing the visceral panic of a memory fragment literally slipping through their grasp. The timed, physical interaction required to 'suture' a memory will create moments of intense urgency and emotional investment, making the preservation of identity a desperate, hands-on battle against the void.",
+  "score": 95,
+  "inventedAt": "2026-11-15T08:40:38.849Z"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "mnemonic_tectonic_shift",
+  "label": "The World Remembers Your Forgetting",
+  "domain": "world",
+  "godotFeature": "Real-time procedural mesh generation and physics updates using ArrayMesh, SurfaceTool, and ConcavePolygonShape3D for dynamic collision changes, driven by game state.",
+  "poeticVision": "Imagine running on a surface that is literally composed of your own memories. As you cling to a crucial identity fragment, the path ahead solidifies, offering a momentary reprieve. But then, a hunter of the Silence tears away a memory, and the very ground beneath your feet buckles, twisting into an impossible geometry, or dissolving into a treacherous void. Every step becomes a gamble against oblivion, an embodied fear of losing not just yourself, but the very world you inhabit. The world isn't just a backdrop; it's a fragile extension of your crumbling mind.",
+  "usage": "Attach this 'mnemonic_tectonic_shift.gd' script to a Node3D in your 3D scene. This node will act as a 'MemoryBlock'. Adjust its 'memory_coherence' property (e.g., from player actions, game events, or Silence attacks) to dynamically change its physical geometry and collision shape in real-time. A coherence of 1.0 represents a stable block, values between 0.3 and 0.7 will cause it to crumble and deform, and values below 0.3 will cause it to dissolve and become nearly invisible, reflecting Lyra's fading memories.",
+  "parameters": [
+    {
+      "name": "memory_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "A value from 0.0 to 1.0 representing the block's memory integrity. Higher values mean stable geometry, lower values lead to crumbling or dissolving."
+    },
+    {
+      "name": "block_size",
+      "type": "Vector3",
+      "default": "Vector3(1.0, 1.0, 1.0)",
+      "description": "The initial size of the memory block when fully coherent."
+    },
+    {
+      "name": "material",
+      "type": "Material",
+      "default": "null",
+      "description": "The material to apply to the generated mesh."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "The world itself weeps with Lyra's fading memories, turning every step into a desperate dance on the edge of oblivion.",
+  "impact": "This invention transforms the environment from a static backdrop into a dynamic, terrifying extension of the player's crumbling mind. Every step becomes a visceral gamble, forcing constant vigilance and embodying the profound fear of self-loss as the very ground beneath Lyra's feet literally dissolves, creating an unforgettable, high-stakes traversal experience where the world itself is a constant, physical threat tied directly to her identity.",
+  "score": 95,
+  "inventedAt": "2026-11-15T08:37:35.767Z"
+}

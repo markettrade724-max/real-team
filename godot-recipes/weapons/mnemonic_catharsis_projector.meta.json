@@ -1,0 +1,73 @@
+{
+  "name": "mnemonic_catharsis_projector",
+  "label": "The Griever's Gauge",
+  "domain": "weapons",
+  "godotFeature": "Custom Shaders (for memory dissolution effects), GDScript (for memory resource management and projectile logic), Particle Systems (for visual feedback of memory consumption and projectile launch)",
+  "poeticVision": "The player will feel the crushing weight of a terrible choice: sacrificing a cherished or vital piece of their identity – a memory fragment Lyra has struggled to retrieve – to unleash a desperate, powerful attack. Each pull of the trigger is a moment of profound, irreversible loss, forcing Lyra (and the player) to confront what truly matters in the face of oblivion. The adrenaline of surviving a hunter clashes with the grief of choosing *which part of herself* to forget.",
+  "usage": "This recipe provides two GDScript components: a `MemoryFragment` resource and the `MnemonicCatharsisProjector` weapon script. \n\n1.  **Create `memory_fragment.gd`**: Save the first part of the 'code' block (up to `get_projectile_properties` function) as `memory_fragment.gd` in your project. This defines the custom resource for memory fragments.\n2.  **Create `mnemonic_catharsis_projector.gd`**: Save the second part of the 'code' block (starting `extends Node3D`) as `mnemonic_catharsis_projector.gd`.\n3.  **Setup the Weapon Node**: In a 3D scene, create a `Node3D` (e.g., as a child of your player character or a dedicated weapon node) and attach `mnemonic_catharsis_projector.gd` to it.\n4.  **Configure Weapon Properties**: In the Inspector for the `MnemonicCatharsisProjector` node:\n    *   Assign a `Projectile.tscn` (a `PackedScene` for your projectile, which should have a `set_properties(dict)` method or be a `RigidBody3D` for automatic impulse).\n    *   Assign a `Node3D` to `Fire Point` (e.g., a `Node3D` child of the weapon, positioned where projectiles should spawn).\n    *   Assign a `Node3D` to `Dissolution Effect Parent` (e.g., the weapon node itself or the player node, where the memory's visual dissolution effect will appear).\n5.  **Create Memory Fragments**: Create new `MemoryFragment` resources (e.g., right-click in FileSystem -> New Resource -> `MemoryFragment`). Configure their properties (`emotional_charge`, `chronological_significance`, `semantic_density`).\n6.  **Create Dissolution Effect Scenes**: For each `MemoryFragment` resource, create a `PackedScene` (e.g., `memory_dissolve_effect.tscn`). This scene should contain a `MeshInstance3D` (or `Sprite3D` for 2D) with a `ShaderMaterial` applied, and optionally a `GPUParticles3D`. The custom shader (GLSL) for this material would animate the mesh's disappearance (e.g., by discarding fragments based on a noise texture and a time uniform, or blending to transparency/emission). The `GPUParticles3D` would emit particles as the memory dissolves. This scene should either have a `play_effect()` method or be a `GPUParticles3D` set to one-shot.\n7.  **Fire the Weapon**: Call the `fire(memory_fragment: MemoryFragment)` method on the `MnemonicCatharsisProjector` instance, passing the `MemoryFragment` resource you wish to consume as ammunition. The weapon will then spawn a projectile with properties derived from the memory and trigger its visual dissolution.\n8.  **Handle Memory Loss**: Connect to the `memory_consumed` signal to update the player's inventory or UI, reflecting the permanent loss of the memory fragment.",
+  "parameters": [
+    {
+      "name": "fragment_name",
+      "type": "String",
+      "default": "\"Untitled Memory\"",
+      "description": "The name of the memory fragment."
+    },
+    {
+      "name": "description",
+      "type": "String",
+      "default": "\"A forgotten piece of self.\"",
+      "description": "A detailed description of the memory fragment."
+    },
+    {
+      "name": "emotional_charge",
+      "type": "float",
+      "default": "0.5",
+      "description": "A value from 0.0 to 1.0 influencing projectile damage and area-of-effect."
+    },
+    {
+      "name": "chronological_significance",
+      "type": "int",
+      "default": "1",
+      "description": "An integer value influencing projectile speed and duration."
+    },
+    {
+      "name": "semantic_density",
+      "type": "float",
+      "default": "0.5",
+      "description": "A value from 0.0 to 1.0 influencing special effects and debuffs."
+    },
+    {
+      "name": "dissolution_effect_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "A PackedScene containing the visual effect (e.g., MeshInstance3D with ShaderMaterial, GPUParticles3D) for when the memory is consumed."
+    },
+    {
+      "name": "projectile_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene for the projectile to be launched by the weapon."
+    },
+    {
+      "name": "fire_point",
+      "type": "Node3D",
+      "default": "null",
+      "description": "A Node3D representing the origin point and direction of the projectile."
+    },
+    {
+      "name": "dissolution_effect_parent",
+      "type": "Node3D",
+      "default": "null",
+      "description": "A Node3D under which the memory dissolution effect scene will be instantiated."
+    }
+  ],
+  "dependencies": [
+    "memory_fragment.gd",
+    "Projectile.tscn (user-defined)",
+    "DissolutionEffect.tscn (user-defined, requires custom shader)"
+  ],
+  "verdict": "A brilliant, agonizing mechanic that transmutes the very essence of self into a desperate weapon, forcing Lyra to choose between oblivion and the fragments of her soul.",
+  "impact": "This invention transforms resource management into a profound act of self-sacrifice. Players will be forced into agonizing, real-time decisions, weighing immediate survival against the irreversible loss of Lyra's identity. Every combat encounter becomes a moral dilemma, creating a unique and unforgettable blend of adrenaline-fueled action and melancholic introspection as the player actively participates in Lyra's dissolution.",
+  "score": 88,
+  "inventedAt": "2026-11-15T08:38:40.086Z"
+}

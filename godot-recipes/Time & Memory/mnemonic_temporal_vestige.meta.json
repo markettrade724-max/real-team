@@ -1,0 +1,39 @@
+{
+  "name": "mnemonic_temporal_vestige",
+  "label": "Temporal Vestige Manifestation",
+  "domain": "Time & Memory",
+  "godotFeature": "PhysicsServer3D & Scene Instantiation",
+  "poeticVision": "The harrowing rush of pulling a ghost from the past into the present — a fleeting, tangible echo of a previous reality that offers both desperate escape and immediate peril. Feel the floor beneath you shift, the walls around you reconfigure, as a forgotten memory momentarily anchors itself to your collapsing present, knowing that the past holds its own dangers and that the Silence hunts all timelines.",
+  "usage": "Attach this script to a Node3D in your scene. Assign a 'PackedScene' (e.g., a pre-built environment segment with StaticBody3D nodes and CollisionShape3D children) to the 'vestige_packed_scene' export variable in the Inspector. When Lyra needs to manifest a temporal vestige, call the 'activate_vestige()' function on this node. The vestige will appear, remain fully active for 'vestige_lifetime' seconds, then visually scale down to zero and have its collisions disabled over 'vestige_decay_duration' seconds, before being removed. This can be used to create temporary platforms, block paths, or reveal hidden routes. You might emit signals from this script to notify other systems (e.g., 'temporal_vestige_activated' or 'temporal_vestige_decaying') to trigger 'temporal hunters' or 'temporal scars' as described in the vision.",
+  "parameters": [
+    {
+      "name": "vestige_packed_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The scene representing the memory-state to manifest. Its root should be a Node3D."
+    },
+    {
+      "name": "vestige_lifetime",
+      "type": "float",
+      "default": "5.0",
+      "description": "Duration the temporal vestige remains fully active before decaying."
+    },
+    {
+      "name": "vestige_decay_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "Time it takes for the vestige to visually and physically decay."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "PackedScene",
+    "Timer",
+    "Tween",
+    "PhysicsServer3D"
+  ],
+  "verdict": "A brilliant echo from the past, this mechanic weaves the very fabric of memory into a desperate, shifting battlefield where survival hinges on the fleeting ghosts of what once was.",
+  "impact": "This mechanic will fundamentally transform gameplay by introducing dynamic, temporary environmental shifts that are both a desperate lifeline and a perilous trap. Players will constantly be forced into high-stakes, split-second decisions, using fragments of memory to navigate crumbling realities, directly embodying the game's core themes of identity, decay, and urgent survival. It ensures that every moment is a race against time, where the very ground beneath Lyra's feet is as ephemeral as her fading self.",
+  "score": 95,
+  "inventedAt": "2026-11-15T08:41:34.263Z"
+}

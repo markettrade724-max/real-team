@@ -1,0 +1,39 @@
+{
+  "name": "mnemonic_action_reversal",
+  "label": "Echo of Unmade Paths",
+  "domain": "Time & Memory",
+  "godotFeature": "Dynamic Tween/AnimationPlayer generation for inverse action playback",
+  "poeticVision": "Feel the earth beneath your feet turn to liquid regret as the very paths you forged crumble into what-ifs. Every lost memory isn't just a blank; it's an unmade choice, a path that collapses beneath you, demanding immediate, desperate adaptation as your own past undoes itself in real-time.",
+  "usage": "The `code-agent` would instantiate `MnemonicActionReversal` as a global singleton (e.g., using an Autoload) or as a node managed by a central game manager. When Lyra performs an action that modifies the environment (e.g., activating a platform, clearing an obstacle, opening a path), the `code-agent` first calls `MnemonicActionReversal.record_action_state(affected_node, \"memory_id_of_action\")` to save the node's initial state. Immediately after, it calls `MnemonicActionReversal.apply_action(affected_node, target_transform, duration)` to execute the environmental change. If Lyra subsequently loses the memory associated with `\"memory_id_of_action\"` (e.g., due to a Silence hunter's attack or a narrative event), the `code-agent` calls `MnemonicActionReversal.reverse_action(\"memory_id_of_action\", duration)`. This will dynamically create a Tween that smoothly reverts the `affected_node` back to its recorded initial transform and visibility, visually representing the 'unmaking' of Lyra's past choices and forcing immediate adaptation.",
+  "parameters": [
+    {
+      "name": "duration",
+      "type": "float",
+      "default": "0.5",
+      "description": "The time in seconds for the tween animation to complete for both applying and reversing actions. A shorter duration can increase urgency, while a longer one can emphasize the 'unmaking' process."
+    },
+    {
+      "name": "memory_id",
+      "type": "String",
+      "default": "null",
+      "description": "A unique identifier string linking an environmental action to a specific memory fragment. This ID is used to record and later reverse actions."
+    },
+    {
+      "name": "node",
+      "type": "Node3D",
+      "default": "null",
+      "description": "The Node3D object in the scene whose transform and visibility are being recorded or modified."
+    },
+    {
+      "name": "target_transform",
+      "type": "Transform3D",
+      "default": "null",
+      "description": "The desired final transform (position, rotation, scale) for the Node3D when an action is applied."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "In the echoing void of forgotten choices, Lyra's past becomes a treacherous path, crumbling beneath her feet with every lost memory, demanding desperate leaps of faith into the unknown.",
+  "impact": "This mechanic transforms memory loss from an abstract narrative concept into a tangible, immediate, and terrifying physical threat. Players will constantly feel the ground shifting beneath them, literally and figuratively, forcing desperate improvisation and deepening the emotional connection to Lyra's struggle against forgetting. It makes the environment itself an active antagonist, driven by the Silence's influence, ensuring every step is a desperate gamble against self-erasure.",
+  "score": 95,
+  "inventedAt": "2026-11-15T08:48:07.408Z"
+}

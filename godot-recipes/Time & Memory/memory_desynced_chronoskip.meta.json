@@ -1,0 +1,51 @@
+{
+  "name": "memory_desynced_chronoskip",
+  "label": "The Stuttering Present",
+  "domain": "Time & Memory",
+  "godotFeature": "Custom `_process` and `_physics_process` `delta` manipulation for individual `Node3D`s and `CharacterBody3D`s, `AnimationPlayer.speed_scale` for dynamic entities, and `shader_material`s for visual temporal distortion effects.",
+  "poeticVision": "The player experiences a disorienting, unpredictable temporal instability where the world around Lyra spasmodically 'stutters' or 'skips' through time, directly reflecting her eroding identity. Enemies appear to teleport in jagged bursts, environmental hazards momentarily vanish, and Lyra's own reflexes are challenged by a reality that cannot maintain a consistent present. Recovering a memory shard might briefly 'stitch' time back together in a localized area, offering fleeting moments of clarity and control amidst the chaos, only for the world to unravel once more as the Silence closes in.",
+  "usage": "1.  **Autoload Setup:** Add `temporal_distortion_manager.gd` as an Autoload singleton in Project Settings -> Autoload. Name it `TemporalDistortionManager` for easy access.\n2.  **Post-Process Shader Setup:**\n    *   Create a `CanvasLayer` node in your scene (e.g., named `PostProcessLayer`).\n    *   Add a `ColorRect` as a child of the `CanvasLayer`. Set its `anchors_preset` to `full_rect` to cover the entire screen.\n    *   Create a new `ShaderMaterial` resource for the `ColorRect`'s `material` property.\n    *   Assign the `temporal_distortion.gdshader` (provided below) to this `ShaderMaterial`.\n    *   In the Inspector for the `TemporalDistortionManager` Autoload, drag the `ShaderMaterial` from the `ColorRect` into the `Global Shader Material` slot.\n3.  **Entity Integration (Enemies, Dynamic Objects):**\n    *   In the `_process` or `_physics_process` function of any `CharacterBody3D` (enemy) or dynamic `Node3D` (environmental hazard) that should be affected by the temporal distortion:\n        *   Get the manager instance: `var manager = TemporalDistortionManager`\n        *   Retrieve the current time scale: `var time_scale = manager.get_time_scale_factor()`\n        *   Apply to `AnimationPlayer`: If the node has an `AnimationPlayer`, set `animation_player.speed_scale = time_scale`.\n        *   Apply to movement: Multiply movement vectors or velocities by `time_scale`. For example, `velocity = original_velocity * time_scale` before calling `move_and_slide()`.\n4.  **Memory Shard Integration:** When Lyra collects a memory shard, call `TemporalDistortionManager.boost_coherence()` to temporarily reduce distortion and stabilize time.",
+  "parameters": [
+    {
+      "name": "memory_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "Current level of memory coherence (1.0 = full coherence, 0.0 = max distortion). This value is clamped between 0.0 and 1.0."
+    },
+    {
+      "name": "coherence_decay_rate",
+      "type": "float",
+      "default": "0.02",
+      "description": "The rate at which memory coherence decays per second."
+    },
+    {
+      "name": "coherence_boost_amount",
+      "type": "float",
+      "default": "0.2",
+      "description": "The default amount of coherence gained when a memory shard is recovered."
+    },
+    {
+      "name": "min_time_scale",
+      "type": "float",
+      "default": "0.1",
+      "description": "The minimum effective time scale applied to entities when memory coherence is at its lowest (0.0)."
+    },
+    {
+      "name": "max_distortion_strength",
+      "type": "float",
+      "default": "0.8",
+      "description": "The maximum visual distortion strength applied by the global shader when memory coherence is at its lowest (0.0)."
+    }
+  ],
+  "dependencies": [
+    "Node",
+    "ShaderMaterial",
+    "CanvasLayer",
+    "ColorRect",
+    "Engine"
+  ],
+  "verdict": "A brilliant temporal unraveling, this mechanic weaves Lyra's fading self into the very fabric of reality, making every moment a desperate dance against oblivion.",
+  "impact": "The Stuttering Present will fundamentally alter the player's perception of reality within the game, transforming the environment itself into a dynamic, unpredictable antagonist. Every chase becomes a desperate struggle against a dissolving world, forcing players to adapt their reflexes and strategy to a constantly shifting temporal landscape. Recovering memory shards will feel incredibly impactful, offering tangible moments of clarity and control, directly linking Lyra's internal struggle with the external gameplay challenge. This mechanic ensures constant tension and a visceral connection to Lyra's eroding identity.",
+  "score": 95,
+  "inventedAt": "2026-11-15T08:43:55.336Z"
+}

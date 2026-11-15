@@ -1,0 +1,45 @@
+{
+  "name": "mnemonic_constellation_interface",
+  "label": "The Drifting Self-Labyrinth",
+  "domain": "ui",
+  "godotFeature": "Custom Control nodes with CanvasItem shaders, Tween for dynamic movement, and _gui_input for active shard manipulation.",
+  "poeticVision": "The player will feel the constant, visceral struggle against erasure. Their very identity, represented by shimmering memory-shards, will be a swirling, unstable constellation within their mental periphery. Choosing an ability or accessing a crucial memory won't be a calm selection, but a desperate act of snatching a fragment from the edge of oblivion, fighting against the Silence's pull that seeks to scatter their thoughts and dismantle their self. The UI is a battleground for their mind, a direct extension of the physical danger they face.",
+  "usage": "This `MemoryShard` script defines a custom `Control` node that represents a fragment of Lyra's identity. To use it, create a new scene or add it as a child to an existing `Control` node (e.g., a `Panel` or the root `Control` of your UI). Instantiate `MemoryShard` nodes and add them to this parent `Control`. Configure their `shard_id` and `shard_data` to represent specific memories, abilities, or items. Adjust `silence_pull_strength` to control how aggressively the Silence pulls shards away, and `decay_rate` to set how quickly they fade. Players interact by clicking and dragging the shards. Releasing a shard near the top-left corner (within a 50-pixel radius from (0,0) of the parent) will 'anchor' it, stopping its decay and movement. Otherwise, it will resume drifting and decaying. Listen to the `shattered` signal to detect when a memory is lost.",
+  "parameters": [
+    {
+      "name": "silence_pull_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "Strength of the external force pulling the shard towards screen edges. Higher values make shards drift away faster."
+    },
+    {
+      "name": "decay_rate",
+      "type": "float",
+      "default": "0.01",
+      "description": "Rate at which the shard's identity decays per second (0.0 to 1.0). When decay_progress reaches 1.0, the shard shatters."
+    },
+    {
+      "name": "shard_id",
+      "type": "String",
+      "default": "\"\"",
+      "description": "A unique identifier for this specific memory shard, useful for tracking and game logic."
+    },
+    {
+      "name": "shard_data",
+      "type": "Dictionary",
+      "default": "{}",
+      "description": "Arbitrary data associated with the memory, such as its type (e.g., 'ability', 'key_memory'), name, or effects."
+    }
+  ],
+  "dependencies": [
+    "Control (as the base class for MemoryShard)",
+    "Control (as a parent node in the scene tree to contain MemoryShard instances)",
+    "ShaderMaterial (created dynamically in _ready)",
+    "Shader (created dynamically in _ready)",
+    "Tween (created dynamically for animations)"
+  ],
+  "verdict": "A brilliant fusion of interface and identity, where the player's mind becomes a battlefield against the relentless tide of oblivion.",
+  "impact": "This invention transforms the mundane act of UI interaction into a constant, high-stakes battle for identity. Players will viscerally feel the pressure of forgetting, the desperation of clinging to memories, and the relentless pull of the Silence, making every ability selection or memory recall a tense, meaningful struggle that directly reinforces the game's core themes.",
+  "score": 95,
+  "inventedAt": "2026-11-15T08:36:43.944Z"
+}

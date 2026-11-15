@@ -1,0 +1,34 @@
+{
+  "name": "mnemic_score_of_self",
+  "label": "The Mnemic Score of Self",
+  "domain": "audio",
+  "godotFeature": "AudioStreamGenerator & Audio Buses",
+  "poeticVision": "The player will experience their very sense of self manifesting as a live, evolving musical score. As Lyra's memories fade, the music will unravel – instruments dropping out, melodies dissolving into dissonant hums, rhythm becoming erratic until only a bare, anxiety-inducing noise remains. Recovering a memory won't just grant information; it will restore a lost instrument, a missing harmony, a vital beat, making the player *feel* the rebuilding of identity through sound. It's the grief of a shattered symphony, and the desperate fight to hear one's own melody again.",
+  "usage": "Attach this script to a Node in your scene. It will automatically initialize and start playing the 'Mnemic Score'. To simulate memory loss, call `lose_memory(\"memory_id\")` with one of the defined memory IDs (e.g., \"courage\", \"empathy\"). To restore a memory, call `recover_memory(\"memory_id\")`. To dynamically adjust audio effects based on the Silence's proximity, call `update_silence_proximity(factor)`, where `factor` is a float from 0.0 (far) to 1.0 (very close).",
+  "parameters": [
+    {
+      "name": "memory_id",
+      "type": "String",
+      "default": "N/A",
+      "description": "The identifier for a specific memory voice (e.g., \"courage\", \"empathy\", \"resolve\", \"joy\"). Used in `lose_memory` and `recover_memory`."
+    },
+    {
+      "name": "proximity_factor",
+      "type": "float",
+      "default": "0.0",
+      "description": "A normalized value from 0.0 (Silence is far) to 1.0 (Silence is very close), used to dynamically adjust audio bus effects. Used in `update_silence_proximity`."
+    }
+  ],
+  "dependencies": [
+    "Node",
+    "AudioStreamGenerator",
+    "AudioStreamPlayer",
+    "AudioStreamGeneratorPlayback",
+    "AudioServer",
+    "AudioEffectDistortion"
+  ],
+  "verdict": "A symphony of the soul, shattered and reassembled note by desperate note, will echo the player's very being.",
+  "impact": "This invention will transform the player's perception of their own identity within the game, making the abstract concept of self-loss and recovery a visceral, auditory experience. The dynamic, evolving soundtrack will serve as a constant, emotional anchor, amplifying tension during danger and providing profound relief and a sense of rebuilding during recovery, deeply immersing the player in Lyra's struggle.",
+  "score": 85,
+  "inventedAt": "2026-11-15T08:35:37.510Z"
+}

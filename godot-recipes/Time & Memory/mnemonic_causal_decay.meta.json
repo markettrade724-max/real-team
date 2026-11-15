@@ -1,0 +1,37 @@
+{
+  "name": "mnemonic_causal_decay",
+  "label": "Echoing Unravel",
+  "domain": "Time & Memory",
+  "godotFeature": "Procedural Mesh Generation & Real-time Physics Collision Shape Updates (ArrayMesh, MeshDataTool)",
+  "poeticVision": "The player experiences the horrifying paradox of survival: every desperate action taken to escape the Silence's hunters actively unravels the very fabric of Lyra's past, causing the memory-worlds she traverses to visibly crumble, shift, and distort beneath her feet. The ground you fight on dissolves into forgotten echoes, each collapsing piece an agonizing fragment of self-loss. You are forced to choose between immediate survival and the slow, inevitable erasure of who you are.",
+  "usage": "Attach this script to a MeshInstance3D node in your Godot scene. Ensure the MeshInstance3D has an ArrayMesh assigned to its 'Mesh' property (e.g., a PlaneMesh, BoxMesh, or imported mesh converted to ArrayMesh). As a child of this MeshInstance3D, add a CollisionShape3D node. The script will automatically find and update this CollisionShape3D. To trigger the 'Echoing Unravel' effect, call the 'apply_causal_ripple(ripple_origin: Vector3, intensity_multiplier: float = 1.0)' function from your game logic (e.g., when the player moves, attacks, or an enemy impacts the surface). The 'ripple_origin' should be a global Vector3 position where the decay effect should be centered. The 'intensity_multiplier' can be used to vary the strength of the decay.",
+  "parameters": [
+    {
+      "name": "decay_intensity",
+      "type": "float",
+      "default": "0.1",
+      "description": "The base amount by which vertices are displaced during a decay ripple. Higher values cause more dramatic crumbling."
+    },
+    {
+      "name": "decay_radius",
+      "type": "float",
+      "default": "5.0",
+      "description": "The radius around the ripple origin within which vertices will be affected by decay. Vertices further from the origin within this radius are affected less."
+    },
+    {
+      "name": "memory_fragments",
+      "type": "Array[String]",
+      "default": "[\"Childhood Home\", \"First Friend\", \"Lost Locket\"]",
+      "description": "A list of string identifiers representing memory fragments associated with this mesh segment. One fragment is 'lost' each time the segment decays."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D",
+    "CollisionShape3D",
+    "ConcavePolygonShape3D"
+  ],
+  "verdict": "A brilliant paradox woven into the very fabric of existence, where survival's desperate grasp shatters the echoes of self, leaving only the crumbling ruins of who you once were.",
+  "impact": "This mechanic transforms the environment from a static backdrop into an active participant in Lyra's struggle. Every step, every desperate dodge, every attack against the Silence becomes a tangible act of self-destruction, forcing players into a constant, agonizing trade-off between immediate survival and the slow, inevitable erasure of Lyra's identity. It deepens the core themes of grief and loss, making the very ground beneath the player's feet a dynamic representation of Lyra's fading past, creating a uniquely horrifying and unforgettable experience.",
+  "score": 92,
+  "inventedAt": "2026-11-15T08:46:48.611Z"
+}
