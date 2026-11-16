@@ -1,13 +1,13 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-11-15T14:32:54.878Z",
+  "updatedAt": "2026-11-16T13:25:48.335Z",
   "current": {
     "type": "episode",
     "episode": 50,
     "id": null,
     "startedAt": "2026-11-11T14:57:30.325Z",
-    "updatedAt": "2026-11-15T14:32:54.878Z",
-    "failReason": "inventor-no-quota"
+    "updatedAt": "2026-11-16T13:25:48.335Z",
+    "failReason": "production-failed: Timeout after 600s"
   },
   "series": {
     "nextEpisode": 50,
@@ -1438,11 +1438,10 @@
         "status": "failed",
         "completedSteps": [
           "backbone",
-          "scenes"
-        ],
-        "pendingSteps": [
+          "scenes",
           "dialogue"
         ],
+        "pendingSteps": [],
         "data": {
           "backbone": {
             "savedAt": "2026-11-11T14:59:09.539Z",
@@ -1453,11 +1452,16 @@
             "savedAt": "2026-11-11T15:00:23.645Z",
             "title": "The Echo's Last Stand",
             "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-11-16T13:15:12.092Z",
+            "title": "The Echo's Last Stand",
+            "summary": null
           }
         },
         "startedAt": "2026-11-11T14:57:30.325Z",
         "completedAt": null,
-        "failReason": "inventor-no-quota"
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },

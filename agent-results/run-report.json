@@ -1,22 +1,22 @@
 {
-  "runId": "2026-11-16T0843",
+  "runId": "2026-11-16T1314",
   "mode": "screenplay-production",
-  "success": true,
-  "timestamp": "2026-11-16T08:50:16.314Z",
-  "totalDuration": "416.6s",
+  "success": false,
+  "timestamp": "2026-11-16T13:25:48.345Z",
+  "totalDuration": "668.6s",
   "budget": {
-    "total": 1,
+    "total": 2,
     "limit": 40,
-    "left": 39,
+    "left": 38,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 1,
+        "total": 2,
         "limit": 20,
-        "left": 19,
+        "left": 18,
         "exhausted": false,
         "library": 0,
-        "agents": 1
+        "agents": 2
       },
       {
         "key": "KEY_2",
@@ -35,12 +35,12 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 47,
-    "next": 51
+    "episodes": 46,
+    "next": 50
   },
   "progress": {
-    "nextEpisode": 51,
-    "totalEpisodes": 51,
+    "nextEpisode": 50,
+    "totalEpisodes": 50,
     "gamesDone": 1
   },
   "agents": {
@@ -51,7 +51,7 @@
     },
     "voice": {
       "success": true,
-      "duration": "1ms",
+      "duration": "19.3s",
       "error": null
     },
     "scene": {
@@ -61,38 +61,28 @@
     },
     "visual": {
       "success": true,
-      "duration": "15.2s",
+      "duration": "16.9s",
       "error": null
     },
     "subtitle": {
       "success": true,
-      "duration": "0ms",
+      "duration": "18ms",
       "error": null
     },
     "music": {
       "success": true,
-      "duration": "5ms",
+      "duration": "6ms",
       "error": null
     },
-    "edit": {
-      "success": true,
-      "duration": "340.0s",
-      "error": null
-    },
-    "trailer": {
-      "success": true,
-      "duration": "19.2s",
-      "error": null
-    },
-    "upload": {
-      "success": true,
-      "duration": "3.4s",
-      "error": null
+    "production": {
+      "success": false,
+      "duration": "—",
+      "error": "Timeout after 600s"
     }
   },
   "summary": {
-    "total": 9,
-    "passed": 9,
-    "failed": 0
+    "total": 7,
+    "passed": 6,
+    "failed": 1
   }
 }
