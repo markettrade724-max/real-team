@@ -1,9 +1,9 @@
 {
   "date": "2026-11-17",
-  "total": 7,
+  "total": 11,
   "limit": 20,
   "library": 0,
-  "agents": 7,
+  "agents": 11,
   "exhausted": false,
   "log": [
     {
@@ -55,6 +55,35 @@
       "success": true,
       "total": 7,
       "left": 13
+    },
+    {
+      "time": "16:43:30",
+      "caller": "code-agent-fix",
+      "success": false,
+      "total": 8,
+      "left": 12,
+      "errorType": "503"
+    },
+    {
+      "time": "16:44:15",
+      "caller": "code-agent-fix",
+      "success": true,
+      "total": 9,
+      "left": 11
+    },
+    {
+      "time": "16:44:50",
+      "caller": "code-agent-fix",
+      "success": true,
+      "total": 10,
+      "left": 10
+    },
+    {
+      "time": "16:45:11",
+      "caller": "code-agent-fix",
+      "success": true,
+      "total": 11,
+      "left": 9
     }
   ]
 }

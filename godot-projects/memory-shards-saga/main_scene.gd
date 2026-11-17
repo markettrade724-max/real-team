@@ -124,9 +124,6 @@ func _set_game_state(new_state: GameState):
 	        _spawn_player_if_needed()
 	        _update_score_display() # Initial score display
 	        
-	        # The _on_child_entered_tree connection in _ready() handles connecting signals
-	        # for all enemies, whether they exist at scene load or are spawned dynamically.
-	        # This loop is therefore redundant. (REMOVED)
 	        Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) # Capture mouse for gameplay
 	        	
 	    GameState.PAUSED:
