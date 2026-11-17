@@ -1,24 +1,39 @@
 {
-  "date": "2026-11-16",
-  "total": 2,
+  "date": "2026-11-17",
+  "total": 4,
   "limit": 20,
   "library": 0,
-  "agents": 2,
+  "agents": 4,
   "exhausted": false,
   "log": [
     {
-      "time": "08:43:34",
-      "caller": "screenplay-agent",
+      "time": "09:51:16",
+      "caller": "code-agent-fix",
       "success": true,
       "total": 1,
       "left": 19
     },
     {
-      "time": "13:14:54",
-      "caller": "screenplay-agent",
+      "time": "09:51:38",
+      "caller": "code-agent-fix",
       "success": true,
       "total": 2,
       "left": 18
+    },
+    {
+      "time": "09:52:02",
+      "caller": "code-agent-fix",
+      "success": false,
+      "total": 3,
+      "left": 17,
+      "errorType": "json_truncated"
+    },
+    {
+      "time": "09:52:36",
+      "caller": "code-agent-fix",
+      "success": true,
+      "total": 4,
+      "left": 16
     }
   ]
 }
