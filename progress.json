@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-11-16T16:50:24.933Z",
-  "current": null,
+  "updatedAt": "2026-11-18T13:48:06.920Z",
+  "current": {
+    "type": "episode",
+    "episode": 51,
+    "id": null,
+    "startedAt": "2026-11-18T13:34:14.344Z",
+    "updatedAt": "2026-11-18T13:48:06.920Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 51,
     "totalEpisodes": 51,
@@ -1455,6 +1462,35 @@
         "startedAt": "2026-11-11T14:57:30.325Z",
         "completedAt": "2026-11-16T16:50:24.933Z",
         "failReason": null
+      },
+      "51": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-11-18T13:35:34.755Z",
+            "title": "The Fading Labyrinth",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-11-18T13:36:47.116Z",
+            "title": "The Fading Labyrinth",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-11-18T13:37:23.352Z",
+            "title": "The Fading Labyrinth",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-11-18T13:34:14.344Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
