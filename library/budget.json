@@ -1,89 +1,52 @@
 {
-  "date": "2026-11-17",
-  "total": 11,
+  "date": "2026-11-18",
+  "total": 6,
   "limit": 20,
   "library": 0,
-  "agents": 11,
+  "agents": 6,
   "exhausted": false,
   "log": [
     {
-      "time": "09:51:16",
-      "caller": "code-agent-fix",
+      "time": "09:23:53",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 1,
       "left": 19
     },
     {
-      "time": "09:51:38",
-      "caller": "code-agent-fix",
+      "time": "09:24:10",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 2,
       "left": 18
     },
     {
-      "time": "09:52:02",
-      "caller": "code-agent-fix",
-      "success": false,
+      "time": "09:24:45",
+      "caller": "screenplay-agent",
+      "success": true,
       "total": 3,
-      "left": 17,
-      "errorType": "json_truncated"
+      "left": 17
     },
     {
-      "time": "09:52:36",
-      "caller": "code-agent-fix",
+      "time": "09:25:19",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 4,
       "left": 16
     },
     {
-      "time": "13:57:56",
-      "caller": "code-agent-fix",
+      "time": "09:25:53",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 5,
       "left": 15
     },
     {
-      "time": "13:58:26",
-      "caller": "code-agent-fix",
+      "time": "09:26:40",
+      "caller": "screenplay-agent",
       "success": true,
       "total": 6,
       "left": 14
-    },
-    {
-      "time": "13:58:37",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 7,
-      "left": 13
-    },
-    {
-      "time": "16:43:30",
-      "caller": "code-agent-fix",
-      "success": false,
-      "total": 8,
-      "left": 12,
-      "errorType": "503"
-    },
-    {
-      "time": "16:44:15",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 9,
-      "left": 11
-    },
-    {
-      "time": "16:44:50",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 10,
-      "left": 10
-    },
-    {
-      "time": "16:45:11",
-      "caller": "code-agent-fix",
-      "success": true,
-      "total": 11,
-      "left": 9
     }
   ]
 }
