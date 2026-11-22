@@ -1,0 +1,41 @@
+{
+  "name": "semantic_dread_architecture",
+  "label": "The Semantic Architecture of Dread",
+  "domain": "world",
+  "godotFeature": "Dynamic Node3D instantiation and ShaderMaterial manipulation driven by GDScript",
+  "poeticVision": "The player will feel a profound, personal betrayal from the environment itself. As Lyra loses pieces of herself, the world around her doesn't just decay; it twists and warps into a physical manifestation of her deepest fears or unfulfilled longings, sculpted by the very memories she's forgotten. Every corner turned is a confrontation with a lost part of her soul, now weaponized against her by the Silence, forcing a desperate struggle through a landscape of her own grief and terror.",
+  "usage": "Attach this script to a Node in your main scene (or as a global autoload). Set the 'Environment Root' export variable to a Node3D that represents the main environment where changes should occur. Create placeholder PackedScene and ShaderMaterial resources as specified in the export variables and assign them. When 'lose_memory()' or 'target_memory()' is called with a memory ID, the system will look up its associated semantic tags and trigger corresponding environmental effects (instantiating scenes or applying shaders to environment meshes).",
+  "parameters": [
+    {
+      "name": "environment_root",
+      "type": "Node3D",
+      "default": "null",
+      "description": "The root Node3D of the environment where dynamic changes (instantiation, shader application) will take place."
+    },
+    {
+      "name": "claustrophobic_tunnel_scene",
+      "type": "PackedScene",
+      "default": "preload(\"res://scenes/claustrophobic_tunnel.tscn\")",
+      "description": "A PackedScene resource to be instantiated as an environmental module when a memory with relevant semantic tags is lost or targeted. Create a simple scene (e.g., a BoxMesh) at this path for testing."
+    },
+    {
+      "name": "dissolving_shader_material",
+      "type": "ShaderMaterial",
+      "default": "preload(\"res://materials/dissolving_memory.tres\")",
+      "description": "A ShaderMaterial resource to be applied to environment meshes when a memory with relevant semantic tags is lost or targeted. Create a ShaderMaterial resource and assign the 'dissolving_memory.gdshader' to it."
+    }
+  ],
+  "dependencies": [
+    "Node3D",
+    "MeshInstance3D",
+    "PackedScene",
+    "ShaderMaterial",
+    "res://shaders/dissolving_memory.gdshader",
+    "res://materials/dissolving_memory.tres",
+    "res://scenes/claustrophobic_tunnel.tscn"
+  ],
+  "verdict": "The very fabric of reality unravels into a mirror of Lyra's forgotten self, turning every step into a desperate dance with the ghosts of her own identity.",
+  "impact": "The player will experience a deeply personal and unsettling transformation of the game world, where their own forgotten self becomes the very architecture of their dread, making every environmental challenge a confrontation with their dissolving identity. This elevates the stakes beyond mere physical survival to a profound psychological struggle, ensuring that the environment itself is a constant, evolving antagonist.",
+  "score": 95,
+  "inventedAt": "2026-11-22T09:11:08.578Z"
+}

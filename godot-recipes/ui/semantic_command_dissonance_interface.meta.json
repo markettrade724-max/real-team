@@ -1,0 +1,49 @@
+{
+  "name": "semantic_command_dissonance_interface",
+  "label": "Semantic Command Dissonance",
+  "domain": "ui",
+  "godotFeature": "Control nodes, RichTextLabel, ShaderMaterial, InputEvent, AnimationPlayer",
+  "poeticVision": "A profound sense of cognitive disarray, where the very language of survival unravels before your eyes. You feel the gut-wrenching despair of losing control not just of Lyra's body, but of her ability to even understand how to act, forced into desperate, instinctual gambles as the Silence twists the meaning of reality itself. Every corrupted prompt is a direct attack on Lyra's agency, a fragment of her self dissolving into meaningless noise, forcing you to question every decision and deepening the grief of her self-loss.",
+  "usage": "This `DissonantButton` script creates a UI button that dynamically changes its displayed text and associated action based on a `semantic_coherence` value. This value represents the clarity of Lyra's memory/identity.\n\n**Setup:**\n1.  Create a new script named `semantic_command_dissonance_interface.gd` and paste the provided GDScript code into it.\n2.  In your UI scene, add a `Button` node. In the Inspector, attach the `semantic_command_dissonance_interface.gd` script to it, turning it into a `DissonantButton`.\n3.  Configure the `DissonantButton` properties in the Inspector:\n    *   `Original Text`: The default, clear text (e.g., \"Run\").\n    *   `Original Action Method`: The name of the method to call when `semantic_coherence` is high (e.g., \"_on_run_button_pressed\"). This method should exist on the `Action Target Node`.\n    *   `Dissonant Options`: Add dictionaries to this array. Each dictionary needs a `text` (e.g., \"FIGHT\", \"FORGET\") and an `action_method` (e.g., \"_on_fight_button_pressed\", \"_on_forget_memory\"). These methods also need to exist on the `Action Target Node`.\n    *   `Action Target Node Path`: Set this to the NodePath of the node that contains all the action methods (e.g., `../PlayerController` or `/root/GameManager`). If left empty, it defaults to the button's parent.\n\n**Controlling Dissonance:**\n*   To dynamically change the button's state, update its `semantic_coherence` property (a float between 0.0 and 1.0). For example, a global `GameManager` (an Autoload singleton) could manage the overall `semantic_coherence` of the game world and iterate through all `DissonantButton` instances, updating their `semantic_coherence` property based on Lyra's memory loss or proximity to the Silence.\n    gdscript\n    # Example in a GameManager (Autoload)\n    func update_ui_dissonance(new_coherence: float) -> void:\n    \tfor button in get_tree().get_nodes_in_group(\"dissonant_buttons\"):\n    \t\tif button is DissonantButton:\n    \t\t\tbutton.semantic_coherence = new_coherence\n    \n    (Remember to add your `DissonantButton` nodes to the \"dissonant_buttons\" group).\n\n**Visual Effects (Shader):**\n1.  Create a new `Shader` resource (e.g., `semantic_dissonance_shader.gdshader`) and paste the following GLSL code into it:\n    glsl\n    shader_type canvas_item;\n\n    uniform float dissonance_strength : hint_range(0.0, 1.0) = 0.0;\n\n    void fragment() {\n    \tvec2 uv = UV;\n    \tvec4 color = texture(TEXTURE, uv);\n\n    \t// Simple pixel offset/fragmentation based on dissonance\n    \tvec2 offset = vec2(sin(TIME * 10.0 + uv.y * 50.0), cos(TIME * 12.0 + uv.x * 60.0)) * dissonance_strength * 0.01;\n    \tvec4 distorted_color = texture(TEXTURE, uv + offset);\n\n    \t// Blend original and distorted color\n    \tcolor = mix(color, distorted_color, dissonance_strength * 0.7);\n\n    \t// Apply color bleeding/shift\n    \tvec3 bleed_offset = vec3(\n    \t\ttexture(TEXTURE, uv + vec2(dissonance_strength * 0.005, 0.0)).r,\n    \t\ttexture(TEXTURE, uv).g,\n    \t\ttexture(TEXTURE, uv - vec2(dissonance_strength * 0.005, 0.0)).b\n    \t);\n    \tcolor.rgb = mix(color.rgb, bleed_offset, dissonance_strength * 0.5);\n\n    \t// Reduce alpha for 'dissolving' effect\n    \tcolor.a *= (1.0 - dissonance_strength * 0.3);\n\n    \tCOLOR = color;\n    }\n    \n2.  In the Inspector for your `DissonantButton`, go to `Control -> Material -> Material` and create a `New ShaderMaterial`. Assign your `semantic_dissonance_shader.gdshader` to this `ShaderMaterial`.\n3.  The `DissonantButton` script will automatically update the `dissonance_strength` uniform in this shader, causing visual distortion to match the semantic changes.",
+  "parameters": [
+    {
+      "name": "semantic_coherence",
+      "type": "float",
+      "default": "1.0",
+      "description": "Controls the level of semantic distortion (0.0 = full dissonance, 1.0 = full coherence). This value is clamped between 0.0 and 1.0."
+    },
+    {
+      "name": "original_text",
+      "type": "String",
+      "default": "\"Action\"",
+      "description": "The default, coherent text displayed on the button when semantic_coherence is high."
+    },
+    {
+      "name": "original_action_method",
+      "type": "String",
+      "default": "\"\"",
+      "description": "The name of the method to call on the 'Action Target Node' when semantic_coherence is high. Leave empty for no action."
+    },
+    {
+      "name": "dissonant_options",
+      "type": "Array[Dictionary]",
+      "default": "[{\"text\": \"ATTACK\", \"action_method\": \"perform_attack\"}, {\"text\": \"HEAL\", \"action_method\": \"perform_heal\"}, {\"text\": \"FORGET\", \"action_method\": \"lose_memory\"}]",
+      "description": "An array of dictionaries, each defining a potential dissonant state. Each dictionary requires a 'text' (String) and an 'action_method' (String) to be called on the 'Action Target Node'. The options are chosen based on the current dissonance level."
+    },
+    {
+      "name": "action_target_node_path",
+      "type": "NodePath",
+      "default": "\"\"",
+      "description": "The NodePath to the node that contains the action methods specified in 'original_action_method' and 'dissonant_options'. If left empty, the button's parent node is used as the target. If no target is found, the button itself becomes the target."
+    }
+  ],
+  "dependencies": [
+    "Button",
+    "ShaderMaterial",
+    "A custom shader file (e.g., semantic_dissonance_shader.gdshader)"
+  ],
+  "verdict": "A fractured mind finds its echo in fractured commands, turning every desperate action into a gamble against the encroaching void of self.",
+  "impact": "This invention transforms the fundamental act of player input into a direct manifestation of Lyra's internal struggle. It will create a profound sense of cognitive disarray, forcing players to grapple with the unraveling of her identity not just narratively, but through the very mechanics of survival. Every button press becomes a desperate gamble, deepening the player's empathy for Lyra's self-loss and amplifying the constant tension of the Silence's pursuit. It makes the player actively experience the 'grief of self-loss' and the 'identity dissolving within' by corrupting their agency.",
+  "score": 88,
+  "inventedAt": "2026-11-22T09:10:12.742Z"
+}

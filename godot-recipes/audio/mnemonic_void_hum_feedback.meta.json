@@ -1,0 +1,81 @@
+{
+  "name": "mnemonic_void_hum_feedback",
+  "label": "The Hum of Absence",
+  "domain": "audio",
+  "godotFeature": "AudioServer, AudioStreamGenerator, AudioEffectEQ, AudioEffectFilter (dynamic bus manipulation)",
+  "poeticVision": "The player feels an invasive, phantom ache in their ears, a growing hum that grinds against their very being, marking each forgotten piece of self. It's the sound of a hole in existence, a siren call to the hunters, and a constant, growing pressure that makes every step a struggle against an internal enemy composed of what is no longer there.",
+  "usage": "Attach this script to any Node in your scene. It will automatically create an AudioStreamPlayer and configure a dedicated audio bus ('VoidHumBus' by default) with EQ and Filter effects. To control the 'Hum of Absence', simply update the 'memory_loss_level' property from another script (e.g., `get_node(\"Path/To/MnemonicVoidHumFeedback\").memory_loss_level = new_value`). The hum's intensity, dissonance, and the disorienting audio effects will dynamically adjust based on this level. Fine-tune the hum's characteristics and effect parameters using the exported variables in the Inspector.",
+  "parameters": [
+    {
+      "name": "memory_loss_level",
+      "type": "float",
+      "default": "0.0",
+      "description": "Current level of memory loss, from 0 (no loss) to 1 (max loss). Controls intensity and disorientation of the hum and effects."
+    },
+    {
+      "name": "bus_name",
+      "type": "String",
+      "default": "VoidHumBus",
+      "description": "Name of the audio bus used for the hum and its effects. A new bus will be created if it doesn't exist."
+    },
+    {
+      "name": "base_hum_frequency",
+      "type": "float",
+      "default": "80.0",
+      "description": "Base frequency of the procedurally generated hum in Hz."
+    },
+    {
+      "name": "hum_frequency_range",
+      "type": "float",
+      "default": "120.0",
+      "description": "Maximum deviation from the base frequency for modulation, scaled by memory loss."
+    },
+    {
+      "name": "hum_amplitude_mod_speed",
+      "type": "float",
+      "default": "2.0",
+      "description": "Speed of the amplitude modulation (pulsation) of the hum."
+    },
+    {
+      "name": "hum_frequency_mod_speed",
+      "type": "float",
+      "default": "1.5",
+      "description": "Speed of the frequency modulation (pitch wobble) of the hum."
+    },
+    {
+      "name": "dissonance_factor",
+      "type": "float",
+      "default": "0.05",
+      "description": "Factor determining how much a second, detuned wave is added for dissonance, scaled by memory loss."
+    },
+    {
+      "name": "max_eq_gain_db",
+      "type": "float",
+      "default": "6.0",
+      "description": "Maximum additional gain applied to specific EQ bands as memory loss increases, making the sound more 'grinding'."
+    },
+    {
+      "name": "min_filter_cutoff_hz",
+      "type": "float",
+      "default": "200.0",
+      "description": "Minimum low-pass filter cutoff frequency at max memory loss (more muffled/disorienting)."
+    },
+    {
+      "name": "max_filter_cutoff_hz",
+      "type": "float",
+      "default": "8000.0",
+      "description": "Maximum low-pass filter cutoff frequency at min memory loss (less muffled)."
+    },
+    {
+      "name": "filter_resonance",
+      "type": "float",
+      "default": "0.5",
+      "description": "Base resonance of the low-pass filter. Resonance increases with memory loss, making the filter effect more pronounced."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A haunting symphony of self-erasure, this invention transforms the silent void of forgetting into a visceral, inescapable hum that echoes both Lyra's internal decay and the encroaching shadow of the Silence.",
+  "impact": "This invention will fundamentally deepen the player's immersion in Lyra's struggle. The 'Hum of Absence' transforms the abstract concept of memory loss into a constant, invasive, and terrifying auditory presence. It will serve as a relentless, internal antagonist, making every moment a visceral battle against self-dissolution. The hum's dual role as a marker of internal decay and a 'siren call' for external hunters ensures that the player feels perpetually hunted, amplifying the core themes of urgency, desperation, and the profound cost of forgetting. It creates a unique, unforgettable sensory feedback loop that ties directly into the game's core mechanics and narrative.",
+  "score": 92,
+  "inventedAt": "2026-11-22T09:08:39.475Z"
+}

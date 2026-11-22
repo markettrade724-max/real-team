@@ -1,0 +1,90 @@
+{
+  "name": "mnemonic_semantic_flux",
+  "label": "The Semantic Weave's Unraveling",
+  "domain": "shaders",
+  "godotFeature": "Custom ShaderMaterial with dynamic texture sampling, UV manipulation, and procedural blending of semantic material states, potentially leveraging Compute Shaders for complex world-state interpretation.",
+  "poeticVision": "Feel the very fabric of reality ripple and betray your senses. Objects you thought solid and familiar now writhe with alien geometries or dissolve into echoes of forgotten forms. Every step is a gamble, every wall a potential illusion, as your fading identity causes the world to shed its meaning and present a distorted, hostile truth. It's not just things breaking; it's things *becoming* other, unsettling things, forcing you to question what is real and what is a memory's twisted illusion or the Silence's insidious touch.",
+  "usage": "To use this shader, create a new ShaderMaterial resource in Godot. Assign this `mnemonic_semantic_flux.gdshader` file to the 'Shader' property of the ShaderMaterial. Then, apply this ShaderMaterial to a MeshInstance3D node's 'Material Override' or directly to its 'Material' property. Populate the 'texture_stable_albedo', 'texture_stable_normal', 'texture_corrupted_albedo', 'texture_corrupted_normal', 'texture_memory_albedo', 'texture_memory_normal', and 'displacement_noise_texture' uniform slots with appropriate textures (e.g., a base texture for 'stable', a distorted/alien texture for 'corrupted', a faded/ghostly texture for 'memory', and a seamless grayscale noise texture for displacement). From GDScript, you can dynamically update the 'blend_corrupted', 'blend_memory', 'unravel_strength', and 'uv_distortion_strength' uniforms on the ShaderMaterial instance. For example, `material.set_shader_parameter(\"blend_corrupted\", lyra_identity_loss_factor)` to control the visual corruption based on Lyra's identity integrity.",
+  "parameters": [
+    {
+      "name": "texture_stable_albedo",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The base albedo (color) texture representing the stable, normal state of the object."
+    },
+    {
+      "name": "texture_stable_normal",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The normal map texture for the stable state, providing surface detail."
+    },
+    {
+      "name": "texture_corrupted_albedo",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The albedo texture representing the corrupted or alien state of the object."
+    },
+    {
+      "name": "texture_corrupted_normal",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The normal map texture for the corrupted state."
+    },
+    {
+      "name": "texture_memory_albedo",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The albedo texture representing a faded, ghostly, or memory-echo state of the object."
+    },
+    {
+      "name": "texture_memory_normal",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "The normal map texture for the memory-echo state."
+    },
+    {
+      "name": "displacement_noise_texture",
+      "type": "sampler2D",
+      "default": "null",
+      "description": "A grayscale noise texture (e.g., Perlin noise) used for procedural vertex displacement, creating the 'unraveling' effect."
+    },
+    {
+      "name": "blend_corrupted",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the blend factor between the stable and corrupted states (0.0 = stable, 1.0 = corrupted). Driven by game state like proximity to Silence or identity loss."
+    },
+    {
+      "name": "blend_memory",
+      "type": "float",
+      "default": "0.0",
+      "description": "Controls the blend factor between the current (stable/corrupted) state and the memory-echo state (0.0 = current, 1.0 = memory). Driven by memory recovery/loss events."
+    },
+    {
+      "name": "unravel_strength",
+      "type": "float",
+      "default": "0.0",
+      "description": "The magnitude of vertex displacement, making the object appear to physically unravel or distort. Higher values mean more pronounced distortion."
+    },
+    {
+      "name": "unravel_speed",
+      "type": "float",
+      "default": "1.0",
+      "description": "The speed at which the unraveling animation (vertex displacement and UV distortion) progresses over time."
+    },
+    {
+      "name": "uv_distortion_strength",
+      "type": "float",
+      "default": "0.0",
+      "description": "The magnitude of UV coordinate distortion, causing textures to warp and ripple. Contributes to the unsettling visual effect."
+    }
+  ],
+  "dependencies": [
+    "MeshInstance3D (or any node using a ShaderMaterial for 3D rendering)",
+    "Image textures for albedo, normal maps, and displacement noise"
+  ],
+  "verdict": "The very fabric of reality becomes a shifting canvas of forgotten truths, making the world itself a treacherous echo of Lyra's unraveling mind.",
+  "impact": "This mechanic will fundamentally alter the player's perception of the game world, transforming static environments into dynamic, unreliable landscapes that reflect Lyra's internal struggle. It will heighten tension by making every object a potential illusion or threat, forcing constant vigilance and reinforcing the theme of identity loss as a tangible, environmental decay. The world itself becomes an active antagonist, mirroring the Silence's insidious influence and creating unique problem-solving challenges as players must discern reality from fading memory.",
+  "score": 92,
+  "inventedAt": "2026-11-22T09:05:47.504Z"
+}

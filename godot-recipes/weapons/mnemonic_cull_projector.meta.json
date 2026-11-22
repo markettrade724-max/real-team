@@ -1,0 +1,51 @@
+{
+  "name": "mnemonic_cull_projector",
+  "label": "Mnemonic Cull Projector",
+  "domain": "weapons",
+  "godotFeature": "VisualServer, Custom Resources, Particles, Shaders",
+  "poeticVision": "Feel the wrenching choice of turning a precious, tangible piece of your past into a desperate shield or a searing projectile. Every shot is a moment of forgetting, a silent scream as a fragment of who you were shatters into energy, leaving behind a colder, emptier echo in your mind. The adrenaline of survival is laced with the bitter grief of self-erasure, as you actively choose what part of yourself to abandon to survive the immediate threat.",
+  "usage": "To use the Mnemonic Cull Projector:\n\n1.  **Create `memory_fragment_resource.gd`:** Save the following as `res://memory_fragment_resource.gd`:\n    gdscript\n    # memory_fragment_resource.gd\n    class_name MemoryFragmentResource extends Resource\n\n    @export var fragment_name: String = \"Untitled Memory\"\n    @export var visual_representation: Texture2D # Or Mesh, depending on context\n    @export var emotional_weight: float = 1.0 # Affects damage\n    @export var identity_impact_level: int = 1 # Affects debuffs\n    \n    Create custom resources of this type (e.g., `res://memories/my_first_memory.tres`) and assign them to the `available_memories` array in the `MnemonicCullProjector` node.\n\n2.  **Create `MemorySelectionUI.tscn`:** This should be a `Control` scene (e.g., a `Panel` with `Button`s). Its root script must have:\n    -   A method `set_memories(memories: Array[MemoryFragmentResource])` to populate the UI with memory options.\n    -   A signal `memory_selected(memory_fragment: MemoryFragmentResource)` emitted when a memory is chosen.\n    -   A signal `selection_cancelled()` emitted if the player closes the UI without selecting.\n\n3.  **Create `MemoryProjectile.tscn`:** This should be a `RigidBody3D` scene. Its root script must have:\n    -   A method `set_visual_and_launch(visual_rep: Texture2D, direction: Vector3, damage: float)` to set its appearance (e.g., a `Sprite3D` or `MeshInstance3D` using `visual_rep`) and apply an impulse in `direction` with `damage` for collision logic.\n\n4.  **Create `cull_effect_shader.gdshader`:** Save the following as `res://cull_effect_shader.gdshader`:\n    glsl\n    shader_type canvas_item;\n\n    uniform float fade_amount : hint_range(0.0, 1.0) = 0.0;\n    uniform vec4 fade_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);\n    uniform sampler2D screen_texture : hint_screen_texture;\n\n    void fragment() {\n    \tvec4 screen_pixel = texture(screen_texture, SCREEN_UV);\n    \tvec4 final_color = mix(screen_pixel, fade_color, fade_amount);\n    \tCOLOR = final_color;\n    }\n    \n\n5.  **Create `CullEffectScene.tscn`:** This should be a `CanvasLayer` scene. Add a `ColorRect` as its child. Set the `ColorRect`'s `Layout` to `Full Rect`. Create a new `ShaderMaterial` for the `ColorRect`'s `Material` property and assign `cull_effect_shader.gdshader` to it. Configure `fade_color` as desired (e.g., `vec4(0.1, 0.0, 0.0, 1.0)` for a reddish fade).\n\n6.  **Add `MnemonicCullProjector` to your scene:** Attach this script to a `Node3D` (e.g., as a child of your player character). Assign the `PackedScene`s for `MemorySelectionUI.tscn`, `MemoryProjectile.tscn`, and `CullEffectScene.tscn` to their respective exported properties in the Inspector. Populate the `available_memories` array with your `MemoryFragmentResource` instances.\n\n7.  **Input Map:** Add an action named `activate_projector` to your Project Settings -> Input Map (e.g., bound to a mouse button or keyboard key).",
+  "parameters": [
+    {
+      "name": "memory_selection_ui_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene for the UI that allows players to select a memory to cull."
+    },
+    {
+      "name": "memory_projectile_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene for the projectile instantiated when a memory is culled."
+    },
+    {
+      "name": "cull_effect_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The PackedScene for the full-screen visual feedback effect (a CanvasLayer with a ColorRect and ShaderMaterial)."
+    },
+    {
+      "name": "projectile_speed",
+      "type": "float",
+      "default": "50.0",
+      "description": "The speed at which the memory projectile is launched."
+    },
+    {
+      "name": "available_memories",
+      "type": "Array[MemoryFragmentResource]",
+      "default": "[]",
+      "description": "An array of MemoryFragmentResource instances representing Lyra's currently held memories."
+    }
+  ],
+  "dependencies": [
+    "res://memory_fragment_resource.gd",
+    "res://MemorySelectionUI.tscn",
+    "res://MemoryProjectile.tscn",
+    "res://CullEffectScene.tscn",
+    "res://cull_effect_shader.gdshader"
+  ],
+  "verdict": "A brilliant, agonizing mechanic that weaponizes the very essence of self, forcing players to choose between immediate survival and the precious fragments of who they once were.",
+  "impact": "This mechanic will force players into agonizing, high-stakes decisions, making every combat encounter a personal sacrifice. It will deepen the emotional connection to Lyra's identity and the struggle against forgetting, transforming resource management into a profound act of self-erasure, ensuring that every victory is tinged with the bitter taste of loss.",
+  "score": 95,
+  "inventedAt": "2026-11-22T09:12:20.272Z"
+}

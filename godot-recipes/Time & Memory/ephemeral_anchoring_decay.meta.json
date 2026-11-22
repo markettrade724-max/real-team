@@ -1,0 +1,65 @@
+{
+  "name": "ephemeral_anchoring_decay",
+  "label": "The Imprint's Erosion",
+  "domain": "Time & Memory",
+  "godotFeature": "ShaderMaterial with Vertex Displacement & Dynamic Collision Modification",
+  "poeticVision": "Imagine pushing through the ruins of a forgotten world, each step echoing the slow dissolution of what was. You grasp a vibrant shard of memory, and as your fingers close around it, the very ground beneath you shudders, cracks spreading like a malignant web. The vibrant colors of the past bleed into the void, geometry warping and collapsing around you, a stark, terrifying countdown. Every moment spent trying to understand a recovered memory accelerates the decay of the world, transforming familiar landscapes into treacherous, hungry chasms. The player feels a profound sense of urgency, a desperate trade-off: delve deeper and risk the immediate destruction of their path and self, or flee, leaving precious identity fragments behind. It's the grief of 'holding on too tight' and watching it crumble.",
+  "usage": "Attach this `ephemeral_anchoring_decay.gd` script to a `Node3D` in your main scene. Set the `target_environment_path` to the root node containing all `MeshInstance3D` nodes that should be affected by the decay. Ensure you have `perlin_noise.png` and `void_mask.png` textures in `res://textures/` or update the `preload` paths in `_ready()`. Call the `trigger_memory_fragment_decay(intensity_boost: float)` method from your game logic whenever a memory fragment is collected, passing a positive `intensity_boost` value to accelerate the decay. The script will automatically apply the visual decay shader and modify collision shapes based on the `decay_intensity` reaching defined `collision_decay_thresholds`.",
+  "parameters": [
+    {
+      "name": "decay_rate",
+      "type": "float",
+      "default": "0.01",
+      "description": "The rate at which the global decay intensity increases per second, even without memory fragment interaction."
+    },
+    {
+      "name": "initial_decay_intensity",
+      "type": "float",
+      "default": "0.0",
+      "description": "The starting decay intensity when the scene begins."
+    },
+    {
+      "name": "max_decay_intensity",
+      "type": "float",
+      "default": "1.0",
+      "description": "The maximum possible decay intensity, clamping the effect."
+    },
+    {
+      "name": "collision_decay_thresholds",
+      "type": "Array[float]",
+      "default": "[0.3, 0.6, 0.9]",
+      "description": "An array of decay intensity values at which collision modifications (shrink, disable, replace) are triggered."
+    },
+    {
+      "name": "target_environment_path",
+      "type": "NodePath",
+      "default": "null",
+      "description": "The NodePath to the parent node containing all `MeshInstance3D` objects that should visually decay and have their collisions modified."
+    },
+    {
+      "name": "noise_texture",
+      "type": "Texture2D",
+      "default": "res://textures/perlin_noise.png",
+      "description": "A grayscale texture (e.g., Perlin noise) used for vertex displacement in the shader to simulate crumbling. (Set via preload in script)."
+    },
+    {
+      "name": "void_texture",
+      "type": "Texture2D",
+      "default": "res://textures/void_mask.png",
+      "description": "A grayscale texture used as a mask for alpha blending, determining which parts of the mesh disappear first. (Set via preload in script)."
+    }
+  ],
+  "dependencies": [
+    "Node3D (for the script itself)",
+    "MeshInstance3D (for decayable environment parts)",
+    "StaticBody3D (as parent for decayable meshes and collisions)",
+    "CollisionShape3D (for collision modification)",
+    "RigidBody3D (for dynamic crumbling parts)",
+    "res://textures/perlin_noise.png (a grayscale noise texture)",
+    "res://textures/void_mask.png (a grayscale mask texture)"
+  ],
+  "verdict": "A brilliant and visceral manifestation of self-loss, this invention transforms the abstract grief of forgetting into a tangible, terrifying race against environmental oblivion.",
+  "impact": "The player will experience a profound, constant tension, where the very act of seeking their identity accelerates the world's collapse. This creates a desperate, unforgettable trade-off, forcing urgent decisions and imbuing every recovered memory with a bittersweet, destructive weight. The environment becomes a dynamic, hostile antagonist, mirroring Lyra's internal struggle.",
+  "score": 88,
+  "inventedAt": "2026-11-22T08:59:54.303Z"
+}

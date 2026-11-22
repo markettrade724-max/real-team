@@ -1,0 +1,27 @@
+{
+  "name": "mnemonic_structural_anchoring",
+  "label": "Memory Scaffold Weave",
+  "domain": "movement",
+  "godotFeature": "PhysicsServer3D (dynamic creation/modification of StaticBody3D and CollisionShape3D)",
+  "poeticVision": "Feel the wrenching decision of sacrificing a vital piece of your past to momentarily solidify the crumbling world, creating a fleeting path across the void. It’s a desperate pact: a memory for a foothold, an identity fragment for survival, knowing each step forward erodes who you once were. This power is a last resort, a physical manifestation of grief and urgent will.",
+  "usage": "To use this recipe, add a `MemoryScaffoldWeave` node to your scene (e.g., as a child of your main game scene or player node). When the player needs to create a scaffold (e.g., after consuming a 'memory fragment' from their inventory), call the `activate_scaffold` method on the `MemoryScaffoldWeave` instance. You must provide a `Transform3D` for the scaffold's position and orientation. Optionally, you can pass a `PackedScene` (e.g., a simple `MeshInstance3D` with a `BoxMesh` and a material) to `activate_scaffold` to automatically create a visual representation that matches the physics body. The `MemoryScaffoldWeave` node will handle the creation of the temporary `StaticBody3D` and `CollisionShape3D` via `PhysicsServer3D`, and automatically despawn them along with their visual counterparts after the specified duration. The game logic responsible for managing player memory fragments would decrement the player's memory count or remove the fragment when `activate_scaffold` is called, reflecting the 'identity cost' of using the ability.",
+  "parameters": [
+    {
+      "name": "scaffold_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "How long the created memory scaffold will persist before despawning, in seconds."
+    },
+    {
+      "name": "scaffold_size",
+      "type": "Vector3",
+      "default": "Vector3(2.0, 0.2, 2.0)",
+      "description": "The dimensions (width, height, depth) of the generated box-shaped scaffold."
+    }
+  ],
+  "dependencies": [],
+  "verdict": "A desperate pact forged in the crucible of fading self, this weave of memory and will carves fleeting paths through the void, each step forward a poignant retreat from who Lyra once was.",
+  "impact": "This invention transforms the abstract concept of identity loss into a tangible, high-stakes gameplay mechanic. Players will face agonizing choices, sacrificing precious fragments of their past not just for progress, but for immediate survival. Every scaffold built will be a physical manifestation of Lyra's dwindling self, deepening the emotional connection to her struggle and making every step forward a poignant reminder of what has been lost. It will infuse every moment of traversal with a profound sense of desperation and grief, directly embodying the core tension of identity dissolving within while the Silence closes in.",
+  "score": 85,
+  "inventedAt": "2026-11-22T09:04:55.061Z"
+}

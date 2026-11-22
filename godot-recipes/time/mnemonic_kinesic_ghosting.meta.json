@@ -1,0 +1,73 @@
+{
+  "name": "mnemonic_kinesic_ghosting",
+  "label": "Mnemonic Kinesic Ghosting",
+  "domain": "time",
+  "godotFeature": "PhysicsServer3D",
+  "poeticVision": "The unsettling realization that your own past movements, your very path through crumbling memory, can become a tangible obstacle. Every step leaves a faint, physical ghost, a momentary echo of your former self. Colliding with these self-manifestations creates a jarring temporal stutter, a feedback loop that disorients or draws the Silence closer, making your history a dangerous, unavoidable companion in the desperate present.",
+  "usage": "Attach this `mnemonic_kinesic_ghosting.gd` script to Lyra (the player character, which must be a `Node3D`). Configure the `ghost_scene` export with a `PackedScene` that defines the ghost's visual and collision properties. This `ghost_scene` should be a `StaticBody3D` as its root, containing a `MeshInstance3D` (named \"MeshInstance3D\") and a `CollisionShape3D`. The `MeshInstance3D` should have a `ShaderMaterial` applied (e.g., `res://shaders/ghost_distortion.gdshader`) that exposes a `fade_alpha` uniform for the fade-out effect. Set the `lyra_collision_layer`, `enemy_collision_layer`, and `ghost_collision_layer` to match your project's physics setup. Connect to the `temporal_stutter_triggered` signal from a UI manager or camera script to apply screen-space distortion effects. Connect to the `enemy_collided_with_ghost` signal from enemy AI scripts to modify their behavior (e.g., attracting them to the ghost's location).",
+  "parameters": [
+    {
+      "name": "ghost_scene",
+      "type": "PackedScene",
+      "default": "null",
+      "description": "The scene to instantiate for each ghost. It should be a StaticBody3D with a MeshInstance3D (named 'MeshInstance3D') and CollisionShape3D."
+    },
+    {
+      "name": "ghost_lifetime",
+      "type": "float",
+      "default": "5.0",
+      "description": "How many seconds a ghost persists before starting its fade-out."
+    },
+    {
+      "name": "ghost_interval",
+      "type": "float",
+      "default": "0.5",
+      "description": "The time in seconds between creating new ghosts."
+    },
+    {
+      "name": "ghost_fade_duration",
+      "type": "float",
+      "default": "1.0",
+      "description": "How long the ghost takes to visually fade out after its lifetime expires."
+    },
+    {
+      "name": "collision_disorient_strength",
+      "type": "float",
+      "default": "0.2",
+      "description": "A value indicating the intensity of disorientation when Lyra collides with a ghost."
+    },
+    {
+      "name": "collision_attract_silence_strength",
+      "type": "float",
+      "default": "0.1",
+      "description": "A value indicating how much the Silence is attracted when an enemy collides with a ghost."
+    },
+    {
+      "name": "lyra_collision_layer",
+      "type": "int",
+      "default": "1",
+      "description": "The physics layer Lyra resides on. Used for collision detection."
+    },
+    {
+      "name": "enemy_collision_layer",
+      "type": "int",
+      "default": "2",
+      "description": "The physics layer enemies reside on. Used for collision detection."
+    },
+    {
+      "name": "ghost_collision_layer",
+      "type": "int",
+      "default": "4",
+      "description": "The physics layer ghosts reside on. Used for collision detection."
+    }
+  ],
+  "dependencies": [
+    "A PackedScene for the ghost (e.g., `res://scenes/ghost.tscn`) which is a StaticBody3D with a MeshInstance3D (named 'MeshInstance3D') and CollisionShape3D.",
+    "A ShaderMaterial applied to the MeshInstance3D within the ghost scene, exposing a 'fade_alpha' uniform (e.g., `res://shaders/ghost_distortion.gdshader`).",
+    "Lyra (player character) and Enemy nodes configured with appropriate collision layers."
+  ],
+  "verdict": "Lyra's desperate flight becomes a haunting dance with her own fading self, where every step taken carves a perilous path through the very fabric of her dissolving memory.",
+  "impact": "This mechanic transforms Lyra's journey into a constant negotiation with her own history. Every path taken, every desperate sprint, leaves a tangible echo that can either impede her escape or betray her position to the relentless Silence. It forces players to think not just about the present danger, but the lingering consequences of their past movements, deepening the themes of identity loss and the inescapable nature of memory. The environment itself becomes a dynamic, self-generated obstacle course, demanding precise navigation and tactical awareness, making every step a meaningful choice.",
+  "score": 92,
+  "inventedAt": "2026-11-22T09:04:01.008Z"
+}

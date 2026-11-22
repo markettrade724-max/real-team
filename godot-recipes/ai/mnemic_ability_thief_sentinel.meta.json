@@ -1,0 +1,39 @@
+{
+  "name": "mnemic_ability_thief_sentinel",
+  "label": "The Keeper's Shadow",
+  "domain": "ai",
+  "godotFeature": "Behavior Trees, Godot Resource System, Signal Bus",
+  "poeticVision": "The profound terror of having your very sense of self—your hard-won abilities, your connection to who you are—ripped away mid-fight. A raw, immediate void where strength once was, forcing desperate, improvised tactics to reclaim what was stolen before it's used against you. It's not just a health bar, it's your memory, your identity, being actively plundered.",
+  "usage": "Attach this `mnemic_ability_thief_sentinel.gd` script to a `CharacterBody3D` node representing the 'Keeper's Shadow' enemy. This node must have a `NavigationAgent3D` child node and an `Area3D` child node named `DetectionArea` for target acquisition. The `SignalBus` must be set up as an Autoload (singleton) in your project settings.\n\n**Player (Lyra) Setup:**\n1.  Ensure Lyra's `CharacterBody3D` node is added to the 'player' group.\n2.  Whenever Lyra equips or changes an ability (which should be an `AbilityResource` instance), call `SignalBus.set_lyra_equipped_ability(ability_resource_instance)`.\n3.  Lyra's script should listen for `SignalBus.ability_stolen(ability_resource)` to remove the ability from her inventory/active slot and enter a 'deprived' state.\n4.  Lyra's script should listen for `SignalBus.ability_returned(ability_resource)` to regain the ability after the Keeper is defeated.\n\n**Keeper's Shadow Behavior:**\n*   The Keeper will `CHASE` Lyra using `NavigationAgent3D` if she is within its `DetectionArea`.\n*   If Lyra is within `theft_range` and has an equipped ability (as reported by `SignalBus`), the Keeper will attempt to `STEAL` it.\n*   Upon successful theft, Lyra's equipped ability is removed (via `ability_stolen` signal), and the Keeper enters the `USING_STOLEN` state, simulating the use of the ability for `stolen_ability_duration` seconds.\n*   After using the ability, the Keeper will `FLEE` from Lyra for a short period before potentially returning to `CHASING` or patrolling.\n*   When the Keeper's `take_damage()` method is called (e.g., by Lyra's attacks), it will emit the `ability_returned` signal for any stolen ability and then `queue_free()` itself.\n\n**AbilityResource.gd (Example - create this as a separate file):**\ngdscript\n# AbilityResource.gd\n@tool\nextends Resource\nclass_name AbilityResource\n\n@export var resource_name: String = \"New Ability\"\n@export var description: String = \"A powerful memory fragment.\"\n@export var icon: Texture2D = null\n@export var ability_effect_strength: float = 10.0\n\n\n**SignalBus.gd (Example - create this as a separate file and add as an Autoload singleton):**\ngdscript\n# SignalBus.gd (Autoload Singleton)\nextends Node\nclass_name SignalBus\n\nsignal ability_stolen(ability_resource: Resource)\nsignal ability_returned(ability_resource: Resource)\nsignal lyra_ability_equipped(ability_resource: Resource)\nsignal keeper_defeated()\n\nvar _lyra_equipped_ability: Resource = null\n\nfunc set_lyra_equipped_ability(ability: Resource) -> void:\n\t_lyra_equipped_ability = ability\n\temit_signal(\"lyra_ability_equipped\", ability)\n\nfunc get_lyra_equipped_ability() -> Resource:\n\treturn _lyra_equipped_ability\n",
+  "parameters": [
+    {
+      "name": "movement_speed",
+      "type": "float",
+      "default": "3.0",
+      "description": "The speed at which the Keeper's Shadow moves when chasing or fleeing."
+    },
+    {
+      "name": "theft_range",
+      "type": "float",
+      "default": "2.0",
+      "description": "The maximum distance from Lyra at which the Keeper can steal an ability."
+    },
+    {
+      "name": "stolen_ability_duration",
+      "type": "float",
+      "default": "5.0",
+      "description": "The duration (in seconds) for which the Keeper uses the stolen ability before returning to a different state."
+    }
+  ],
+  "dependencies": [
+    "NavigationAgent3D (child node)",
+    "Area3D (child node named 'DetectionArea')",
+    "SignalBus.gd (Autoload singleton)",
+    "AbilityResource.gd (custom resource for abilities)",
+    "Player character (Lyra) node (must be in 'player' group)"
+  ],
+  "verdict": "A chilling embodiment of the Silence, this invention transforms the abstract terror of self-loss into a tangible, high-stakes dance of desperate improvisation and reclamation.",
+  "impact": "This enemy fundamentally alters combat encounters, transforming them from mere health-bar reductions into desperate struggles for self-preservation. Players will experience a visceral terror as their hard-won abilities, their very identity, are ripped away and weaponized against them, forcing immediate, creative adaptation and a profound sense of vulnerability. Reclaiming a stolen ability will feel like recovering a lost piece of their soul, making each victory deeply personal and unforgettable.",
+  "score": 95,
+  "inventedAt": "2026-11-22T09:07:33.051Z"
+}
