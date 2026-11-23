@@ -1,16 +1,16 @@
 {
   "episode": 52,
-  "title": "The Echo's Price",
-  "logline": "Lyra races through a collapsing memory-world to save a crucial fragment of Kael's past, but the relentless Silence forces her to choose between her own survival and the fading echo of her only companion.",
-  "theme": "True connection demands sacrifice, and the fear of losing oneself can be a greater prison than the oblivion itself.",
-  "emotionalJourney": "From desperate self-preservation and the terror of isolation to the dawning realization that some memories are worth risking everything for, even if it means letting them go.",
+  "title": "The Echo Chamber's Trap",
+  "logline": "Cornered in a collapsing memory of her own forgotten home, Lyra must outrun a new, intelligent Loom of Oblivion that seeks to 'protect' her most vital identity shard by devouring it whole, forcing her to confront the cost of her own hoarding.",
+  "theme": "The true cost of holding onto the past is the inability to adapt and survive the present.",
+  "emotionalJourney": "From desperate flight and stubborn refusal to sacrifice, to a moment of profound loss that shatters her resolve and forces a devastating choice.",
   "turningPoints": [
-    "Lyra is forced to abandon a direct path to the memory shard due to the Loom's immediate, overwhelming attack, realizing she must outmaneuver rather than outrun.",
-    "Lyra is trapped in a rapidly collapsing memory-chamber, and Kael's fading echo warns her that the only way out is to use a specific, powerful shard she's been hoarding—one that contains a core memory of him.",
-    "Lyra makes the agonizing decision to use Kael's memory shard, creating a devastating surge that repels the Silence but severely weakens Kael's presence, leaving her truly alone."
+    "Lyra is observed by the nascent Loom of Oblivion, revealing a new, intelligent threat.",
+    "Lyra is forced to choose between a path to deeper emotional memory and a dangerous but viable escape route, sacrificing the former.",
+    "Lyra loses the locket-shard and the Silence reveals it knows her ultimate destination."
   ],
-  "cliffhanger": "Lyra saves herself by sacrificing a crucial memory of Kael, causing his echo to fade almost to silence. As she escapes, a Loom entity projects a distorted image of her true final destination, revealing the Silence knows exactly where she is headed and why.",
-  "nextEpisodeHint": "The silence knows what Lyra seeks, and the path ahead is paved with echoes of her deepest fears.",
+  "cliffhanger": "Lyra loses the cherished locket-shard, a memory of a lullaby vanishing from her mind, and the Loom of Oblivion projects the coordinates to the Core Memory Nexus, revealing it knows exactly where she is going and is already waiting.",
+  "nextEpisodeHint": "The final destination is known, but the path to it is now a gauntlet, and Lyra is one crucial memory poorer.",
   "acts": [
     {
       "act": 1,
@@ -18,106 +18,136 @@
       "scenes": [
         {
           "id": "S01",
-          "location": "Crumbling Memory Spire",
+          "location": "A rapidly dissolving childhood living room, ornate wallpaper peeling into stardust.",
           "time": "night",
-          "mood": "tense",
-          "goal": "Cling to the disintegrating spire and secure a fragile Kael memory shard before the Loom devours it.",
+          "mood": "desperate",
+          "goal": "Secure the vital locket-shard from the crumbling mantelpiece while fending off aggressive Echo Shards.",
           "duration": 90,
-          "camera": "EXT. CRUMBLING MEMORY SPIRE - NIGHT - CLOSE ON LYRA'S FINGERTIPS. They scrape against crystalline fragments, barely holding. WIDEN to show her dangling precariously over an abyss of swirling, forgotten data. Below her, a glowing, almost ethereal Kael shard shimmers, just out of reach.",
-          "lighting": "Harsh, fractured light from the abyss below casts long, dancing shadows, emphasizing the instability. The Kael shard emits a soft, inviting glow.",
-          "action": "Lyra's muscles strain, her breath ragged. She attempts to shift her weight, dislodging more fragments that rain down into the void. Her eyes lock onto the Kael shard. A tendril of the LOOM OF OBLIVION, a dark, viscous entity, slowly extends from the depths, snaking towards the shard.",
-          "sfx": "Grinding stone, crystalline shatters, Lyra's gasps, the low, hungry hum of the Loom.",
-          "music": "High-tension, dissonant strings, building anxiety.",
+          "camera": "CLOSE on Lyra's face, sweat and dust streaking, then WIDE as she dodges a lunging Echo Shard, the room a kaleidoscope of fading light.",
+          "lighting": "Flickering, dying embers from a memory-fireplace cast long, distorted shadows, highlighting the room's decay.",
+          "action": "Lyra leaps over a collapsing armchair, a blur of motion. She snatches a delicate, glowing locket-shard from the mantelpiece just as a clawed Echo Shard swipes at her hand. The floor beneath her splinters, sending her stumbling. She clutches the locket, eyes wide, as more Echo Shards coalesce from the walls.",
+          "sfx": "CRUMBLING plaster, SHATTERING glass, WHISPERS of fading memories, Lyra's strained BREATHS, the sharp CLACK of Echo Shard claws.",
+          "music": "Pulsating, frantic strings with a deep, unsettling bassline, building tension.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "No! Not this one!",
+              "line": "Get back! Not this one.",
               "emotion": "desperate",
-              "direction": "Clinging precariously to a crumbling spire, hand outstretched"
+              "direction": "Dodging a lunging Echo Shard, eyes fixed on the mantelpiece."
             },
             {
-              "character": "Kael",
-              "line": "…hold…fast…",
-              "emotion": "tense",
-              "direction": "A faint echo, barely audible from a crystalline shard Lyra is reaching for"
+              "character": "Echo Shard",
+              "line": "Unburden yourself. It's dust.",
+              "emotion": "cold",
+              "direction": "Its crystalline form vibrates, a sharp, buzzing sound."
             },
             {
               "character": "Lyra",
-              "line": "Falling apart… too fast!",
+              "line": "No! Mine. All mine!",
+              "emotion": "desperate",
+              "direction": "Scrambling onto the crumbling floorboards, reaching for the locket."
+            },
+            {
+              "character": "Echo Shard",
+              "line": "Pointless. Let go.",
+              "emotion": "cold",
+              "direction": "Another shard slams into the mantelpiece, shaking it violently."
+            },
+            {
+              "character": "Lyra",
+              "line": "Almost... got it!",
               "emotion": "urgent",
-              "direction": "A section of the spire disintegrates beneath her foot"
+              "direction": "Fingers brushing the locket as the mantelpiece groans, threatening to collapse."
             }
           ]
         },
         {
           "id": "S02",
-          "location": "Memory Ledge",
+          "location": "A twisting, unstable hallway, once familiar, now a maze of shifting walls and floorboards.",
           "time": "night",
           "mood": "urgent",
-          "goal": "Evade the Loom's immediate attack and find an alternate, albeit unstable, path to the Kael shard.",
-          "duration": 75,
-          "camera": "EXT. MEMORY LEDGE - NIGHT - MEDIUM SHOT. Lyra scrambles onto a narrow, unstable ledge. The Loom's tendril, now thicker and faster, lashes out, narrowly missing her. The Kael shard is still visible, but further away, across a widening chasm.",
-          "lighting": "Pulsating, aggressive red light emanates from the Loom, bathing Lyra in a frantic glow. The Kael shard's light seems dimmer, threatened.",
-          "action": "Lyra leaps, barely catching the edge of the ledge. The Loom's tendril slams into the spire where she was, sending a shockwave of collapsing memories. She glances back at the Kael shard, then forward, forced to choose a winding, treacherous detour. A small, insignificant memory fragment detaches from her arm, dissolving into light.",
-          "sfx": "Loom's impact, groaning structure, Lyra's grunt of effort, a faint, high-pitched 'pop' as a memory dissolves.",
-          "music": "Driving, percussive rhythm, punctuated by sharp, alarming crescendos.",
+          "goal": "Navigate the collapsing hallway and escape the increasingly coordinated Echo Shards without losing the locket-shard.",
+          "duration": 100,
+          "camera": "TRACKING shot behind Lyra as she sprints, walls closing in. PUSH IN on a distant, barely visible shimmer – the nascent Loom.",
+          "lighting": "Strobe-like flashes of memory-light from cracks in the ceiling, intermittently illuminating Lyra's path and the pursuing shadows.",
+          "action": "Lyra slides under a falling beam, the locket-shard pressed tight against her chest. Echo Shards, moving with uncanny precision, try to cut off her escape. She uses a burst of memory-energy from a minor shard in her hand to blast open a crumbling doorway, but hesitates, unwilling to sacrifice more. A faint, shimmering distortion in the distance observes her.",
+          "sfx": "GROANING wood, echoing FOOTSTEPS, the high-pitched WHINE of the Echo Shards, a distant, almost imperceptible HUM.",
+          "music": "Accelerating, percussive rhythm with discordant synth elements, hinting at a new, intelligent threat.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "Damn it!",
+              "line": "Run! Faster!",
               "emotion": "urgent",
-              "direction": "Dodging a tendril of dark energy from the Loom, scrambling sideways"
+              "direction": "Clutching the locket, she sprints down the collapsing hallway, floorboards splintering."
             },
             {
-              "character": "Loom of Oblivion",
-              "line": "Futility. Relinquish.",
+              "character": "Echo Shard",
+              "line": "The path dissolves. You too.",
               "emotion": "cold",
-              "direction": "A low hum, resonating through the unstable memory-ledge"
+              "direction": "Multiple shards converge, their movements fluid and coordinated."
             },
             {
               "character": "Lyra",
-              "line": "Almost… there!",
+              "line": "Not this time. Never!",
               "emotion": "desperate",
-              "direction": "Leaping across a chasm, fingers scraping for purchase"
+              "direction": "Leaping over a widening chasm in the floor, nearly losing her balance."
             },
             {
-              "character": "Kael",
-              "line": "…lost…before…",
-              "emotion": "tense",
-              "direction": "A fragmented whisper, emanating from the distant shard"
+              "character": "Echo Shard",
+              "line": "Resistance is... futile.",
+              "emotion": "cold",
+              "direction": "One shard phases through a wall, reappearing directly in her path."
+            },
+            {
+              "character": "Lyra",
+              "line": "Move!",
+              "emotion": "urgent",
+              "direction": "She shoves the shard aside with a desperate burst of strength, barely maintaining her grip on the locket."
             }
           ]
         },
         {
           "id": "S03",
-          "location": "Fragmented Archway",
+          "location": "A child's bedroom, partially intact but filled with the dust of forgotten dreams. Toys lie scattered, fading.",
           "time": "night",
-          "mood": "dread",
-          "goal": "Find temporary cover and assess the Loom's relentless pursuit, realizing her hoarded shards are her only true defense.",
-          "duration": 100,
-          "camera": "EXT. FRAGMENTED ARCHWAY - NIGHT - WIDE SHOT. Lyra ducks under a precarious archway of half-formed memories, catching her breath. The Loom's shadow stretches across the chasm, its form coalescing, growing larger. CLOSE ON LYRA'S HAND. She instinctively clutches a small, smooth memory shard she keeps hidden, her knuckles white.",
-          "lighting": "Deep, oppressive shadows under the archway, contrasting with the Loom's distant, malevolent glow. Lyra's face is half-lit, showing exhaustion and growing fear.",
-          "action": "Lyra presses herself against the cold, fragmented wall. Her gaze darts between the distant Kael shard and the advancing Loom. She feels the weight of her hoarded shards, a silent accusation. Kael's faint, disembodied voice whispers, 'Use them, Lyra. Before there's nothing left to protect.'",
-          "sfx": "Heavy, rhythmic thrumming of the Loom, Lyra's ragged breathing, faint, echoing whispers of Kael's voice.",
-          "music": "Low, sustained drone, interspersed with unsettling, almost subliminal whispers.",
+          "mood": "tense",
+          "goal": "Evade the Loom's first direct trap, a coordinated ambush of Echo Shards, and escape the room.",
+          "duration": 110,
+          "camera": "POV from behind a faded teddy bear as Lyra bursts in, then REVERSE SHOT to reveal Echo Shards emerging from every shadow. SLOW ZOOM on Lyra's face as she realizes the trap.",
+          "lighting": "Soft, melancholic glow from a forgotten nightlight, contrasting sharply with the harsh, aggressive gleam on the Echo Shards.",
+          "action": "Lyra enters, breath ragged. The door slams shut behind her. Echo Shards, now moving with chilling synchronicity, form a perimeter. Lyra scans the room, searching for an exit, her hand hovering over her pouch of shards, reluctant to use them. She spots a loose floorboard, a desperate gamble. She kicks it, revealing a narrow crawlspace, and dives in just as the Echo Shards converge.",
+          "sfx": "DOOR SLAM, the low GROWL of the Echo Shards, Lyra's GRUNT of effort, the SCRAPE of wood, a faint, almost mocking CHIRP from the Loom.",
+          "music": "A sudden, sharp crescendo, then a sustained, low thrumming that implies observation and calculation.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "Nowhere to hide.",
-              "emotion": "dread",
-              "direction": "Pressed against a crumbling archway, breathing heavily"
+              "line": "A room? Safe?",
+              "emotion": "tense",
+              "direction": "She stumbles into a child's bedroom, scanning for threats, locket still clutched tight."
             },
             {
-              "character": "Loom of Oblivion",
-              "line": "Your struggle… feeds us.",
-              "emotion": "cold",
-              "direction": "A cold, creeping presence, visible as swirling darkness at the archway's edge"
+              "character": "Kael",
+              "line": "No… not safe. A lure.",
+              "emotion": "echo",
+              "direction": "A faint echo, as if from a fading, forgotten toy on the floor."
             },
             {
               "character": "Lyra",
-              "line": "My shards… I need them.",
-              "emotion": "tense",
-              "direction": "Clutching the pouch of memory shards at her waist, a flicker of reluctance"
+              "line": "Trap!",
+              "emotion": "desperate",
+              "direction": "Echo Shards burst from under the bed and behind a faded rocking horse."
+            },
+            {
+              "character": "Loom of Oblivion",
+              "line": "A child's dream. So fragile.",
+              "emotion": "cold",
+              "direction": "A low hum permeates the room, the air growing heavy, walls subtly shifting."
+            },
+            {
+              "character": "Lyra",
+              "line": "Not fragile enough!",
+              "emotion": "urgent",
+              "direction": "She uses a detached door as a makeshift shield, pushing through the ambush."
             }
           ]
         }
@@ -129,196 +159,226 @@
       "scenes": [
         {
           "id": "S04",
-          "location": "Labyrinth of Fading Echoes",
+          "location": "A twisting, generic memory-corridor, walls shifting between mundane and fantastical, unstable.",
           "time": "dawn",
-          "mood": "urgent",
-          "goal": "Navigate a rapidly destabilizing memory labyrinth while evading the Loom and newly manifested Echo Shards.",
-          "duration": 95,
-          "camera": "INT. LABYRINTH OF FADING ECHOES - DAWN - TRACKING SHOT. Lyra sprints through a maze of translucent, shimmering walls that flicker and dissolve. ECHO SHARDS, small, darting entities resembling distorted reflections, zip past, trying to brush against her. The Loom's vast form is visible through the walls, always gaining.",
-          "lighting": "Ethereal, shifting light filters through the memory walls, creating a disorienting effect. Patches of darkness where memories have already faded.",
-          "action": "Lyra dodges an Echo Shard, its touch leaving a cold, tingling sensation. A section of the floor ahead crumbles, forcing her to leap across a widening gap. Kael's voice, clearer now but tinged with desperation, 'Faster, Lyra! They're getting closer!'",
-          "sfx": "Whirring of Echo Shards, crumbling floor, Lyra's strained grunts, Kael's urgent voice, distant roar of the Loom.",
-          "music": "Fast-paced, intricate electronic score, mirroring the labyrinth's complexity.",
+          "mood": "dread",
+          "goal": "Outmaneuver the Loom's illusions and find a stable path forward, choosing survival over emotional depth.",
+          "duration": 105,
+          "camera": "DUTCH ANGLE as the corridor warps, disorienting Lyra. QUICK CUTS between her panicked eyes and the illusory paths.",
+          "lighting": "Ethereal, shifting light, making it hard to distinguish reality from illusion, casting long, confusing shadows.",
+          "action": "Lyra races down the corridor, the walls rippling like water. Illusions of loved ones, distorted and fleeting, appear in side passages – a path to a deeper, emotional memory. Kael's fragmented voice echoes: 'Don't... look... back!' Lyra hesitates, a flicker of pain, then forces herself to ignore the emotional pull, choosing a treacherous but stable-looking path that veers sharply away.",
+          "sfx": "DISTORTED WHISPERS, the SHIMMERING of illusions, Lyra's heavy BREATHS, Kael's urgent, crackling voice.",
+          "music": "Disorienting, layered synth pads with a rising, anxious melody, reflecting internal conflict.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "Walls are shifting!",
-              "emotion": "urgent",
-              "direction": "Spinning, dodging a collapsing memory-wall"
-            },
-            {
-              "character": "Echo Shard",
-              "line": "Why remember this?",
-              "emotion": "cold",
-              "direction": "A small, sharp crystalline entity darting past, slicing at her arm"
-            },
-            {
-              "character": "Lyra",
-              "line": "Get off me!",
-              "emotion": "desperate",
-              "direction": "Swatting away another Echo Shard, her movements frantic"
+              "line": "Which way? It's all… shifting.",
+              "emotion": "dread",
+              "direction": "Navigating a corridor where walls flicker between mundane and fantastical, disorienting her."
             },
             {
               "character": "Loom of Oblivion",
-              "line": "You are becoming us.",
-              "emotion": "inevitable",
-              "direction": "A deep rumble, the labyrinth itself seems to groan under its influence"
+              "line": "Choose wisely. Or dissolve.",
+              "emotion": "cold",
+              "direction": "The corridor twists violently, showing glimpses of past joys and sorrows."
+            },
+            {
+              "character": "Lyra",
+              "line": "No feelings. Just forward.",
+              "emotion": "tense",
+              "direction": "She forces her gaze away from a fleeting vision of a loved one, ignoring the emotional pull."
+            },
+            {
+              "character": "Kael",
+              "line": "They feed… on emotion.",
+              "emotion": "echo",
+              "direction": "A whisper from a shimmering wall, like a memory half-caught."
+            },
+            {
+              "character": "Lyra",
+              "line": "Shut up, Kael! Focus!",
+              "emotion": "urgent",
+              "direction": "She shoves through a wall that feels solid, ignoring the illusion of a dead end."
             }
           ]
         },
         {
           "id": "S05",
-          "location": "Memory Bridge",
-          "time": "dawn",
-          "mood": "tense",
-          "goal": "Use a minor memory shard to create a temporary path across a void, confronting her reluctance and Kael's frustration.",
-          "duration": 80,
-          "camera": "INT. MEMORY BRIDGE - DAWN - OVERHEAD SHOT. Lyra stands at the edge of a vast, empty chasm. The Loom is directly behind her, its tendrils beginning to probe the edges of the platform. CLOSE ON LYRA'S FACE. Her expression is conflicted. She pulls out a small, dull memory shard.",
-          "lighting": "A cold, sterile light illuminates the chasm, emphasizing its emptiness. The Loom's shadow creeps closer, darkening Lyra's features.",
-          "action": "With a grimace, Lyra hurls the minor shard into the void. It flares brightly, momentarily solidifying a bridge of light. She sprints across, but the bridge immediately begins to crack behind her. Kael's voice, exasperated, 'That's all you'll give? We don't have time for this!'",
-          "sfx": "Shard's activation hum, crackling energy of the bridge, Lyra's heavy footsteps, Kael's frustrated sigh.",
-          "music": "Suspenseful, drawn-out chords, building to a sudden, sharp release.",
+          "location": "A fragmented marketplace memory, chaotic and crowded with fading, spectral figures.",
+          "time": "day",
+          "mood": "urgent",
+          "goal": "Escape the crowded, deceptive marketplace without being cornered by Echo Shards disguised among the fading figures.",
+          "duration": 95,
+          "camera": "HANDHELD, weaving through the spectral crowd, mimicking Lyra's frantic movements. WIDE SHOT revealing the Echo Shards' camouflage.",
+          "lighting": "Overhead, diffuse light, but shadows lengthen and deepen around the disguised Echo Shards, creating pockets of menace.",
+          "action": "Lyra shoves through the spectral crowd, their murmurs a cacophony. Echo Shards, almost invisible among the fading market-goers, lunge from stalls. She grabs a small, insignificant memory-shard – a forgotten street vendor's cry – and hurls it, creating a momentary sonic blast that distracts a cluster of shards. A pang of regret, but she pushes on, the Loom's presence a cold pressure on her back.",
+          "sfx": "MUMBLING crowd, sudden SHRIEKS, the CRACKLE of the thrown memory-shard, Lyra's desperate GASPS.",
+          "music": "Fast-paced, chaotic percussion, interspersed with moments of eerie silence as Lyra navigates the crowd.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "It's too small.",
-              "emotion": "tense",
-              "direction": "Hesitating, holding a tiny, glowing memory shard over a gaping void"
-            },
-            {
-              "character": "Kael",
-              "line": "…risk it…now…",
+              "line": "Too many faces. Distractions.",
               "emotion": "urgent",
-              "direction": "His echo, a sudden surge of urgency, almost a plea"
+              "direction": "Pushes through spectral figures in the marketplace, scanning for threats."
+            },
+            {
+              "character": "Echo Shard",
+              "line": "A good memory. We preserve.",
+              "emotion": "cold",
+              "direction": "A fading merchant figure turns, its face briefly crystalline."
             },
             {
               "character": "Lyra",
-              "line": "No! Not this one!",
+              "line": "No, you consume!",
               "emotion": "desperate",
-              "direction": "Flashing back to her reluctance from S03, gripping the shard tighter"
+              "direction": "She ducks under a spectral arm, realizing the figures are not just fading."
             },
             {
-              "character": "Kael",
-              "line": "…or fall…",
-              "emotion": "dread",
-              "direction": "His voice fading, tinged with resignation"
+              "character": "Echo Shard",
+              "line": "It becomes us. Forever.",
+              "emotion": "cold",
+              "direction": "Two more 'figures' converge, their forms hardening, blocking her path."
             },
             {
               "character": "Lyra",
-              "line": "Fine!",
-              "emotion": "tense",
-              "direction": "With a grunt, she hurls the shard, watching it solidify into a fragile bridge"
+              "line": "Not me. Not today!",
+              "emotion": "urgent",
+              "direction": "She shoves a cart full of spectral fruit, creating a momentary diversion to escape."
             }
           ]
         },
         {
           "id": "S06",
-          "location": "Collapsing Memory Chamber",
-          "time": "dawn",
-          "mood": "desperate",
-          "goal": "Escape a rapidly collapsing chamber as the Loom breaches its defenses, with Kael's echo weakening significantly.",
-          "duration": 110,
-          "camera": "INT. COLLAPSING MEMORY CHAMBER - DAWN - EXTREME WIDE SHOT. The chamber walls, made of intricate, glowing memory patterns, are buckling inward. Dust and light rain down. Lyra is trapped, scrambling over debris. The Loom's massive form is visible through a gaping hole in the wall, its tendrils already inside.",
-          "lighting": "Flickering, chaotic light from the collapsing walls. Deep, encroaching shadows from the Loom. Lyra is often silhouetted against the chaos.",
-          "action": "Lyra tries to force open a jammed exit. The chamber groans, a section of the ceiling collapses just behind her. Kael's voice is barely a whisper now, fragmented, 'Lyra... the... the core... you have to...' He trails off, his presence fading.",
-          "sfx": "Loud groans and creaks of the chamber, crashing debris, Lyra's desperate grunts, Kael's voice barely audible, then static.",
-          "music": "Overwhelming, cacophonous symphony of destruction, punctuated by moments of chilling silence.",
+          "location": "A vast, echoing library of forgotten knowledge, shelves stretching into an infinite void.",
+          "time": "night",
+          "mood": "dread",
+          "goal": "Navigate the shifting library shelves, which the Loom manipulates to trap her, and find an exit.",
+          "duration": 115,
+          "camera": "CRANE SHOT revealing the immense scale of the library, then TIGHT on Lyra as shelves reconfigure around her, forming a labyrinth.",
+          "lighting": "Cold, blue-white light from glowing memory-scrolls, but pockets of absolute darkness where shelves vanish into the void.",
+          "action": "Lyra sprints between towering shelves, the air thick with the scent of old paper. The Loom's influence is palpable; shelves slide and rotate, blocking paths, creating dead ends. She notices a pattern, a subtle rhythm in the shifts. Kael's voice, strained: 'It learns... it adapts!' Lyra uses a forgotten mnemonic device, a memory of spatial reasoning, to predict a shelf's movement, finding a narrow gap and squeezing through just as the passage seals behind her.",
+          "sfx": "RUSTLING pages, the GRINDING of shifting shelves, Lyra's labored BREATHS, Kael's urgent WHISPERS.",
+          "music": "Slow, methodical, almost mechanical score that suddenly accelerates and becomes dissonant as the shelves move.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "It's collapsing!",
-              "emotion": "desperate",
-              "direction": "Scrambling as the chamber walls buckle and crack"
+              "line": "A library? What is this?",
+              "emotion": "dread",
+              "direction": "Stands in a vast, silent library, shelves stretching into an infinite, dark void."
             },
             {
               "character": "Loom of Oblivion",
-              "line": "No escape.",
+              "line": "All forgotten knowledge resides.",
               "emotion": "cold",
-              "direction": "A massive tendril breaches the wall, swiping at her"
+              "direction": "A low hum, and the closest bookshelves begin to slowly slide inward, blocking her."
             },
             {
               "character": "Kael",
-              "line": "…run… Lyra…",
-              "emotion": "desperate",
-              "direction": "His voice, a mere whisper now, barely audible"
+              "line": "The path… is hidden.",
+              "emotion": "echo",
+              "direction": "A whisper from a dust-covered tome, its pages fluttering as if in a phantom breeze."
             },
             {
               "character": "Lyra",
-              "line": "Kael! Don't fade!",
-              "emotion": "desperate",
-              "direction": "Reaching out instinctively, but there's nothing to grab"
+              "line": "Hidden where? Tell me!",
+              "emotion": "urgent",
+              "direction": "She tries to force a shelf open, but it's immovable, closing in."
+            },
+            {
+              "character": "Loom of Oblivion",
+              "line": "We choose your ending.",
+              "emotion": "cold",
+              "direction": "The shelves accelerate, threatening to crush her in their embrace."
             }
           ]
         },
         {
           "id": "S07",
-          "location": "Memory Core Nexus",
-          "time": "dawn",
-          "mood": "dread",
-          "goal": "Understand Kael's fading warning: the only escape is to use a powerful, core memory shard of him.",
+          "location": "A crumbling bridge spanning a chasm of forgotten dreams, jagged memory-fragments floating below.",
+          "time": "dusk",
+          "mood": "desperate",
+          "goal": "Cross the collapsing bridge before it gives way completely, fending off Echo Shards trying to push her into the void.",
           "duration": 120,
-          "camera": "INT. MEMORY CORE NEXUS - DAWN - CLOSE ON LYRA. She's pressed against a wall, panting, eyes wide with terror and dawning comprehension. The chamber continues to collapse around her. Kael's echo, now a faint, shimmering outline beside her, struggles to speak.",
-          "lighting": "Dim, dying light in the chamber. The Kael echo flickers like a dying flame, casting a weak, blue glow on Lyra's face.",
-          "action": "Lyra shakes her head, 'No... not that one.' Kael's echo reaches out, intangible. 'It's the only way... to push them back... to survive. My... my core... the one you hold...' He points weakly to a hidden pouch on Lyra's belt. The Loom's tendrils are visibly closer, snaking through the debris.",
-          "sfx": "Kael's faint, distorted whispers, the relentless creaking of the chamber, Lyra's choked sob, the wet, slithering sound of the Loom.",
-          "music": "Slow, mournful strings, building a sense of inevitable tragedy.",
+          "camera": "LOW ANGLE shot emphasizing the precariousness of the bridge. WIDE SHOT of Lyra fighting on the crumbling edge, the chasm yawning below.",
+          "lighting": "The last rays of a dying memory-sun cast long, dramatic shadows, highlighting the bridge's decay and the abyss.",
+          "action": "Lyra scrambles across the bridge, planks disintegrating behind her. Powerful Echo Shards, larger and more aggressive, batter her, attempting to knock her into the chasm. She uses the locket-shard's faint glow to momentarily blind one, but the effort drains her. She leaps across a widening gap, landing hard, her body screaming in protest. The bridge collapses entirely moments after she reaches the other side, leaving her panting, utterly spent.",
+          "sfx": "CRACKING wood, ROARING wind from the chasm, the metallic CLANG of Echo Shards, Lyra's gasping COUGHS.",
+          "music": "Heroic but strained orchestral piece, punctuated by sharp, percussive hits, ending on a note of exhaustion.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "What was that?",
-              "emotion": "dread",
-              "direction": "Breathing hard, trapped in a shrinking pocket, looking around wildly"
+              "line": "Almost there! Don't look down!",
+              "emotion": "desperate",
+              "direction": "Scrambling across the crumbling bridge, jagged memory-fragments swirling below."
             },
             {
-              "character": "Kael",
-              "line": "…the core… use it…",
-              "emotion": "desperate",
-              "direction": "A sudden, brief surge of his echo, clearer than before, then fading"
+              "character": "Echo Shard",
+              "line": "Fall. It's peaceful.",
+              "emotion": "cold",
+              "direction": "A shard slams into her back, trying to dislodge her."
             },
             {
               "character": "Lyra",
-              "line": "Your… core?",
-              "emotion": "dread",
-              "direction": "A terrible realization dawning on her face"
+              "line": "Never! Not for peace!",
+              "emotion": "desperate",
+              "direction": "She lashes out, using a small, sharp memory-fragment to fend off an attacker."
             },
             {
-              "character": "Kael",
-              "line": "…let me… go…",
-              "emotion": "tense",
-              "direction": "His echo, almost gone, a final, painful instruction"
+              "character": "Echo Shard",
+              "line": "Your memories… are ours.",
+              "emotion": "cold",
+              "direction": "More shards appear, pushing at the edges of the bridge, causing it to crumble faster."
+            },
+            {
+              "character": "Lyra",
+              "line": "Mine!",
+              "emotion": "urgent",
+              "direction": "She makes a final, desperate leap as the bridge gives way behind her, barely landing on the other side."
             }
           ]
         },
         {
           "id": "S08",
-          "location": "Heart of the Collapse",
-          "time": "dawn",
-          "mood": "desperate",
-          "goal": "Make the agonizing decision to retrieve and prepare Kael's core memory shard as the Loom breaches the chamber.",
-          "duration": 105,
-          "camera": "INT. HEART OF THE COLLAPSE - DAWN - MEDIUM SHOT. Lyra's hand trembles as she reaches into her pouch, pulling out a large, intensely glowing shard. It pulses with a deep, personal warmth. Tears stream down her face. The Loom's main body begins to force its way through the gaping hole, tendrils already grasping at the chamber's core.",
-          "lighting": "The shard emits a powerful, almost blinding light, contrasting sharply with the encroaching darkness of the Loom. Lyra's face is illuminated by its tragic glow.",
-          "action": "Lyra clutches the shard to her chest, a silent scream on her lips. She looks at the fading Kael echo, a silent apology. The Loom's tendrils lash out, tearing away more of the chamber, revealing its horrifying, formless maw. There is no other option.",
-          "sfx": "Lyra's ragged breathing, the powerful hum of the core shard, the ripping and tearing sounds of the Loom's entry, a faint, almost imperceptible 'Goodbye' from Kael.",
-          "music": "A single, soaring, tragic cello note, held, then dissolving into a frantic, percussive beat as the Loom attacks.",
+          "location": "A dark, claustrophobic memory-tunnel, filled with whispering echoes and distorted reflections.",
+          "time": "night",
+          "mood": "dread",
+          "goal": "Push through the psychological assault of distorted memories and fears, finding the true path through the tunnel.",
+          "duration": 110,
+          "camera": "CLOSE on Lyra's face, tormented by unseen visions. FISH-EYE LENS distorting the tunnel, amplifying the claustrophobia.",
+          "lighting": "Almost total darkness, broken only by fleeting, nightmarish flashes of distorted faces and events.",
+          "action": "Lyra stumbles through the tunnel, hands pressed to her ears as whispers of doubt and fear assail her. Distorted images of past failures and lost loved ones flicker in her peripheral vision. Kael's voice, barely a whisper, then a scream: 'It knows what you hold! It sees the locket!' Lyra closes her eyes, focusing on the locket-shard's faint warmth, pushing through the mental onslaught. She opens her eyes to see a faint, real light at the end of the tunnel, but the Loom's presence feels closer, more personal.",
+          "sfx": "DISTORTED WHISPERS, disembodied SCREAMS, Lyra's ragged BREATHS, a cold, calculating VOICE echoing in the void: 'The locket... so precious.'",
+          "music": "Eerie, minimalist drone with rising, unsettling vocalizations, building to a sudden, chilling silence.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "No… not you.",
-              "emotion": "desperate",
-              "direction": "Tears welling, but her hand moves, fumbling for a specific, larger shard"
+              "line": "Whispers… so many voices.",
+              "emotion": "dread",
+              "direction": "Stumbling through a dark tunnel, distorted reflections of her past self flicker on the walls."
             },
             {
-              "character": "Loom of Oblivion",
-              "line": "Surrender. Join us.",
-              "emotion": "cold",
-              "direction": "The Loom's tendrils crash through the final barrier, reaching for her"
+              "character": "Kael",
+              "line": "They know… your fears.",
+              "emotion": "echo",
+              "direction": "A soft echo from a particularly terrifying reflection of Lyra, twisted in despair."
             },
             {
               "character": "Lyra",
-              "line": "I won't forget you!",
+              "line": "Lies! All lies!",
               "emotion": "desperate",
-              "direction": "Clutching the glowing core shard, her face set in grim resolve"
+              "direction": "She squeezes her eyes shut for a moment, trying to block out the cacophony."
+            },
+            {
+              "character": "Loom of Oblivion",
+              "line": "Embrace the void. It is truth.",
+              "emotion": "cold",
+              "direction": "The tunnel seems to constrict, the whispers growing louder, more insidious."
+            },
+            {
+              "character": "Lyra",
+              "line": "No! Just… a way out!",
+              "emotion": "urgent",
+              "direction": "She focuses on a faint light ahead, pushing past the illusions with sheer will."
             }
           ]
         }
@@ -330,112 +390,136 @@
       "scenes": [
         {
           "id": "S09",
-          "location": "Memory Cataclysm",
+          "location": "A chamber filled with fragmented schematics and glowing blueprints, a memory of Lyra's past work.",
           "time": "day",
           "mood": "desperate",
-          "goal": "Unleash the core memory shard's power to repel the Silence, enduring the profound emotional and physical cost.",
-          "duration": 115,
-          "camera": "INT. MEMORY CATACLYSM - DAY - WIDE SHOT. Lyra, holding the glowing Kael shard aloft, screams. A blinding wave of pure, concentrated memory energy erupts from her, slamming into the Loom. The entity recoils, tendrils shriveling, its form dissolving into shrieking shadows. Lyra collapses, the shard falling from her grasp, now dull and lifeless.",
-          "lighting": "An overwhelming, white-hot flash of light, followed by a sudden, stark, almost painful clarity of daylight filtering through the now-stable (but scarred) chamber. Lyra is left in stark relief, spent.",
-          "action": "The surge rips through the chamber, tearing at the Loom. The entity lets out a guttural, non-human shriek as it's forced back. Lyra's body convulses with the effort and the emotional pain. As the light fades, she lies prone, gasping, her hand reaching instinctively for where Kael's echo once stood, finding only emptiness.",
-          "sfx": "Screaming energy surge, the Loom's distorted shriek, Lyra's raw, guttural cry, a sudden, profound silence after the blast.",
-          "music": "A crescendo of overwhelming power, abruptly cutting to a single, sustained, mournful piano chord.",
+          "goal": "Retrieve a crucial blueprint while fending off the Loom's direct, focused assault.",
+          "duration": 100,
+          "camera": "DYNAMIC, fast-paced shots as Lyra fights for the blueprint. EXTREME CLOSE-UP on her hand as she makes a painful choice.",
+          "lighting": "Bright, analytical light from the blueprints, but shadowed by the Loom's encroaching darkness.",
+          "action": "Lyra lunges for a glowing blueprint, but the Loom, now a swirling vortex of shadow and light, directly attacks. Echo Shards, infused with the Loom's power, slam into her. Desperate, Lyra pulls a deeply personal, non-locket memory-shard – a childhood drawing – and hurls it. It explodes in a burst of vibrant color and sound, momentarily stunning the Loom. Lyra snatches the blueprint, a gasp of triumph mixed with profound grief for the sacrificed memory.",
+          "sfx": "The ROAR of the Loom, EXPLOSION of color and sound, Lyra's GRUNT of effort, the WHISPERS of the lost memory.",
+          "music": "A jarring, percussive burst followed by a melancholic, fading melody, then a tense, driving beat.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "FOR KAEL!",
+              "line": "The blueprint! There!",
               "emotion": "desperate",
-              "direction": "Screaming, she slams the core shard onto the ground, unleashing a blinding wave of memory"
+              "direction": "She spots a glowing blueprint amidst fragmented schematics, Loom entities closing in."
             },
             {
               "character": "Loom of Oblivion",
-              "line": "Impossible…",
-              "emotion": "tense",
-              "direction": "The Loom recoils, its tendrils shriveling under the memory's force"
+              "line": "This knowledge… is dangerous.",
+              "emotion": "cold",
+              "direction": "A large Loom entity solidifies, its crystalline limbs reaching for the blueprint."
             },
             {
               "character": "Lyra",
-              "line": "It hurts…",
+              "line": "Mine to use!",
               "emotion": "desperate",
-              "direction": "Collapsing, reeling from the psychic backlash, clutching her head"
+              "direction": "She throws a small memory-shard at the Loom, creating a momentary distraction."
             },
             {
-              "character": "Kael",
-              "line": "…thank…you…",
-              "emotion": "tense",
-              "direction": "A final, almost imperceptible whisper, fading into absolute silence"
+              "character": "Loom of Oblivion",
+              "line": "You waste them. Foolish.",
+              "emotion": "cold",
+              "direction": "The Loom swats the shard away, its gaze fixed on Lyra and the blueprint."
+            },
+            {
+              "character": "Lyra",
+              "line": "Got it!",
+              "emotion": "triumphant",
+              "direction": "She snatches the blueprint, its light momentarily blinding the Loom, and turns to run."
             }
           ]
         },
         {
           "id": "S10",
-          "location": "Desolate Memoryscape",
-          "time": "day",
-          "mood": "dread",
-          "goal": "Drag herself to safety, confronting the crushing emptiness left by Kael's near-total erasure.",
-          "duration": 85,
-          "camera": "EXT. DESOLATE MEMORYSCAPE - DAY - LOW ANGLE. Lyra crawls on hands and knees across a barren, flat expanse of what were once vibrant memories, now reduced to grey dust. The air is heavy with absence. She looks around, calling out Kael's name, her voice hoarse.",
-          "lighting": "Harsh, unforgiving daylight, revealing every detail of the desolation. No shadows to hide in. Lyra's face is etched with profound grief.",
-          "action": "Lyra pushes herself up, staggering. She whispers Kael's name, her eyes searching the empty air. There's no response, not even a flicker. The silence is absolute. She clutches the now-inert shard, a cold, heavy weight. A single tear rolls down her cheek, leaving a clean streak on her dust-smeared face.",
-          "sfx": "Lyra's ragged breathing, the crunch of dust underfoot, her choked whispers, the chilling absence of Kael's voice.",
-          "music": "Sparse, melancholic strings, emphasizing loneliness and loss.",
+          "location": "A small, enclosed memory-space, momentarily stable, but vibrating with unseen energy.",
+          "time": "night",
+          "mood": "shock",
+          "goal": "Protect the locket-shard from the Loom's retaliatory, overwhelming attack.",
+          "duration": 90,
+          "camera": "CLOSE on Lyra, her face contorted in pain. SLOW MOTION as the locket-shard shatters, then a QUICK CUT to her horrified eyes.",
+          "lighting": "A single, dim light source, casting long, stark shadows, emphasizing vulnerability.",
+          "action": "Lyra clutches the blueprint, panting, in the temporary 'safe' space. Suddenly, the walls ripple, and the Loom's presence manifests directly, a dark, intelligent force. It ignores Lyra, focusing solely on the locket-shard she holds. A powerful, unseen force rips the locket from her grasp. Lyra screams, trying to reach for it, but the force is too strong. The locket-shard shatters into a thousand glittering fragments, each piece a stab of agony in Lyra's mind. She collapses, disoriented, a profound void opening within her.",
+          "sfx": "A high-pitched SCREAM, the CRACKING of the locket-shard, Lyra's choked SOBS, a deafening SILENCE immediately after the shattering.",
+          "music": "A piercing, dissonant chord, then a sudden, complete silence, followed by a low, mournful cello.",
           "dialogue": [
             {
               "character": "Lyra",
-              "line": "Kael?",
-              "emotion": "dread",
-              "direction": "Whispering his name into the empty space, her voice hoarse, body trembling"
+              "line": "Safe! Just for a moment...",
+              "emotion": "tense",
+              "direction": "She collapses into a small, enclosed memory-space, clutching the locket and blueprint."
+            },
+            {
+              "character": "Loom of Oblivion",
+              "line": "Nowhere is safe. Not from us.",
+              "emotion": "cold",
+              "direction": "The walls of the space vibrate violently, unseen energy building."
             },
             {
               "character": "Lyra",
-              "line": "Gone…",
-              "emotion": "dread",
-              "direction": "A profound emptiness settles over her, a physical ache in her chest"
+              "line": "What? No! It's too much!",
+              "emotion": "shock",
+              "direction": "A searing wave of energy blasts through the space, directly targeting the locket."
+            },
+            {
+              "character": "Kael",
+              "line": "Hold… tight. Don't… let go.",
+              "emotion": "echo",
+              "direction": "A fading whisper, as if the locket itself is speaking, as it begins to glow erratically."
             },
             {
               "character": "Lyra",
-              "line": "What have I done?",
-              "emotion": "dread",
-              "direction": "Dragging herself forward, leaving behind the shattered remnants of the core shard"
+              "line": "No! My locket! Stop!",
+              "emotion": "desperate",
+              "direction": "She screams, shielding the locket with her body as the energy intensifies, overwhelming her."
             }
           ]
         },
         {
           "id": "S11",
-          "location": "The Path Revealed",
-          "time": "day",
-          "mood": "tense",
-          "goal": "Witness a chilling projection from a surviving Loom entity, revealing the Silence's knowledge of her ultimate destination.",
-          "duration": 60,
-          "camera": "EXT. THE PATH REVEALED - DAY - WIDE SHOT. Lyra stands, exhausted, gazing at the desolate horizon. Suddenly, a residual fragment of the Loom, a shimmering, distorted tendril, rises from the dust. It projects a chilling, holographic image into the sky: a vast, ancient library, its shelves laden with glowing memory shards. The image pulses, then fades, leaving Lyra frozen.",
-          "lighting": "The daylight is bright, but the holographic projection casts an eerie, internal glow. Lyra's face is a mask of shock and dawning horror.",
-          "action": "Lyra watches, horrified, as the image forms. It's the Library, her ultimate goal, the place she believed only she knew. The Loom fragment retracts, disappearing into the dust. Lyra is left alone, staring at the empty sky, the implication sinking in: the Silence knows. It has always known.",
-          "sfx": "Subtle hum of the projection, Lyra's sharp intake of breath, the faint, echoing whisper of 'The Library...' from nowhere.",
-          "music": "A sudden, jarring, discordant chord, held, then fading to an ominous, low drone as the screen cuts to black.",
+          "location": "The shattered remnants of the 'safe' haven, now a void, Lyra lying amidst the glittering dust.",
+          "time": "night",
+          "mood": "dread",
+          "goal": "Survive the immediate shock and disorientation of losing the locket-shard and the Loom's final revelation.",
+          "duration": 100,
+          "camera": "OVERHEAD shot, Lyra a small, broken figure in the vast, empty space. SLOW PUSH IN as the Loom's voice fills the void.",
+          "lighting": "The glittering dust of the locket-shard provides the only light, reflecting Lyra's despair.",
+          "action": "Lyra lies curled on the ground, trembling, the void where the locket once was a gaping wound. The glittering dust of the shattered shard swirls around her. The Loom's voice, now clear and resonant, echoes through the void, not a whisper but a statement of absolute knowledge. 'You seek the Core. The place where all began. We will be waiting.' Lyra's eyes snap open, filled with dawning horror, as she realizes her ultimate destination has been compromised.",
+          "sfx": "The faint TINKLING of falling dust, Lyra's shallow BREATHS, the Loom's deep, resonant VOICE echoing, chillingly calm.",
+          "music": "A low, sustained, ominous drone, slowly building in intensity, ending on a single, resonating, terrifying note.",
           "dialogue": [
             {
-              "character": "Loom of Oblivion",
-              "line": "You seek… the Source.",
-              "emotion": "cold",
-              "direction": "A surviving Loom entity, smaller but intact, projects a chilling image before Lyra"
-            },
-            {
               "character": "Lyra",
-              "line": "How…?",
-              "emotion": "tense",
-              "direction": "Her eyes wide with shock, staring at the projected image of her ultimate destination"
-            },
-            {
-              "character": "Loom of Oblivion",
-              "line": "We await you there.",
-              "emotion": "inevitable",
-              "direction": "The projection flickers, revealing the Source surrounded by countless Loom entities, then vanishes"
-            },
-            {
-              "character": "Lyra",
-              "line": "They know.",
+              "line": "It's… gone.",
               "emotion": "dread",
-              "direction": "Her voice barely a whisper, realizing her path is compromised, her purpose exposed"
+              "direction": "Lying amidst glittering dust, the locket-shard shattered, tears streaming down her face."
+            },
+            {
+              "character": "Loom of Oblivion",
+              "line": "Liberated. From your grasp.",
+              "emotion": "cold",
+              "direction": "Its presence fills the void, an oppressive weight."
+            },
+            {
+              "character": "Lyra",
+              "line": "You… you took it.",
+              "emotion": "dread",
+              "direction": "Her voice is a raw whisper, barely audible."
+            },
+            {
+              "character": "Loom of Oblivion",
+              "line": "And now… we know your next step. The Core.",
+              "emotion": "cold",
+              "direction": "A chilling revelation, its 'voice' echoing directly in Lyra's mind, leaving her utterly exposed."
+            },
+            {
+              "character": "Kael",
+              "line": "No… Lyra. They… know.",
+              "emotion": "echo",
+              "direction": "A final, fading whisper from the scattered dust, then silence. He's gone."
             }
           ]
         }
@@ -472,8 +556,8 @@
       "flaw": "He knows exactly how the Silence thinks — because he was consumed by it. This makes him hesitate to warn Lyra when the danger is too familiar, as if part of him still recognizes the Silence as home."
     }
   ],
-  "totalDuration": 1035,
+  "totalDuration": 1135,
   "universeId": "memory-shards-saga",
   "language": "en",
-  "generatedAt": "2026-11-23T10:00:25.841Z"
+  "generatedAt": "2026-11-23T15:35:47.183Z"
 }

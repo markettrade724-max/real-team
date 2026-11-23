@@ -1,7 +1,14 @@
 {
   "version": "1.1",
-  "updatedAt": "2026-11-22T15:05:04.168Z",
-  "current": null,
+  "updatedAt": "2026-11-23T15:46:20.187Z",
+  "current": {
+    "type": "episode",
+    "episode": 52,
+    "id": null,
+    "startedAt": "2026-11-23T15:31:08.730Z",
+    "updatedAt": "2026-11-23T15:46:20.187Z",
+    "failReason": "production-failed: Timeout after 600s"
+  },
   "series": {
     "nextEpisode": 52,
     "totalEpisodes": 52,
@@ -1484,6 +1491,35 @@
         "startedAt": "2026-11-18T13:34:14.344Z",
         "completedAt": "2026-11-18T16:16:54.519Z",
         "failReason": null
+      },
+      "52": {
+        "status": "failed",
+        "completedSteps": [
+          "backbone",
+          "scenes",
+          "dialogue"
+        ],
+        "pendingSteps": [],
+        "data": {
+          "backbone": {
+            "savedAt": "2026-11-23T15:32:49.863Z",
+            "title": "The Echo Chamber's Trap",
+            "summary": null
+          },
+          "scenes": {
+            "savedAt": "2026-11-23T15:34:18.199Z",
+            "title": "The Echo Chamber's Trap",
+            "summary": null
+          },
+          "dialogue": {
+            "savedAt": "2026-11-23T15:35:47.183Z",
+            "title": "The Echo Chamber's Trap",
+            "summary": null
+          }
+        },
+        "startedAt": "2026-11-23T15:31:08.730Z",
+        "completedAt": null,
+        "failReason": "production-failed: Timeout after 600s"
       }
     }
   },
