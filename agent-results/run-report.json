@@ -1,31 +1,31 @@
 {
-  "runId": "2026-11-22T1505",
-  "mode": "inventor",
-  "success": false,
-  "timestamp": "2026-11-22T15:05:04.174Z",
-  "totalDuration": "13ms",
+  "runId": "2026-11-23T0956",
+  "mode": "screenplay-production",
+  "success": true,
+  "timestamp": "2026-11-23T10:09:02.478Z",
+  "totalDuration": "738.3s",
   "budget": {
-    "total": 38,
+    "total": 6,
     "limit": 40,
-    "left": 2,
+    "left": 34,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 20,
+        "total": 6,
         "limit": 20,
-        "left": 0,
+        "left": 14,
         "exhausted": false,
         "library": 0,
-        "agents": 20
+        "agents": 6
       },
       {
         "key": "KEY_2",
-        "total": 18,
+        "total": 0,
         "limit": 20,
-        "left": 2,
+        "left": 20,
         "exhausted": false,
         "library": 0,
-        "agents": 18
+        "agents": 0
       }
     ]
   },
@@ -35,18 +35,64 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 48,
-    "next": 52
+    "episodes": 49,
+    "next": 53
   },
   "progress": {
-    "nextEpisode": 52,
-    "totalEpisodes": 52,
+    "nextEpisode": 53,
+    "totalEpisodes": 53,
     "gamesDone": 1
   },
-  "agents": {},
+  "agents": {
+    "screenplay": {
+      "success": true,
+      "duration": "—",
+      "error": null
+    },
+    "voice": {
+      "success": true,
+      "duration": "1ms",
+      "error": null
+    },
+    "scene": {
+      "success": true,
+      "duration": "1ms",
+      "error": null
+    },
+    "visual": {
+      "success": true,
+      "duration": "18.8s",
+      "error": null
+    },
+    "subtitle": {
+      "success": true,
+      "duration": "0ms",
+      "error": null
+    },
+    "music": {
+      "success": true,
+      "duration": "4ms",
+      "error": null
+    },
+    "edit": {
+      "success": true,
+      "duration": "479.0s",
+      "error": null
+    },
+    "trailer": {
+      "success": true,
+      "duration": "18.6s",
+      "error": null
+    },
+    "upload": {
+      "success": true,
+      "duration": "267ms",
+      "error": null
+    }
+  },
   "summary": {
-    "total": 0,
-    "passed": 0,
+    "total": 9,
+    "passed": 9,
     "failed": 0
   }
 }
