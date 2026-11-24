@@ -39,7 +39,7 @@ anchor_right = 0.5
 offset_left = -50.0
 offset_right = 50.0
 offset_bottom = 23.0
-text = "Score: 0" # Corrected text
+text = "Score: 0" # Corrected text and width
 
 [node name="HealthLabel" type="Label" parent="UI/HUD"]
 anchors_preset = 7
@@ -50,10 +50,11 @@ anchor_bottom = 1.0
 offset_left = -50.0
 offset_top = -23.0
 offset_right = 50.0
+offset_bottom = 0.0
 text = "HP: 100/100" # Added HealthLabel
 
 [node name="PauseMenuUI" type="CanvasLayer" parent="UI"]
-visible = false # Managed by script
+visible = false # Added PauseMenuUI, managed by script
 
 [node name="PauseLabel" type="Label" parent="UI/PauseMenuUI"]
 anchors_preset = 8
@@ -61,11 +62,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -70.0
+offset_left = -75.0
 offset_top = -11.5
-offset_right = 70.0
+offset_right = 75.0
 offset_bottom = 11.5
 text = "PAUSED"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="GameOverUI" type="CanvasLayer" parent="UI"]
 visible = false # Managed by script
@@ -81,6 +84,8 @@ offset_top = -23.0
 offset_right = 100.0
 offset_bottom = 23.0
 text = "GAME OVER\nFinal Score: 0" # Added GameOverLabel
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="VictoryUI" type="CanvasLayer" parent="UI"]
 visible = false # Managed by script
@@ -96,3 +101,5 @@ offset_top = -23.0
 offset_right = 100.0
 offset_bottom = 23.0
 text = "VICTORY!\nFinal Score: 0" # Added VictoryLabel
+horizontal_alignment = 1
+vertical_alignment = 1
