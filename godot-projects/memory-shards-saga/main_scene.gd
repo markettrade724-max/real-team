@@ -145,7 +145,7 @@ func _set_game_state(new_state: GameState):
 
 func _spawn_player_if_needed():
 	# Spawn player if not already present or if returning from main menu
-	# Assumes the player scene emits 'player_died' and 'player_health_changed(new_health: int, max_health: int)' signals.
+	# Assumes the player scene emits 'player_died' and 'player_health_changed(new_health: float, max_health: float)' signals.
 	if not is_instance_valid(_player_instance) and player_scene:
 	    _player_instance = player_scene.instantiate()
 	    
@@ -183,11 +183,11 @@ func _on_player_died():
 	print("Game Over! Player died.")
 	_set_game_state(GameState.GAME_OVER) # Lose condition: set game state to GAME_OVER
 
-func _on_player_health_changed(new_health: int, max_health: int):
+func _on_player_health_changed(new_health: float, max_health: float): # Changed parameter types to float
 	# Update a UI element on the hud_layer with player health
-	print("HUD: Player Health: %d/%d" % [new_health, max_health])
+	print("HUD: Player Health: %f/%f" % [new_health, max_health]) # Changed %d to %f
 	if _health_label:
-	    _health_label.text = "HP: %d/%d" % [new_health, max_health]
+	    _health_label.text = "HP: %d/%d" % [int(new_health), int(max_health)] # Cast to int for display
 	    # IMPORTANT: Ensure this Label node (and its parent CanvasLayer) is visible
 	    # and styled (e.g., white text on a dark background) in the editor for readability.
 
