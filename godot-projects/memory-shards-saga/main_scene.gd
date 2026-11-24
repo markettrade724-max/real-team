@@ -65,6 +65,10 @@ func _ready():
 	if not get_tree().child_entered_tree.is_connected(_on_child_entered_tree):
 		get_tree().child_entered_tree.connect(_on_child_entered_tree)
 
+	# NEW: Connect signals for enemies already present in the scene tree at load time.
+	for node in get_tree().get_nodes_in_group("enemy"):
+		_connect_enemy_signals(node)
+
 	# Start directly in gameplay as per SOUL document, removing the MAIN_MENU state.
 	_set_game_state(GameState.GAMEPLAY)
 
