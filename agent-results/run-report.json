@@ -1,22 +1,22 @@
 {
-  "runId": "2026-11-24T1841",
-  "mode": "game-fix",
+  "runId": "2026-11-25T1038",
+  "mode": "screenplay-production",
   "success": true,
-  "timestamp": "2026-11-24T18:42:33.887Z",
-  "totalDuration": "78.6s",
+  "timestamp": "2026-11-25T10:51:03.440Z",
+  "totalDuration": "775.4s",
   "budget": {
-    "total": 10,
+    "total": 6,
     "limit": 40,
-    "left": 30,
+    "left": 34,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 10,
+        "total": 6,
         "limit": 20,
-        "left": 10,
+        "left": 14,
         "exhausted": false,
         "library": 0,
-        "agents": 10
+        "agents": 6
       },
       {
         "key": "KEY_2",
@@ -35,24 +35,64 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 49,
-    "next": 53
+    "episodes": 50,
+    "next": 54
   },
   "progress": {
-    "nextEpisode": 53,
-    "totalEpisodes": 53,
+    "nextEpisode": 54,
+    "totalEpisodes": 54,
     "gamesDone": 1
   },
   "agents": {
-    "gamefix": {
+    "screenplay": {
       "success": true,
-      "duration": "75.3s",
+      "duration": "—",
+      "error": null
+    },
+    "voice": {
+      "success": true,
+      "duration": "1ms",
+      "error": null
+    },
+    "scene": {
+      "success": true,
+      "duration": "1ms",
+      "error": null
+    },
+    "visual": {
+      "success": true,
+      "duration": "16.2s",
+      "error": null
+    },
+    "subtitle": {
+      "success": true,
+      "duration": "1ms",
+      "error": null
+    },
+    "music": {
+      "success": true,
+      "duration": "6ms",
+      "error": null
+    },
+    "edit": {
+      "success": true,
+      "duration": "554.8s",
+      "error": null
+    },
+    "trailer": {
+      "success": true,
+      "duration": "26.5s",
+      "error": null
+    },
+    "upload": {
+      "success": true,
+      "duration": "227ms",
       "error": null
     }
   },
   "summary": {
-    "total": 1,
-    "passed": 1,
+    "total": 9,
+    "passed": 9,
     "failed": 0
   }
 }
