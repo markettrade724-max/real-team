@@ -1,22 +1,22 @@
 {
-  "runId": "2026-11-25T1038",
+  "runId": "2026-11-25T1507",
   "mode": "screenplay-production",
-  "success": true,
-  "timestamp": "2026-11-25T10:51:03.440Z",
-  "totalDuration": "775.4s",
+  "success": false,
+  "timestamp": "2026-11-25T15:21:58.457Z",
+  "totalDuration": "853.8s",
   "budget": {
-    "total": 6,
+    "total": 12,
     "limit": 40,
-    "left": 34,
+    "left": 28,
     "keys": [
       {
         "key": "KEY_1",
-        "total": 6,
+        "total": 12,
         "limit": 20,
-        "left": 14,
+        "left": 8,
         "exhausted": false,
         "library": 0,
-        "agents": 6
+        "agents": 12
       },
       {
         "key": "KEY_2",
@@ -35,12 +35,12 @@
     "percent": "100%"
   },
   "series": {
-    "episodes": 50,
-    "next": 54
+    "episodes": 49,
+    "next": 53
   },
   "progress": {
-    "nextEpisode": 54,
-    "totalEpisodes": 54,
+    "nextEpisode": 53,
+    "totalEpisodes": 53,
     "gamesDone": 1
   },
   "agents": {
@@ -51,48 +51,38 @@
     },
     "voice": {
       "success": true,
-      "duration": "1ms",
+      "duration": "22.1s",
       "error": null
     },
     "scene": {
       "success": true,
-      "duration": "1ms",
+      "duration": "2ms",
       "error": null
     },
     "visual": {
       "success": true,
-      "duration": "16.2s",
+      "duration": "18.6s",
       "error": null
     },
     "subtitle": {
       "success": true,
-      "duration": "1ms",
+      "duration": "21ms",
       "error": null
     },
     "music": {
       "success": true,
-      "duration": "6ms",
+      "duration": "7ms",
       "error": null
     },
-    "edit": {
-      "success": true,
-      "duration": "554.8s",
-      "error": null
-    },
-    "trailer": {
-      "success": true,
-      "duration": "26.5s",
-      "error": null
-    },
-    "upload": {
-      "success": true,
-      "duration": "227ms",
-      "error": null
+    "production": {
+      "success": false,
+      "duration": "—",
+      "error": "Timeout after 600s"
     }
   },
   "summary": {
-    "total": 9,
-    "passed": 9,
-    "failed": 0
+    "total": 7,
+    "passed": 6,
+    "failed": 1
   }
 }
